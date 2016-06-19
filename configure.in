@@ -193,7 +193,7 @@ if test "$XAPIAN_CONFIG" = "no" ; then
 fi
 XAPIAN_CFLAGS=`$XAPIAN_CONFIG --cxxflags`
 XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
-XAPIAN_NUM_VERSION=`xapian-config --version | $SED -e "s/xapian-config - xapian-core //g" | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+XAPIAN_NUM_VERSION=`$XAPIAN_CONFIG --version | $SED -e "s/xapian-config - xapian-core //g" | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 AC_DEFINE_UNQUOTED(XAPIAN_NUM_VERSION,$XAPIAN_NUM_VERSION,
     [Xapian version number])
 AC_MSG_CHECKING(for Xapian >= 1.0.4)
@@ -226,7 +226,7 @@ else
 fi
 
 dnl boost
-BOOST_LIBS=""
+BOOST_LIBS="-lboost_system"
 AM_CONDITIONAL(HAVE_BOOST_SPIRIT, false)
 AC_CHECK_HEADERS([boost/spirit/core.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],
    [AC_CHECK_HEADERS([boost/spirit.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)])
@@ -241,7 +241,6 @@ fi
 AC_MSG_RESULT($enable_mempool)
 if test "x$enable_mempool" = "xyes"; then
    AC_CHECK_HEADERS([boost/pool/poolfwd.hpp])
-   BOOST_LIBS="-lboost_system"
 fi
 
 dnl Allocators
