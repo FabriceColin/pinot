@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearchdescription/1.0/">
+	<ShortName>Xapian Omega</ShortName>
+	<LongName>The Xapian Omega CGI search frontend</LongName>
+	<Description>Omega is a CGI application which uses the Xapian Information Retrieval library to search collections of documents.</Description>
+	<Tags>Local Host</Tags>
+	<Url type="application/rss+xml" template="http://localhost/cgi-bin/omega?P={searchTerms}&amp;DEFAULTOP=or&amp;DB=default&amp;FMT=opensearch&amp;%5B={startPage}" />
+</OpenSearchDescription>

@@ -1,0 +1,25 @@
+# Bing Search Plugin
+
+<SEARCH
+	version="1.0"
+	name="Bing"
+	description="Bing"
+	method="GET"
+	action="http://www.bing.com/search"
+	routeType="The Web"
+>
+
+<INPUT NAME="q" USER>
+<INPUT NAME="form" VALUE="QBLH">
+<INPUT NAME="filt" VALUE="ALL">
+<INPUT NAME="count" VALUE="10">
+<INPUTNEXT NAME="first" FACTOR="10">
+
+<INTERPRET
+resultListStart='<div id="results_container">'
+resultListEnd='</html>'
+resultItemStart='<div class="sb_tlst">'
+resultItemEnd='</div></li>'
+>
+
+</SEARCH>

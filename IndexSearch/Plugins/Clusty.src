@@ -1,0 +1,22 @@
+# Clusty Search Plugin
+
+<SEARCH
+	version="1.0"
+	name="Clusty"
+	description="clusty.com"
+	method="GET"
+	action="http://clusty.com/search"
+	routeType="The Web"
+>
+
+<INPUT NAME="query" USER>
+# INPUTNEXT is too complicated :-)
+
+<INTERPRET
+resultListStart=""
+resultListEnd=""
+resultItemStart='<li class="document">'
+resultItemEnd='<div class="document-footer">'
+>
+
+</SEARCH>

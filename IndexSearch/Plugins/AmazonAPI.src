@@ -1,0 +1,35 @@
+# Amazon REST API Search Plugin
+
+<SEARCH
+	version="1.0"
+	name="Amazon API"
+	description="Amazon.com REST API"
+	method="GET"
+	action="http://webservices.amazon.com/onca/xml"
+	routeType="Shopping"
+>
+
+<INPUT NAME="Service" VALUE="AWSECommerceService">
+# Edit this field's value to set to your subscription ID
+<INPUT NAME="SubscriptionId" VALUE="EDIT:Amazon API ID">
+<INPUT NAME="Operation" VALUE="ItemSearch">
+<INPUT NAME="SearchIndex" VALUE="Blended">
+<INPUT NAME="Keywords" USER>
+
+<INTERPRET
+resultListStart="<Items>"
+resultListEnd="</Items>"
+resultItemStart="<Item>"
+resultItemEnd="</Item>"
+# The following attributes are specific to Pinot
+resultTitleStart="<Title>"
+resultTitleEnd="</Title>"
+resultLinkStart="<DetailPageURL>"
+resultLinkEnd="</DetailPageURL>"
+resultExtractStart="<ProductGroup>"
+resultExtractEnd="</ProductGroup>"
+>
+
+</SEARCH>
+
+

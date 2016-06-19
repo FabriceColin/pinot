@@ -1,0 +1,17 @@
+<search 
+   name="UNdata"
+   description="UNdata"
+   method="GET"
+   action="http://data.un.org/Search.aspx"
+   routeType="Research"
+>
+
+<input name="q" user>
+
+<interpret 
+    resultListStart='' 
+    resultListEnd=''
+    resultItemStart='<div class="Result">' 
+    resultItemEnd="</div>"
+>
+</search>

@@ -1,0 +1,25 @@
+# Freecode Search Plugin
+# Based on the work of rcoscali@rcsnet.net
+
+<search 
+   name="Freecode"
+   description="Freecode Projects Search"
+   method="GET"
+   action="http://freecode.com/search/"
+   routeType="Software"
+>
+
+<input name="section" value="projects">
+<input name="q" user>
+<inputnext name="offset" factor="25">
+<inputprev name="offset" factor="25">
+
+<interpret 
+    browserResultType="result" 
+    baseUrl="http://freecode.com"
+    resultListStart='<div class="search-results">'
+    resultListEnd=''
+    resultItemStart='<span class="releasedate">'
+    resultItemEnd='<div class="meta'
+>
+</search>
