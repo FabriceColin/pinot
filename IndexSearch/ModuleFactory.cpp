@@ -132,7 +132,7 @@ IndexInterface *ModuleFactory::getLibraryIndex(const string &type, const string 
 		(typeIter->second.m_canIndex == false))
 	{
 		// We don't know about this type, or doesn't support indexes
-		return false;
+		return NULL;
 	}
 
 	void *pHandle = typeIter->second.m_pHandle;
