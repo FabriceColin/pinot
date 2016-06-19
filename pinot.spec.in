@@ -1,0 +1,153 @@
+# @configure_input@
+%if 0%{?suse_version}
+# SuSE
+%define pftotext_pkg xpdf-tools
+%define dbus_pkg dbus-1-glib
+%if 0%{?suse_version} > 1010
+%define dbus_dev_pkg dbus-1-glib-devel
+%else
+%define dbus_dev_pkg dbus-1-devel
+%endif
+%else
+# Fedora and anything else
+%define pftotext_pkg poppler-utils
+%define dbus_pkg dbus-glib
+%define dbus_dev_pkg dbus-devel
+%endif
+
+Summary: Personal search and metasearch tool
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 1%{?dist}
+License: GPL
+Group: Applications/Internet 
+Source: %{name}-%{version}.tar.gz
+URL: http://code.google.com/p/pinot-search/
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Requires: xapian-core-libs >= 1.0.4, libtextcat >= 2.2, sqlite >= 3.3.1, libcurl >= 7.13, gmime >= 2.1
+Requires: libxml++ >= 2.12, shared-mime-info
+Requires: taglib >= 1.4, exiv2-libs >= 0.18, unzip, antiword, unrtf, %{pftotext_pkg}
+#Suggests: xapian-omega
+BuildRequires: xapian-core-devel >= 1.0.4, libuuid-devel, libtextcat-devel >= 2.2, sqlite-devel >= 3.3.1, libcurl-devel >= 7.13, gmime-devel >= 2.1, boost-devel >= 1.32
+BuildRequires: libxml++-devel >= 2.12, gettext-devel, desktop-file-utils, help2man
+BuildRequires: taglib-devel >= 1.4, exiv2-devel >= 0.18
+BuildRequires: gcc-c++
+%if 0%{?!_with_nodbus:1}
+Requires: %{dbus_pkg} >= 0.60
+BuildRequires: %{dbus_dev_pkg} >= 0.60
+%endif
+%if 0%{?_with_gtkmm3:1}
+Requires: gtkmm30 >= 3.0
+BuildRequires: gtkmm30-devel >= 3.0
+%else
+Requires: gtkmm24 >= 2.10
+BuildRequires: gtkmm24-devel >= 2.10
+%endif
+%if 0%{?_with_libarchive:1}
+Requires: libarchive >= 2.6.2
+BuildRequires: libarchive-devel >= 2.6.2
+%endif
+%if 0%{?_with_chmlib:1}
+Requires: chmlib >= 0.40
+BuildRequires: chmlib-devel >= 0.40
+%endif
+%if 0%{?_with_mempool:1}
+Requires: boost-system >= 1.54
+BuildRequires: boost-devel >= 1.54
+%endif
+
+%description
+Pinot is a D-Bus service that crawls, indexes your documents and monitors them
+for changes, as well as a GTK-based user interface that enables to query
+the index built by the service and your favourite Web engines, and display and
+analyze the results.
+
+%package devel
+Summary: Files for development of applications which will use Pinot.
+Group: Development/Libraries
+Requires: %{name} = %{version}
+
+%description devel
+Pinot is a D-Bus service that crawls, indexes your documents and monitors them
+for changes. This package package contains include files needed to develop
+applications on top of Pinot.
+
+%prep
+%setup -q
+
+%build
+%configure %{?_with_nodbus:--enable-dbus=no} %{?_with_gtkmm3:--enable-gtkmm3=yes} %{?_with_libarchive:--enable-libarchive=yes} %{?_with_chmlib:--enable-chmlib=yes} %{?_with_debug:--enable-debug=yes} %{?_with_mempool:--enable-mempool=yes}
+make %{?_smp_mflags}
+
+%install
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+%find_lang %{name}
+
+%post
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
+ 
+%postun
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
+
+%clean
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+%files -f %{name}.lang
+%defattr(-, root, root, -)
+%doc AUTHORS ChangeLog ChangeLog-dijon COPYING FAQ NEWS README TODO
+%config(noreplace) %{_sysconfdir}/pinot/
+%{_bindir}/pinot
+%if 0%{?_with_nodbus:1}
+%{_bindir}/pinot-daemon
+%else
+%{_bindir}/pinot-dbus-daemon
+%endif
+%{_bindir}/pinot-index
+%if 0%{?!_with_nodbus:1}
+%{_bindir}/pinot-label
+%endif
+%{_bindir}/pinot-prefs
+%{_bindir}/pinot-search
+%dir %{_libdir}/pinot
+%dir %{_libdir}/pinot/backends
+%{_libdir}/pinot/backends/lib*backend.so*
+%dir %{_libdir}/pinot/filters
+%if 0%{?_with_libarchive:1}
+%{_libdir}/pinot/filters/libarchivefilter.so*
+%endif
+%if 0%{?_with_chmlib:1}
+%{_libdir}/pinot/filters/libchmfilter.so*
+%endif
+%{_libdir}/pinot/filters/libexiv2imagefilter.so*
+%{_libdir}/pinot/filters/libexternalfilter.so*
+%{_libdir}/pinot/filters/libmboxfilter.so*
+%{_libdir}/pinot/filters/libtaglibfilter.so*
+%if 0%{?!_with_nodbus:1}
+%{_datadir}/dbus-1/services/de.berlios.Pinot.service
+%endif
+%{_datadir}/pinot/
+%{_datadir}/icons/hicolor/48x48/apps/pinot.png
+%{_datadir}/icons/hicolor/32x32/apps/pinot.png
+%{_datadir}/icons/hicolor/24x24/apps/pinot.png
+%{_datadir}/icons/hicolor/22x22/apps/pinot.png
+%{_datadir}/icons/hicolor/16x16/apps/pinot.png
+%if 0%{?!_with_nodbus:1}
+%{_sysconfdir}/xdg/autostart/*.desktop
+%endif
+%{_datadir}/applications/*.desktop
+%{_mandir}/man1/pinot*
+
+%files devel
+%defattr(-,root,root,-)
+%{_includedir}/pinot
+%{_libdir}/pinot/lib*
+
+%changelog
+

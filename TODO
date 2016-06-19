@@ -1,0 +1,130 @@
+Documentation
+- List what files from libtextcat 2.2 go where ?
+- Say where libtextcat 3.0 can (and cannot ;-) be found
+- MIME type should be as returned by xdg-utils' 'xdg-mime query filetype ...'
+- Try listing names of dependency packages for most distros
+- How to trouble-shoot with delve, get to a file with filters and labels
+- Explain when indexing and updating are done
+
+General
+- Fix the FIXMEs
+- Get rid of dead code/classes/methods...
+- Advertise service via Rendezvous
+- Extend metadata beyond title,location,language,type,timestamp,size
+- Don't package gmo files, they are platform dependent
+- CLI programs to use tty highlighting if available
+
+Barpanel
+- Write a plugin for barpanel http://www.igelle.org/barpanel/
+
+Tokenize
+- Allow to cache documents that had to be converted ? eg PDF, MS Word
+- Write a PDF filter that handles columns correctly, with poppler ?
+- WordPerfect filter with libwpd
+- Office filter with libgst
+- TeX filter
+- HtmlFilter to look for META tags Author, Creator, Publisher and CreationDate
+- XmlFilter is slow-ish, rewrite file parsing with the TextReader interface
+- Filters should at least return errno when they fail
+- Use libpng to extract PNGs' metadata
+
+SQL
+- Move history files into the index directories
+- Set any PRAGMA ?
+
+Monitor
+- Implement support for Solaris FEM
+
+Collect
+- Comply with robot stuff defined at http://www.robotstxt.org/
+- Harvest mode grabs all pages on a specific site down to a certain depth
+- Make User-Agent string configurable
+- Make download timeout configurable
+- Support for HTML frames
+- Curl and NeonDownloader don't share much code
+
+Search
+- With engines that provide a redirection URL for results (eg Acoona), it looks like
+  the query hitory is not saved/checked correctly
+- Make sure Description files' SyndicationRight is not private or closed
+- getCloseTerms() should be a search engine method so that WebEngine can use plugins'
+ suggestions Url field (http://developer.mozilla.org/en/docs/Supporting_search_suggestions_in_search_plugins)
+- Filters with CJKV should work better; supporting quoting would help, eg title:"你好"
+- Check Mozdex plugin once it's back up
+- Add a plugin for http://arxiv.org/find
+
+Index
+- Support the Brass backend
+- Play around with the XAPIAN_FLUSH_THRESHOLD env var
+- MD5 hash to determine on updates whether documents have changed, as done by omindex
+- Allow to access remote Xapian indexes tunneled through ssh with xapian-progsrv,
+  and make sure ssh will ask passwords with /usr/libexec/openssh/ssh-askpass
+- Index Nautilus metadata (http://linuxboxadmin.com/articles/nautilus.php)
+- Reverse terms so that left wildcards can be applied ?
+- XapianIndex could do with some common code refactoring
+- Automatically categorize documents based on MIME type and source into picture, video, etc...
+- After indexing or updating a document, a call to getDocumentInfo() shouldn't be necessary
+- Labels and the rest of DocumentInfo are handled separately, they shouldn't be
+- Indexes have no knowledge of indexId's
+- Be ready to catch DatabaseModifiedError exceptions and reopen the index
+- Think about security issues, especially when indexes are shared, based on http://plg.uwaterloo.ca/~claclark/fast2005.pdf
+- Index "compound_word" separately and as a whole
+
+Mail
+- Find out what kind of locking scheme Mozilla uses (POSIX lock ?) and use that
+- Index Evolution email (Camel, might be useful for other types actually)
+- Index mail headers
+- Decypher and use Mozilla's mailbox scheme, eg
+  mailbox://mbox_file_name?number=2164959&part=1.2&type=text/plain&filename=portability.txt
+- Keep track of attachments and avoid indexing the same file twice
+- Mailboxes where all messages are flagged by Mozilla/that are empty are not indexed at all
+
+Daemon
+- Allow building without the daemon
+- Enable to deactivate D-Bus interface
+- Clean up method names
+- Prefer ustring to string whenever possible
+- Queue unindexing too
+- The daemon should ask for permission before reindexing, especially if the corpus is large
+- What does a first run mean for the daemon ? ie no configuration file
+- Daemon should use worker threads' doWork() instead of duplicating code
+- Only crawl newly added locations when the configuration changes
+- Some D-Bus methods need not returning anything
+
+UI
+- Show which threads are running, what they are doing, and allow to stop them
+ selectively
+- Display search engines icons (Gtk::IconSource::set_filename() and Gtk::Style::render_icon())
+- Replace glademm with libglademm ?
+- Use unique (http://www.gnome.org/~ebassi/source/) if available
+- Either Live Query behaves like a live query (eg results list updated when new
+ documents match) or it is renamed to something else to avoid confusion
+- When viewing or indexing a result, all rows for that same URL should be updated with
+ the Viewed or Indexed icons (the latter after IndexingThread returns)
+- Make use of GTKmm 2.10 StatusIcon
+- Unknown exceptions in IndexingThread or elsewhere should be logged as errors
+- Query expansion should be interactive
+- Default cache provider should be configurable
+- Unique preferences
+- Use gtk2 2.14's gtk_show_uri()
+- Changing set group by mode a few times will show index results under engine "xapian", why ?
+- getIndexNames() to return ustring's
+- Always call getIndexPropertiesByName() with a ustring, store engine names as ustring's
+- Live and stored queries shouldn't cap on the number of results but the number of results per page
+- For each query group in the results list, show Next and Previous buttons to page through results
+- Browse mode to be merged with the new search and page mode
+
+v0.90
+- Filters should have a version number so that new versions only reindex documents
+ of the given type
+- Queries should be cancellable
+- Queries should return the top N results first, then the rest
+- D-Bus (Simple)Query shouldn't let the bus connection time out before replying
+- The query builder for stored queries should be available for live queries too
+- Make sure all of Core is localized
+- HtmlParser should use CJKVTokenizer's Unicode conversion function
+- Status dialog to show time of latest update 
+- Send a signal when preferences are modified so that the UI and the daemon can reload them
+- The first non-empty line of plain text output to be used as title
+- When removing a location to index, delete queued actions for this location
+

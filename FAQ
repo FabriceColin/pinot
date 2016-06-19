@@ -1,0 +1,94 @@
+  * The index is huuuuge ! How can I make it smaller ?
+    The format of Xapian indexes is optimized for writing. Once all documents
+    have been indexed, compacting the index may reduce its size quite
+    significantly. If you have Xapian >= 1.0.6, xapian-compact will let you do
+    that. Stop the daemon and run the following commands :
+     $ mv ~/.pinot/daemon ~/.pinot/backup-daemon
+     $ xapian-compact ~/.pinot/backup-daemon ~/.pinot/daemon
+    This may take a little while. Once xapian-compact has completed, restart
+    the daemon with :
+     $ pinot-dbus-daemon -i
+    The -i parameter instructs the daemon to ignore the index version number,
+    which may not have been set in the compacted index.
+    You may also want to disable support for spelling and enable stopwords
+    removal. See the README for more details.
+
+  * Memory usage is too high ! How can I reduce it ?
+    Since 0.92, Pinot hints at the OS that it can reclaim unused memory on a
+    regular basis. This works on Linux but maybe not on other OSes.
+    If your system is memory constrained, you can :
+    - increase the frequency at which memory is returned to the OS by setting
+      MALLOC_TRIM_THRESHOLD_ to a value lower than 128kb (the default) :
+      $ export MALLOC_TRIM_THRESHOLD_=65536
+    - reduce the number of documents Xapian buffers in memory before changes
+      are flushed to the disk (default is 10000) :
+      $ export XAPIAN_FLUSH_THRESHOLD=1000
+    Note that the daemon explicitely flushes the index once it has crawled one
+    of the directory configured in Preferences.
+    If the above doesn't help and there is a large number of big documents to
+    index, you may want to configure Pinot to index your corpus in stages.
+
+  * Pinot doesn't use my favourite browser XYZ to open HTML documents
+    Even if you have set XYZ as your favourite Web browser in your desktop
+    environment, it may not be setup as the default application for HTML files.
+    In Gnome for instance, one has to select XYZ as default for all HTML files
+    using Nautilus (Properties dialog, Open With tab). This applies to
+    applications for any other file type.
+
+  * At startup, when listing an index or indexing documents, Pinot complains
+    of an "index error"
+    This is likely because a previous instance didn't exit properly and one
+    (or more) index is still locked. Quit Pinot and look for a "db_lock",
+    "flicklock" or "flintlock" file (depending on what version of Xapian the
+    index was created with/is currently installed) in the directory that Pinot
+    complains about. If it's there, check that no other process is using this
+    file, delete it and restart Pinot.
+
+  * When compiling from source, you may run into linking problems related to
+    libstdc++.la. Try patching xapian-config as explained in the post at
+    http://lists.tartarus.org/pipermail/xapian-devel/2006-January/000293.html
+
+  * If you experience segfaults at startup and you are on Fedora, chances are
+    it's because of libxml++/libsigc++. See this Bugzilla entry :
+    https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=178592
+    The latest version seems to fix this issue.
+
+  * If the daemon crashes with a backtrace pointing at boost::pool_allocator<>,
+    rebuild with the configure option "--enable-mempool=no".
+
+  * If the daemon crashes seemingly randomly while indexing, it may be because
+    SQLite wasn't built thread-safe. I have witnessed this mostly on dual CPU
+    machines, but others are not immune. Try rebuilding SQLite by passing
+    "--enable-threadsafe --enable-threads-override-locks" to configure.
+
+  * If you have built Pinot from source, make sure you have done a "make install".
+    Pinot will fail to start if it can't find stuff it needs, its icon for
+    instance.
+
+  * If "make install" fails with an error about Categories in pinot.desktop
+    and you have desktop-file-utils 0.11, either downgrade to 0.10 or upgrade
+    to 0.12 if possible, or edit the top-level Makefile and replace the line
+     @desktop-file-install --vendor="" --dir=$(DESTDIR)$(datadir)/applications pinot.desktop
+    with
+     $(INSTALL_DATA) pinot.desktop $(DESTDIR)$(datadir)/applications/pinot.desktop
+    and run "make install" again.
+
+  * In stored queries, the directory filter doesn't work as expected if the
+    directory name starts with a non alpha-numeric character. This has been
+    fixed in Xapian 0.9.8.
+
+  * On FreeBSD, threading issues may cause the daemon to crash unexpectedly.
+    A fix is to add the following lines to /etc/libmap.conf (which may not exist) :
+     [/usr/local/bin/pinot-dbus-daemon]
+     libpthread.so.2         libc_r.so.6
+     libpthread.so           libc_r.so
+
+     [/usr/local/bin/pinot]
+     libpthread.so.2         libc_r.so.6
+     libpthread.so           libc_r.so
+
+  * If you are using KDE 3.* and pinot-dbus-daemon does not autostart, symlink
+    the file /etc/xdg/autostart/pinot-dbus-daemon.desktop to either
+    $(kde-config --prefix)/share/autostart (for all users) or ~/.kde/Autostart
+    (current user only).
+

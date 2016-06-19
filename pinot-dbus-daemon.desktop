@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Version=1.0
+Name=Pinot
+Comment=Search your documents
+Exec=pinot-dbus-daemon
+Terminal=false
+Icon=pinot
+Categories=Utility;

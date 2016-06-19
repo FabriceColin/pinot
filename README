@@ -1,0 +1,608 @@
+Pinot
+Copyright 2005-2015 Fabrice Colin <fabrice dot colin at gmail dot com>
+http://code.google.com/p/pinot-search/
+formerly at http://pinot.berlios.de/
+
+
+1. What is Pinot
+2. Upgrading from previous versions
+3. Available engines
+4. Indexes
+5. Indexing and monitoring
+6. Searching
+7. Viewing cached results
+8. File formats
+9. File patterns
+10. Digging deeper
+11. Saving results
+12. D-Bus service
+13. CJKV support
+14. Environment variables and aliases
+15. How to reset indexes
+16. Dependencies
+
+
+1. What is Pinot
+
+
+  Pinot is :
+    * a D-Bus service that crawls, indexes and monitors your documents
+      ("pinot-dbus-daemon")
+    * a GTK-based user interface that enables to query the index built by the
+      service or your favourite Web engine, and display and analyze the
+      results ("pinot")
+    * other command-line tools
+
+  It was developed and tested on GNU/Linux and should work on other Unix-like
+  systems.
+
+
+2. Upgrading from previous versions
+
+
+  * from 0.50 or older to 0.60 or newer
+  The My Documents index was renamed My Web Pages. A new index, appropriately
+  named My Documents ;-), includes all local files and is populated by the new
+  D-Bus service.
+  If you used the Import facility to index specific directories on your system,
+  it is recommended you manually unindex the corresponding documents from the
+  My Web Pages index, and configure these directories to be automatically
+  indexed by the D-Bus service, See section "5. Indexing and monitoring".
+  The My EMail index was dropped. Email messages will now appear in your
+  My Documents index.
+
+
+  * to 0.71 or newer
+  V0.71 and newer will detect what version the My Documents index was built
+  with and automatically upgrade it by reindexing all documents, if necessary.
+  As for My Web Pages, the UI will indicate when upgrading is necessary.
+  Updating documents with the Index, Update menu is recommended.
+
+
+3. Available engines 
+
+
+  One of the main functionalities of Pinot is metasearch. This lets you query
+  a variety of sources, including Web-based search engines. By default, the
+  list of available engines is hidden and defaults to internal indexes (see
+  section "4. Indexes"). To show the list of engines, click on the Show All
+  Search Engines button, next to the Query field immediately below the menu
+  bar. Click on the same button again to hide the list.
+
+  Any number of engine or engine group may be selected at any one time.
+  Multi-selection is done like in any other application. All queries are always
+  run against the list of currently selected engines.
+
+  Starting with v0.42, Pinot supports both Sherlock and OpenSearch Description
+  plugins. They are installed in $PREFIX/share/pinot/engines/, where PREFIX
+  is usually /usr. Additional engines can be installed in that directory or
+  in ~/.pinot/engines. Note this directory is not created automatically.
+
+  Sherlock is what Firefox and the Mozilla suite use. Chances are that somebody
+  wrote a plugin for the engine you are interested in. MyCroft at
+  http://mycroft.mozdev.org/ has got plenty of plugins. Beware that a lot are
+  out of date and will require some changes. Use pinot-search on the
+  command-line to run a quick check on a plugin, eg
+  $ pinot-search sherlock $PREFIX/share/pinot/engines/Bozo.src "clowns"
+
+  Plugins are categorized by channels. For Sherlock plugins, the routeType
+  element under SEARCH specifies the name of the channel the plugin belongs to.
+
+  As for OpenSearch, A9.com has an extensive list at
+  http://a9.com/-/search/moreColumns.jsp. A Description file is not available
+  for all engines though...
+  Pinot should work with OpenSearch Description 1.0 and 1.1 (draft 2) plugins.
+  One thing to keep in mind is that because Description doesn't describe how
+  to parse the results page returned by the search engine, Pinot assumes that
+  the engine will return results formatted according to the OpenSearch Response
+  standard.
+  In practice, this means that plugins that don't stick to the following rules
+  will be ignored or won't show any result :
+    * For Description 1.1 plugins, the type attribute on the Url field must be
+      set to "application/atom+xml" or "application/rss+xml" (default).
+      "text/html" will be rejected.
+    * The search engine's results page content type must be some form of XML,
+      otherwise Pinot won't attempt parsing it. 
+  Pinot differs from the Description spec in that it interprets the Tags field
+  as a channel name. The standard defines Tags as a "space-delimited set of
+  words that are used as keywords to identify and categorize this search
+  content".
+
+  If the version of Pinot you are using was built with support for the Google
+  SOAP API, a "Google API" engine will appear in the group The Web (<= v0.87)
+  or Current User (> v0.87). To query this engine, you will need to enter
+  your Google API in the corresponding field in the General tab of the
+  Preferences box. Note that Google no longer issues API keys. Building this
+  engine is not recommended.
+
+
+4. Indexes
+
+
+  Pinot has two internal indexes. My Documents is populated by the D-Bus
+  service and contains documents found on your computer. My Web Pages is
+  populated by the UI whenever you :
+    * import an external document, using the Index, Import URL menu
+    * index results returned by Web engines, using the Results, Index menu
+      or through a Stored Query
+  Both index may have any of the file types listed in section "8. File formats".
+
+  Indexes built by any other Xapian-based tools can be added to Pinot. To add
+  an external index, click the + button at the bottom of the engines list.
+  It can either be local, in which case you will have to select the directory
+  where it is found, or served from a remote machine by xapian-tcpsrv. See
+  the manual page for xapian-tcpsrv(1).
+
+  All indexes are grouped together under the channel Current User in the
+  engines list.
+
+
+5. Indexing and monitoring
+
+
+  Pinot can index any directory configured under the Indexing tab of the
+  Preferences box. Monitoring is optional and should be disabled for the
+  directories whose contents seldom change, eg $PREFIX/share/doc.
+  Indexing and monitoring of directories is handled by the D-Bus service.
+
+  In 0.90 and newer, the daemon will skip symlinks that refer to locations
+  that have already been crawled, or locations it knows it will have to crawl.
+  When skipped, symlinks are not followed but are still indexed, with the MIME
+  type "inode/symlink".
+
+  While Pinot is not currently able to get to and index application-specific
+  data held in dot-directories, it can index common file formats as listed
+  in section "8. File formats".
+
+  All files and directories with a name that starts with a dot, eg
+  ".thunderbird", are skipped and their content is not indexed. If you wish
+  to include the contents of some dot-directory, create a symlink to a
+  directory that is configured in Preferences. For instance, if "~/Documents"
+  is configured for indexing, create a symlink from "~/.thunderbird" to
+  "~/Documents/TMail". For this to work, the dot-directory must not be in a
+  directory configured for indexing.
+
+  Pinot 0.74 and older required mbox files to be configured separately. Newer
+  versions are able to fully index (and monitor, if necessary) all mbox files
+  found during a directory crawl, just like any other file type.
+
+  If you want to exclude any specific files or directories from indexing, use
+  patterns as described in section "9. File patterns".
+
+  Since 0.89, Pinot supports stopwords removal. While no such list is provided
+  by default, they can be easily found on the Internet. Each language has its
+  own stopword list, for instance a stopwords list for English should be
+  copied to $PREFIX/share/pinot/stopwords/stopwords.en
+
+  Language detection is done with libtextcat. Ensure that the paths listed in
+  /etc/pinot/textcat_conf.txt are correct.
+
+  The pinot-index program allows indexing and peeking at documents' properties
+  from the command-line. Using the -i/--index option with the My Documents or
+  My Web Pages index is not recommended. For more details, see the manual page
+  for pinot-index(1).
+
+
+6. Searching
+
+
+  Searches are run differently based on the type of engine being queried.
+
+  When querying a Web engine, Pinot assumes this engine understands the query,
+  which is sent as is. No pre-processing is performed on the text of the query,
+  and the results list is more or less presented as retrieved from the Web
+  engine.
+
+  When querying an index, things are somewhat different. Queries can be
+  expressed in a very natural way, using a combination of operators, filters
+  and ranges. This query syntax is the syntax supported natively by Xapian's
+  QueryParser and is documented at http://www.xapian.org/docs/queryparser.html
+  For instance, the query "type:text/html AND lang:en AND (tcp NEAR ip)" will
+  look for HTML files in English that mention TCP/IP. Note that all operators
+  should be specified in capitals, eg "AND" not "and". The latter will be
+  treated as a regular term.
+
+  Pinot supports these query filters :
+      "site" for host name, eg "site:pinot.berlios.de"
+      "file" for file name, eg "file:index.html"
+      "ext" for file extension, eg "ext:html"
+      "title" for title, eg "title:pinot"
+      "url" for URL, eg "url:http://pinot.berlios.de/"
+      "dir" for directory, eg "dir:/home/fabrice"
+      "inurl" for documents embedded in a URL, eg "inurl:file:///home/fabrice/Documents/backup.tar.gz"
+      "lang" for ISO language code, eg "lang:en"
+      "type" for MIME type, eg "type:text/html"
+      "class" for MIME type classification, eg "class:text"
+      "label" for label, eg "label:Important"
+
+  The directory filter is recursive, ie it applies to sub-directories.
+  Allowed language codes are "da", "nl", "en", "fi", "fr", "de", "hu", "it",
+  "nn", "pt", "ro", "ru", "es", "sv" and "tr".
+
+  Stemming is available to stored queries for which a stemming language is
+  defined. If such a query doesn't return any exact match, the query terms are
+  stemmed and the query is run again. Stopwords are also then removed if a
+  stopwords list was found for the stemming language.
+
+  The values of "file", "url", "dir" and "label" may be double-quoted. It's also
+  worth pointing out that the query "dir:/X/Y" will return files and directories
+  located in /X/Y, but not Y itself, which is what "dir:/X file:Y" would do.
+
+  In addition, these ranges are supported :
+      "YYYYMMDD..YYYYMMDD" for date ranges, eg "20070801..20070831"
+      "HHMMSS..HHMMSS" for time ranges, eg "090000..180000"
+      "size0..size1b" for size in bytes, eg "0..10240b"
+
+  Support for the Xesam desktop search specifications was introduced in v0.87
+  and dropped in v0.96.
+
+  See the manual page for pinot-search(1) for examples.
+
+
+7. Viewing cached results
+
+
+  Results returned by search engines can be viewed "live" by selecting the View
+  menuitem under Results. This opens whatever application defined for the
+  result's MIME type and/or protocol scheme.
+  In addition, Pinot allows to view the page as cached by Google and the Wayback
+  Machine. Cache providers are actually configured in globalconfig.xml, located
+  in /etc/pinot/. For instance :
+  <cache>
+    <name>Google</name>
+    <location>http://www.google.com/search?q=cache:%url0</location>
+    <protocols>http, https</protocols>
+  </cache>
+
+  This is self-explanatory :-) Here it configures a cache provider called
+  "Google" that handles both http and https. The location field supports
+  two parameters that are substituted to obtain the URL to open : 
+    * %url is the result's URL as displayed by the UI, eg
+      http://pinot.berlios.de/download.html
+    * %url0 is the result's URL without the protocol, eg
+      pinot.berlios.de/download.html
+
+
+8. File formats
+
+
+  The following document types are supported internally :
+    * plain text
+    * HTML
+    * XML
+    * mbox, including attachments and embedded documents
+    * MP3, Ogg Vorbis, FLAC
+    * JPEG
+    * common archive formats (tar, Z, gz, bzip2, deb)
+    * ISO 9660 images
+
+  The following document types are supported through external programs :
+    * PDF (pdftotext required)
+    * RTF (unrtf required)
+    * ReStructured Text (rst2html required)
+    * OpenDocument/StarOffice files (unzip required)
+    * MS Word (antiword required)
+    * PowerPoint (catppt required)
+    * Excel (xls2csv required)
+    * DVI (catdvi required)
+    * DjVu (djvutext required)
+    * RPM (rpm required)
+
+  For other document types, Pinot will only index metadata such as name,
+  location etc... If you wish to add support for another document type, and
+  know of a command-line program that can handle that type, add it to
+  external-filters.xml, located in /etc/pinot/.
+
+
+9. File patterns
+
+
+  Starting with version 0.62, it is possible to skip indexing of files with
+  glob(3) patterns. These patterns are configured in the Indexing tab of the
+  Preferences box, and can be used as a blacklist or a whitelist (as of 0.75).
+
+  Patterns apply to files and directories. For instance, blacklisting
+  "*/Desktop*" will skip "~/Desktop" and not crawl nor monitor this directory's
+  contents. Similarly, a blacklist entry for "*.avi" means that Pinot will not
+  attempt indexing the content of AVI files, and will ignore all monitor events
+  related to these files.
+
+  If you have never run Pinot before, the list will be pre-configured to skip
+  some picture, video and archive file types such as GIF, MPG and RAR.
+
+
+10. Digging deeper
+
+
+  Pinot offers two ways you can dig deeper in your documents : More Like This
+  suggests terms specific to documents that may help in finding related
+  documents, and Search This For allows to search in results.
+  Both features are enabled if one or more of the results currently selected
+  is indexed, and only operate on those.
+
+  When activated, More Like This will create a new Stored Query prefixed with
+  "More Like". For instance, if you run a Stored Query with name "Me", the
+  expanded query's name will be "More Like Me".
+
+  Search For This will search those results for the Stored Query selected in
+  the sub-menu and will present results in a new tab. For instance, running
+  the Stored Query "Me" on a set of results will open a "Me In Results" tab.
+
+  In addition to these, Pinot may suggest alternative spellings for queries
+  that don't return any result. If it does, a new Stored Query prefixed with
+  "Corrected" will be created.
+
+
+11. Saving results
+
+
+  Starting with version 0.72, lists of results can be saved to disk by
+  selecting the Save As menuitem under Results. Two output formats are
+  available to choose from in the file selector opened by Save As :
+    * CSV, a text format
+      The semi-colon character (';') is used to delimit fields.
+    * OpenSearch response, a XML/RSS format
+      See http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_response_elements
+      for details.
+
+
+12. D-Bus service
+
+
+  D-Bus activation makes sure the service is running whenever one of its
+  methods is invoked by any consumer application. For instance, clicking
+  OK on the Preferences box will call the service's Reload method, thus
+  ensuring the service is running. This also causes the service to reload
+  the configuration file.
+
+  Starting with 0.63, the service is auto-started. The file that enables
+  this is located at /etc/xdg/autostart/pinot-dbus-daemon.desktop.
+  For older versions, if you want the service to be started with your X
+  session, add pinot-dbus-daemon to your desktop environment's startup
+  programs list.
+
+  A few things to keep in mind :
+    * in version 0.75 and older, the service didn't reload its configuration
+      while running, so any change (for instance, adding or removing an
+      indexable directory) only took effect when the service was restarted.
+    * when starting, the service will first crawl all configured locations
+      and (re)index new and modified files. Starting with 0.64, the daemon's
+      scheduling priority is set very low (15, can be adjusted with --priority)
+      so that you can do stuff while it is indexing !
+    * when finished crawling, the service will monitor these locations
+      for changes and should consume little resources, unless a huge
+      quantity of files needs its attention.
+    * any change detected by the monitor is immediately queued and acted upon
+      as soon as possible, eg reindex a file that was modified. This and low
+      priority should make the daemon not very intrusive.
+    * operations that involve communicating with the daemon, such as editing
+      documents metadata, may timeout if the system is under heavy load and/or
+      the daemon is busy. In most cases, the message will have been received
+      by the daemon, but the reply may take longer than expected. The Pinot
+      UI may report that the operation failed, even though it was queued for
+      processing and will be acted upon by the daemon as soon as possible.
+
+  See section "15. Environment variables and aliases" for some tips on how to
+  query the D-Bus interface. A list of available D-Bus methods can be found
+  in the file pinot-dbus-daemon.xml.
+
+
+13. CJKV support
+
+
+  Starting with v0.83, Pinot supports indexing and searching CJKV text.
+  If you would like to try this out, you will have to reset the My Documents
+  index, as described in section "16. How to reset indexes".
+
+  At search time, queries that include CJKV characters are processed in a manner
+  compatible with the CJKV indexing scheme. There is no need to format the query
+  in a specific format, ie no need to separate characters with spaces.
+  For example, the query :
+      Fabrice 你好 title:身体好吗
+  will be modified internally to :
+      Fabrice  (你 你好 好) title:身 title:身体 title:体 title:体好 title:好 title:好吗 title:吗
+
+  Prior to v0.85, this processing only applied to pure CJKV queries.
+
+  It is recommended that filters (eg "title") be used at the end of the query
+  for it to be processed as expected.
+
+  You can get a list of documents in which CJKV characters were detected
+  by the indexer with the special filter "tokens:CJKV".
+
+
+14. Environment variables and aliases
+
+
+  Pinot tries to provide reasonable defaults for most systems, but there may be
+  situations where you want to tweak these values through environment variables :
+    * PINOT_SPELLING_DB
+      By default, Pinot builds indexes with a spelling database. This spelling
+      database may make up as much as a third of the size of the index.
+      If your system is low on disk space, you can disable this with
+      $ export PINOT_SPELLING_DB=NO
+      Make sure this is set for your login session, ie whenever the daemon is
+      auto-started. You will also have to reset indexes, as described in
+      section "16. How to reset indexes".
+    * PINOT_MINIMUM_DISK_SPACE
+      The daemon will stop crawling and indexing files when the partition on
+      which the index resides runs out of free space. By default, this means
+      less than 50 Mb. To change this value to 100 Mb for instance, use 
+      $ export PINOT_MINIMUM_DISK_SPACE=100
+    * PINOT_MAXIMUM_INDEX_THREADS
+      This sets the maximum number of concurrent indexing threads used by the
+      daemon. The default value is 1.
+    * PINOT_MAXIMUM_NESTED_SIZE
+      This limits the extraction of documents nested inside others, such as
+      archives or mail messages, based on their size. By default, this is
+      deactivated and set to 0.
+    * PINOT_MAXIMUM_QUERY_RESULTS
+      This overrides the number of results returned by queries run through
+      the UI's Query field as well as the number of results initially set
+      for new stored queries.
+
+  Another environment variable that you may want to tweak comes from Xapian.
+  XAPIAN_FLUSH_THRESHOLD can be set to the number of documents after which
+  Xapian is to flush changes to the index. The default value is set to 10000
+  at the time of writing this.
+  Lowering this value should decrease the amount of memory used to cache
+  changes to the index. Note that pinot-dbus-daemon explicitely flushes the
+  index once it has crawled each directory configured in Preferences.
+
+  Pinot v0.90 and newer provide a "tagged cd" script that enables to change
+  a shell's current directory to the directory that matches the path elements
+  passed as parameter. For instance, after setting :
+  $ alias pcd='. $PREFIX/share/pinot/pinot-cd.sh'
+  if ~/Documents is configured for indexing in Preferences, the following
+  command would change the current directory to ~/Documents/Web/Stats :
+  $ pcd Documents Stats
+  If other directories match the given paths, pinot-cd.sh will display a list
+  of matches. Future work will focus on disambiguation.
+
+  If you have dbus-send installed, you may also want to set the following
+  aliases :
+  $ alias pinot-stats='dbus-send --session --print-reply --type=method_call \
+    --dest=de.berlios.Pinot /de/berlios/Pinot de.berlios.Pinot.GetStatistics'
+  $ alias pinot-stop='dbus-send --session --print-reply --type=method_call \
+    --dest=de.berlios.Pinot /de/berlios/Pinot de.berlios.Pinot.Stop'
+  The first will start the daemon by calling its GetStatistics method, while
+  the second alias will stop it by calling the Stop method.
+
+
+15. How to reset indexes
+
+
+  You may wish to reset one of the index and start from scratch. There
+  are several ways to do this, depending on which index it is.
+
+  If you want to reset My Web Pages, you can either :
+    * use Pinot to unindex every single document by selecting them all
+      and choosing Unindex in the Index menu
+    * or delete ~/.pinot/index/* while Pinot isn't running
+
+  If you want to reset My Documents, special considerations apply because
+  of the historical data maintained by the daemon. There are two ways to
+  proceed, and both require that the daemon be stopped.
+
+  The manual way is to delete the index with
+  $ rm ~/.pinot/daemon/*
+  and remove historical data with
+  $ sqlite3 ~/.pinot/history-daemon "delete from CrawlHistory; delete from CrawlSources; delete from ActionQueue;"
+
+  The automated way is to tell the daemon to reindex everything by launching
+  it with the "--reindex" option, ie
+  $ pinot-dbus-daemon --reindex
+
+
+16. Dependencies
+
+
+  The version numbers indicate the minimum version Pinot has been tested
+  with; older versions may or may not work.
+
+---------------------------------------------------------------
+Libraries and tools					Version
+---------------------------------------------------------------
+SQLite							3.3.1
+http://www.sqlite.org/
+
+xapian-core						1.0.4
+http://www.xapian.org/
+
+ zlib							1.2.0
+ http://www.gzip.org/zlib/
+
+curl (1)						7.13.1
+http://curl.haxx.se/
+- OR -
+neon (1)						0.24.7
+http://www.webdav.org/neon/
+
+Google SOAP API (2)	IndexSearch/Google/googleapi	beta2
+
+ gSOAP (2)						2.7.9e
+ http://www.cs.fsu.edu/~engelen/soap.html
+
+gtkmm							2.10
+http://www.gtkmm.org/
+
+libxml++						2.12.0
+http://libxmlplusplus.sourceforge.net/
+
+libtextcat						2.2
+http://software.wise-guys.nl/libtextcat/
+- OR - 
+libexttextcat						3.2
+http://cgit.freedesktop.org/libreoffice/libexttextcat/
+
+gmime (3)						2.4.0
+http://spruce.sourceforge.net/gmime
+
+boost (4)						1.32
+http://www.boost.org/
+
+D-Bus with GLib bindings				0.61
+http://www.freedesktop.org/wiki/Software/dbus
+
+shared-mime-info					0.17
+http://freedesktop.org/Software/shared-mime-info
+
+desktop-file-utils					0.10
+http://www.freedesktop.org/software/desktop-file-utils
+
+TagLib							1.4
+http://ktown.kde.org/~wheeler/taglib/
+
+libarchive (5)						2.6.2
+http://people.freebsd.org/~kientzle/libarchive/
+
+exiv2							0.21
+http://www.exiv2.org/
+
+chmlib (6)						0.40
+http://www.jedrea.com/chmlib/
+
+openssh-askpass (7)					4.3
+http://www.openssh.com/portable.html
+
+---------------------------------------------------------------
+External filter programs
+---------------------------------------------------------------
+unzip
+http://www.info-zip.org/pub/infozip/UnZip.html
+
+pdftotext
+http://www.foolabs.com/xpdf/
+http://poppler.freedesktop.org/
+
+antiword
+http://www.winfield.demon.nl/
+
+unrtf
+http://www.gnu.org/software/unrtf/unrtf.html
+
+rst2html
+http://docutils.sourceforge.net
+
+djvutxt							
+http://djvu.sourceforge.net/
+
+catdvi
+http://catdvi.sourceforge.net/
+
+catppt
+xls2csv
+http://www.wagner.pp.ru/~vitus/software/catdoc/
+
+---------------------------------------------------------------------
+Notes :
+(1) enabled with "./configure --with-http=neon|curl"
+(2) obsolete - enabled with "./configure --enable-soap=yes"
+(3) for gmime 2.0 support, edit configure.in
+(4) for building only
+    with boost > 1.48 and < 1.54, turning off memory pooling with "./configure --enable-mempool=no" may be preferable
+(5) experimental - enabled with "./configure --enable-libarchive=yes"
+(6) experimental - enabled with "./configure --enable-chmlib=yes"
+(7) experimental - required only if _SSH_TUNNEL is set
+---------------------------------------------------------------------
+

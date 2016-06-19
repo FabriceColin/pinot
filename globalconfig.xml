@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<pinot>
+  <!--
+  The cache element describes a cache provider.
+  Cache providers are listed when a result is selected and the View Cache
+   menuitem is clicked.
+  The location field should be a valid URL with one or more arguments.
+  Supported arguments are :
+    %url	the full URL, eg http://pinot.berlios.de/download.html
+    %url0	the URL without protocol, eg pinot.berlios.de/download.html
+  -->
+  <cache>
+    <name>Google</name>
+    <location>http://www.google.com/search?q=cache:%url0</location>
+    <protocols>http, https</protocols>
+  </cache>
+  <cache>
+    <name>WayBack Machine</name>
+    <location>http://web.archive.org/web/*/%url</location>
+    <protocols>http, https</protocols>
+  </cache>
+  <!--
+  MirrorDot is only useful for slashdotted sites
+  <cache>
+    <name>MirrorDot</name>
+    <location>http://www.mirrordot.com/find-mirror.html?%url</location>
+    <protocols>http, https</protocols>
+  </cache>
+  -->
+</pinot>

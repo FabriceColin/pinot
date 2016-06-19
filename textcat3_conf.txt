@@ -1,0 +1,66 @@
+#
+# libtextcat 3.0 config file
+# The following languages are supported by Xapian::Stem
+# Languages names MUST be in English
+#
+/usr/share/libtextcat/danish-cp1252.lm		danish-cp1252
+/usr/share/libtextcat/danish-ibm850.lm		danish-ibm850
+/usr/share/libtextcat/danish-iso8859_15.lm	danish-iso8859_15
+/usr/share/libtextcat/danish-utf16.lm		danish-utf16
+/usr/share/libtextcat/danish-utf8.lm		danish-utf8
+/usr/share/libtextcat/dutch_cp1252.lm		dutch-cp1252
+/usr/share/libtextcat/dutch_ibm850.lm		dutch-ibm850
+/usr/share/libtextcat/dutch_iso8859_15.lm	dutch-iso8859_15
+/usr/share/libtextcat/dutch_utf16.lm		dutch-utf16
+/usr/share/libtextcat/dutch_utf8.lm		dutch-utf8
+/usr/share/libtextcat/english-cp1252.lm		english-cp1252
+/usr/share/libtextcat/english-ibm850.lm		english-ibm850
+/usr/share/libtextcat/english-iso8859_15.lm	english-iso8859_15
+/usr/share/libtextcat/english-utf16.lm		english-utf16
+/usr/share/libtextcat/english-utf8.lm		english-utf8
+/usr/share/libtextcat/finnish-cp1252.lm		finnish-cp1252
+/usr/share/libtextcat/finnish-ibm850.lm		finnish-ibm850
+/usr/share/libtextcat/finnish-iso8859_1.lm	finnish-iso8859_1
+/usr/share/libtextcat/finnish-utf16.lm		finnish-utf16
+/usr/share/libtextcat/finnish-utf8.lm		finnish-utf8
+/usr/share/libtextcat/french-cp1252.lm		french-cp1252
+/usr/share/libtextcat/french-ibm850.lm		french-ibm850
+/usr/share/libtextcat/french-iso8859_15.lm	french-iso8859_15
+/usr/share/libtextcat/french-utf16.lm		french-utf16
+/usr/share/libtextcat/french-utf8.lm		french-utf8
+/usr/share/libtextcat/german-cp1252.lm		german-cp1252
+/usr/share/libtextcat/german-ibm850.lm		german-ibm850
+/usr/share/libtextcat/german-iso8859_15.lm	german-iso8859_15
+/usr/share/libtextcat/german-utf16.lm		german-utf16
+/usr/share/libtextcat/german-utf8.lm		german-utf8
+/usr/share/libtextcat/italian-cp1252.lm		italian-cp1252
+/usr/share/libtextcat/italian-ibm850.lm		italian-ibm850
+/usr/share/libtextcat/italian-iso8859_15.lm	italian-iso8859_15
+/usr/share/libtextcat/italian-utf16.lm		italian-utf16
+/usr/share/libtextcat/italian-utf8.lm		italian-utf8
+/usr/share/libtextcat/norwegian-cp1252.lm	norwegian-cp1252
+/usr/share/libtextcat/norwegian-ibm850.lm	norwegian-ibm850
+/usr/share/libtextcat/norwegian-iso8859_1.lm	norwegian-iso8859_1
+/usr/share/libtextcat/norwegian-utf16.lm	norwegian-utf16
+/usr/share/libtextcat/norwegian-utf8.lm		norwegian-utf8
+/usr/share/libtextcat/portuguese-cp1252.lm	portuguese-cp1252
+/usr/share/libtextcat/portuguese-ibm850.lm	portuguese-ibm850
+/usr/share/libtextcat/portuguese-iso8859_1.lm	portuguese-iso8859_1
+/usr/share/libtextcat/portuguese-utf16.lm	portuguese-utf16
+/usr/share/libtextcat/portuguese-utf8.lm	portuguese-utf8
+/usr/share/libtextcat/russian-cp1251.lm		russian-cp1251
+/usr/share/libtextcat/russian-ibm866.lm		russian-ibm866
+/usr/share/libtextcat/russian-iso8859_5.lm	russian-iso8859_5
+/usr/share/libtextcat/russian-koi8_r.lm		russian-koi8_r
+/usr/share/libtextcat/russian-utf16.lm		russian-utf16
+/usr/share/libtextcat/russian-utf8.lm		russian-utf8
+/usr/share/libtextcat/spanish-cp1252.lm		spanish-cp1252
+/usr/share/libtextcat/spanish-ibm850.lm		spanish-ibm850
+/usr/share/libtextcat/spanish-iso8859_15.lm	spanish-iso8859_15
+/usr/share/libtextcat/spanish-utf16.lm		spanish-utf16
+/usr/share/libtextcat/spanish-utf8.lm		spanish-utf8
+/usr/share/libtextcat/swedish-cp1252.lm		swedish-cp1252
+/usr/share/libtextcat/swedish-ibm850.lm		swedish-ibm850
+/usr/share/libtextcat/swedish-iso8859_1.lm	swedish-iso8859_1
+/usr/share/libtextcat/swedish-utf16.lm		swedish-utf16
+/usr/share/libtextcat/swedish-utf8.lm		swedish-utf8

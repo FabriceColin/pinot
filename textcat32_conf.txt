@@ -1,0 +1,21 @@
+#
+# libexttextcat 3.2 config file
+# The following languages are supported by Xapian::Stem
+# Languages names MUST be in English
+#
+/usr/share/libexttextcat/da.lm		danish
+/usr/share/libexttextcat/nl.lm		dutch
+/usr/share/libexttextcat/en.lm		english
+/usr/share/libexttextcat/fi.lm		finnish
+/usr/share/libexttextcat/fr.lm		french
+/usr/share/libexttextcat/de.lm		german
+/usr/share/libexttextcat/hu.lm		hungarian
+/usr/share/libexttextcat/it.lm		italian
+/usr/share/libexttextcat/nb.lm		norwegian-bokmal
+/usr/share/libexttextcat/nn.lm		norwegian-nynorsk
+/usr/share/libexttextcat/pt.lm		portuguese
+/usr/share/libexttextcat/ro.lm		romanian
+/usr/share/libexttextcat/ru.lm		russian
+/usr/share/libexttextcat/es.lm		spanish
+/usr/share/libexttextcat/sv.lm		swedish
+/usr/share/libexttextcat/tr.lm		turkish

@@ -1,0 +1,503 @@
+# generated 2005/12/14 20:48:47 SGT by fabrice@amra.dyndns.org.(none)
+# using glademm V2.6.0
+
+AC_PREREQ(2.50)
+AC_INIT(pinot, 1.09, [fabrice.colin@gmail.com])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_HEADER_STDC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AM_PROG_LIBTOOL
+
+dnl An index with a version older than this should be upgraded
+AC_DEFINE_UNQUOTED(PINOT_INDEX_MIN_VERSION,"0.92",
+    [Minimum index version])
+
+dnl gettext support
+GETTEXT_PACKAGE=pinot
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
+		[the gettext domain])
+
+dnl Add the languages which your application supports here.
+ALL_LINGUAS="cs de es fr he it ja nl pt pt_BR ru sv zh_CN zh_TW"
+#AM_GNU_GETTEXT([external]) 
+AM_GLIB_GNU_GETTEXT
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+fi
+dnl And set PREFIX in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PREFIX, "${ac_default_prefix}",
+		[Define to the package prefix.])
+else
+  AC_DEFINE_UNQUOTED(PREFIX, "${prefix}",
+		[Define to the package prefix.])
+fi
+
+AS_AC_EXPAND(DATADIR, $datadir)
+AS_AC_EXPAND(BINDIR, $bindir)
+
+dnl Location of system directories
+AS_AC_EXPAND(SYSCONFDIR, $sysconfdir)
+AC_DEFINE_UNQUOTED(SYSCONFDIR, "$SYSCONFDIR",
+		[Define to the system configuration directory.])
+AS_AC_EXPAND(LIBDIR, $libdir)
+AC_DEFINE_UNQUOTED(LIBDIR, "$LIBDIR",
+		[Define to the libraries directory.])
+
+dnl Set DBUS_SERVICES_DIR in de.berlios.Pinot.service.
+DBUS_SERVICES_DIR="$DATADIR/dbus-1/services"
+AC_SUBST(BINDIR)
+AC_SUBST(DBUS_SERVICES_DIR)
+AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR",
+		[Define to the DBUS services directory.])
+
+AC_LANG_CPLUSPLUS
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+AC_PATH_PROG(DESKTOP_INSTALL, desktop-file-install, no)
+
+dnl DEBUG mode
+CXXFLAGS="-fPIC $CXXFLAGS"
+AC_MSG_CHECKING(whether to enable DEBUG mode)
+AC_ARG_ENABLE(debug,
+   [AS_HELP_STRING([--enable-debug], [enable debug [default=no]])],
+   ,[enable_debug=no])
+if test "x$enable_debug" = "xyes"; then
+   if test "x$GCC" = "xyes"; then
+      CXXFLAGS="$CXXFLAGS -ggdb3 -O0 -DDEBUG"
+   fi
+else
+   CXXFLAGS="$CXXFLAGS -DNDEBUG"
+   enable_debug="no"
+fi
+AC_MSG_RESULT($enable_debug)
+
+dnl Set compiler specific flags
+VISIB_CFLAGS=""
+if test "x$GCC" = "xyes"; then
+gxx_version=`$CXX --version 2>&1 | head -1 | $SED 's/^[[^ ]]* (GCC) //;s/ .*//'`
+case $gxx_version in
+4.*)
+VISIB_CFLAGS="-fvisibility=hidden"
+;;
+*)
+dnl Other versions
+;;
+esac
+fi
+
+dnl DBus
+AC_MSG_CHECKING(whether to enable DBus support)
+AC_ARG_ENABLE(dbus,
+   [AS_HELP_STRING([--enable-dbus], [enable DBus support [default=yes]])],
+   ,[enable_dbus=yes])
+if test "x$enable_dbus" != "xyes"; then
+   DBUS_CFLAGS=""
+   DBUS_LIBS=""
+   enable_dbus=no
+fi
+AC_MSG_RESULT($enable_dbus)
+AM_CONDITIONAL(HAVE_DBUS, false)
+if test "x$enable_dbus" = "xyes"; then
+   PKG_CHECK_MODULES(DBUS, dbus-glib-1)
+   DBUS_NUM_VERSION=`pkg-config --modversion dbus-1 | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+   AC_DEFINE_UNQUOTED(DBUS_NUM_VERSION,$DBUS_NUM_VERSION, [DBus version number])
+   AM_CONDITIONAL(HAVE_DBUS, true)
+fi
+AC_SUBST(DBUS_CFLAGS)
+AC_SUBST(DBUS_LIBS)
+
+dnl Neon or Curl ?
+AC_MSG_CHECKING(which HTTP library to use)
+AC_ARG_WITH(http,
+   [AS_HELP_STRING([--with-http=@<:@neon|curl@:>@], [which HTTP library to use [default=curl]])])
+httplibrary=$with_http
+if test "x$httplibrary" = "x"; then
+   httplibrary="curl"
+fi
+AC_MSG_RESULT($httplibrary)
+
+testforssl="no"
+case "$httplibrary" in
+neon)
+PKG_CHECK_MODULES(NEON, neon >= 0.24 )
+testforssl="yes"
+EXTRA_HTTP_CFLAGS="-DUSE_NEON -DUSE_SSL"
+HTTP_DOWNLOADER="NeonDownloader"
+;;
+curl)
+AC_PATH_PROG(CURL_CONFIG, curl-config, no)
+if test "$CURL_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find curl-config in $PATH.])
+   exit 1
+fi
+CURL_CFLAGS=`$CURL_CONFIG --cflags`
+CURL_LIBS=`$CURL_CONFIG --libs`
+AC_MSG_CHECKING(whether curl needs OpenSSL)
+CURL_SSL_FEATURE=`$CURL_CONFIG --features | grep -i SSL`
+if test "x$CURL_SSL_FEATURE" = "x"; then
+   EXTRA_HTTP_CFLAGS="-DUSE_CURL"
+   AC_MSG_RESULT(no)
+else
+   EXTRA_HTTP_CFLAGS="-DUSE_CURL -DUSE_SSL"
+   AC_MSG_RESULT(yes)
+   testforssl="yes"
+fi
+HTTP_DOWNLOADER="CurlDownloader"
+;;
+esac
+AC_SUBST(HTTP_DOWNLOADER)
+
+dnl OpenSSL
+dnl If no path is provided, fall back on pkg-config
+if test "$testforssl" = "yes" ; then
+   AC_ARG_WITH(ssl,
+   [AS_HELP_STRING([--with-ssl=PATH], [where to look for OpenSSL [default=/usr/local/ssl]])])
+   sslpath=$with_ssl
+   dnl We want a prefix, not yes or no
+   case "$sslpath" in
+   yes)
+   sslpath="/usr/local/ssl"
+   ;;
+   no)
+   sslpath="/usr/local/ssl"
+   ;;
+   esac
+
+   if test "x$sslpath" = "x"; then
+      PKG_CHECK_MODULES(SSL, openssl >= 0.9.7 )
+   else
+      SSL_CFLAGS="-I$sslpath/include -I$sslpath/include/openssl"
+      SSL_LIBS="-L$sslpath/lib -lssl -lcrypto"
+   fi
+fi
+
+dnl Xapian
+AC_PATH_PROG(XAPIAN_CONFIG, xapian-config, no)
+if test "$XAPIAN_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find xapian-config in $PATH.])
+   exit 1
+fi
+XAPIAN_CFLAGS=`$XAPIAN_CONFIG --cxxflags`
+XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
+XAPIAN_NUM_VERSION=`xapian-config --version | $SED -e "s/xapian-config - xapian-core //g" | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+AC_DEFINE_UNQUOTED(XAPIAN_NUM_VERSION,$XAPIAN_NUM_VERSION,
+    [Xapian version number])
+AC_MSG_CHECKING(for Xapian >= 1.0.4)
+if test $XAPIAN_NUM_VERSION -gt 1000002; then
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+   AC_MSG_ERROR([You need at least Xapian 1.0.4])
+   exit 1
+fi
+
+dnl inotify
+AM_CONDITIONAL(HAVE_LINUX_INOTIFY, false)
+AC_MSG_CHECKING(whether to enable libnotify support)
+AC_ARG_ENABLE(libnotify,
+   [AS_HELP_STRING([--enable-libnotify], [enable libnotify support [default=no]])],
+   ,[enable_libnotify=no])
+if test "x$enable_libnotify" != "xyes"; then
+   enable_libnotify="no"
+fi
+AC_MSG_RESULT($enable_libnotify)
+if test "x$enable_libnotify" = "xno"; then
+   AC_CHECK_HEADERS([sys/inotify.h],
+      [AM_CONDITIONAL(HAVE_LINUX_INOTIFY, true)
+      ])
+    NOTIFY_CFLAGS=""
+    NOTIFY_LIBS=""
+else
+   PKG_CHECK_MODULES(NOTIFY, libnotify >= 0.2.2 )
+fi
+
+dnl boost
+BOOST_LIBS=""
+AM_CONDITIONAL(HAVE_BOOST_SPIRIT, false)
+AC_CHECK_HEADERS([boost/spirit/core.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],
+   [AC_CHECK_HEADERS([boost/spirit.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)])
+   ])
+AC_MSG_CHECKING(whether to enable the memory pool)
+AC_ARG_ENABLE(mempool,
+   [AS_HELP_STRING([--enable-mempool], [enable memory pool [default=no]])],
+   ,[enable_mempool=no])
+if test "x$enable_mempool" != "xyes"; then
+   enable_mempool="no"
+fi
+AC_MSG_RESULT($enable_mempool)
+if test "x$enable_mempool" = "xyes"; then
+   AC_CHECK_HEADERS([boost/pool/poolfwd.hpp])
+   BOOST_LIBS="-lboost_system"
+fi
+
+dnl Allocators
+AC_CHECK_HEADERS([ext/malloc_allocator.h])
+
+dnl TextCat
+AC_CHECK_HEADERS([textcat.h],[is_libexttextcat=no],
+   [AC_CHECK_HEADERS([libtextcat/textcat.h],[is_libexttextcat=no],
+    AC_CHECK_HEADERS([libexttextcat/textcat.h],[is_libexttextcat=yes],[is_libexttextcat=no]))
+   ])
+if test "x$is_libexttextcat" != "xyes"; then
+   is_libexttextcat="no"
+fi
+if test "x$is_libexttextcat" = "xno"; then
+   dnl libtextcat 2.* has textcat_Cat()
+   AC_CHECK_LIB(textcat, textcat_Cat,
+      [AM_CONDITIONAL(HAVE_TEXTCAT_CAT, true)],
+      [AM_CONDITIONAL(HAVE_TEXTCAT_CAT, false)]
+      )
+   TEXTCAT_LIBS="-ltextcat"
+else
+   dnl libexttextcat has textcat_Classify()
+   AM_CONDITIONAL(HAVE_TEXTCAT_CAT, false)
+   PKG_CHECK_MODULES(TEXTCAT, libexttextcat)
+fi
+
+dnl libarchive
+AC_MSG_CHECKING(whether to enable the libarchive filter)
+AC_ARG_ENABLE(libarchive,
+   [AS_HELP_STRING([--enable-libarchive], [enable the libarchive filter [default=no]])],
+   ,[enable_libarchive=no])
+if test "x$enable_libarchive" != "xyes"; then
+   enable_libarchive=no
+   AM_CONDITIONAL(HAVE_LIBARCHIVE, false)
+else
+   AM_CONDITIONAL(HAVE_LIBARCHIVE, true)
+fi
+AC_MSG_RESULT($enable_libarchive)
+
+dnl chmlib
+AC_MSG_CHECKING(whether to enable the chmlib filter)
+AC_ARG_ENABLE(chmlib,
+   [AS_HELP_STRING([--enable-chmlib], [enable the chmlib filter [default=no]])],
+   ,[enable_chmlib=no])
+if test "x$enable_chmlib" != "xyes"; then
+   enable_chmlib=no
+   AM_CONDITIONAL(HAVE_CHMLIB, false)
+else
+   AM_CONDITIONAL(HAVE_CHMLIB, true)
+fi
+AC_MSG_RESULT($enable_chmlib)
+
+dnl pthreads
+pthreadlib=""
+AC_SUBST(PTHREAD_LIBS)
+AC_MSG_CHECKING(if pthreads is available)
+ORIG_LIBS="$LIBS"
+for candidatelib in '' '-pthread' '-lc_r' '-lthr'; do
+   if test -z "$use_posix_mutex" ; then
+      LIBS="$candidatelib $ORIG_LIBS"
+      AC_TRY_LINK([#include <pthread.h>],
+         [pthread_mutex_t lck;
+         pthread_mutex_init(&lck, 0);
+         pthread_mutex_lock(&lck);
+         pthread_mutex_unlock(&lck);
+         pthread_mutex_destroy(&lck);],
+         [PTHREAD_LIBS="$candidatelib"
+         pthreadlib=candidatelib]
+      )
+   fi
+done
+LIBS="$ORIG_LIBS"
+if test "$pthreadlib" ; then
+   if test -z "$PTHREAD_LIBS" ; then
+      AC_MSG_RESULT(yes)
+   else
+      AC_MSG_RESULT([yes with $PTHREAD_LIBS])
+   fi
+else
+   AC_MSG_RESULT(no)
+   AC_CHECK_LIB(pthreadGCE2, pthread_mutex_lock,
+      [PTHREAD_CFLAGS="-Ipthread"
+       PTHREAD_LIBS="-lpthreadGCE2"])
+
+   if test -z "$PTHREAD_LIBS" ; then
+      AC_MSG_ERROR([Can't find pthreads.])
+      exit 1
+   fi
+fi
+
+dnl dlopen() in libdl or libc ?
+AC_SUBST(DL_LIBS)
+AC_CHECK_LIB(dl, dlopen,
+   [DL_LIBS="-ldl"],
+   [AC_CHECK_LIB(c, dlopen,
+      [DL_LIBS=""],
+      [AC_MSG_ERROR([Can't find the library providing dlopen])]
+   ])
+)
+
+dnl Check whether we can use GIO instead of xdgmime
+AM_CONDITIONAL(HAVE_GIO_MIME, false)
+AC_MSG_CHECKING([if gio can sniff png])
+AC_ARG_ENABLE(gio,
+   [AS_HELP_STRING([--enable-gio], [enable gio [default=test]])],
+   ,[enable_gio=test])
+if test "x$enable_gio" = "xyes"; then
+   gio_can_sniff=yes
+   AM_CONDITIONAL(HAVE_GIO_MIME, true)
+else if test "x$enable_gio" = "xno"; then
+   gio_can_sniff=no
+   AM_CONDITIONAL(HAVE_GIO_MIME, false)
+else
+   dnl This test is from gtk's configure.in, with some modifications
+   gtk_save_LIBS="$LIBS"
+   gtk_save_CFLAGS="$CFLAGS"
+   gtk_save_CXXFLAGS="$CXXFLAGS"
+   LIBS="`$PKG_CONFIG --libs gio-2.0`"
+   CFLAGS="`$PKG_CONFIG --cflags gio-2.0`"
+   CXXFLAGS="`$PKG_CONFIG --cflags gio-2.0`"
+   AC_RUN_IFELSE([AC_LANG_SOURCE([[
+  #include <string.h>
+  #include <gio/gio.h>
+  static const gsize data_size = 159;
+  static const guint8 data[] = 
+  {
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 
+    0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde, 0x00, 0x00, 0x00, 
+    0x01, 0x73, 0x52, 0x47, 0x42, 0x00, 0xae, 0xce, 0x1c, 0xe9, 0x00, 0x00, 
+    0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0b, 0x13, 0x00, 0x00, 
+    0x0b, 0x13, 0x01, 0x00, 0x9a, 0x9c, 0x18, 0x00, 0x00, 0x00, 0x07, 0x74, 
+    0x49, 0x4d, 0x45, 0x07, 0xd8, 0x07, 0x0f, 0x10, 0x08, 0x15, 0x61, 0xd8, 
+    0x35, 0x37, 0x00, 0x00, 0x00, 0x19, 0x74, 0x45, 0x58, 0x74, 0x43, 0x6f, 
+    0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x00, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 
+    0x64, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x47, 0x49, 0x4d, 0x50, 0x57, 
+    0x81, 0x0e, 0x17, 0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 
+    0xd7, 0x63, 0xf8, 0xff, 0xff, 0x3f, 0x00, 0x05, 0xfe, 0x02, 0xfe, 0xdc, 
+    0xcc, 0x59, 0xe7, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 
+    0x42, 0x60, 0x82
+  };
+  int
+  main (int argc, char **argv)
+  {
+    char *content_type;
+    char *mime_type;
+
+    g_type_init();
+
+    content_type = g_content_type_guess (NULL, data, data_size, NULL);  
+    mime_type = g_content_type_get_mime_type (content_type);
+    return !!strcmp (mime_type, "image/png");
+  }]])],
+  [gio_can_sniff=yes
+   AM_CONDITIONAL(HAVE_GIO_MIME, true)],
+  [gio_can_sniff=no])
+   LIBS="$gtk_save_LIBS"
+   CFLAGS="$gtk_save_CFLAGS"
+   CXXFLAGS="$gtk_save_CXXFLAGS"
+fi
+fi
+AC_MSG_RESULT($gio_can_sniff)
+
+dnl Other libraries
+MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64"
+MISC_LIBS="$NOTIFY_LIBS $PTHREAD_LIBS $DL_LIBS $BOOST_LIBS"
+AC_SUBST(MISC_CFLAGS)
+AC_SUBST(MISC_LIBS)
+AC_CHECK_HEADERS([sys/vfs.h sys/statfs.h sys/mount.h sys/statvfs.h attr/xattr.h dlfcn.h regex.h fnmatch.h pwd.h])
+PKG_CHECK_MODULES(MIMEINFO, shared-mime-info )
+SHARED_MIME_INFO_PREFIX=`pkg-config --variable=prefix shared-mime-info`
+AC_SUBST(SHARED_MIME_INFO_PREFIX)
+AC_DEFINE_UNQUOTED(SHARED_MIME_INFO_PREFIX,"$SHARED_MIME_INFO_PREFIX",
+    [the shared-mime-info prefix])
+PKG_CHECK_MODULES(EXIV2, exiv2 >= 0.18 )
+AC_SUBST(EXIV2_CFLAGS)
+AC_SUBST(EXIV2_LIBS)
+PKG_CHECK_MODULES(TAGLIB, taglib >= 1.4 )
+AC_SUBST(TAGLIB_CFLAGS)
+AC_SUBST(TAGLIB_LIBS)
+PKG_CHECK_MODULES(SQL, sqlite3 >= 3.1 )
+AC_SUBST(SQL_CFLAGS)
+AC_SUBST(SQL_LIBS)
+HTTP_CFLAGS="$NEON_CFLAGS $CURL_CFLAGS $SSL_CFLAGS $EXTRA_HTTP_CFLAGS"
+HTTP_LIBS="$NEON_LIBS $CURL_LIBS $SSL_LIBS"
+AC_SUBST(HTTP_CFLAGS)
+AC_SUBST(HTTP_LIBS)
+PKG_CHECK_MODULES(GMIME, gmime-2.4 >= 2.0,
+    [],[PKG_CHECK_MODULES(GMIME, gmime-2.6 >= 2.5 )] )
+AC_SUBST(GMIME_CFLAGS)
+AC_SUBST(GMIME_LIBS)
+PKG_CHECK_MODULES(XML, libxml++-2.6 >= 2.12 )
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(XML_LIBS)
+INDEX_CFLAGS="$XAPIAN_CFLAGS"
+INDEX_LIBS="$XAPIAN_LIBS $TEXTCAT_LIBS"
+AC_SUBST(INDEX_CFLAGS)
+AC_SUBST(INDEX_LIBS)
+PKG_CHECK_MODULES(SIGCPP, sigc++-2.0 >= 2.0 )
+AC_SUBST(SIGCPP_CFLAGS)
+AC_SUBST(SIGCPP_LIBS)
+PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.6 )
+AC_SUBST(GTHREAD_CFLAGS)
+AC_SUBST(GTHREAD_LIBS)
+PKG_CHECK_MODULES(GLIBMM, glibmm-2.4 >= 2.6 )
+AC_SUBST(GLIBMM_CFLAGS)
+AC_SUBST(GLIBMM_LIBS)
+dnl GTKmm version
+AC_MSG_CHECKING(whether to target gtkmm 3)
+AC_ARG_ENABLE(gtkmm3,
+   [AS_HELP_STRING([--enable-gtkmm3], [target GTKmm 3 [default=no]])],
+   ,[enable_gtkmm3=no])
+if test "x$enable_gtkmm3" = "xyes"; then
+   AC_MSG_RESULT("yes")
+   PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.0 )
+else
+   AC_MSG_RESULT("no")
+   PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 >= 2.10 )
+fi
+AC_SUBST(GTKMM_CFLAGS)
+AC_SUBST(GTKMM_LIBS)
+if test "$gio_can_sniff" = "yes" ; then
+PKG_CHECK_MODULES(GIO, gio-2.0)
+GLIBMM_CFLAGS=" -DUSE_GIO $GIO_CFLAGS $GLIBMM_CFLAGS"
+GLIBMM_LIBS="$GIO_LIBS $GLIBMM_LIBS"
+GTKMM_CFLAGS=" -DUSE_GIO $GIO_CFLAGS $GTKMM_CFLAGS"
+GTKMM_LIBS="$GIO_LIBS $GTKMM_LIBS"
+fi
+
+dnl Check for specific functions
+AC_CHECK_FUNCS(fork)
+AC_CHECK_FUNCS(getloadavg)
+AC_CHECK_FUNCS(gettimeofday)
+AC_CHECK_FUNCS(gmtime_r)
+AC_CHECK_FUNCS(kill)
+AC_CHECK_FUNCS(localtime_r)
+AC_CHECK_FUNCS(lstat)
+AC_CHECK_FUNCS(madvise)
+AC_CHECK_FUNCS(mallinfo)
+AC_CHECK_FUNCS(malloc_trim)
+AC_CHECK_FUNCS(mkstemp)
+AC_CHECK_FUNCS(mmap)
+AC_CHECK_FUNCS(pipe)
+AC_CHECK_FUNCS(setrlimit)
+AC_CHECK_FUNCS(sigaction)
+AC_CHECK_FUNCS(socketpair)
+AC_CHECK_FUNCS(statfs)
+AC_CHECK_FUNCS(statvfs)
+AC_CHECK_FUNCS(strptime)
+AC_CHECK_FUNCS(sysconf)
+AC_CHECK_FUNCS(sysctlbyname)
+AC_CHECK_FUNCS(timegm)
+AC_CHECK_FUNCS(vsnprintf)
+
+AC_OUTPUT( pinot.spec Core/de.berlios.Pinot.service Makefile \
+	Utils/Makefile Tokenize/Makefile SQL/Makefile po/Makefile.in Collect/Makefile \
+	IndexSearch/Xapian/Makefile IndexSearch/Makefile \
+	Monitor/Makefile Core/Makefile UI/GTK2/src/Makefile )
+

@@ -1,0 +1,1012 @@
+# Czech translation for pinot
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the pinot package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pinot 1.09\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-09 21:05+0200\n"
+"PO-Revision-Date: 2012-10-24 21:40+0000\n"
+"Last-Translator: Zbyněk Schwarz <Unknown>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Localize language names
+#: Core/pinot-dbus-daemon.cpp:552 UI/GTK2/src/pinot.cc:310
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: Core/pinot-dbus-daemon.cpp:553 UI/GTK2/src/pinot.cc:311
+msgid "Danish"
+msgstr "Dánština"
+
+#: Core/pinot-dbus-daemon.cpp:554 UI/GTK2/src/pinot.cc:312
+msgid "Dutch"
+msgstr "Holandština"
+
+#: Core/pinot-dbus-daemon.cpp:555 UI/GTK2/src/pinot.cc:313
+msgid "English"
+msgstr "Angličtina"
+
+#: Core/pinot-dbus-daemon.cpp:556 UI/GTK2/src/pinot.cc:314
+msgid "Finnish"
+msgstr "Finština"
+
+#: Core/pinot-dbus-daemon.cpp:557 UI/GTK2/src/pinot.cc:315
+msgid "French"
+msgstr "Francouzština"
+
+#: Core/pinot-dbus-daemon.cpp:558 UI/GTK2/src/pinot.cc:316
+msgid "German"
+msgstr "Němčina"
+
+#: Core/pinot-dbus-daemon.cpp:559 UI/GTK2/src/pinot.cc:317
+msgid "Hungarian"
+msgstr "Maďarština"
+
+#: Core/pinot-dbus-daemon.cpp:560 UI/GTK2/src/pinot.cc:318
+msgid "Italian"
+msgstr "Italština"
+
+#: Core/pinot-dbus-daemon.cpp:561 UI/GTK2/src/pinot.cc:319
+msgid "Norwegian"
+msgstr "Norština"
+
+#: Core/pinot-dbus-daemon.cpp:562 UI/GTK2/src/pinot.cc:320
+msgid "Portuguese"
+msgstr "Portugalština"
+
+#: Core/pinot-dbus-daemon.cpp:563 UI/GTK2/src/pinot.cc:321
+msgid "Romanian"
+msgstr "Rumunština"
+
+#: Core/pinot-dbus-daemon.cpp:564 UI/GTK2/src/pinot.cc:322
+msgid "Russian"
+msgstr "Ruština"
+
+#: Core/pinot-dbus-daemon.cpp:565 UI/GTK2/src/pinot.cc:323
+msgid "Spanish"
+msgstr "Španělština"
+
+#: Core/pinot-dbus-daemon.cpp:566 UI/GTK2/src/pinot.cc:324
+msgid "Swedish"
+msgstr "Švédština"
+
+#: Core/pinot-dbus-daemon.cpp:567 UI/GTK2/src/pinot.cc:325
+msgid "Turkish"
+msgstr "Turečtina"
+
+#. Internal indices
+#. Apply this label
+#. Is this an internal index ?
+#: Core/PinotSettings.cpp:436 Core/PinotSettings.cpp:1727
+#: Core/WorkerThreads.cpp:525 UI/GTK2/src/mainWindow.cc:1008
+#: UI/GTK2/src/mainWindow.cc:1276 UI/GTK2/src/mainWindow.cc:1543
+#: UI/GTK2/src/mainWindow.cc:1705 UI/GTK2/src/mainWindow.cc:1708
+#: UI/GTK2/src/mainWindow.cc:1812 UI/GTK2/src/mainWindow.cc:1846
+#: UI/GTK2/src/mainWindow.cc:1871 UI/GTK2/src/mainWindow.cc:2600
+#: UI/GTK2/src/statisticsDialog.cc:157
+msgid "My Web Pages"
+msgstr "Mé internetové stránky"
+
+#. Spawn new threads
+#: Core/PinotSettings.cpp:437 Core/PinotSettings.cpp:1728
+#: Core/WorkerThreads.cpp:535 UI/GTK2/src/mainWindow.cc:1271
+#: UI/GTK2/src/mainWindow.cc:1533 UI/GTK2/src/mainWindow.cc:1547
+#: UI/GTK2/src/mainWindow.cc:1716 UI/GTK2/src/mainWindow.cc:1719
+#: UI/GTK2/src/mainWindow.cc:2604 UI/GTK2/src/statisticsDialog.cc:163
+msgid "My Documents"
+msgstr "Mé dokumenty"
+
+#. Add default labels
+#: Core/PinotSettings.cpp:442
+msgid "Important"
+msgstr "Důležité"
+
+#: Core/PinotSettings.cpp:443
+msgid "New"
+msgstr "Nové"
+
+#: Core/PinotSettings.cpp:444
+msgid "Personal"
+msgstr "Osobní"
+
+#: Core/PinotSettings.cpp:466
+msgid "Me"
+msgstr "Já"
+
+#: Core/PinotSettings.cpp:474
+msgid "Latest First"
+msgstr "Nejnovější jako první"
+
+#: Core/PinotSettings.cpp:477
+msgid "Home Stuff"
+msgstr "Domácí položky"
+
+#: Core/PinotSettings.cpp:478
+msgid "With Label New"
+msgstr "Se štítkem Nový"
+
+#: Core/PinotSettings.cpp:479
+msgid "Have CJKV"
+msgstr "Má CJKV"
+
+#: Core/PinotSettings.cpp:480
+msgid "In English"
+msgstr "v angličtině"
+
+#: Core/PinotSettings.cpp:481
+msgid "10kb And Smaller"
+msgstr "10kb a menší"
+
+#: Core/PinotSettings.cpp:526
+msgid "Unclassified"
+msgstr "Nezařazeno"
+
+#: Core/WorkerThread.cpp:85
+msgid "Index error"
+msgstr "Chyba indexu"
+
+#: Core/WorkerThread.cpp:87
+msgid "Couldn't index document"
+msgstr "Nelze indexovat dokument"
+
+#: Core/WorkerThread.cpp:89
+msgid "Couldn't update document"
+msgstr "Nelze aktualizovat dokument"
+
+#: Core/WorkerThread.cpp:91
+msgid "Couldn't unindex document(s)"
+msgstr "Nelze zrušit indexaci dokumentů"
+
+#: Core/WorkerThread.cpp:93
+msgid "Couldn't run query on search engine"
+msgstr "Nelze spustit dotaz ve vyhledávači"
+
+#: Core/WorkerThread.cpp:95
+msgid "Couldn't get history for search engine"
+msgstr "Nelze získat historii vyhledávače"
+
+#: Core/WorkerThread.cpp:97
+msgid "Couldn't retrieve document"
+msgstr "Nelze získat dokument"
+
+#: Core/WorkerThread.cpp:99
+msgid "File monitor error"
+msgstr "Chyba sledování souboru"
+
+#: Core/WorkerThread.cpp:101
+msgid "Couldn't open directory"
+msgstr "Nelze otevřít adresář"
+
+#: Core/WorkerThread.cpp:103
+msgid "Index doesn't exist"
+msgstr "Index neexistuje"
+
+#: Core/WorkerThread.cpp:105
+msgid "Couldn't create search engine"
+msgstr "Nelze vytvořit vyhledávač"
+
+#: Core/WorkerThread.cpp:107
+msgid "Cannot index document type"
+msgstr "Nelze indexovat typ dokumentu"
+
+#: Core/WorkerThread.cpp:109
+msgid "No downloader for this protocol"
+msgstr "Pro tento protokol neexistuje žádný stahovač"
+
+#: Core/WorkerThread.cpp:111
+msgid "Robots META tag forbids indexing"
+msgstr "Značka META robotům zabraňuje v indexaci"
+
+#: Core/WorkerThread.cpp:113
+msgid "No monitoring handler"
+msgstr "Žádná obslužná rutina sledování"
+
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
+#: UI/GTK2/src/statisticsDialog.cc:263
+msgid "Unknown error"
+msgstr "Neznámá chyba"
+
+#: Core/WorkerThreads.cpp:82
+msgid "Indexing was stopped"
+msgstr "Indexace byla zastavena"
+
+#: Core/WorkerThreads.cpp:95
+msgid "Can't index mail here"
+msgstr "Zde nelze indexovat poštu"
+
+#: Core/WorkerThreads.cpp:116 Core/WorkerThreads.cpp:253
+msgid "is already being indexed"
+msgstr "Již dochází k indexaci"
+
+#: Core/WorkerThreads.cpp:126
+msgid "is blacklisted"
+msgstr "je v seznamu zakázaných"
+
+#: Core/WorkerThreads.cpp:488
+msgid "No title"
+msgstr "Bez názvu"
+
+#: UI/GTK2/src/EnginesTree.cc:76 UI/GTK2/src/statisticsDialog.cc:171
+msgid "Search Engines"
+msgstr "Vyhledávače"
+
+#: UI/GTK2/src/EnginesTree.cc:286
+msgid "Current User"
+msgstr "Současný uživatel"
+
+#: UI/GTK2/src/indexDialog.cc:122
+msgid "Served by"
+msgstr "Hostováno"
+
+#: UI/GTK2/src/indexDialog.cc:125 UI/GTK2/src/indexDialog.cc:131
+msgid "Local"
+msgstr "Místní"
+
+#: UI/GTK2/src/indexDialog.cc:298
+msgid "Index location"
+msgstr "Indexované umístění"
+
+#: UI/GTK2/src/indexDialog_glade.cc:64 UI/GTK2/src/queryDialog_glade.cc:67
+msgid "Name:"
+msgstr "Název:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:66
+msgid "..."
+msgstr "..."
+
+#: UI/GTK2/src/indexDialog_glade.cc:69 UI/GTK2/src/prefsWindow_glade.cc:128
+msgid "Type:"
+msgstr "Typ:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:70 UI/GTK2/src/importDialog_glade.cc:65
+msgid "Location:"
+msgstr "Umístění:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:71 UI/GTK2/src/prefsWindow_glade.cc:129
+msgid "Port:"
+msgstr "Port:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:83 UI/GTK2/src/prefsWindow_glade.cc:125
+msgid "Address:"
+msgstr "Adresa:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:218
+msgid "External index"
+msgstr "Externí index"
+
+#: UI/GTK2/src/importDialog.cc:106 UI/GTK2/src/importDialog.cc:108
+#: UI/GTK2/src/queryDialog.cc:168 UI/GTK2/src/queryDialog.cc:170
+#: UI/GTK2/src/queryDialog.cc:192 UI/GTK2/src/queryDialog.cc:194
+msgid "None"
+msgstr "Žádné"
+
+#: UI/GTK2/src/importDialog_glade.cc:66
+#: UI/GTK2/src/propertiesDialog_glade.cc:63
+msgid "Title:"
+msgstr "Název:"
+
+#: UI/GTK2/src/importDialog_glade.cc:69
+msgid "Apply label:"
+msgstr "Použít ětítek:"
+
+#: UI/GTK2/src/importDialog_glade.cc:150 UI/GTK2/src/mainWindow_glade.cc:246
+#: UI/GTK2/src/mainWindow_glade.cc:355
+msgid "Import URL"
+msgstr "URL importu"
+
+#: UI/GTK2/src/IndexPage.cc:48
+msgid "Show Previous"
+msgstr "Zobrazit předchozí"
+
+#: UI/GTK2/src/IndexPage.cc:54
+msgid "Show Next"
+msgstr "Zobrazit další"
+
+#: UI/GTK2/src/IndexPage.cc:191 UI/GTK2/src/IndexPage.cc:195
+msgid "All"
+msgstr "Vše"
+
+#: UI/GTK2/src/launcherDialog_glade.cc:63
+msgid ""
+"There is no helper application defined for this document's type.\n"
+"Please enter the command to open this document."
+msgstr ""
+"Pro tento typ dokumentu není zadána žádná pomocná aplikace.\n"
+"Prosím zadejte příkaz pro otevření tohoto dokumentu."
+
+#: UI/GTK2/src/launcherDialog_glade.cc:66
+msgid "Use this command for other documents of the same type."
+msgstr "Použijte tento příkaz pro ostatní dokumenty stejného typu."
+
+#: UI/GTK2/src/launcherDialog_glade.cc:116
+msgid "Helper application"
+msgstr "Pomocná aplikace"
+
+#: UI/GTK2/src/mainWindow.cc:215
+msgid "Query Name"
+msgstr "Název dotazu"
+
+#: UI/GTK2/src/mainWindow.cc:220
+msgid "Last Run"
+msgstr "Naposledy spuštěno"
+
+#: UI/GTK2/src/mainWindow.cc:225
+msgid "Summary"
+msgstr "Souhrn"
+
+#: UI/GTK2/src/mainWindow.cc:272 UI/GTK2/src/mainWindow.cc:281
+msgid "Show all search engines"
+msgstr "Zobrazit všechny vyhledávače"
+
+#: UI/GTK2/src/mainWindow.cc:273 UI/GTK2/src/mainWindow.cc:279
+#: UI/GTK2/src/mainWindow.cc:283 UI/GTK2/src/mainWindow.cc:292
+msgid "Find documents that match the query"
+msgstr "Najít dokuemty které odpovídají dotazu"
+
+#: UI/GTK2/src/mainWindow.cc:274 UI/GTK2/src/mainWindow.cc:287
+msgid "Add an index"
+msgstr "Přidat index"
+
+#: UI/GTK2/src/mainWindow.cc:275 UI/GTK2/src/mainWindow.cc:288
+msgid "Remove an index"
+msgstr "Odstranit index"
+
+#: UI/GTK2/src/mainWindow.cc:276 UI/GTK2/src/mainWindow.cc:289
+msgid "Add a query"
+msgstr "Přidat dotaz"
+
+#: UI/GTK2/src/mainWindow.cc:277 UI/GTK2/src/mainWindow.cc:290
+msgid "Remove a query"
+msgstr "Odstranit dotaz"
+
+#: UI/GTK2/src/mainWindow.cc:278 UI/GTK2/src/mainWindow.cc:291
+msgid "Show the query's previous results"
+msgstr "Zobrazit předchozí výsledky dotazu"
+
+#: UI/GTK2/src/mainWindow.cc:285
+msgid "Find documents that match the query string"
+msgstr "Najít dokumenty které odpovídají řetězci dotazu"
+
+#. Now we are ready
+#: UI/GTK2/src/mainWindow.cc:312
+msgid "Ready"
+msgstr "Připraveno"
+
+#: UI/GTK2/src/mainWindow.cc:324
+msgid "Updating all documents in My Web Pages is recommended"
+msgstr ""
+"Je doporučena aktualizace všech dokumentů v mých internetových stránkách"
+
+#: UI/GTK2/src/mainWindow.cc:332
+msgid "Don't warn me again"
+msgstr "Již mě nevarovat"
+
+#: UI/GTK2/src/mainWindow.cc:344 UI/GTK2/src/mainWindow_glade.cc:183
+#: UI/GTK2/src/mainWindow_glade.cc:291
+msgid "Update"
+msgstr "Aktualizace"
+
+#: UI/GTK2/src/mainWindow.cc:405
+msgid "N/A"
+msgstr "N/A"
+
+#: UI/GTK2/src/mainWindow.cc:423
+msgid "Undefined"
+msgstr "Neurčeno"
+
+#. Find this query
+#: UI/GTK2/src/mainWindow.cc:746 UI/GTK2/src/mainWindow.cc:3004
+msgid "Live query"
+msgstr "Dotaz za běhu"
+
+#. Show the URL of the first document in the status bar
+#: UI/GTK2/src/mainWindow.cc:1036
+msgid "Document location is"
+msgstr "Umístění dokumentu je"
+
+#: UI/GTK2/src/mainWindow.cc:1257
+msgid "Couldn't search in results"
+msgstr "Nekze hledat ve výsledcích"
+
+#: UI/GTK2/src/mainWindow.cc:1267
+msgid "In Results"
+msgstr "Ve výsledcích"
+
+#: UI/GTK2/src/mainWindow.cc:1444
+msgid "Showing"
+msgstr "Zobrazování"
+
+#: UI/GTK2/src/mainWindow.cc:1452
+msgid "of"
+msgstr "z"
+
+#: UI/GTK2/src/mainWindow.cc:1494
+msgid "Query"
+msgstr "Dotaz"
+
+#: UI/GTK2/src/mainWindow.cc:1498 UI/GTK2/src/mainWindow.cc:3574
+msgid "on"
+msgstr "v"
+
+#: UI/GTK2/src/mainWindow.cc:1502
+msgid "ended"
+msgstr "ukončen"
+
+#: UI/GTK2/src/mainWindow.cc:1659
+msgid "More Like"
+msgstr "Podobné"
+
+#: UI/GTK2/src/mainWindow.cc:1726
+msgid "Updated label(s)"
+msgstr "Aktualizované štítky"
+
+#. Yes, it did
+#: UI/GTK2/src/mainWindow.cc:1822 UI/GTK2/src/mainWindow.cc:1912
+msgid "Updated document"
+msgstr "Dokument aktualizován"
+
+#: UI/GTK2/src/mainWindow.cc:1835
+msgid "Indexed"
+msgstr "Indexováno"
+
+#: UI/GTK2/src/mainWindow.cc:1872
+msgid "Unindexed document(s)"
+msgstr "Neindexované dokumenty"
+
+#: UI/GTK2/src/mainWindow.cc:1967
+msgid "Couldn't rename index, name"
+msgstr "Nelze přejmenovat index, název"
+
+#: UI/GTK2/src/mainWindow.cc:1971 UI/GTK2/src/mainWindow.cc:2800
+#: UI/GTK2/src/mainWindow.cc:3358
+msgid "is already in use"
+msgstr "již je používán"
+
+#: UI/GTK2/src/mainWindow.cc:1983
+msgid "Couldn't rename index"
+msgstr "Nelze přejmenovat index"
+
+#: UI/GTK2/src/mainWindow.cc:1998
+msgid "Edited index"
+msgstr "Index upraven"
+
+#: UI/GTK2/src/mainWindow.cc:2308
+msgid "Export"
+msgstr "Exportovat"
+
+#: UI/GTK2/src/mainWindow.cc:2373
+msgid "Couldn't find similar documents"
+msgstr "Nelze najít podobné dokumenty"
+
+#: UI/GTK2/src/mainWindow.cc:2616
+msgid "Index"
+msgstr "Index"
+
+#: UI/GTK2/src/mainWindow.cc:2620
+msgid "doesn't exist"
+msgstr "neexistuje"
+
+#: UI/GTK2/src/mainWindow.cc:2687
+msgid "Remove this document from the index ?"
+msgstr "Odstranit tento dokument z indexu ?"
+
+#: UI/GTK2/src/mainWindow.cc:2706
+msgid "Remove these documents from the index ?"
+msgstr "Odstranit tyto dokument z indexu ?"
+
+#: UI/GTK2/src/mainWindow.cc:2711 UI/GTK2/src/mainWindow_glade.cc:186
+#: UI/GTK2/src/mainWindow_glade.cc:294
+msgid "Unindex"
+msgstr "Odstranit z indexu"
+
+#: UI/GTK2/src/mainWindow.cc:2750
+msgid "A metasearch tool for the Free Desktop"
+msgstr "Nástroj metahledání pro Free Desktop"
+
+#: UI/GTK2/src/mainWindow.cc:2751
+msgid "Search the Web and your documents !"
+msgstr "Hledat na internetu a ve vašich dokumentech !"
+
+#: UI/GTK2/src/mainWindow.cc:2796
+msgid "Index name"
+msgstr "Název indexu"
+
+#: UI/GTK2/src/mainWindow.cc:2810
+msgid "Couldn't add index"
+msgstr "Nelze přidat index"
+
+#: UI/GTK2/src/mainWindow.cc:2826
+msgid "Added new index"
+msgstr "Přidán nový index"
+
+#: UI/GTK2/src/mainWindow.cc:2869
+msgid "Couldn't remove index"
+msgstr "Index nelze odstranit"
+
+#: UI/GTK2/src/mainWindow.cc:3095
+msgid "No history for"
+msgstr "Žádná historie pro"
+
+#: UI/GTK2/src/mainWindow.cc:3167 UI/GTK2/src/prefsWindow.cc:975
+msgid "At least one task hasn't completed yet. Quit now ?"
+msgstr "Alespoň jeden úkol není dokončen. Chcete nyní odejít ?"
+
+#: UI/GTK2/src/mainWindow.cc:3169 UI/GTK2/src/prefsWindow.cc:977
+msgid "Quit"
+msgstr "Odejít"
+
+#: UI/GTK2/src/mainWindow.cc:3354
+msgid "Query name"
+msgstr "Název dotazu"
+
+#: UI/GTK2/src/mainWindow.cc:3381
+msgid "Couldn't update query"
+msgstr "Dotaz nelze aktualizovat"
+
+#: UI/GTK2/src/mainWindow.cc:3392
+msgid "Edited query"
+msgstr "Dotaz upraven"
+
+#: UI/GTK2/src/mainWindow.cc:3399
+msgid "Couldn't add query"
+msgstr "Nelze přidat dotaz"
+
+#: UI/GTK2/src/mainWindow.cc:3407
+msgid "Added new query"
+msgstr "Přidán nový dotaz"
+
+#: UI/GTK2/src/mainWindow.cc:3441
+msgid "Query is not set"
+msgstr "Dotaz není nastaven"
+
+#: UI/GTK2/src/mainWindow.cc:3456
+msgid "No search engine selected"
+msgstr "Není vybrán žádný vyhledávač"
+
+#: UI/GTK2/src/mainWindow.cc:3561
+msgid "Please set the Google API key first"
+msgstr "Prosím nejdříve nastavte klíč Google API"
+
+#: UI/GTK2/src/mainWindow.cc:3570
+msgid "Running query"
+msgstr "Spouštění dotazu"
+
+#: UI/GTK2/src/mainWindow.cc:3777
+msgid "No default application defined for type"
+msgstr "Pro typ není určena žádná výchozí aplikace"
+
+#: UI/GTK2/src/mainWindow_glade.cc:130
+msgid "Query:"
+msgstr "Dotaz:"
+
+#: UI/GTK2/src/mainWindow_glade.cc:145 UI/GTK2/src/statisticsDialog.cc:184
+msgid "History"
+msgstr "Historie"
+
+#: UI/GTK2/src/mainWindow_glade.cc:150
+msgid "Stored queries"
+msgstr "Uložené dotazy"
+
+#: UI/GTK2/src/mainWindow_glade.cc:171 UI/GTK2/src/mainWindow_glade.cc:279
+msgid "Open Cache"
+msgstr "Otevřít mezipaměť"
+
+#: UI/GTK2/src/mainWindow_glade.cc:174 UI/GTK2/src/mainWindow_glade.cc:282
+msgid "Open Parent"
+msgstr "Otevřít nadřazený"
+
+#: UI/GTK2/src/mainWindow_glade.cc:180 UI/GTK2/src/mainWindow_glade.cc:288
+msgid "_Add To Index"
+msgstr "_Přidat do indexu"
+
+#: UI/GTK2/src/mainWindow_glade.cc:192 UI/GTK2/src/mainWindow_glade.cc:300
+msgid "More Like This"
+msgstr "Další podobné"
+
+#: UI/GTK2/src/mainWindow_glade.cc:195 UI/GTK2/src/mainWindow_glade.cc:303
+msgid "Search This For"
+msgstr "Vyhledat pro"
+
+#: UI/GTK2/src/mainWindow_glade.cc:228 UI/GTK2/src/mainWindow_glade.cc:336
+msgid "Search Engine"
+msgstr "Vyhledávač"
+
+#: UI/GTK2/src/mainWindow_glade.cc:231 UI/GTK2/src/mainWindow_glade.cc:339
+msgid "Host Name"
+msgstr "Název hostitele"
+
+#: UI/GTK2/src/mainWindow_glade.cc:234 UI/GTK2/src/mainWindow_glade.cc:342
+msgid "List Contents Of"
+msgstr "Vypsat obsah"
+
+#: UI/GTK2/src/mainWindow_glade.cc:237 UI/GTK2/src/mainWindow_glade.cc:345
+msgid "Group Results By"
+msgstr "Seřadit výsledky podle"
+
+#: UI/GTK2/src/mainWindow_glade.cc:240 UI/GTK2/src/mainWindow_glade.cc:349
+msgid "Show Extracts"
+msgstr "Zobrazit výtahy"
+
+#: UI/GTK2/src/mainWindow_glade.cc:249 UI/GTK2/src/mainWindow_glade.cc:358
+msgid "Export List"
+msgstr "Exportovat seznam"
+
+#: UI/GTK2/src/mainWindow_glade.cc:255 UI/GTK2/src/mainWindow_glade.cc:364
+#: UI/GTK2/src/statisticsDialog.cc:121
+#: UI/GTK2/src/statisticsDialog_glade.cc:99
+msgid "Status"
+msgstr "Stav"
+
+#: UI/GTK2/src/mainWindow_glade.cc:261 UI/GTK2/src/mainWindow_glade.cc:370
+msgid "_File"
+msgstr "_Soubor"
+
+#: UI/GTK2/src/mainWindow_glade.cc:264 UI/GTK2/src/mainWindow_glade.cc:374
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: UI/GTK2/src/mainWindow_glade.cc:267 UI/GTK2/src/mainWindow_glade.cc:378
+msgid "_Options"
+msgstr "_Volby"
+
+#: UI/GTK2/src/mainWindow_glade.cc:270 UI/GTK2/src/mainWindow_glade.cc:382
+msgid "_Help"
+msgstr "_Nápověda"
+
+#: UI/GTK2/src/mainWindow_glade.cc:572
+msgid "Pinot"
+msgstr "Pinot"
+
+#: UI/GTK2/src/Notebook.cc:87
+msgid "Did you mean ?"
+msgstr "Mysleli jste ?"
+
+#: UI/GTK2/src/Notebook.cc:98 UI/GTK2/src/Notebook.cc:272
+msgid "Close"
+msgstr "Zavřít"
+
+#: UI/GTK2/src/pinot.cc:351
+msgid "Couldn't open index"
+msgstr "Index nelze otevřít"
+
+#: UI/GTK2/src/pinot.cc:372
+msgid "Couldn't create history database"
+msgstr "Nelze vytvořit databázi historie"
+
+#: UI/GTK2/src/prefsWindow.cc:149
+msgid "File Indexing and Search"
+msgstr "Indexace a prohledávání souborů"
+
+#: UI/GTK2/src/prefsWindow.cc:150
+msgid "Configure Pinot to index your files"
+msgstr "Nastavit Pinot pro indexaci vašich souborů"
+
+#: UI/GTK2/src/prefsWindow.cc:208
+msgid "Name"
+msgstr "Název"
+
+#: UI/GTK2/src/prefsWindow.cc:226
+msgid "Monitor"
+msgstr "Monitor"
+
+#: UI/GTK2/src/prefsWindow.cc:227
+msgid "Location"
+msgstr "Umístění"
+
+#: UI/GTK2/src/prefsWindow.cc:235
+msgid "Pattern"
+msgstr "Vzor"
+
+#: UI/GTK2/src/prefsWindow.cc:583 UI/GTK2/src/prefsWindow.cc:586
+msgid "Exclude these patterns from indexing"
+msgstr "Vynechat tyto vzory při indexování"
+
+#: UI/GTK2/src/prefsWindow.cc:584 UI/GTK2/src/prefsWindow.cc:587
+msgid "Only index these patterns"
+msgstr "Indexovat pouze tyto vzory"
+
+#: UI/GTK2/src/prefsWindow.cc:787
+msgid "Directory to index"
+msgstr "Adresář pro indexaci"
+
+#: UI/GTK2/src/prefsWindow.cc:927
+msgid "New Label"
+msgstr "Nový štítek"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:69
+msgid "These directories will be indexed and optionally monitored for changes:"
+msgstr ""
+"Tyto adresáře budou indexovány a případně budou sledovány jejich změny:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:74 UI/GTK2/src/prefsWindow_glade.cc:90
+#: UI/GTK2/src/prefsWindow_glade.cc:106
+msgid "Add"
+msgstr "Přidat"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:82
+msgid "File patterns:"
+msgstr "Vzory souboru:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:95
+msgid "Reset"
+msgstr "Resetovat"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:100
+msgid "Indexing"
+msgstr "Indexování"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:101
+msgid "Labels are used to classify indexed documents:"
+msgstr "Štítky jsou používány pro zařazení indexovaných dokumentů:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:112
+msgid "Remove"
+msgstr "Odstranit"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:120 UI/GTK2/src/propertiesDialog.cc:57
+msgid "Labels"
+msgstr "Štítky"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:122
+msgid "Direct connection to the Internet"
+msgstr "Přímé připojení k Internetu"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:123
+msgid "Manual proxy configuration:"
+msgstr "Ruční nastavení proxy:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:141
+msgid "Network"
+msgstr "Síť"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:142
+msgid "Google API key:"
+msgstr "Klíč Google API:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:145
+msgid "Queries:"
+msgstr "Dotazy:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:146
+msgid "Enable search terms suggestion"
+msgstr "Povolit navrhování termínů pro hledání"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:148
+msgid "Ignore robots.txt and Robots META tag"
+msgstr "Ignorovat robots.txt a META značky robotů"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:149
+msgid "HTTP crawling:"
+msgstr "Procházení HTTP:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:151
+msgid "New results:"
+msgstr "Nové výsledky:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:154
+msgid "Miscellaneous"
+msgstr "Různé"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:636
+msgid "Pinot Preferences"
+msgstr "Nastavení Pinot"
+
+#: UI/GTK2/src/propertiesDialog.cc:106
+msgid "Per document"
+msgstr "Za dokument"
+
+#: UI/GTK2/src/propertiesDialog.cc:374
+msgid "Export Terms"
+msgstr "Exportovat termíny"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:64
+msgid "Language:"
+msgstr "Jazyk:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:65
+msgid "MIME type:"
+msgstr "Typ MIME:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:66
+msgid "Size:"
+msgstr "Velikost:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:67
+msgid "Terms:"
+msgstr "Termíny:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:77
+msgid "bytes"
+msgstr "bajtů"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:266
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: UI/GTK2/src/queryDialog.cc:111 UI/GTK2/src/queryDialog.cc:129
+msgid "Host name"
+msgstr "Název hostitele"
+
+#: UI/GTK2/src/queryDialog.cc:112 UI/GTK2/src/queryDialog.cc:130
+msgid "File name"
+msgstr "Název souboru"
+
+#: UI/GTK2/src/queryDialog.cc:113 UI/GTK2/src/queryDialog.cc:131
+msgid "File extension"
+msgstr "Přípona souboru"
+
+#. This is the title column
+#: UI/GTK2/src/queryDialog.cc:114 UI/GTK2/src/queryDialog.cc:132
+#: UI/GTK2/src/ResultsTree.cc:157
+msgid "Title"
+msgstr "Název"
+
+#. URL
+#: UI/GTK2/src/queryDialog.cc:115 UI/GTK2/src/queryDialog.cc:133
+#: UI/GTK2/src/ResultsTree.cc:167
+msgid "URL"
+msgstr "URL"
+
+#: UI/GTK2/src/queryDialog.cc:116 UI/GTK2/src/queryDialog.cc:134
+msgid "Directory"
+msgstr "Adresář"
+
+#: UI/GTK2/src/queryDialog.cc:117 UI/GTK2/src/queryDialog.cc:135
+msgid "In URL"
+msgstr "v URL"
+
+#: UI/GTK2/src/queryDialog.cc:118 UI/GTK2/src/queryDialog.cc:136
+msgid "Path"
+msgstr "Cesta"
+
+#: UI/GTK2/src/queryDialog.cc:119 UI/GTK2/src/queryDialog.cc:137
+msgid "Language code"
+msgstr "Kód jazyka"
+
+#: UI/GTK2/src/queryDialog.cc:120 UI/GTK2/src/queryDialog.cc:138
+msgid "MIME type"
+msgstr "Typ MIME"
+
+#: UI/GTK2/src/queryDialog.cc:121 UI/GTK2/src/queryDialog.cc:139
+msgid "MIME class"
+msgstr "Třída MIME"
+
+#: UI/GTK2/src/queryDialog.cc:122 UI/GTK2/src/queryDialog.cc:140
+msgid "Label"
+msgstr "štítek"
+
+#. The last column is for the timestamp
+#: UI/GTK2/src/queryDialog.cc:125 UI/GTK2/src/queryDialog.cc:143
+#: UI/GTK2/src/ResultsTree.cc:175
+msgid "Date"
+msgstr "Datum"
+
+#: UI/GTK2/src/queryDialog.cc:126 UI/GTK2/src/queryDialog.cc:144
+msgid "Time"
+msgstr "Čas"
+
+#: UI/GTK2/src/queryDialog.cc:127 UI/GTK2/src/queryDialog.cc:145
+msgid "Size"
+msgstr "Velikost"
+
+#: UI/GTK2/src/queryDialog.cc:151 UI/GTK2/src/queryDialog.cc:154
+msgid "By relevance"
+msgstr "Podle relevance"
+
+#: UI/GTK2/src/queryDialog.cc:152 UI/GTK2/src/queryDialog.cc:155
+msgid "By date"
+msgstr "Podle data"
+
+#: UI/GTK2/src/queryDialog_glade.cc:71
+msgid "New filter or range:"
+msgstr "Nový filtr nebo rozsah:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:80
+msgid "Query Text"
+msgstr "Text dotazu"
+
+#: UI/GTK2/src/queryDialog_glade.cc:82
+msgid "Index results with label"
+msgstr "Indexovat výsledky pomocí štítku"
+
+#: UI/GTK2/src/queryDialog_glade.cc:85
+msgid "Number of results:"
+msgstr "Počet výsledků:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:94
+msgid "Sort order:"
+msgstr "Řadit podle:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:98
+msgid "Stemming:"
+msgstr "Vycházející z:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:99
+msgid "Only index new results"
+msgstr "Indexovat pouze nové výsledky"
+
+#: UI/GTK2/src/queryDialog_glade.cc:251
+msgid "Query parameters"
+msgstr "Parametry dotazu"
+
+#. This is the score column
+#: UI/GTK2/src/ResultsTree.cc:146
+msgid "Score"
+msgstr "Hodnocení"
+
+#: UI/GTK2/src/ResultsTree.cc:1622
+msgid "No results"
+msgstr "Žádné výsledky"
+
+#: UI/GTK2/src/statisticsDialog.cc:154
+msgid "Indexes"
+msgstr "Indexy"
+
+#: UI/GTK2/src/statisticsDialog.cc:160 UI/GTK2/src/statisticsDialog.cc:166
+#: UI/GTK2/src/statisticsDialog.cc:197
+msgid "Checking"
+msgstr "Kontrola"
+
+#: UI/GTK2/src/statisticsDialog.cc:194
+msgid "Daemon"
+msgstr "Daemon"
+
+#: UI/GTK2/src/statisticsDialog.cc:216
+msgid "Viewed"
+msgstr "Zobrazeno"
+
+#: UI/GTK2/src/statisticsDialog.cc:216
+msgid "results"
+msgstr "výsledky"
+
+#: UI/GTK2/src/statisticsDialog.cc:222
+msgid "Crawled"
+msgstr "Prochozeno"
+
+#: UI/GTK2/src/statisticsDialog.cc:222
+msgid "files"
+msgstr "souborů"
+
+#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+msgid "documents"
+msgstr "dokumentů"
+
+#. FIXME: check whether it's actually running !
+#: UI/GTK2/src/statisticsDialog.cc:284
+msgid "Running under PID"
+msgstr "Běží pod PID"
+
+#: UI/GTK2/src/statisticsDialog.cc:306
+msgid "Disconnected from D-Bus"
+msgstr "Odpojeno od D-Bus"
+
+#: UI/GTK2/src/statisticsDialog.cc:310
+msgid "Stopped"
+msgstr "Zastaveno"
+
+#: UI/GTK2/src/statisticsDialog.cc:314
+msgid "Currently not running"
+msgstr "Nyní není spuštěno"
+
+#: UI/GTK2/src/statisticsDialog.cc:328
+msgid "Low disk space"
+msgstr "Nedostatek místa na disku"
+
+#: UI/GTK2/src/statisticsDialog.cc:345
+msgid "System on battery"
+msgstr "Systém běží na baterii"
+
+#: UI/GTK2/src/statisticsDialog.cc:363
+msgid "Crawling"
+msgstr "Procházení"
+
+#: UI/GTK2/src/statisticsDialog.cc:402
+msgid "Errors"
+msgstr "Chyby"

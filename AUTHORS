@@ -1,0 +1,112 @@
+Pinot is written by :
+
+	Fabrice Colin <fabricecolin at users dot berlios dot de>
+
+Small patches, bug reports and helpful comments :
+
+	Reini Urban <rurban at x-ray dot at>
+	Marcus Rueckert <darix at web dot de>
+	Manuel Breitfeld <manu_foren at gmx dot net>
+	Gauvain Pocentek <gauvainpocentek at gmail dot com>
+	Oskar <sebastian dot jauch at web dot de>
+	Thierry Thomas <thierry at freebsd dot org>
+	Neal Becker <ndbecker2 at gmail dot com>
+	Gabriel C <nix dot or dot die at googlemail dot com> 
+	Roger Mason <rmason at esd dot mun dot ca>
+	Reuben Thomas <rrt at sc3d dot org> 
+	Marco Bazzani <visik7 at tin dot it>
+	Christian Dywan <christian at twotoasts dot de>
+	Lee Marks <ana_cata_hylo at yahoo dot com>
+	Adel Gadllah <adel dot gadllah at gmail dot com>
+	Andreas Wagner <A dot Wagner at stud dot uni-frankfurt dot de>
+	Claudio Bustos Navarrete <clbustos at surnet dot cl>
+	林永忠 Yung-chung Lin <henearkrxern at gmail dot com>
+	David Paleino <d dot paleino at gmail dot com>
+	Michael Biebl <biebl at debian dot org>
+	Constantin Teodorescu <brailateo at gmail dot com>
+	Adrian Bunk <bunk at stusta dot de>
+	C. Scott Ananian <cscott at laptop dot org>
+	Martin Michlmayr <tbm at cyrius dot com>
+	John Werden <jwerden at hotpop dot com>
+	Funda Wang <fundawang at gmail dot com>
+	Antoine Jacoutot <ajacoutot at bsdfrog dot org>
+	Jonas Smedegaard <dr at jones dot dk>
+	Jens Wilhelm Wulf <jens_w2 at gmx dot net>
+	Nikolay Kachanov <nikolay dot kachanov at gmail dot com>
+	Martijn Verstrate <martijn dot verstrate at wm-m dot net>
+	Kamil Rytarowski <krytarowski at gmail dot com>
+	Takafumi Arakaki <aka dot tkf at gmail dot com>
+	Jelle van der Waa <jelle@vdwaa.nl>
+
+Some code is borrowed from Xapian Omega, which is "largely the work of
+Olly Betts, Mark Shinwell (omindex-config) and Richard Boulton",
+including its HTML parser. The file Tokenize/filters/HtmlParser.cc is :
+	Copyright 1999,2000,2001 BrightStation PLC
+	Copyright 2001 Ananova Ltd
+	Copyright 2002,2006,2007,2008 Olly Betts
+while the file Tokenize/filters/HtmlParser.h is :
+	Copyright 1999,2000,2001 BrightStation PLC
+	Copyright 2002,2006,2008 Olly Betts
+
+Code for mktime_from_utc() in Utils/TimeConverter.cpp was borrowed from
+wget (http://wget.sunsite.dk/).
+
+Translations provided by :
+
+	Chinese (Simplified) - Ashlee Ma <ashlee8310 at hotmail dot com>
+		& rainofchaos <rainofchaos at gmail dot com>
+		& Aron Xu <???>
+		& Eleanor Chen <chenyueg at gmail dot com>
+		& mike2718 <mike2718 at gmail dot com>
+		& happymeng <gzmeng at tom dot com>
+	Chinese (Traditional) - 林永忠 Yung-Chung Lin <henearkrxern at gmail dot com>
+	Czech - Zbyněk Schwarz <???>
+	Dutch - Tikkel <???>
+		& JW <jw00000 at gmail dot com>
+		& Balaam's Miracle <balaam at balaamsmiracle dot com>
+		& Dirk Roos <???>
+		& Martijn Verstrate <???>
+		& Tico <???>
+	French - Nicolas Velin <nsv at fr dot st>
+		& Frédéric Grosshans <frederic dot grosshans at gmail dot com>
+		& Thierry Thomas <thierry at freebsd dot org>
+		& verdy_p <???>
+		& Eliovir <???>
+	German - Christian Dywan <christian at twotoasts dot de>
+		& Gena Haltmair <gena at haltmair dot com>
+		& Fabian Affolter <???>
+		& Marco Jahn <???>
+		& pkramerruiz <???>
+	Hebrew - Yaron <sh dot yaron at gmail dot com>
+		& Ddorda <d dot dorda at gmail dot com>
+	Italian - Michele Angrisano <darksun1988 at gmail dot com>
+		& Vincenzo Consales <aquarius987 at gmail dot com>>
+		& Marco Bazzani <alfred dot einstein at gmail dot com>
+		& Davide Vidal <davide dot vidal at gmail dot com>
+		& Simone Sandri <???>
+	Japanese - Takeo Mizuki <???>
+		&& Takafumi Arakaki <aka dot tkf at gmail dot com>
+	Portuguese - _PN_boy <pedro_nuno_pn at iol dot pt>
+		& Tiago Silva <???>
+		& Flávio Martins <xhaker at gmail dot com>
+		& Bernardo Lopes <???>
+		& Almufadado <???>
+	Portuguese (Brazil) - Leonardo Melo <leonardovazmelo at gmail dot com>
+		& Rafael Porto Rodrigues <rafporto at gmail dot com>
+		& André Gondim <andregondim at ubuntu dot com>
+		& Henrique P. Machado <zehrique at gmail dot com>
+		& andbelo <???>
+		& feen <???>
+		& Adriano Steffler <???>
+	Russian - Sergey Vostrikov <memphis at jabber dot snc dot ru>
+		& Alexander 'FONTER' Zinin <spore_09 at mail dot ru>
+		& Nikolay Kachanov <nikolay dot kachanov at gmail dot com>
+	Spanish - Jesús Tramullas <jesus at tramullas dot com>
+		& Garbage <garbage at openfutura dot com>
+		& DiegoJ <diegojromerolopez at gmail dot com>
+		& Juan Miguel Boyero Corral <???>
+		& Matias Fonzo <selkfoster at gmail dot com>
+		& Fitoschido <fitoschido at gmail dot com>
+	Swedish - Daniel Nylander <po at danielnylander dot se>
+		& Zirro <???>
+

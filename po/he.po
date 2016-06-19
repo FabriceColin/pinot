@@ -1,0 +1,1010 @@
+# Hebrew translation for pinot
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the pinot package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pinot 1.09\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-09 21:05+0200\n"
+"PO-Revision-Date: 2010-06-29 08:45+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Localize language names
+#: Core/pinot-dbus-daemon.cpp:552 UI/GTK2/src/pinot.cc:310
+msgid "Unknown"
+msgstr "לא ידוע"
+
+#: Core/pinot-dbus-daemon.cpp:553 UI/GTK2/src/pinot.cc:311
+msgid "Danish"
+msgstr "דנית"
+
+#: Core/pinot-dbus-daemon.cpp:554 UI/GTK2/src/pinot.cc:312
+msgid "Dutch"
+msgstr "הולנדית"
+
+#: Core/pinot-dbus-daemon.cpp:555 UI/GTK2/src/pinot.cc:313
+msgid "English"
+msgstr "אנגלית"
+
+#: Core/pinot-dbus-daemon.cpp:556 UI/GTK2/src/pinot.cc:314
+msgid "Finnish"
+msgstr "פינית"
+
+#: Core/pinot-dbus-daemon.cpp:557 UI/GTK2/src/pinot.cc:315
+msgid "French"
+msgstr "צרפתית"
+
+#: Core/pinot-dbus-daemon.cpp:558 UI/GTK2/src/pinot.cc:316
+msgid "German"
+msgstr "גרמנית"
+
+#: Core/pinot-dbus-daemon.cpp:559 UI/GTK2/src/pinot.cc:317
+msgid "Hungarian"
+msgstr "הונגרית"
+
+#: Core/pinot-dbus-daemon.cpp:560 UI/GTK2/src/pinot.cc:318
+msgid "Italian"
+msgstr "איטלקית"
+
+#: Core/pinot-dbus-daemon.cpp:561 UI/GTK2/src/pinot.cc:319
+msgid "Norwegian"
+msgstr "נורבגית"
+
+#: Core/pinot-dbus-daemon.cpp:562 UI/GTK2/src/pinot.cc:320
+msgid "Portuguese"
+msgstr "פורטוגזית"
+
+#: Core/pinot-dbus-daemon.cpp:563 UI/GTK2/src/pinot.cc:321
+msgid "Romanian"
+msgstr "רומנית"
+
+#: Core/pinot-dbus-daemon.cpp:564 UI/GTK2/src/pinot.cc:322
+msgid "Russian"
+msgstr "רוסית"
+
+#: Core/pinot-dbus-daemon.cpp:565 UI/GTK2/src/pinot.cc:323
+msgid "Spanish"
+msgstr "ספרדית"
+
+#: Core/pinot-dbus-daemon.cpp:566 UI/GTK2/src/pinot.cc:324
+msgid "Swedish"
+msgstr "שבדית"
+
+#: Core/pinot-dbus-daemon.cpp:567 UI/GTK2/src/pinot.cc:325
+msgid "Turkish"
+msgstr "טורקית"
+
+#. Internal indices
+#. Apply this label
+#. Is this an internal index ?
+#: Core/PinotSettings.cpp:436 Core/PinotSettings.cpp:1727
+#: Core/WorkerThreads.cpp:525 UI/GTK2/src/mainWindow.cc:1008
+#: UI/GTK2/src/mainWindow.cc:1276 UI/GTK2/src/mainWindow.cc:1543
+#: UI/GTK2/src/mainWindow.cc:1705 UI/GTK2/src/mainWindow.cc:1708
+#: UI/GTK2/src/mainWindow.cc:1812 UI/GTK2/src/mainWindow.cc:1846
+#: UI/GTK2/src/mainWindow.cc:1871 UI/GTK2/src/mainWindow.cc:2600
+#: UI/GTK2/src/statisticsDialog.cc:157
+msgid "My Web Pages"
+msgstr "עמודי האינטרנט שלי"
+
+#. Spawn new threads
+#: Core/PinotSettings.cpp:437 Core/PinotSettings.cpp:1728
+#: Core/WorkerThreads.cpp:535 UI/GTK2/src/mainWindow.cc:1271
+#: UI/GTK2/src/mainWindow.cc:1533 UI/GTK2/src/mainWindow.cc:1547
+#: UI/GTK2/src/mainWindow.cc:1716 UI/GTK2/src/mainWindow.cc:1719
+#: UI/GTK2/src/mainWindow.cc:2604 UI/GTK2/src/statisticsDialog.cc:163
+msgid "My Documents"
+msgstr "המסמכים שלי"
+
+#. Add default labels
+#: Core/PinotSettings.cpp:442
+msgid "Important"
+msgstr "חשוב"
+
+#: Core/PinotSettings.cpp:443
+msgid "New"
+msgstr "חדש"
+
+#: Core/PinotSettings.cpp:444
+msgid "Personal"
+msgstr "אישי"
+
+#: Core/PinotSettings.cpp:466
+msgid "Me"
+msgstr "עצמי"
+
+#: Core/PinotSettings.cpp:474
+msgid "Latest First"
+msgstr "האחרונים תחילה"
+
+#: Core/PinotSettings.cpp:477
+msgid "Home Stuff"
+msgstr "חומר ביתי"
+
+#: Core/PinotSettings.cpp:478
+msgid "With Label New"
+msgstr "עם תווית חדשה"
+
+#: Core/PinotSettings.cpp:479
+msgid "Have CJKV"
+msgstr ""
+
+#: Core/PinotSettings.cpp:480
+msgid "In English"
+msgstr "באנגלית"
+
+#: Core/PinotSettings.cpp:481
+msgid "10kb And Smaller"
+msgstr "10ק\"ב ומטה"
+
+#: Core/PinotSettings.cpp:526
+msgid "Unclassified"
+msgstr "לא מסווג"
+
+#: Core/WorkerThread.cpp:85
+msgid "Index error"
+msgstr "שגיאת אינדקס"
+
+#: Core/WorkerThread.cpp:87
+msgid "Couldn't index document"
+msgstr "לא ניתן לאחסן את המסמך באינדקס"
+
+#: Core/WorkerThread.cpp:89
+msgid "Couldn't update document"
+msgstr "לא ניתן לעדכן את המסמך"
+
+#: Core/WorkerThread.cpp:91
+msgid "Couldn't unindex document(s)"
+msgstr "לא ניתן למחוק את המסמך/ים מהאינדקס"
+
+#: Core/WorkerThread.cpp:93
+msgid "Couldn't run query on search engine"
+msgstr "לא ניתן להריץ את השאילתה על מנוע החיפוש"
+
+#: Core/WorkerThread.cpp:95
+msgid "Couldn't get history for search engine"
+msgstr "לא ניתן לאחזר את היסטוריית מנוע החיפוש"
+
+#: Core/WorkerThread.cpp:97
+msgid "Couldn't retrieve document"
+msgstr "לא ניתן לאחזר את המסמך"
+
+#: Core/WorkerThread.cpp:99
+msgid "File monitor error"
+msgstr "המעקב אחר הקבצים נכשל"
+
+#: Core/WorkerThread.cpp:101
+msgid "Couldn't open directory"
+msgstr "לא ניתן לפתוח את התיקייה"
+
+#: Core/WorkerThread.cpp:103
+msgid "Index doesn't exist"
+msgstr "האינדקס לא קיים"
+
+#: Core/WorkerThread.cpp:105
+msgid "Couldn't create search engine"
+msgstr "לא ניתן ליצור את מנוע החיפוש"
+
+#: Core/WorkerThread.cpp:107
+msgid "Cannot index document type"
+msgstr "לא ניתן לשמור באינדקס סוג מסמכים זה"
+
+#: Core/WorkerThread.cpp:109
+msgid "No downloader for this protocol"
+msgstr "אין כלי הורדה לפרוטוקול זה"
+
+#: Core/WorkerThread.cpp:111
+msgid "Robots META tag forbids indexing"
+msgstr "תגיות ה־META של הרובוטים אוסרות על שמירה באינדקס"
+
+#: Core/WorkerThread.cpp:113
+msgid "No monitoring handler"
+msgstr "אין כלי למעקב"
+
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
+#: UI/GTK2/src/statisticsDialog.cc:263
+msgid "Unknown error"
+msgstr "שגיאה לא ידועה"
+
+#: Core/WorkerThreads.cpp:82
+msgid "Indexing was stopped"
+msgstr "השמירה באינדקס נעצרה"
+
+#: Core/WorkerThreads.cpp:95
+msgid "Can't index mail here"
+msgstr "לא ניתן לשמור את הודעות הדוא\"ל באינדקס מכאן"
+
+#: Core/WorkerThreads.cpp:116 Core/WorkerThreads.cpp:253
+msgid "is already being indexed"
+msgstr "כבר שמור באינדקס"
+
+#: Core/WorkerThreads.cpp:126
+msgid "is blacklisted"
+msgstr "ברשימה השחורה"
+
+#: Core/WorkerThreads.cpp:488
+msgid "No title"
+msgstr "ללא כותרת"
+
+#: UI/GTK2/src/EnginesTree.cc:76 UI/GTK2/src/statisticsDialog.cc:171
+msgid "Search Engines"
+msgstr "מנועי חיפוש"
+
+#: UI/GTK2/src/EnginesTree.cc:286
+msgid "Current User"
+msgstr "משתמש נוכחי"
+
+#: UI/GTK2/src/indexDialog.cc:122
+msgid "Served by"
+msgstr "מוגש על ידי"
+
+#: UI/GTK2/src/indexDialog.cc:125 UI/GTK2/src/indexDialog.cc:131
+msgid "Local"
+msgstr "מקומי"
+
+#: UI/GTK2/src/indexDialog.cc:298
+msgid "Index location"
+msgstr "מיקום באינדקס"
+
+#: UI/GTK2/src/indexDialog_glade.cc:64 UI/GTK2/src/queryDialog_glade.cc:67
+msgid "Name:"
+msgstr "שם:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:66
+msgid "..."
+msgstr "..."
+
+#: UI/GTK2/src/indexDialog_glade.cc:69 UI/GTK2/src/prefsWindow_glade.cc:128
+msgid "Type:"
+msgstr "סוג:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:70 UI/GTK2/src/importDialog_glade.cc:65
+msgid "Location:"
+msgstr "מיקום:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:71 UI/GTK2/src/prefsWindow_glade.cc:129
+msgid "Port:"
+msgstr "פתחה:"
+
+#: UI/GTK2/src/indexDialog_glade.cc:83 UI/GTK2/src/prefsWindow_glade.cc:125
+msgid "Address:"
+msgstr "כתובת:‏"
+
+#: UI/GTK2/src/indexDialog_glade.cc:218
+msgid "External index"
+msgstr "אינדקס חיצוני"
+
+#: UI/GTK2/src/importDialog.cc:106 UI/GTK2/src/importDialog.cc:108
+#: UI/GTK2/src/queryDialog.cc:168 UI/GTK2/src/queryDialog.cc:170
+#: UI/GTK2/src/queryDialog.cc:192 UI/GTK2/src/queryDialog.cc:194
+msgid "None"
+msgstr "ללא"
+
+#: UI/GTK2/src/importDialog_glade.cc:66
+#: UI/GTK2/src/propertiesDialog_glade.cc:63
+msgid "Title:"
+msgstr "כותרת:"
+
+#: UI/GTK2/src/importDialog_glade.cc:69
+msgid "Apply label:"
+msgstr "החל תווית:"
+
+#: UI/GTK2/src/importDialog_glade.cc:150 UI/GTK2/src/mainWindow_glade.cc:246
+#: UI/GTK2/src/mainWindow_glade.cc:355
+msgid "Import URL"
+msgstr "כתובת לייבוא"
+
+#: UI/GTK2/src/IndexPage.cc:48
+msgid "Show Previous"
+msgstr "הצגת הקודם"
+
+#: UI/GTK2/src/IndexPage.cc:54
+msgid "Show Next"
+msgstr "הצגת הבא"
+
+#: UI/GTK2/src/IndexPage.cc:191 UI/GTK2/src/IndexPage.cc:195
+msgid "All"
+msgstr "הכול"
+
+#: UI/GTK2/src/launcherDialog_glade.cc:63
+msgid ""
+"There is no helper application defined for this document's type.\n"
+"Please enter the command to open this document."
+msgstr ""
+"אין תוכנת עזר המוגדרת לטיפול בסוג קובץ זה.\n"
+"אנא הזן את הפקודה לפתיחת מסמך זה."
+
+#: UI/GTK2/src/launcherDialog_glade.cc:66
+msgid "Use this command for other documents of the same type."
+msgstr "השתמש בפקודה זו למסמכים אחרים מאותו הסוג."
+
+#: UI/GTK2/src/launcherDialog_glade.cc:116
+msgid "Helper application"
+msgstr "תוכנת עזר"
+
+#: UI/GTK2/src/mainWindow.cc:215
+msgid "Query Name"
+msgstr "שם השאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:220
+msgid "Last Run"
+msgstr "פעילות אחרונה"
+
+#: UI/GTK2/src/mainWindow.cc:225
+msgid "Summary"
+msgstr "תקציר"
+
+#: UI/GTK2/src/mainWindow.cc:272 UI/GTK2/src/mainWindow.cc:281
+msgid "Show all search engines"
+msgstr "הצג את כל מנועי החיפוש"
+
+#: UI/GTK2/src/mainWindow.cc:273 UI/GTK2/src/mainWindow.cc:279
+#: UI/GTK2/src/mainWindow.cc:283 UI/GTK2/src/mainWindow.cc:292
+msgid "Find documents that match the query"
+msgstr "מצא מסמכים התואמים את השאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:274 UI/GTK2/src/mainWindow.cc:287
+msgid "Add an index"
+msgstr "הוסף אינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:275 UI/GTK2/src/mainWindow.cc:288
+msgid "Remove an index"
+msgstr "הסר אינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:276 UI/GTK2/src/mainWindow.cc:289
+msgid "Add a query"
+msgstr "הוסף שאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:277 UI/GTK2/src/mainWindow.cc:290
+msgid "Remove a query"
+msgstr "הסר שאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:278 UI/GTK2/src/mainWindow.cc:291
+msgid "Show the query's previous results"
+msgstr "הצג את תוצאות השאילתה הקודמת"
+
+#: UI/GTK2/src/mainWindow.cc:285
+msgid "Find documents that match the query string"
+msgstr "מצא מסמכים התואמים את מחרוזת החיפוש"
+
+#. Now we are ready
+#: UI/GTK2/src/mainWindow.cc:312
+msgid "Ready"
+msgstr "מוכן"
+
+#: UI/GTK2/src/mainWindow.cc:324
+msgid "Updating all documents in My Web Pages is recommended"
+msgstr "עדכון כל המסמכים בעמודי האינטרנט שלי מומלצת"
+
+#: UI/GTK2/src/mainWindow.cc:332
+msgid "Don't warn me again"
+msgstr "אל תזהיר אותי שוב"
+
+#: UI/GTK2/src/mainWindow.cc:344 UI/GTK2/src/mainWindow_glade.cc:183
+#: UI/GTK2/src/mainWindow_glade.cc:291
+msgid "Update"
+msgstr "עדכן"
+
+#: UI/GTK2/src/mainWindow.cc:405
+msgid "N/A"
+msgstr "לא זמין"
+
+#: UI/GTK2/src/mainWindow.cc:423
+msgid "Undefined"
+msgstr "לא מוגדר"
+
+#. Find this query
+#: UI/GTK2/src/mainWindow.cc:746 UI/GTK2/src/mainWindow.cc:3004
+msgid "Live query"
+msgstr "שאילתה חיה"
+
+#. Show the URL of the first document in the status bar
+#: UI/GTK2/src/mainWindow.cc:1036
+msgid "Document location is"
+msgstr "מיקום המסמך הוא"
+
+#: UI/GTK2/src/mainWindow.cc:1257
+msgid "Couldn't search in results"
+msgstr "לא ניתן לחפש בתוצאות"
+
+#: UI/GTK2/src/mainWindow.cc:1267
+msgid "In Results"
+msgstr "בתוצאות"
+
+#: UI/GTK2/src/mainWindow.cc:1444
+msgid "Showing"
+msgstr "מציג"
+
+#: UI/GTK2/src/mainWindow.cc:1452
+msgid "of"
+msgstr "מתוך"
+
+#: UI/GTK2/src/mainWindow.cc:1494
+msgid "Query"
+msgstr "שאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:1498 UI/GTK2/src/mainWindow.cc:3574
+msgid "on"
+msgstr "ב־"
+
+#: UI/GTK2/src/mainWindow.cc:1502
+msgid "ended"
+msgstr "הסתיים"
+
+#: UI/GTK2/src/mainWindow.cc:1659
+msgid "More Like"
+msgstr "עוד כמו"
+
+#: UI/GTK2/src/mainWindow.cc:1726
+msgid "Updated label(s)"
+msgstr "תווית/ות מעודכנת/ות"
+
+#. Yes, it did
+#: UI/GTK2/src/mainWindow.cc:1822 UI/GTK2/src/mainWindow.cc:1912
+msgid "Updated document"
+msgstr "מסמך מעודכן"
+
+#: UI/GTK2/src/mainWindow.cc:1835
+msgid "Indexed"
+msgstr "שמור באינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:1872
+msgid "Unindexed document(s)"
+msgstr "מסמך/ים שאינו/ם שמור/ים באינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:1967
+msgid "Couldn't rename index, name"
+msgstr "לא ניתן לשנות את אינדקס, שם"
+
+#: UI/GTK2/src/mainWindow.cc:1971 UI/GTK2/src/mainWindow.cc:2800
+#: UI/GTK2/src/mainWindow.cc:3358
+msgid "is already in use"
+msgstr "כבר נמצא בשימוש"
+
+#: UI/GTK2/src/mainWindow.cc:1983
+msgid "Couldn't rename index"
+msgstr "לא ניתן לשנות את שם האינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:1998
+msgid "Edited index"
+msgstr "האינדקס נערך"
+
+#: UI/GTK2/src/mainWindow.cc:2308
+msgid "Export"
+msgstr "ייצא"
+
+#: UI/GTK2/src/mainWindow.cc:2373
+msgid "Couldn't find similar documents"
+msgstr "לא ניתן למצוא מסמכים דומים"
+
+#: UI/GTK2/src/mainWindow.cc:2616
+msgid "Index"
+msgstr "אינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:2620
+msgid "doesn't exist"
+msgstr "לא קיים"
+
+#: UI/GTK2/src/mainWindow.cc:2687
+msgid "Remove this document from the index ?"
+msgstr "האם להסיר מסמך זה מהאינדקס ?"
+
+#: UI/GTK2/src/mainWindow.cc:2706
+msgid "Remove these documents from the index ?"
+msgstr "האם להסיר מסמכים אלו מהאינדקס?"
+
+#: UI/GTK2/src/mainWindow.cc:2711 UI/GTK2/src/mainWindow_glade.cc:186
+#: UI/GTK2/src/mainWindow_glade.cc:294
+msgid "Unindex"
+msgstr "הסרה מהאינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:2750
+msgid "A metasearch tool for the Free Desktop"
+msgstr "כלי חיפוש־מטא לשולחן העבודה החופשי"
+
+#: UI/GTK2/src/mainWindow.cc:2751
+msgid "Search the Web and your documents !"
+msgstr "חיפוש באינטרנט ובמסמכים שלך !"
+
+#: UI/GTK2/src/mainWindow.cc:2796
+msgid "Index name"
+msgstr "שם האינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:2810
+msgid "Couldn't add index"
+msgstr "לא ניתן להוסיף אינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:2826
+msgid "Added new index"
+msgstr "נוסף אינדקס חדש"
+
+#: UI/GTK2/src/mainWindow.cc:2869
+msgid "Couldn't remove index"
+msgstr "לא ניתן להסיר אינדקס"
+
+#: UI/GTK2/src/mainWindow.cc:3095
+msgid "No history for"
+msgstr "אין היסטוריה עבור"
+
+#: UI/GTK2/src/mainWindow.cc:3167 UI/GTK2/src/prefsWindow.cc:975
+msgid "At least one task hasn't completed yet. Quit now ?"
+msgstr "לפחות משימה אחת לא הושלמה עדיין. לצאת כעת?"
+
+#: UI/GTK2/src/mainWindow.cc:3169 UI/GTK2/src/prefsWindow.cc:977
+msgid "Quit"
+msgstr "יציאה"
+
+#: UI/GTK2/src/mainWindow.cc:3354
+msgid "Query name"
+msgstr "שם השאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:3381
+msgid "Couldn't update query"
+msgstr "לא ניתן לעדכן את השאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:3392
+msgid "Edited query"
+msgstr "השאילתה נערכה"
+
+#: UI/GTK2/src/mainWindow.cc:3399
+msgid "Couldn't add query"
+msgstr "לא ניתן להוסיף שאילתה"
+
+#: UI/GTK2/src/mainWindow.cc:3407
+msgid "Added new query"
+msgstr "נוספה שאילתה חדשה"
+
+#: UI/GTK2/src/mainWindow.cc:3441
+msgid "Query is not set"
+msgstr "השאילתה לא הוגדרה"
+
+#: UI/GTK2/src/mainWindow.cc:3456
+msgid "No search engine selected"
+msgstr "לא נבחר מנוע חיפוש"
+
+#: UI/GTK2/src/mainWindow.cc:3561
+msgid "Please set the Google API key first"
+msgstr "אנא הגדר את מפתח ה־API של גוגל תחילה"
+
+#: UI/GTK2/src/mainWindow.cc:3570
+msgid "Running query"
+msgstr "השאילתה רצה"
+
+#: UI/GTK2/src/mainWindow.cc:3777
+msgid "No default application defined for type"
+msgstr "לא מוגדר יישום כברירת מחדל לסוג"
+
+#: UI/GTK2/src/mainWindow_glade.cc:130
+msgid "Query:"
+msgstr "שאילתה:"
+
+#: UI/GTK2/src/mainWindow_glade.cc:145 UI/GTK2/src/statisticsDialog.cc:184
+msgid "History"
+msgstr "היסטוריה"
+
+#: UI/GTK2/src/mainWindow_glade.cc:150
+msgid "Stored queries"
+msgstr "שאילתות מאוחסנות"
+
+#: UI/GTK2/src/mainWindow_glade.cc:171 UI/GTK2/src/mainWindow_glade.cc:279
+msgid "Open Cache"
+msgstr "פתיחת המטמון"
+
+#: UI/GTK2/src/mainWindow_glade.cc:174 UI/GTK2/src/mainWindow_glade.cc:282
+msgid "Open Parent"
+msgstr "פתיחת ההורה"
+
+#: UI/GTK2/src/mainWindow_glade.cc:180 UI/GTK2/src/mainWindow_glade.cc:288
+msgid "_Add To Index"
+msgstr "ה_וספה לאינדקס"
+
+#: UI/GTK2/src/mainWindow_glade.cc:192 UI/GTK2/src/mainWindow_glade.cc:300
+msgid "More Like This"
+msgstr "עוד כאלו"
+
+#: UI/GTK2/src/mainWindow_glade.cc:195 UI/GTK2/src/mainWindow_glade.cc:303
+msgid "Search This For"
+msgstr "חיפוש כאן אחר"
+
+#: UI/GTK2/src/mainWindow_glade.cc:228 UI/GTK2/src/mainWindow_glade.cc:336
+msgid "Search Engine"
+msgstr "מנוע חיפוש"
+
+#: UI/GTK2/src/mainWindow_glade.cc:231 UI/GTK2/src/mainWindow_glade.cc:339
+msgid "Host Name"
+msgstr "שם מארח"
+
+#: UI/GTK2/src/mainWindow_glade.cc:234 UI/GTK2/src/mainWindow_glade.cc:342
+msgid "List Contents Of"
+msgstr "הצגת התכנים של"
+
+#: UI/GTK2/src/mainWindow_glade.cc:237 UI/GTK2/src/mainWindow_glade.cc:345
+msgid "Group Results By"
+msgstr "קיבוץ התוצאות לפי"
+
+#: UI/GTK2/src/mainWindow_glade.cc:240 UI/GTK2/src/mainWindow_glade.cc:349
+msgid "Show Extracts"
+msgstr ""
+
+#: UI/GTK2/src/mainWindow_glade.cc:249 UI/GTK2/src/mainWindow_glade.cc:358
+msgid "Export List"
+msgstr "ייצוא הרשימה"
+
+#: UI/GTK2/src/mainWindow_glade.cc:255 UI/GTK2/src/mainWindow_glade.cc:364
+#: UI/GTK2/src/statisticsDialog.cc:121
+#: UI/GTK2/src/statisticsDialog_glade.cc:99
+msgid "Status"
+msgstr "מצב"
+
+#: UI/GTK2/src/mainWindow_glade.cc:261 UI/GTK2/src/mainWindow_glade.cc:370
+msgid "_File"
+msgstr "_קובץ"
+
+#: UI/GTK2/src/mainWindow_glade.cc:264 UI/GTK2/src/mainWindow_glade.cc:374
+msgid "_Edit"
+msgstr "_עריכה"
+
+#: UI/GTK2/src/mainWindow_glade.cc:267 UI/GTK2/src/mainWindow_glade.cc:378
+msgid "_Options"
+msgstr "א_פשרויות"
+
+#: UI/GTK2/src/mainWindow_glade.cc:270 UI/GTK2/src/mainWindow_glade.cc:382
+msgid "_Help"
+msgstr "ע_זרה"
+
+#: UI/GTK2/src/mainWindow_glade.cc:572
+msgid "Pinot"
+msgstr "פינות"
+
+#: UI/GTK2/src/Notebook.cc:87
+msgid "Did you mean ?"
+msgstr "האם כוונתך היתה?"
+
+#: UI/GTK2/src/Notebook.cc:98 UI/GTK2/src/Notebook.cc:272
+msgid "Close"
+msgstr "סגור"
+
+#: UI/GTK2/src/pinot.cc:351
+msgid "Couldn't open index"
+msgstr "לא ניתן לפתוח את האינדקס"
+
+#: UI/GTK2/src/pinot.cc:372
+msgid "Couldn't create history database"
+msgstr "לא ניתן ליצור את מסד הנתונים של ההיסטוריה"
+
+#: UI/GTK2/src/prefsWindow.cc:149
+msgid "File Indexing and Search"
+msgstr "אינדוקס וחיפוש קובץ"
+
+#: UI/GTK2/src/prefsWindow.cc:150
+msgid "Configure Pinot to index your files"
+msgstr "הגדרת Pinot לאינדוקס הקבצים שלך"
+
+#: UI/GTK2/src/prefsWindow.cc:208
+msgid "Name"
+msgstr "שם"
+
+#: UI/GTK2/src/prefsWindow.cc:226
+msgid "Monitor"
+msgstr "מעקב"
+
+#: UI/GTK2/src/prefsWindow.cc:227
+msgid "Location"
+msgstr "מיקום"
+
+#: UI/GTK2/src/prefsWindow.cc:235
+msgid "Pattern"
+msgstr "תבנית"
+
+#: UI/GTK2/src/prefsWindow.cc:583 UI/GTK2/src/prefsWindow.cc:586
+msgid "Exclude these patterns from indexing"
+msgstr ""
+
+#: UI/GTK2/src/prefsWindow.cc:584 UI/GTK2/src/prefsWindow.cc:587
+msgid "Only index these patterns"
+msgstr "שמור באינדקס מתבנית זו בלבד"
+
+#: UI/GTK2/src/prefsWindow.cc:787
+msgid "Directory to index"
+msgstr "תיקייה לאיחסון באינדקס"
+
+#: UI/GTK2/src/prefsWindow.cc:927
+msgid "New Label"
+msgstr "תווית חדשה"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:69
+msgid "These directories will be indexed and optionally monitored for changes:"
+msgstr "תיקיות אלו יאוחסנו באינדקס וניתן יהיה לנהל אחריהן מעקב אחר שינויים:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:74 UI/GTK2/src/prefsWindow_glade.cc:90
+#: UI/GTK2/src/prefsWindow_glade.cc:106
+msgid "Add"
+msgstr "הוסף"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:82
+msgid "File patterns:"
+msgstr "תבנית הקבצים:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:95
+msgid "Reset"
+msgstr "איפוס"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:100
+msgid "Indexing"
+msgstr "מאחסן באינדקס"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:101
+msgid "Labels are used to classify indexed documents:"
+msgstr "התוויות משמשות לסיווג המסמכים המאוחסנים באינדקס:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:112
+msgid "Remove"
+msgstr "הסר"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:120 UI/GTK2/src/propertiesDialog.cc:57
+msgid "Labels"
+msgstr "תוויות"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:122
+msgid "Direct connection to the Internet"
+msgstr "חיבור ישיר לאינטרנט"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:123
+msgid "Manual proxy configuration:"
+msgstr "תצורת מתווך ידנית:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:141
+msgid "Network"
+msgstr "רשת"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:142
+msgid "Google API key:"
+msgstr "מפתח ה־API של גוגל:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:145
+msgid "Queries:"
+msgstr "שאילתות:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:146
+msgid "Enable search terms suggestion"
+msgstr "אפשר הצעת מונחי חיפוש"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:148
+msgid "Ignore robots.txt and Robots META tag"
+msgstr "התעלם מ־robots.txt ומתגיות ה־META ‏Robots"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:149
+msgid "HTTP crawling:"
+msgstr ""
+
+#: UI/GTK2/src/prefsWindow_glade.cc:151
+msgid "New results:"
+msgstr "תוצאות חדשות:"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:154
+msgid "Miscellaneous"
+msgstr "שונות"
+
+#: UI/GTK2/src/prefsWindow_glade.cc:636
+msgid "Pinot Preferences"
+msgstr "ההעדפות של פינות"
+
+#: UI/GTK2/src/propertiesDialog.cc:106
+msgid "Per document"
+msgstr "עבור כל מסמך בנפרד"
+
+#: UI/GTK2/src/propertiesDialog.cc:374
+msgid "Export Terms"
+msgstr "ייצוא מונחים"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:64
+msgid "Language:"
+msgstr "שפה:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:65
+msgid "MIME type:"
+msgstr "סוג MIME:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:66
+msgid "Size:"
+msgstr "גודל:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:67
+msgid "Terms:"
+msgstr "תנאים:"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:77
+msgid "bytes"
+msgstr "בתים"
+
+#: UI/GTK2/src/propertiesDialog_glade.cc:266
+msgid "Properties"
+msgstr "מאפיינים"
+
+#: UI/GTK2/src/queryDialog.cc:111 UI/GTK2/src/queryDialog.cc:129
+msgid "Host name"
+msgstr "שם המארח"
+
+#: UI/GTK2/src/queryDialog.cc:112 UI/GTK2/src/queryDialog.cc:130
+msgid "File name"
+msgstr "שם הקובץ"
+
+#: UI/GTK2/src/queryDialog.cc:113 UI/GTK2/src/queryDialog.cc:131
+msgid "File extension"
+msgstr "סיומת הקובץ"
+
+#. This is the title column
+#: UI/GTK2/src/queryDialog.cc:114 UI/GTK2/src/queryDialog.cc:132
+#: UI/GTK2/src/ResultsTree.cc:157
+msgid "Title"
+msgstr "כותרת"
+
+#. URL
+#: UI/GTK2/src/queryDialog.cc:115 UI/GTK2/src/queryDialog.cc:133
+#: UI/GTK2/src/ResultsTree.cc:167
+msgid "URL"
+msgstr "כתובת"
+
+#: UI/GTK2/src/queryDialog.cc:116 UI/GTK2/src/queryDialog.cc:134
+msgid "Directory"
+msgstr "תיקיה"
+
+#: UI/GTK2/src/queryDialog.cc:117 UI/GTK2/src/queryDialog.cc:135
+msgid "In URL"
+msgstr "בכתובת"
+
+#: UI/GTK2/src/queryDialog.cc:118 UI/GTK2/src/queryDialog.cc:136
+msgid "Path"
+msgstr "נתיב"
+
+#: UI/GTK2/src/queryDialog.cc:119 UI/GTK2/src/queryDialog.cc:137
+msgid "Language code"
+msgstr "קוד השפה"
+
+#: UI/GTK2/src/queryDialog.cc:120 UI/GTK2/src/queryDialog.cc:138
+msgid "MIME type"
+msgstr "סוג MIME"
+
+#: UI/GTK2/src/queryDialog.cc:121 UI/GTK2/src/queryDialog.cc:139
+msgid "MIME class"
+msgstr "מחלקת ה־MIME"
+
+#: UI/GTK2/src/queryDialog.cc:122 UI/GTK2/src/queryDialog.cc:140
+msgid "Label"
+msgstr "תווית"
+
+#. The last column is for the timestamp
+#: UI/GTK2/src/queryDialog.cc:125 UI/GTK2/src/queryDialog.cc:143
+#: UI/GTK2/src/ResultsTree.cc:175
+msgid "Date"
+msgstr "תאריך"
+
+#: UI/GTK2/src/queryDialog.cc:126 UI/GTK2/src/queryDialog.cc:144
+msgid "Time"
+msgstr "זמן"
+
+#: UI/GTK2/src/queryDialog.cc:127 UI/GTK2/src/queryDialog.cc:145
+msgid "Size"
+msgstr "גודל"
+
+#: UI/GTK2/src/queryDialog.cc:151 UI/GTK2/src/queryDialog.cc:154
+msgid "By relevance"
+msgstr "לפי רלוונטיות"
+
+#: UI/GTK2/src/queryDialog.cc:152 UI/GTK2/src/queryDialog.cc:155
+msgid "By date"
+msgstr "לפי תאריך"
+
+#: UI/GTK2/src/queryDialog_glade.cc:71
+msgid "New filter or range:"
+msgstr "מסנן או טווח חדשים:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:80
+msgid "Query Text"
+msgstr "טקסט השאילתה"
+
+#: UI/GTK2/src/queryDialog_glade.cc:82
+msgid "Index results with label"
+msgstr "שמירת תוצאות באינדקס עם תווית"
+
+#: UI/GTK2/src/queryDialog_glade.cc:85
+msgid "Number of results:"
+msgstr "מספר התוצאות"
+
+#: UI/GTK2/src/queryDialog_glade.cc:94
+msgid "Sort order:"
+msgstr "סדר המיון:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:98
+msgid "Stemming:"
+msgstr "איתור שורשים:"
+
+#: UI/GTK2/src/queryDialog_glade.cc:99
+msgid "Only index new results"
+msgstr "שמירת תוצאות חדשות בלבד באינדקס"
+
+#: UI/GTK2/src/queryDialog_glade.cc:251
+msgid "Query parameters"
+msgstr "הפרמטרים לשאילתה"
+
+#. This is the score column
+#: UI/GTK2/src/ResultsTree.cc:146
+msgid "Score"
+msgstr "ניקוד"
+
+#: UI/GTK2/src/ResultsTree.cc:1622
+msgid "No results"
+msgstr "אין תוצאות"
+
+#: UI/GTK2/src/statisticsDialog.cc:154
+msgid "Indexes"
+msgstr "אינדקסים"
+
+#: UI/GTK2/src/statisticsDialog.cc:160 UI/GTK2/src/statisticsDialog.cc:166
+#: UI/GTK2/src/statisticsDialog.cc:197
+msgid "Checking"
+msgstr "בבדיקה"
+
+#: UI/GTK2/src/statisticsDialog.cc:194
+msgid "Daemon"
+msgstr "תהליך רקע"
+
+#: UI/GTK2/src/statisticsDialog.cc:216
+msgid "Viewed"
+msgstr "נצפה"
+
+#: UI/GTK2/src/statisticsDialog.cc:216
+msgid "results"
+msgstr "תוצאות"
+
+#: UI/GTK2/src/statisticsDialog.cc:222
+msgid "Crawled"
+msgstr ""
+
+#: UI/GTK2/src/statisticsDialog.cc:222
+msgid "files"
+msgstr "קבצים"
+
+#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+msgid "documents"
+msgstr "מסמכים"
+
+#. FIXME: check whether it's actually running !
+#: UI/GTK2/src/statisticsDialog.cc:284
+msgid "Running under PID"
+msgstr "רץ תחת מזהה תהליך"
+
+#: UI/GTK2/src/statisticsDialog.cc:306
+msgid "Disconnected from D-Bus"
+msgstr "מנותק מ־D-Bus"
+
+#: UI/GTK2/src/statisticsDialog.cc:310
+msgid "Stopped"
+msgstr "נעצר"
+
+#: UI/GTK2/src/statisticsDialog.cc:314
+msgid "Currently not running"
+msgstr "אינו פעיל כעת"
+
+#: UI/GTK2/src/statisticsDialog.cc:328
+msgid "Low disk space"
+msgstr "כמות השטח הפנוי בכונן נמוכה"
+
+#: UI/GTK2/src/statisticsDialog.cc:345
+msgid "System on battery"
+msgstr "המערכת פועלת על סוללה"
+
+#: UI/GTK2/src/statisticsDialog.cc:363
+msgid "Crawling"
+msgstr ""
+
+#: UI/GTK2/src/statisticsDialog.cc:402
+msgid "Errors"
+msgstr "שגיאות"
