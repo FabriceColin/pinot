@@ -1,0 +1,822 @@
+------------------------------------------------------------------------
+r174 | fabricecolin | 2011-10-02 13:00:28 +0800 (Sun, 02 Oct 2011) | 2 lines
+Changed paths:
+   A /trunk/filters/Exiv2ImageFilter.cc
+   A /trunk/filters/Exiv2ImageFilter.h
+
+EXIF, IPTC and XMP filter based on exiv2 (http://www.exiv2.org/).
+
+------------------------------------------------------------------------
+r173 | fabricecolin | 2011-02-21 21:54:24 +0800 (Mon, 21 Feb 2011) | 2 lines
+Changed paths:
+   A /trunk/filters/ChmFilter.cc
+   A /trunk/filters/ChmFilter.h
+
+Filter for CHM files based on chmlib from http://www.jedrea.com/chmlib/
+
+------------------------------------------------------------------------
+r172 | fabricecolin | 2011-02-20 18:04:50 +0800 (Sun, 20 Feb 2011) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   A /trunk/filters/FileOutputFilter.cc
+   A /trunk/filters/FileOutputFilter.h
+
+Moved read_file() to class FileOutputFilter.
+
+------------------------------------------------------------------------
+r171 | fabricecolin | 2010-12-15 21:22:55 +0800 (Wed, 15 Dec 2010) | 4 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+   M /trunk/filters/ArchiveFilter.h
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/Filter.h
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TarFilter.cc
+   M /trunk/filters/TarFilter.h
+   M /trunk/filters/TextFilter.cc
+   M /trunk/filters/XmlFilter.cc
+
+New property MAXIMUM_NESTED_SIZE to limit how much of nested documents filters
+will return.
+Extra DEBUG elsewhere.
+
+------------------------------------------------------------------------
+r169 | fabricecolin | 2010-07-12 21:59:08 +0800 (Mon, 12 Jul 2010) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Fixed bug that would stop parsing when not being able to get the last part.
+External parts of unknown access types are assigned application/octet-stream.
+
+------------------------------------------------------------------------
+r168 | fabricecolin | 2010-07-05 21:04:27 +0800 (Mon, 05 Jul 2010) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Support for messages of type message/external-body.
+
+------------------------------------------------------------------------
+r166 | fabricecolin | 2009-10-25 13:05:41 +0800 (Sun, 25 Oct 2009) | 3 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Don't skip dots, they are useful for acronyms.
+Both overloads of tokenize() take break_ascii_only_on_space.
+
+------------------------------------------------------------------------
+r164 | fabricecolin | 2009-06-27 09:53:49 +0800 (Sat, 27 Jun 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+GMime 2.4 doesn't require objects returned by g_mime_message_get_mime_part()
+to be unref'ed.
+
+------------------------------------------------------------------------
+r163 | fabricecolin | 2009-06-23 20:06:33 +0800 (Tue, 23 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Only the last message's first part was retrieved, the rest was skipped.
+
+------------------------------------------------------------------------
+r162 | fabricecolin | 2009-06-22 20:45:28 +0800 (Mon, 22 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Fix type mismatch with gmime 2.4. Rely on stream length rather than file size.
+
+------------------------------------------------------------------------
+r161 | fabricecolin | 2009-06-21 20:14:34 +0800 (Sun, 21 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Replace tags with spaces in titles and links too.
+
+------------------------------------------------------------------------
+r160 | fabricecolin | 2009-05-31 14:10:25 +0800 (Sun, 31 May 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+   M /trunk/filters/TarFilter.cc
+
+Since title is set to file names, set mimetype to the new SCANTITLE.
+
+------------------------------------------------------------------------
+r159 | fabricecolin | 2009-05-31 14:09:23 +0800 (Sun, 31 May 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Get the file name of MIME parts and use that as title, rather than the
+message's subject.
+
+------------------------------------------------------------------------
+r158 | fabricecolin | 2009-05-31 11:37:32 +0800 (Sun, 31 May 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+Removed application/x-deb, it's now handled by ArchiveFilter.
+
+------------------------------------------------------------------------
+r157 | fabricecolin | 2009-05-31 11:36:18 +0800 (Sun, 31 May 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Set the close-on-exec flag, either on open() or after open() with fcntl().
+In ArchiveFilter, add support for ar archives and deb's.
+
+------------------------------------------------------------------------
+r155 | fabricecolin | 2009-04-13 17:47:49 +0800 (Mon, 13 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Set a limit to the amount of text that's split and tokenized.
+
+------------------------------------------------------------------------
+r153 | fabricecolin | 2009-04-07 22:27:22 +0800 (Tue, 07 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Ensure the data buffer isn't accidentally lost on calls to skip_to_document().
+
+------------------------------------------------------------------------
+r152 | fabricecolin | 2009-04-06 21:19:07 +0800 (Mon, 06 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+
+Removed cpio and zip.
+
+------------------------------------------------------------------------
+r151 | fabricecolin | 2009-04-05 09:54:34 +0800 (Sun, 05 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+   M /trunk/filters/ArchiveFilter.h
+   M /trunk/filters/TarFilter.cc
+
+Completed ArchiveFilter. Minor changes to TarFilter.
+
+------------------------------------------------------------------------
+r150 | fabricecolin | 2009-04-02 23:30:22 +0800 (Thu, 02 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Minor changes.
+
+------------------------------------------------------------------------
+r149 | fabricecolin | 2009-04-02 23:29:17 +0800 (Thu, 02 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+Type application/x-compress was missing.
+
+------------------------------------------------------------------------
+r148 | fabricecolin | 2009-04-02 23:23:28 +0800 (Thu, 02 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+
+Don't initialize and cleanup libxml2, let the application handle that.
+
+------------------------------------------------------------------------
+r147 | fabricecolin | 2009-03-29 17:03:04 +0800 (Sun, 29 Mar 2009) | 4 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Use the memory stream functions when passed a buffer, instead of dealing only
+with files. Free the stream after freeing the parser.
+Don't set the URI to "mailbox://...".
+
+------------------------------------------------------------------------
+r146 | fabricecolin | 2009-03-29 17:00:13 +0800 (Sun, 29 Mar 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Minor change.
+
+------------------------------------------------------------------------
+r145 | fabricecolin | 2009-03-25 21:38:25 +0800 (Wed, 25 Mar 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/ArchiveFilter.cc
+
+Set ipath to "f=file_name".
+
+------------------------------------------------------------------------
+r144 | fabricecolin | 2009-03-23 23:22:16 +0800 (Mon, 23 Mar 2009) | 3 lines
+Changed paths:
+   A /trunk/filters/ArchiveFilter.cc
+   A /trunk/filters/ArchiveFilter.h
+   M /trunk/filters/external-filters.xml
+
+Filter based on libarchive for tar and cpio files, compressed or not, zip files
+and ISO images.
+
+------------------------------------------------------------------------
+r143 | fabricecolin | 2009-03-23 23:13:30 +0800 (Mon, 23 Mar 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/TarFilter.cc
+
+Reset the handle on rewind().
+
+------------------------------------------------------------------------
+r142 | fabricecolin | 2009-03-22 22:00:47 +0800 (Sun, 22 Mar 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/Filter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TarFilter.cc
+   M /trunk/filters/TextFilter.cc
+   M /trunk/filters/XmlFilter.cc
+
+Content is handled separately from metadata. Filters expect the application to
+provide a Memory.h that define a basic_string subclass named dstring.
+
+------------------------------------------------------------------------
+r141 | fabricecolin | 2009-03-22 16:24:10 +0800 (Sun, 22 Mar 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+For OpenXML Presentation and Sheet we didn't get the right file(s) out.
+
+------------------------------------------------------------------------
+r140 | fabricecolin | 2009-03-10 19:56:28 +0800 (Tue, 10 Mar 2009) | 3 lines
+Changed paths:
+   A /trunk/filters/TarFilter.cc
+   A /trunk/filters/TarFilter.h
+   M /trunk/filters/external-filters.xml
+
+TarFilter is a libtar-based filter to extract files from tar archives.
+Modified the rules for compressed tar files in external-filters.xml accordingly.
+
+------------------------------------------------------------------------
+r138 | fabricecolin | 2009-03-05 21:51:00 +0800 (Thu, 05 Mar 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Fixed findCharset().
+
+------------------------------------------------------------------------
+r137 | fabricecolin | 2009-03-05 21:19:24 +0800 (Thu, 05 Mar 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/HtmlFilter.cc
+
+If ExternalFilter is getting plain text, it will only grab the first 5Mb.
+Less chatty DEBUG in HtmlFilter.
+
+------------------------------------------------------------------------
+r136 | fabricecolin | 2009-02-28 14:39:52 +0800 (Sat, 28 Feb 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/Filter.h
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Allow initializing of dynamic filters when they are loaded with GCC's
+__attribute__((constructor)).
+
+------------------------------------------------------------------------
+r135 | fabricecolin | 2009-02-28 10:32:22 +0800 (Sat, 28 Feb 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+   A /trunk/filters/HtmlParser.cc
+   A /trunk/filters/HtmlParser.h
+
+Imported Xapian Omega's htmlparse.cc/h files, made some small changes. Rewrote
+HtmlFilter to use that instead of libxml2.
+
+------------------------------------------------------------------------
+r134 | fabricecolin | 2009-02-15 22:39:04 +0800 (Sun, 15 Feb 2009) | 3 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+A hack to prevent rpm from chocking on text files mistakenly identified as RPMs
+by a broken shared-mime.
+
+------------------------------------------------------------------------
+r132 | fabricecolin | 2009-01-11 12:53:43 +0800 (Sun, 11 Jan 2009) | 2 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+Get pdftotext to output UTF-8 text.
+
+------------------------------------------------------------------------
+r131 | fabricecolin | 2009-01-08 19:25:00 +0800 (Thu, 08 Jan 2009) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Treat all punctuation as space.
+
+------------------------------------------------------------------------
+r130 | fabricecolin | 2008-12-31 21:42:29 +0800 (Wed, 31 Dec 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Patch for gmime 2.4 support by Adel Gadllah.
+If GMIME_ENABLE_RFC2047_WORKAROUNDS is defined, assume gmime 2.4.
+
+------------------------------------------------------------------------
+r129 | fabricecolin | 2008-12-31 21:11:39 +0800 (Wed, 31 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Less DEBUG.
+
+------------------------------------------------------------------------
+r128 | fabricecolin | 2008-12-16 21:37:52 +0800 (Tue, 16 Dec 2008) | 3 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+In _unicode_to_char(), convert all Unicode spaces including the "non-breaking
+space" character at code point 160 to a single character.
+
+------------------------------------------------------------------------
+r127 | fabricecolin | 2008-12-13 13:38:05 +0800 (Sat, 13 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Fix previous commit.
+
+------------------------------------------------------------------------
+r126 | fabricecolin | 2008-12-13 13:36:00 +0800 (Sat, 13 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+If strptime() isn't available, attempt to parse EXIF_TAG_DATE_TIME bit by bit.
+
+------------------------------------------------------------------------
+r125 | fabricecolin | 2008-12-07 12:58:29 +0800 (Sun, 07 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/FilterFactory.cc
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/xesam/XapianQueryBuilder.cc
+
+Include config.h before checking any of the "HAVE_" ifdef's.
+
+------------------------------------------------------------------------
+r124 | fabricecolin | 2008-12-06 09:22:40 +0800 (Sat, 06 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/TagLibMusicFilter.cc
+
+GCC 4.4 patch by Martin Michlmayr (Debian bug #504908).
+
+------------------------------------------------------------------------
+r123 | fabricecolin | 2008-12-02 23:59:34 +0800 (Tue, 02 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+
+Support for the date field is conditioned by strptime().
+
+------------------------------------------------------------------------
+r122 | fabricecolin | 2008-12-01 21:03:18 +0800 (Mon, 01 Dec 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/FilterFactory.cc
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Portability fixes, brought up when compiling with MingW.
+
+------------------------------------------------------------------------
+r121 | fabricecolin | 2008-11-08 13:39:58 +0800 (Sat, 08 Nov 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Look out for the X-Evolution header.
+
+------------------------------------------------------------------------
+r120 | fabricecolin | 2008-10-18 18:31:54 +0800 (Sat, 18 Oct 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+
+Get CDATA online. In run_command(), expect several %s. 
+
+------------------------------------------------------------------------
+r119 | fabricecolin | 2008-09-30 21:54:59 +0800 (Tue, 30 Sep 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+The conversion specifier %z is a GNU extension to strftime().
+
+------------------------------------------------------------------------
+r117 | fabricecolin | 2008-09-16 22:05:12 +0800 (Tue, 16 Sep 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/FilterFactory.cc
+
+isSupportedType() would claim plain text and XML were not supported !
+
+------------------------------------------------------------------------
+r115 | fabricecolin | 2008-09-09 22:33:55 +0800 (Tue, 09 Sep 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Check for vsnprintf().
+
+------------------------------------------------------------------------
+r114 | fabricecolin | 2008-08-22 21:50:04 +0800 (Fri, 22 Aug 2008) | 4 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+If a filter's output element is set to SCAN, the application is supposed to scan
+it for its MIME type.
+Added two such filters for application/x-gzip and x-bzip.
+
+------------------------------------------------------------------------
+r113 | fabricecolin | 2008-08-15 21:02:48 +0800 (Fri, 15 Aug 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/FilterFactory.cc
+
+Don't assume that all MIME types of class text can be handled by the plain text
+filter.
+
+------------------------------------------------------------------------
+r112 | fabricecolin | 2008-08-04 22:27:19 +0800 (Mon, 04 Aug 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.h
+   M /trunk/filters/ExifImageFilter.cc
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TextFilter.h
+   M /trunk/filters/XmlFilter.cc
+
+If gcc 4.*, export filter entry points and base classes explicitely.
+
+------------------------------------------------------------------------
+r111 | fabricecolin | 2008-07-26 13:59:03 +0800 (Sat, 26 Jul 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+Support for docx formats, as suggested by Frank Bruzzaniti on the xapian-discuss
+mailing list.
+
+------------------------------------------------------------------------
+r109 | fabricecolin | 2008-07-19 15:37:59 +0800 (Sat, 19 Jul 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Only check for META keywords, don't add them to the META tags map.
+
+------------------------------------------------------------------------
+r108 | fabricecolin | 2008-07-05 14:01:07 +0800 (Sat, 05 Jul 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/external-filters.xml
+
+Run pdftotext in raw mode, it helps with columns.
+
+------------------------------------------------------------------------
+r105 | fabricecolin | 2008-06-21 11:55:16 +0800 (Sat, 21 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+   M /trunk/filters/ExifImageFilter.h
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/Filter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/FilterFactory.cc
+   M /trunk/filters/FilterFactory.h
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TagLibMusicFilter.h
+   M /trunk/filters/TextFilter.cc
+   M /trunk/filters/TextFilter.h
+   M /trunk/filters/XmlFilter.cc
+   M /trunk/filters/XmlFilter.h
+
+Filters are under the GPL.
+
+------------------------------------------------------------------------
+r104 | fabricecolin | 2008-06-18 20:30:54 +0800 (Wed, 18 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Don't call TimeConverter here.
+
+------------------------------------------------------------------------
+r103 | fabricecolin | 2008-06-09 23:31:54 +0800 (Mon, 09 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+No need to reinvent the wheel when we can just use g_mime_message_get_subject().
+
+------------------------------------------------------------------------
+r102 | fabricecolin | 2008-05-28 22:29:18 +0800 (Wed, 28 May 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+   M /trunk/filters/HtmlFilter.cc
+
+Cosmetic changes.
+
+------------------------------------------------------------------------
+r101 | fabricecolin | 2008-05-23 21:42:32 +0800 (Fri, 23 May 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Skip htdig_noindex blocks.
+
+------------------------------------------------------------------------
+r100 | fabricecolin | 2008-05-19 18:01:29 +0800 (Mon, 19 May 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Decode base64-encoded ISO-2022-JP subject lines.
+
+------------------------------------------------------------------------
+r99 | fabricecolin | 2008-05-11 17:16:45 +0800 (Sun, 11 May 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Don't use charset filters but remember what the part's charset is and let the
+calling application handle conversion.
+
+------------------------------------------------------------------------
+r98 | fabricecolin | 2008-05-06 22:53:36 +0800 (Tue, 06 May 2008) | 5 lines
+Changed paths:
+   M /trunk/filters/Filter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+
+Filters may need to convert text to UTF-8 before/while processing documents.
+For instance, libxml2 used by the HTML filter doesn't handle gb2312 (at least
+when built without iconv support ?) and yet produces UTF-8 output.
+Fixed confusion about what charset should be set to in the metadata map.
+
+------------------------------------------------------------------------
+r97 | fabricecolin | 2008-05-03 14:00:01 +0800 (Sat, 03 May 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+When a switch from non-CJKV to CJKV is detected, don't consume the first byte.
+
+------------------------------------------------------------------------
+r96 | fabricecolin | 2008-04-29 20:27:41 +0800 (Tue, 29 Apr 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Grab all tags.
+
+------------------------------------------------------------------------
+r95 | fabricecolin | 2008-04-26 14:51:35 +0800 (Sat, 26 Apr 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Allow to break ASCII tokens only on space.
+
+------------------------------------------------------------------------
+r94 | fabricecolin | 2008-04-26 13:05:55 +0800 (Sat, 26 Apr 2008) | 2 lines
+Changed paths:
+   A /trunk/filters/ExifImageFilter.cc
+   A /trunk/filters/ExifImageFilter.h
+
+Experimental EXIF filter.
+
+------------------------------------------------------------------------
+r93 | fabricecolin | 2008-04-20 18:24:11 +0800 (Sun, 20 Apr 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+If a part has a charset specified, and it's not UTF-8, install a filter to
+convert to UTF-8.
+
+------------------------------------------------------------------------
+r92 | fabricecolin | 2008-04-11 23:47:33 +0800 (Fri, 11 Apr 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TagLibMusicFilter.h
+
+TagLibMusicFilter only supports the input type DOCUMENT_FILE_NAME, contrary to
+what it advertised.
+
+------------------------------------------------------------------------
+r90 | fabricecolin | 2008-03-24 13:11:29 +0800 (Mon, 24 Mar 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/HtmlFilter.cc
+
+Minor modifications.
+
+------------------------------------------------------------------------
+r89 | fabricecolin | 2008-03-10 19:06:19 +0800 (Mon, 10 Mar 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Includes fix for gcc 4.3 by Adel Gadllah.
+
+------------------------------------------------------------------------
+r88 | fabricecolin | 2008-03-09 01:38:56 +0800 (Sun, 09 Mar 2008) | 3 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Merging in upstream changes, ie new segment() mthod and and an overload of
+tokenize() that works with a TokensHandler object.
+
+------------------------------------------------------------------------
+r86 | fabricecolin | 2008-02-27 23:17:16 +0800 (Wed, 27 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/HtmlFilter.cc
+
+Added missing includes for gcc 4.3. Patch by Adel Gadllah.
+
+------------------------------------------------------------------------
+r85 | fabricecolin | 2008-02-26 21:18:39 +0800 (Tue, 26 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Break non-CJKV tokens on all spaces and punctuations.
+
+------------------------------------------------------------------------
+r84 | fabricecolin | 2008-02-24 19:09:01 +0800 (Sun, 24 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+
+Do without hashing.
+
+------------------------------------------------------------------------
+r83 | fabricecolin | 2008-02-24 19:07:55 +0800 (Sun, 24 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/test.cc
+
+Don't fail on spaces in has_cjkv_only().
+
+------------------------------------------------------------------------
+r82 | fabricecolin | 2008-02-22 22:12:23 +0800 (Fri, 22 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Cosmetic fix.
+
+------------------------------------------------------------------------
+r81 | fabricecolin | 2008-02-22 22:11:12 +0800 (Fri, 22 Feb 2008) | 4 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+   M /trunk/xesam/XapianQueryBuilder.h
+   M /trunk/xesam/XesamParser.h
+   M /trunk/xesam/XesamQLParser.cc
+   M /trunk/xesam/XesamQLParser.h
+   M /trunk/xesam/XesamQueryBuilder.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+   M /trunk/xesam/XesamULParser.cc
+   M /trunk/xesam/XesamULParser.h
+
+Made XesamQueryBuilder::on_user_query() pure virtual, moved XesamULParser-based
+implementation to XapianQueryBuilder.
+Log stuff with XESAM_LOG macros, which we expect apps to define in XesamLog.h.
+
+------------------------------------------------------------------------
+r80 | fabricecolin | 2008-02-18 19:28:29 +0800 (Mon, 18 Feb 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/external-filters.xml
+
+Each filter block can specify a charset element if the output of the program is
+in a known charset.
+
+------------------------------------------------------------------------
+r79 | fabricecolin | 2008-02-18 19:25:07 +0800 (Mon, 18 Feb 2008) | 6 lines
+Changed paths:
+   A /trunk/cjkv/CJKVTokenizer.cc (from /trunk/cjkv/cjkv-tokenizer.cc:77)
+   A /trunk/cjkv/CJKVTokenizer.h (from /trunk/cjkv/cjkv-tokenizer.hh:77)
+   D /trunk/cjkv/cjkv-tokenizer.cc
+   D /trunk/cjkv/cjkv-tokenizer.hh
+   M /trunk/cjkv/makefile
+   M /trunk/cjkv/test.cc
+
+Added wrapper functions around gunicode API, enabled when HAVE_UNICODE_H isn't
+defined. This variable should be defined only if libunicode 0.4 is available.
+Renamed the main class, made several mostly cosmetic changes to make it look
+like code from xesam/ and filters/ and added copyright and licensing headers.
+Thanks to Yung-Chung Lin for agreeing on licensing this under the LGPL.
+
+------------------------------------------------------------------------
+r77 | fabricecolin | 2008-01-14 22:35:44 +0800 (Mon, 14 Jan 2008) | 6 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+   M /trunk/xesam/XapianQueryBuilder.h
+   M /trunk/xesam/XesamQLParser.cc
+
+Implemented support for size (on field "file:size") and time ranges, Proximity
+with any number of values, negation, as well as for content (but not source)
+filtering, either with the Category selector or the Query element. The latter
+would require the proper classification of documents, and is therefore extremely
+basic.
+
+------------------------------------------------------------------------
+r76 | fabricecolin | 2008-01-14 22:22:42 +0800 (Mon, 14 Jan 2008) | 3 lines
+Changed paths:
+   M /trunk/xesam/XesamQueryBuilder.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+   M /trunk/xesam/XesamULParser.cc
+
+Look only for HAVE_BOOST_SPIRIT to determine whether Spirit is available.
+Modified prototypes of on_query methods.
+
+------------------------------------------------------------------------
+r75 | fabricecolin | 2008-01-12 21:35:45 +0800 (Sat, 12 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/xesam/XesamQLParser.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+
+The Type selector was apparently replaced with Category.
+
+------------------------------------------------------------------------
+r74 | fabricecolin | 2008-01-05 12:53:44 +0800 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+This can also process text/x-mail ant text/x-news.
+
+------------------------------------------------------------------------
+r73 | xern | 2007-12-24 11:36:38 +0800 (Mon, 24 Dec 2007) | 1 line
+Changed paths:
+   A /trunk/cjkv
+   A /trunk/cjkv/cjkv-tokenizer.cc
+   A /trunk/cjkv/cjkv-tokenizer.hh
+   A /trunk/cjkv/makefile
+   A /trunk/cjkv/test.cc
+
+The first commit of cjkv tokenizer.
+------------------------------------------------------------------------
+r72 | fabricecolin | 2007-11-29 21:21:44 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   A /trunk/filters/external-filters.xml
+
+This file is needed too.
+
+------------------------------------------------------------------------
+r71 | fabricecolin | 2007-11-29 20:52:11 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+
+Assume the caller set the appropriate ValueRangeProcessor's on the QueryParser.
+
+------------------------------------------------------------------------
+r70 | fabricecolin | 2007-11-29 20:44:37 +0800 (Thu, 29 Nov 2007) | 3 lines
+Changed paths:
+   A /trunk/filters
+   A /trunk/filters/ExternalFilter.cc
+   A /trunk/filters/ExternalFilter.h
+   A /trunk/filters/Filter.cc
+   A /trunk/filters/Filter.h
+   A /trunk/filters/FilterFactory.cc
+   A /trunk/filters/FilterFactory.h
+   A /trunk/filters/GMimeMboxFilter.cc
+   A /trunk/filters/GMimeMboxFilter.h
+   A /trunk/filters/HtmlFilter.cc
+   A /trunk/filters/HtmlFilter.h
+   A /trunk/filters/TagLibMusicFilter.cc
+   A /trunk/filters/TagLibMusicFilter.h
+   A /trunk/filters/TextFilter.cc
+   A /trunk/filters/TextFilter.h
+   A /trunk/filters/XmlFilter.cc
+   A /trunk/filters/XmlFilter.h
+   A /trunk/xesam
+   A /trunk/xesam/XapianQueryBuilder.cc
+   A /trunk/xesam/XapianQueryBuilder.h
+   A /trunk/xesam/XesamParser.h
+   A /trunk/xesam/XesamQLParser.cc
+   A /trunk/xesam/XesamQLParser.h
+   A /trunk/xesam/XesamQueryBuilder.cc
+   A /trunk/xesam/XesamQueryBuilder.h
+   A /trunk/xesam/XesamULParser.cc
+   A /trunk/xesam/XesamULParser.h
+
+Current code imported from branches/pinot. All this no longer depends on Pinot's
+code so there's no reason to keep it in a branch.
+
+------------------------------------------------------------------------
+r1 | fabricecolin | 2007-01-27 11:53:54 +0800 (Sat, 27 Jan 2007) | 2 lines
+Changed paths:
+   A /trunk
+
+Trunk.
+
+------------------------------------------------------------------------
