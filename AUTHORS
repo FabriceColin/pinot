@@ -37,6 +37,7 @@ Small patches, bug reports and helpful comments :
 	Kamil Rytarowski <krytarowski at gmail dot com>
 	Takafumi Arakaki <aka dot tkf at gmail dot com>
 	Jelle van der Waa <jelle@vdwaa.nl>
+	Olly Betts <olly@survex.com>
 
 Some code is borrowed from Xapian Omega, which is "largely the work of
 Olly Betts, Mark Shinwell (omindex-config) and Richard Boulton",
