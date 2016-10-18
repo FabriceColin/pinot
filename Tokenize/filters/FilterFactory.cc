@@ -42,11 +42,10 @@
 #endif
 #endif
 
-#if defined(__llvm__)
+#if defined _GLIBCXX_USE_CXX11_ABI && _GLIBCXX_USE_CXX11_ABI
 #define GETFILTERTYPESFUNC	"_Z16get_filter_typesRNSt3__13setINS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEENS_4lessIS6_EENS4_IS6_EEEE"
 #define GETFILTERFUNC		"_Z10get_filterRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
 #else
-// Assume __GNUC__
 #define GETFILTERTYPESFUNC	"_Z16get_filter_typesRSt3setISsSt4lessISsESaISsEE"
 #define GETFILTERFUNC		"_Z10get_filterRKSs"
 #endif
