@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2014 Fabrice Colin
+ *  Copyright 2008-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,6 +82,9 @@ class SQLDB
 {
 	public:
 		virtual ~SQLDB();
+
+		virtual bool upgrade(unsigned int versionNum, const std::string &sql,
+			const std::string &sqlPostUpgrade);
 
 		virtual bool isReadOnly(void) const;
 

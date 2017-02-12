@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2013 Fabrice Colin
+ *  Copyright 2008-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -117,6 +117,27 @@ SQLDB::SQLDB(const string &databaseName,
 
 SQLDB::~SQLDB()
 {
+}
+
+bool SQLDB::upgrade(unsigned int versionNum, const string &sql,
+	const string &sqlPostUpgrade)
+{
+	if (beginTransaction() == false)
+	{
+		return false;
+	}
+
+	bool upgraded = executeSimpleStatement(sql);
+	endTransaction();
+
+	if (upgraded == false)
+	{
+		return false;
+	}
+
+	executeSimpleStatement(sqlPostUpgrade);
+
+	return true;
 }
 
 bool SQLDB::isReadOnly(void) const
