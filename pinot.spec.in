@@ -18,11 +18,11 @@
 Summary: Personal search and metasearch tool
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPL
 Group: Applications/Internet 
 Source: %{name}-%{version}.tar.gz
-URL: http://code.google.com/p/pinot-search/
+URL: https://github.com/FabriceColin/pinot
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: xapian-core-libs >= 1.0.4, libtextcat >= 2.2, sqlite >= 3.3.1, libcurl >= 7.13, gmime >= 2.1
 Requires: libxml++ >= 2.12, shared-mime-info
@@ -101,7 +101,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(-, root, root, -)
-%doc AUTHORS ChangeLog ChangeLog-dijon COPYING FAQ NEWS README TODO
+%doc AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn COPYING FAQ NEWS README TODO
 %config(noreplace) %{_sysconfdir}/pinot/
 %{_bindir}/pinot
 %if 0%{?_with_nodbus:1}
