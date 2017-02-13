@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2010 Fabrice Colin
+ *  Copyright 2009-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,12 +30,15 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	ArchiveFilter(const std::string &mime_type);
+	ArchiveFilter();
 	/// Destroys the filter.
 	virtual ~ArchiveFilter();
 
 
 	// Information.
+
+	/// Sets the MIME type the filter will handle.
+	virtual void set_mime_type(const std::string &mime_type);
 
 	/// Returns what data the filter requires as input.
 	virtual bool is_data_input_ok(DataInput input) const;

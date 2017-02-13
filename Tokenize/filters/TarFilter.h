@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2010 Fabrice Colin
+ *  Copyright 2009-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	TarFilter(const std::string &mime_type);
+	TarFilter();
 	/// Destroys the filter.
 	virtual ~TarFilter();
 

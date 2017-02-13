@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Fabrice Colin
+ *  Copyright 2009-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,17 +38,17 @@ using std::stringstream;
 using namespace Dijon;
 
 #ifdef _DYNAMIC_DIJON_FILTERS
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
-	mime_types.insert("application/x-archive");
-	mime_types.insert("application/x-bzip-compressed-tar");
-	mime_types.insert("application/x-compressed-tar");
-	mime_types.insert("application/x-cd-image");
-	mime_types.insert("application/x-deb");
-	mime_types.insert("application/x-iso9660-image");
-	mime_types.insert("application/x-tar");
-	mime_types.insert("application/x-tarz");
+	mime_types.m_mimeTypes.clear();
+	mime_types.m_mimeTypes.insert("application/x-archive");
+	mime_types.m_mimeTypes.insert("application/x-bzip-compressed-tar");
+	mime_types.m_mimeTypes.insert("application/x-compressed-tar");
+	mime_types.m_mimeTypes.insert("application/x-cd-image");
+	mime_types.m_mimeTypes.insert("application/x-deb");
+	mime_types.m_mimeTypes.insert("application/x-iso9660-image");
+	mime_types.m_mimeTypes.insert("application/x-tar");
+	mime_types.m_mimeTypes.insert("application/x-tarz");
 
 	return true;
 }
@@ -67,14 +67,14 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new ArchiveFilter(mime_type);
+	return new ArchiveFilter();
 }
 #endif
 
-ArchiveFilter::ArchiveFilter(const string &mime_type) :
-	Filter(mime_type),
+ArchiveFilter::ArchiveFilter() :
+	Filter(),
 	m_maxSize(0),
 	m_parseDocument(false),
 	m_isBig(false),
@@ -82,16 +82,22 @@ ArchiveFilter::ArchiveFilter(const string &mime_type) :
 	m_fd(-1),
 	m_pHandle(NULL)
 {
-	if ((mime_type == "application/x-cd-image") ||
-		(mime_type == "application/x-iso9660-image"))
-	{
-		m_isBig = true;
-	}
 }
 
 ArchiveFilter::~ArchiveFilter()
 {
 	rewind();
+}
+
+void ArchiveFilter::set_mime_type(const string &mime_type)
+{
+	Filter::set_mime_type(mime_type);
+
+	if ((mime_type == "application/x-cd-image") ||
+		(mime_type == "application/x-iso9660-image"))
+	{
+		m_isBig = true;
+	}
 }
 
 bool ArchiveFilter::is_data_input_ok(DataInput input) const

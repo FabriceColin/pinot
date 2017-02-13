@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2009 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,10 +44,10 @@ using namespace Dijon;
 static const unsigned int HASH_LEN = ((4 * 8 + 5) / 6);
 
 #ifdef _DYNAMIC_DIJON_HTMLFILTER
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
-	mime_types.insert("text/html");
+	mime_types.m_mimeTypes.clear();
+	mime_types.m_mimeTypes.insert("text/html");
 
 	return true;
 }
@@ -65,9 +65,9 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new HtmlFilter(mime_type);
+	return new HtmlFilter();
 }
 #endif
 
@@ -536,8 +536,8 @@ void HtmlFilter::ParserState::closing_tag(const string &tag)
 	}
 }
 
-HtmlFilter::HtmlFilter(const string &mime_type) :
-	Filter(mime_type),
+HtmlFilter::HtmlFilter() :
+	Filter(),
 	m_pParserState(NULL),
 	m_skipText(false),
 	m_findAbstract(true)

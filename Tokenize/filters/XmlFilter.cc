@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2010 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@ using std::endl;
 using namespace Dijon;
 
 #ifdef _DYNAMIC_DIJON_XMLFILTER
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
-	mime_types.insert("text/xml");
-	mime_types.insert("application/xml");
+	mime_types.m_mimeTypes.clear();
+	mime_types.m_mimeTypes.insert("text/xml");
+	mime_types.m_mimeTypes.insert("application/xml");
 
 	return true;
 }
@@ -50,9 +50,9 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new XmlFilter(mime_type);
+	return new XmlFilter();
 }
 #endif
 
@@ -120,8 +120,8 @@ static dstring replaceEntities(const string &str)
 	return unescapedStr;
 }
 
-XmlFilter::XmlFilter(const string &mime_type) :
-	Filter(mime_type),
+XmlFilter::XmlFilter() :
+	Filter(),
 	m_doneWithDocument(false)
 {
 }

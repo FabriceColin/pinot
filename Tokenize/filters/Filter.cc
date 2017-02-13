@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2009 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,8 +32,15 @@ using std::endl;
 
 using namespace Dijon;
 
-Filter::Filter(const string &mime_type) :
-	m_mimeType(mime_type),
+MIMETypes::MIMETypes()
+{
+}
+
+MIMETypes::~MIMETypes()
+{
+}
+
+Filter::Filter() :
 	m_deleteInputFile(false)
 {
 }
@@ -55,6 +62,11 @@ bool Filter::set_document_file(const string &file_path, bool unlink_when_done)
 	m_deleteInputFile = unlink_when_done;
 
 	return true;
+}
+
+void Filter::set_mime_type(const string &mime_type)
+{
+	m_mimeType = mime_type;
 }
 
 string Filter::get_mime_type(void) const

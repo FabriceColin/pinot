@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2011 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	ExternalFilter(const std::string &mime_type);
+	ExternalFilter();
 	/// Destroys the filter.
 	virtual ~ExternalFilter();
 
 
 	/// Parses the configuration file and initializes the class.
-	static void initialize(const std::string &config_file, std::set<std::string> &types);
+	static void initialize(const std::string &config_file, MIMETypes &types);
 
 
 	// Information.

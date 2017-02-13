@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -988,7 +988,9 @@ void IndexingThread::doWork(void)
 			(m_docInfo.getType().length() >= 9) &&
 			(m_docInfo.getType().substr(9) == "text/html"))
 		{
-			Dijon::HtmlFilter htmlFilter(m_docInfo.getType());
+			Dijon::HtmlFilter htmlFilter;
+
+			htmlFilter.set_mime_type(m_docInfo.getType());
 
 			if ((FilterUtils::feedFilter(*m_pDoc, &htmlFilter) == true) &&
 				(htmlFilter.next_document() == true))

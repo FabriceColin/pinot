@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2012 Fabrice Colin
+ *  Copyright 2011-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,29 +37,29 @@ using std::endl;
 using namespace Dijon;
 
 #ifdef _DYNAMIC_DIJON_FILTERS
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
+	mime_types.m_mimeTypes.clear();
 	// List from http://dev.exiv2.org/wiki/exiv2/Supported_image_formats
 	// without application/rdf+xml
-	mime_types.insert("image/jpeg");
-	mime_types.insert("image/x-exv");
-	mime_types.insert("image/x-canon-cr2");
-	mime_types.insert("image/x-canon-crw");
-	mime_types.insert("image/x-minolta-mrw");
-	mime_types.insert("image/tiff");
-	mime_types.insert("image/x-nikon-nef");
-	mime_types.insert("image/x-pentax-pef");
-	mime_types.insert("image/x-panasonic-rw2");
-	mime_types.insert("image/x-samsung-srw");
-	mime_types.insert("image/x-olympus-orf");
-	mime_types.insert("image/png");
-	mime_types.insert("image/pgf");
-	mime_types.insert("image/x-fuji-raf");
-	mime_types.insert("image/x-photoshop");
-	mime_types.insert("image/targa");
-	mime_types.insert("image/x-ms-bmp");
-	mime_types.insert("image/jp2");
+	mime_types.m_mimeTypes.insert("image/jpeg");
+	mime_types.m_mimeTypes.insert("image/x-exv");
+	mime_types.m_mimeTypes.insert("image/x-canon-cr2");
+	mime_types.m_mimeTypes.insert("image/x-canon-crw");
+	mime_types.m_mimeTypes.insert("image/x-minolta-mrw");
+	mime_types.m_mimeTypes.insert("image/tiff");
+	mime_types.m_mimeTypes.insert("image/x-nikon-nef");
+	mime_types.m_mimeTypes.insert("image/x-pentax-pef");
+	mime_types.m_mimeTypes.insert("image/x-panasonic-rw2");
+	mime_types.m_mimeTypes.insert("image/x-samsung-srw");
+	mime_types.m_mimeTypes.insert("image/x-olympus-orf");
+	mime_types.m_mimeTypes.insert("image/png");
+	mime_types.m_mimeTypes.insert("image/pgf");
+	mime_types.m_mimeTypes.insert("image/x-fuji-raf");
+	mime_types.m_mimeTypes.insert("image/x-photoshop");
+	mime_types.m_mimeTypes.insert("image/targa");
+	mime_types.m_mimeTypes.insert("image/x-ms-bmp");
+	mime_types.m_mimeTypes.insert("image/jp2");
 
 	return true;
 }
@@ -76,9 +76,9 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new Exiv2ImageFilter(mime_type);
+	return new Exiv2ImageFilter();
 }
 #endif
 
@@ -153,8 +153,8 @@ static string exifDateTime(const string &value)
 	return "";
 }
 
-Exiv2ImageFilter::Exiv2ImageFilter(const string &mime_type) :
-	Filter(mime_type),
+Exiv2ImageFilter::Exiv2ImageFilter() :
+	Filter(),
 	m_parseDocument(false)
 {
 }

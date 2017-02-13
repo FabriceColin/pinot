@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2014 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,13 +42,10 @@
 #endif
 #endif
 
-#if defined _GLIBCXX_USE_CXX11_ABI && _GLIBCXX_USE_CXX11_ABI
-#define GETFILTERTYPESFUNC	"_Z16get_filter_typesRNSt3__13setINS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEENS_4lessIS6_EENS4_IS6_EEEE"
-#define GETFILTERFUNC		"_Z10get_filterRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
-#else
-#define GETFILTERTYPESFUNC	"_Z16get_filter_typesRSt3setISsSt4lessISsESaISsEE"
-#define GETFILTERFUNC		"_Z10get_filterRKSs"
-#endif
+//#if defined _GLIBCXX_USE_CXX11_ABI && _GLIBCXX_USE_CXX11_ABI
+#define GETFILTERTYPESFUNC	"_Z16get_filter_typesRN5Dijon9MIMETypesE"
+#define GETFILTERFUNC		"_Z10get_filterv"
+//#endif
 
 using std::clog;
 using std::clog;
@@ -144,7 +141,7 @@ unsigned int FilterFactory::loadFilters(const string &dir_name)
 				GETFILTERTYPESFUNC);
 			if (pTypesFunc == NULL)
 			{
-				clog << "FilterFactory::loadFilters: " << dlerror() << endl;
+				clog << "FilterFactory::loadFilters: couldn't find " << GETFILTERTYPESFUNC << ": " << dlerror() << endl;
 
 				dlclose(pHandle);
 
@@ -153,7 +150,7 @@ unsigned int FilterFactory::loadFilters(const string &dir_name)
 				continue;
 			}
 
-			set<string> types;
+			MIMETypes types;
 			unsigned int typeCount = 0;
 			bool filterOkay = (*pTypesFunc)(types);
 
@@ -161,8 +158,8 @@ unsigned int FilterFactory::loadFilters(const string &dir_name)
 			{
 				clog << "FilterFactory::loadFilters: couldn't get types from " << pEntryName << endl;
 			}
-			else for (set<string>::iterator typeIter = types.begin();
-				typeIter != types.end(); ++typeIter)
+			else for (set<string>::iterator typeIter = types.m_mimeTypes.begin();
+				typeIter != types.m_mimeTypes.end(); ++typeIter)
 			{
 				string newType(*typeIter);
 
@@ -236,10 +233,10 @@ Filter *FilterFactory::getLibraryFilter(const string &mime_type)
 		GETFILTERFUNC);
 	if (pFunc != NULL)
 	{
-		return (*pFunc)(mime_type);
+		return (*pFunc)();
 	}
 #ifdef DEBUG
-	clog << "FilterFactory::getLibraryFilter: couldn't find export getFilter" << endl;
+	clog << "FilterFactory::getLibraryFilter: couldn't find " << GETFILTERFUNC << ": " << dlerror() << endl;
 #endif
 #endif
 
@@ -248,6 +245,7 @@ Filter *FilterFactory::getLibraryFilter(const string &mime_type)
 
 Filter *FilterFactory::getFilter(const string &mime_type)
 {
+	Filter *pFilter = NULL;
 	string typeOnly(mime_type);
 	string::size_type semiColonPos = mime_type.find(";");
 
@@ -262,23 +260,32 @@ Filter *FilterFactory::getFilter(const string &mime_type)
 
 	if (typeOnly == "text/plain")
 	{
-		return new TextFilter(typeOnly);
+		pFilter = new TextFilter();
 	}
 #ifndef _DYNAMIC_DIJON_HTMLFILTER
 	else if (typeOnly == "text/html")
 	{
-		return new HtmlFilter(typeOnly);
+		pFilter = new HtmlFilter();
 	}
 #endif
 #ifndef _DYNAMIC_DIJON_XMLFILTER
 	else if ((typeOnly == "text/xml") ||
 		(typeOnly == "application/xml"))
 	{
-		return new XmlFilter(typeOnly);
+		pFilter = new XmlFilter();
 	}
 #endif
+	else
+	{
+		pFilter = getLibraryFilter(typeOnly);
+	}
 
-	return getLibraryFilter(typeOnly);
+	if (pFilter != NULL)
+	{
+		pFilter->set_mime_type(typeOnly);
+	}
+
+	return pFilter;
 }
 
 void FilterFactory::getSupportedTypes(set<string> &mime_types)

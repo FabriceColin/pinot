@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2012 Fabrice Colin
+ *  Copyright 2011-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@ using std::endl;
 
 using namespace Dijon;
 
-FileOutputFilter::FileOutputFilter(const string &mime_type) :
-	Filter(mime_type)
+FileOutputFilter::FileOutputFilter() :
+	Filter()
 {
 }
 

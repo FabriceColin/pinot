@@ -29,7 +29,7 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	TextFilter(const std::string &mime_type);
+	TextFilter();
 	/// Destroys the filter.
 	virtual ~TextFilter();
 

@@ -25,8 +25,8 @@ using std::string;
 using namespace std;
 using namespace Dijon;
 
-TextFilter::TextFilter(const string &mime_type) :
-	Filter(mime_type),
+TextFilter::TextFilter() :
+	Filter(),
 	m_doneWithDocument(false)
 {
 }

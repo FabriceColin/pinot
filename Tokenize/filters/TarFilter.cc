@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2010 Fabrice Colin
+ *  Copyright 2009-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@ using std::stringstream;
 using namespace Dijon;
 
 #ifdef _DYNAMIC_DIJON_FILTERS
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
-	mime_types.insert("application/x-tar");
+	mime_types.m_mimeTypes.clear();
+	mime_types.m_mimeTypes.insert("application/x-tar");
 
 	return true;
 }
@@ -55,14 +55,14 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new TarFilter(mime_type);
+	return new TarFilter();
 }
 #endif
 
-TarFilter::TarFilter(const string &mime_type) :
-	Filter(mime_type),
+TarFilter::TarFilter() :
+	Filter(),
 	m_maxSize(0),
 	m_parseDocument(false),
 	m_pHandle(NULL)

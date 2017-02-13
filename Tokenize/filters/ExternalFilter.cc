@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2012 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ using std::map;
 using namespace Dijon;
 
 #ifdef _DYNAMIC_DIJON_FILTERS
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
 #ifdef _DIJON_EXTERNALFILTER_CONFFILE
 	ExternalFilter::initialize(_DIJON_EXTERNALFILTER_CONFFILE, mime_types);
@@ -76,9 +76,9 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
-	return new ExternalFilter(mime_type);
+	return new ExternalFilter();
 }
 #endif
 
@@ -118,8 +118,8 @@ map<string, string> ExternalFilter::m_commandsByType;
 map<string, string> ExternalFilter::m_outputsByType;
 map<string, string> ExternalFilter::m_charsetsByType;
 
-ExternalFilter::ExternalFilter(const string &mime_type) :
-	FileOutputFilter(mime_type),
+ExternalFilter::ExternalFilter() :
+	FileOutputFilter(),
 	m_maxSize(0),
 	m_doneWithDocument(false)
 {
@@ -247,12 +247,12 @@ string ExternalFilter::get_error(void) const
 	return "";
 }
 
-void ExternalFilter::initialize(const std::string &config_file, set<std::string> &types)
+void ExternalFilter::initialize(const std::string &config_file, MIMETypes &types)
 {
 	xmlDoc *pDoc = NULL;
 	xmlNode *pRootElement = NULL;
 
-	types.clear();
+	types.m_mimeTypes.clear();
 
 	// Parse the file and get the document
 #if LIBXML_VERSION < 20600
@@ -343,7 +343,7 @@ void ExternalFilter::initialize(const std::string &config_file, set<std::string>
 					m_charsetsByType[mimeType] = charset;
 				}
 
-				types.insert(mimeType);
+				types.m_mimeTypes.insert(mimeType);
 			}
 		}
 	}

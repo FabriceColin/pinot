@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 Fabrice Colin
+ *  Copyright 2011-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	ChmFilter(const std::string &mime_type);
+	ChmFilter();
 	/// Destroys the filter.
 	virtual ~ChmFilter();
 

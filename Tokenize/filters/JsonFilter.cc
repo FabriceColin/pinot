@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2015 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@ using std::endl;
 
 using namespace Dijon;
 
-DIJON_FILTER_EXPORT bool get_filter_types(std::set<std::string> &mime_types)
+DIJON_FILTER_EXPORT bool get_filter_types(MIMETypes &mime_types)
 {
-	mime_types.clear();
-	mime_types.insert("application/json");
+	mime_types.m_mimeTypes.clear();
+	mime_types.m_mimeTypes.insert("application/json");
 
 	return true;
 }
@@ -48,13 +48,13 @@ DIJON_FILTER_EXPORT bool check_filter_data_input(int data_input)
 	return false;
 }
 
-DIJON_FILTER_EXPORT Filter *get_filter(const std::string &mime_type)
+DIJON_FILTER_EXPORT Filter *get_filter(void)
 {
 	return new JsonFilter(mime_type);
 }
 
-JsonFilter::JsonFilter(const string &mime_type) :
-	Filter(mime_type),
+JsonFilter::JsonFilter() :
+	Filter(),
 	m_doneWithDocument(false)
 {
 }

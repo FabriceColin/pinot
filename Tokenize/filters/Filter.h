@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2009 Fabrice Colin
+ *  Copyright 2007-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,11 +41,28 @@ namespace Dijon
 {
     class Filter;
 
+    /// MIME types the filter supports.
+    class DIJON_FILTER_EXPORT MIMETypes
+    {
+    public:
+        MIMETypes();
+        virtual ~MIMETypes();
+
+        std::set<std::string> m_mimeTypes;
+
+    private:
+	/// MIMETypes objects cannot be copied.
+	MIMETypes(const MIMETypes &other);
+	/// MIMETypes objects cannot be copied.
+	MIMETypes& operator=(const MIMETypes& other);
+
+    };
+
     /** Provides the list of MIME types supported by the filter(s).
      * The character string is allocated with new[].
      * This function is exported by dynamically loaded filter libraries.
      */
-    typedef bool (get_filter_types_func)(std::set<std::string> &);
+    typedef bool (get_filter_types_func)(MIMETypes &);
     /** Returns what data should be passed to the filter(s).
      * Output is cast from Filter::DataInput to int for convenience.
      * This function is exported by dynamically loaded filter libraries.
@@ -60,7 +77,7 @@ namespace Dijon
      * application doesn't have to know which Filter sub-types handle
      * which MIME types.
      */
-    typedef Filter *(get_filter_func)(const std::string &);
+    typedef Filter *(get_filter_func)(void);
     /** Converts text to UTF-8.
      */
     typedef std::string (convert_to_utf8_func)(const char *,
@@ -71,7 +88,7 @@ namespace Dijon
     {
     public:
 	/// Builds an empty filter.
-	Filter(const std::string &mime_type);
+	Filter();
 	/// Destroys the filter.
 	virtual ~Filter();
 
@@ -93,6 +110,9 @@ namespace Dijon
 
 
 	// Information.
+
+	/// Sets the MIME type the filter will handle.
+	virtual void set_mime_type(const std::string &mime_type);
 
 	/// Returns the MIME type handled by the filter.
 	std::string get_mime_type(void) const;

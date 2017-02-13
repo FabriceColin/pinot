@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2013 Fabrice Colin
+ *  Copyright 2005-2016 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -244,7 +244,8 @@ bool SherlockResponseParser::parse(const Document *pResponseDoc, vector<Document
 	}
 
 	// Can we get the charset ?
-	Dijon::HtmlFilter htmlFilter("text/html");
+	Dijon::HtmlFilter htmlFilter;
+	htmlFilter.set_mime_type("text/html");
 	if (FilterUtils::feedFilter(*pResponseDoc, &htmlFilter) == true)
 	{
 		const map<string, string> &metaData = htmlFilter.get_meta_data();
@@ -338,8 +339,9 @@ bool SherlockResponseParser::parse(const Document *pResponseDoc, vector<Document
 			chunkDoc.setData(dummyHtml.c_str(), dummyHtml.length());
 
 			// Feed this chunk to the filter
-			Dijon::HtmlFilter chunkFilter("text/html");
+			Dijon::HtmlFilter chunkFilter;
 			set<Dijon::Link> chunkLinks;
+			htmlFilter.set_mime_type("text/html");
 			if ((FilterUtils::feedFilter(chunkDoc, &chunkFilter) == true) &&
 				(chunkFilter.get_links(chunkLinks) == true) &&
 				(chunkFilter.next_document() == true))
