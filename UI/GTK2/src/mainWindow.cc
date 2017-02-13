@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2017 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -2749,11 +2749,11 @@ void mainWindow::on_about_activate()
 
 	aboutBox.set_comments(_("A metasearch tool for the Free Desktop") + string(".\n") +
 		_("Search the Web and your documents !"));
-	aboutBox.set_copyright("(C) 2005-2015 Fabrice Colin");
+	aboutBox.set_copyright("(C) 2005-2017 Fabrice Colin");
 	aboutBox.set_name("Pinot");
 	aboutBox.set_version(VERSION);
-	aboutBox.set_website("http://code.google.com/p/pinot-search/");
-	aboutBox.set_website_label("http://code.google.com/p/pinot-search/");
+	aboutBox.set_website("https://github.com/FabriceColin/pinot");
+	aboutBox.set_website_label("https://github.com/FabriceColin/pinot");
 	aboutBox.show();
 	aboutBox.run();
 }
