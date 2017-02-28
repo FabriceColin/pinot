@@ -35,15 +35,6 @@
     using Nautilus (Properties dialog, Open With tab). This applies to
     applications for any other file type.
 
-  * At startup, when listing an index or indexing documents, Pinot complains
-    of an "index error"
-    This is likely because a previous instance didn't exit properly and one
-    (or more) index is still locked. Quit Pinot and look for a "db_lock",
-    "flicklock" or "flintlock" file (depending on what version of Xapian the
-    index was created with/is currently installed) in the directory that Pinot
-    complains about. If it's there, check that no other process is using this
-    file, delete it and restart Pinot.
-
   * If you experience segfaults at startup and you are on Fedora, chances are
     it's because of libxml++/libsigc++. See this Bugzilla entry :
     https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=178592
