@@ -44,10 +44,6 @@
     complains about. If it's there, check that no other process is using this
     file, delete it and restart Pinot.
 
-  * When compiling from source, you may run into linking problems related to
-    libstdc++.la. Try patching xapian-config as explained in the post at
-    http://lists.tartarus.org/pipermail/xapian-devel/2006-January/000293.html
-
   * If you experience segfaults at startup and you are on Fedora, chances are
     it's because of libxml++/libsigc++. See this Bugzilla entry :
     https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=178592
@@ -72,10 +68,6 @@
     with
      $(INSTALL_DATA) pinot.desktop $(DESTDIR)$(datadir)/applications/pinot.desktop
     and run "make install" again.
-
-  * In stored queries, the directory filter doesn't work as expected if the
-    directory name starts with a non alpha-numeric character. This has been
-    fixed in Xapian 0.9.8.
 
   * On FreeBSD, threading issues may cause the daemon to crash unexpectedly.
     A fix is to add the following lines to /etc/libmap.conf (which may not exist) :
