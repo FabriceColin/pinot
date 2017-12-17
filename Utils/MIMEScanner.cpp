@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2017 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -456,9 +456,10 @@ MIMEScanner::~MIMEScanner()
 bool MIMEScanner::initialize(const string &userPrefix, const string &systemPrefix)
 {
 #ifdef USE_GIO
+#if !GLIB_CHECK_VERSION(2,35,0)
 	// Initialize the GType system
 	g_type_init();
-
+#endif
 	return true;
 #else
 	list<string> desktopFilesPaths;
