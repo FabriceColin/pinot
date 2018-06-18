@@ -1099,7 +1099,7 @@ void DBusServletThread::doWork(void)
 	if (error.message != NULL)
 	{
 #ifdef DEBUG
-		clog << "DBusServletThread::doWork: error occured: " << error.message << endl;
+		clog << "DBusServletThread::doWork: error occurred: " << error.message << endl;
 #endif
 		// Use the error message as reply
 		m_pServletInfo->newErrorReply(error.name, error.message);

@@ -88,7 +88,7 @@ bool CommandLine::readFile(int fd, ssize_t maxSize,
 		}
 		else if (bytesRead == -1)
 		{
-			// An error occured
+			// An error occurred
 			if (errno != EINTR)
 			{
 				gotOutput = false;

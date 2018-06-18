@@ -1397,7 +1397,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 	{
 		// Yep, it did
 		set_status(to_utf8(threadStatus));
-		// Better reset that flag if an error occured while browsing an index
+		// Better reset that flag if an error occurred while browsing an index
 		if (type == "ListerThread")
 		{
 			m_state.m_browsingIndex = false;
@@ -1984,7 +1984,7 @@ void mainWindow::on_editindex(ustring indexName, ustring location)
 			statusText += " ";
 			statusText += indexName;
 
-			// An error occured
+			// An error occurred
 			set_status(statusText);
 			return;
 		}
@@ -2811,7 +2811,7 @@ void mainWindow::on_addIndexButton_clicked()
 		statusText += " ";
 		statusText += name;
 
-		// An error occured
+		// An error occurred
 		set_status(statusText);
 	}
 	else
@@ -2870,7 +2870,7 @@ void mainWindow::on_removeIndexButton_clicked()
 			statusText += " ";
 			statusText += indexName;
 
-			// An error occured
+			// An error occurred
 			set_status(statusText);
 		}
 		else

@@ -71,7 +71,7 @@ class CSVExporter : public ResultsExporter
 			const QueryProperties &queryProps);
 		virtual ~CSVExporter();
 
-		/// Exports the results; false if an error occured.
+		/// Exports the results; false if an error occurred.
 		virtual bool exportResults(const std::string &engineName,
 			unsigned int maxResultsCount,
 			const std::vector<DocumentInfo> &resultsList);
@@ -104,7 +104,7 @@ class OpenSearchExporter : public ResultsExporter
 			const QueryProperties &queryProps);
 		virtual ~OpenSearchExporter();
 
-		/// Exports the results; false if an error occured.
+		/// Exports the results; false if an error occurred.
 		virtual bool exportResults(const std::string &engineName,
 			unsigned int maxResultsCount,
 			const std::vector<DocumentInfo> &resultsList);
