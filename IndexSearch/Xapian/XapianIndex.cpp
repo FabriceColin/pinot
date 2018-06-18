@@ -359,7 +359,7 @@ bool XapianIndex::listDocumentsWithTerm(const string &term, set<unsigned int> &d
 	}
 	catch (...)
 	{
-		clog << "Couldn't get document list, unknown exception occured" << endl;
+		clog << "Couldn't get document list, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1048,7 +1048,7 @@ bool XapianIndex::deleteDocuments(const string &term)
 	}
 	catch (...)
 	{
-		clog << "Couldn't unindex documents, unknown exception occured" << endl;
+		clog << "Couldn't unindex documents, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1094,7 +1094,7 @@ string XapianIndex::getMetadata(const string &name) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't get metadata, unknown exception occured" << endl;
+		clog << "Couldn't get metadata, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1136,7 +1136,7 @@ bool XapianIndex::setMetadata(const string &name, const string &value) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't set metadata, unknown exception occured" << endl;
+		clog << "Couldn't set metadata, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1193,7 +1193,7 @@ bool XapianIndex::getDocumentInfo(unsigned int docId, DocumentInfo &docInfo) con
 	}
 	catch (...)
 	{
-		clog << "Couldn't get document properties, unknown exception occured" << endl;
+		clog << "Couldn't get document properties, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1231,7 +1231,7 @@ unsigned int XapianIndex::getDocumentTermsCount(unsigned int docId) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't get document terms count, unknown exception occured" << endl;
+		clog << "Couldn't get document terms count, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1316,7 +1316,7 @@ bool XapianIndex::getDocumentTerms(unsigned int docId, map<unsigned int, string>
 	}
 	catch (...)
 	{
-		clog << "Couldn't get document terms, unknown exception occured" << endl;
+		clog << "Couldn't get document terms, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1428,7 +1428,7 @@ bool XapianIndex::deleteLabel(const string &name)
 	}
 	catch (...)
 	{
-		clog << "Couldn't delete label, unknown exception occured" << endl;
+		clog << "Couldn't delete label, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1476,7 +1476,7 @@ bool XapianIndex::hasLabel(unsigned int docId, const string &name) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't check document labels, unknown exception occured" << endl;
+		clog << "Couldn't check document labels, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1528,7 +1528,7 @@ bool XapianIndex::getDocumentLabels(unsigned int docId, set<string> &labels) con
 	}
 	catch (...)
 	{
-		clog << "Couldn't get document's labels, unknown exception occured" << endl;
+		clog << "Couldn't get document's labels, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1605,7 +1605,7 @@ bool XapianIndex::setDocumentsLabels(const set<unsigned int> &docIds,
 		}
 		catch (...)
 		{
-			clog << "Couldn't update document's labels, unknown exception occured" << endl;
+			clog << "Couldn't update document's labels, unknown exception occurred" << endl;
 		}
 
 		pDatabase->unlock();
@@ -1653,7 +1653,7 @@ unsigned int XapianIndex::hasDocument(const string &url) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't look for document, unknown exception occured" << endl;
+		clog << "Couldn't look for document, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1715,7 +1715,7 @@ unsigned int XapianIndex::getCloseTerms(const string &term, set<string> &suggest
 	}
 	catch (...)
 	{
-		clog << "Couldn't get terms, unknown exception occured" << endl;
+		clog << "Couldn't get terms, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1748,7 +1748,7 @@ unsigned int XapianIndex::getLastDocumentID(void) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't get last document ID, unknown exception occured" << endl;
+		clog << "Couldn't get last document ID, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1793,7 +1793,7 @@ unsigned int XapianIndex::getDocumentsCount(const string &labelName) const
 	}
 	catch (...)
 	{
-		clog << "Couldn't count documents, unknown exception occured" << endl;
+		clog << "Couldn't count documents, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1897,7 +1897,7 @@ bool XapianIndex::indexDocument(const Document &document, const std::set<std::st
 	}
 	catch (...)
 	{
-		clog << "Couldn't index document, unknown exception occured" << endl;
+		clog << "Couldn't index document, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -1974,7 +1974,7 @@ bool XapianIndex::updateDocument(unsigned int docId, const Document &document)
 	}
 	catch (...)
 	{
-		clog << "Couldn't update document, unknown exception occured" << endl;
+		clog << "Couldn't update document, unknown exception occurred" << endl;
 	}
 	if (pIndex != NULL)
 	{
@@ -2025,7 +2025,7 @@ bool XapianIndex::updateDocumentInfo(unsigned int docId, const DocumentInfo &doc
 	}
 	catch (...)
 	{
-		clog << "Couldn't update document properties, unknown exception occured" << endl;
+		clog << "Couldn't update document properties, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -2065,7 +2065,7 @@ bool XapianIndex::unindexDocument(unsigned int docId)
 	}
 	catch (...)
 	{
-		clog << "Couldn't unindex document, unknown exception occured" << endl;
+		clog << "Couldn't unindex document, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 
@@ -2135,7 +2135,7 @@ bool XapianIndex::flush(void)
 	}
 	catch (...)
 	{
-		clog << "Couldn't flush database, unknown exception occured" << endl;
+		clog << "Couldn't flush database, unknown exception occurred" << endl;
 	}
 	pDatabase->unlock();
 

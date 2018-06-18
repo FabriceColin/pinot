@@ -1668,7 +1668,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 		recordCrawled(location, fileStat.st_mtime);
 	}
 
-	// If a major error occured, this won't be true
+	// If a major error occurred, this won't be true
 	if (reportFile == true)
 	{
 		if (docInfo.getType().empty() == true)

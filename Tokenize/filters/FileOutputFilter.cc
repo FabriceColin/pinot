@@ -69,7 +69,7 @@ bool FileOutputFilter::read_file(int fd, ssize_t maxSize, ssize_t &totalSize)
 		}
 		else if (bytesRead == -1)
 		{
-			// An error occured
+			// An error occurred
 			if (errno != EINTR)
 			{
 				gotOutput = false;
