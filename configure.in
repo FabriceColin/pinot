@@ -228,8 +228,12 @@ fi
 dnl boost
 BOOST_LIBS="-lboost_system"
 AM_CONDITIONAL(HAVE_BOOST_SPIRIT, false)
-AC_CHECK_HEADERS([boost/spirit/core.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],
-   [AC_CHECK_HEADERS([boost/spirit.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)])
+AC_CHECK_HEADERS([boost/spirit/core.hpp],
+   [AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],
+   [AC_CHECK_HEADERS([boost/spirit/include/classic.hpp],
+       [AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],
+       [AC_CHECK_HEADERS([boost/spirit.hpp],[AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)])
+       ])
    ])
 AC_MSG_CHECKING(whether to enable the memory pool)
 AC_ARG_ENABLE(mempool,

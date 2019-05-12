@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Fabrice Colin
+ *  Copyright 2008-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -247,8 +247,10 @@ bool XesamEngine::runQuery(QueryProperties& queryProps,
         m_resultsList.clear();
         m_resultsCountEstimate = 0;
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	// FIXME: creating a main loop here might not be such a hot idea...
 	g_type_init();
+#endif
 
 	// Was an object name specified ?
 	XesamGSearcher *pSearcher = NULL;

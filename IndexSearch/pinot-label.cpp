@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2009 Fabrice Colin
+ *  Copyright 2007-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -146,8 +146,10 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	// Initialize GType
 	g_type_init();
+#endif
 
 	MIMEScanner::initialize("", "");
 

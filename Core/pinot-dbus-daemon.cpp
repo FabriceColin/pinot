@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -439,7 +439,9 @@ int main(int argc, char **argv)
 		Glib::thread_init();
 	}
 	// Initialize the GType and the D-Bus thread system
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init();
+#endif
 #if DBUS_NUM_VERSION > 1000000
 	dbus_threads_init_default();
 #endif

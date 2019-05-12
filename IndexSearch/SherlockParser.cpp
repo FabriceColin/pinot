@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2016 Fabrice Colin
+ *  Copyright 2005-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,11 +28,19 @@
 #include <boost/spirit/actor/insert_at_actor.hpp>
 #include <boost/spirit/utility/confix.hpp>
 #else
+#ifdef HAVE_BOOST_SPIRIT_INCLUDE_CLASSIC_HPP
+#define BOOST_SPIRIT_USE_OLD_NAMESPACE
+#include <boost/spirit/include/classic.hpp>
+#include <boost/spirit/home/classic/actor/push_back_actor.hpp>
+#include <boost/spirit/home/classic/actor/insert_at_actor.hpp>
+#include <boost/spirit/home/classic/utility/confix.hpp>
+#else
 #ifdef HAVE_BOOST_SPIRIT_HPP
 #include <boost/spirit.hpp>
 #include <boost/spirit/home/classic/actor/push_back_actor.hpp>
 #include <boost/spirit/home/classic/actor/insert_at_actor.hpp>
 #include <boost/spirit/home/classic/utility/confix.hpp>
+#endif
 #endif
 #endif
 
