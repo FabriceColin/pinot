@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2016 Fabrice Colin
+ *  Copyright 2011-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -25,7 +26,12 @@
 #include <exiv2/image.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
+#ifdef HAVE_EXIV2_XMP_EXIV2_HPP
+#include <exiv2/xmp_exiv2.hpp>
+#include <exiv2/error.hpp>
+#else
 #include <exiv2/xmp.hpp>
+#endif
 
 #include "config.h"
 #include "Exiv2ImageFilter.h"
