@@ -533,7 +533,7 @@ http://libxmlplusplus.sourceforge.net/
 libexttextcat						3.2
 http://cgit.freedesktop.org/libreoffice/libexttextcat/
 
-gmime (3)						2.4.0
+gmime (3)						2.6.0
 http://spruce.sourceforge.net/gmime
 
 boost (4)						1.32
@@ -596,7 +596,7 @@ http://www.wagner.pp.ru/~vitus/software/catdoc/
 Notes :
 (1) enabled with "./configure --with-http=neon|curl"
 (2) obsolete - enabled with "./configure --enable-soap=yes"
-(3) for gmime 2.0 support, edit configure.in
+(3) for gmime 2.4.0 support, edit configure.in
 (4) for building only
     with boost > 1.48 and < 1.54, turning off memory pooling with "./configure --enable-mempool=no" may be preferable
 (5) experimental - enabled with "./configure --enable-libarchive=yes"

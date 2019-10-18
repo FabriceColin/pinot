@@ -77,10 +77,10 @@ DIJON_FILTER_EXPORT Filter *get_filter(void)
 DIJON_FILTER_INITIALIZE void initialize_gmime(void)
 {
 	// Initialize gmime
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
-	g_mime_init(GMIME_ENABLE_RFC2047_WORKAROUNDS);
+#if GMIME_MAJOR_VERSION >= 3
+	g_mime_init();
 #else
-	g_mime_init(GMIME_INIT_FLAG_UTF8);
+	g_mime_init(GMIME_ENABLE_RFC2047_WORKAROUNDS);
 #endif
 }
 
@@ -478,7 +478,11 @@ bool GMimeMboxFilter::initialize(void)
 		g_mime_parser_init_with_stream(m_pParser, m_pGMimeMboxStream);
 		g_mime_parser_set_respect_content_length(m_pParser, TRUE);
 		// Scan for mbox From-lines
+#if GMIME_MAJOR_VERSION >= 3
+		g_mime_parser_set_format(m_pParser, GMIME_FORMAT_MBOX);
+#else
 		g_mime_parser_set_scan_from(m_pParser, TRUE);
+#endif
 
 		return true;
 	}
@@ -493,14 +497,10 @@ void GMimeMboxFilter::finalize(bool fullReset)
 {
 	if (m_pMimeMessage != NULL)
 	{
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 		if (G_IS_OBJECT(m_pMimeMessage))
 		{
 			g_object_unref(m_pMimeMessage);
 		}
-#else
-		g_mime_object_unref(GMIME_OBJECT(m_pMimeMessage));
-#endif
 		m_pMimeMessage = NULL;
 	}
 	if (m_pParser != NULL)
@@ -603,33 +603,14 @@ bool GMimeMboxFilter::nextPart(const string &subject)
 			if (extractPart(pMimePart, mboxPart) == true)
 			{
 				extractMetaData(mboxPart);
-
-#ifndef GMIME_ENABLE_RFC2047_WORKAROUNDS
-				if (pMimePart != NULL)
-				{
-					g_mime_object_unref(pMimePart);
-				}
-#endif
-
 				return true;
 			}
-
-#ifndef GMIME_ENABLE_RFC2047_WORKAROUNDS
-			if (pMimePart != NULL)
-			{
-				g_mime_object_unref(pMimePart);
-			}
-#endif
 		}
 
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 		if (G_IS_OBJECT(m_pMimeMessage))
 		{
 			g_object_unref(m_pMimeMessage);
 		}
-#else
-		g_mime_object_unref(GMIME_OBJECT(m_pMimeMessage));
-#endif
 		m_pMimeMessage = NULL;
 	}
 
@@ -654,9 +635,6 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 #endif
 		GMimeMessage *partMessage = g_mime_message_part_get_message(GMIME_MESSAGE_PART(part));
 		part = g_mime_message_get_mime_part(partMessage);
-#ifndef GMIME_ENABLE_RFC2047_WORKAROUNDS
-		g_mime_object_unref(GMIME_OBJECT(partMessage));
-#endif
 	}
 
 	// Is this a multipart ?
@@ -665,11 +643,7 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 		int partsCount = 0, partNum = 0;
 		bool gotPart = false;
 
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 		m_partsCount = partsCount = g_mime_multipart_get_count(GMIME_MULTIPART(part));
-#else
-		m_partsCount = partsCount = g_mime_multipart_get_number(GMIME_MULTIPART(part));
-#endif
 		++m_currentLevel;
 #ifdef DEBUG
 		clog << "GMimeMboxFilter::extractPart: message has " << m_partsCount << " parts at level " << m_currentLevel << endl;
@@ -709,9 +683,6 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 			}
 
 			gotPart = extractPart(multiMimePart, mboxPart);
-#ifndef GMIME_ENABLE_RFC2047_WORKAROUNDS
-			g_mime_object_unref(multiMimePart);
-#endif
 
 			if (gotPart == true)
 			{
@@ -770,13 +741,13 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 	GMimePart *mimePart = GMIME_PART(part);
 
 	// Check the content type
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 	GMimeContentType *mimeType = g_mime_object_get_content_type(GMIME_OBJECT(mimePart));
-#else
-	const GMimeContentType *mimeType = g_mime_object_get_content_type(GMIME_OBJECT(mimePart));
-#endif
 	// Set this for caller
+#if GMIME_MAJOR_VERSION >= 3
+	char *partType = g_mime_content_type_get_mime_type(mimeType);
+#else
 	char *partType = g_mime_content_type_to_string(mimeType);
+#endif
 	if (partType != NULL)
 	{
 #ifdef DEBUG
@@ -842,19 +813,11 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 		return true;
 	}
 
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 	GMimeContentEncoding encodingType = g_mime_part_get_content_encoding(mimePart);
-#else
-	GMimePartEncodingType encodingType = g_mime_part_get_encoding(mimePart);
-#endif
 #ifdef DEBUG
 	clog << "GMimeMboxFilter::extractPart: encoding is " << encodingType << endl;
 #endif
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 	g_mime_part_set_content_encoding(mimePart, GMIME_CONTENT_ENCODING_QUOTEDPRINTABLE);
-#else
-	g_mime_part_set_encoding(mimePart, GMIME_PART_ENCODING_QUOTEDPRINTABLE);
-#endif
 	const char *fileName = g_mime_part_get_filename(mimePart);
 	if (fileName != NULL)
 	{
@@ -893,7 +856,11 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 	}
 
 	// Write the part to the stream
+#if GMIME_MAJOR_VERSION >= 3
+	GMimeDataWrapper *dataWrapper = g_mime_part_get_content(mimePart);
+#else
 	GMimeDataWrapper *dataWrapper = g_mime_part_get_content_object(mimePart);
+#endif
 	if (dataWrapper != NULL)
 	{
 		ssize_t writeLen = g_mime_data_wrapper_write_to_stream(dataWrapper, memStream);
@@ -911,7 +878,11 @@ bool GMimeMboxFilter::extractPart(GMimeObject *part, GMimeMboxPart &mboxPart)
 		(mboxPart.m_contentType.length() >= 10) &&
 		(strncasecmp(mboxPart.m_contentType.c_str(), "text/plain", 10) == 0))
 	{
+#if GMIME_MAJOR_VERSION >= 3
+		char *pHeaders = g_mime_object_get_headers(GMIME_OBJECT(m_pMimeMessage), NULL);
+#else
 		char *pHeaders = g_mime_object_get_headers(GMIME_OBJECT(m_pMimeMessage));
+#endif
 
 		if (pHeaders != NULL)
 		{
@@ -995,31 +966,31 @@ bool GMimeMboxFilter::extractMessage(const string &subject)
 			// No, it doesn't
 			if (m_pMimeMessage != NULL)
 			{
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
 				if (G_IS_OBJECT(m_pMimeMessage))
 				{
 					g_object_unref(m_pMimeMessage);
 				}
-#else
-				g_mime_object_unref(GMIME_OBJECT(m_pMimeMessage));
-#endif
 				m_pMimeMessage = NULL;
 			}
 
 			// Get the next message
+#if GMIME_MAJOR_VERSION >= 3
+			m_pMimeMessage = g_mime_parser_construct_message(m_pParser, NULL);
+#else
 			m_pMimeMessage = g_mime_parser_construct_message(m_pParser);
+#endif
 			if (m_pMimeMessage == NULL)
 			{
 				clog << "Couldn't construct new MIME message" << endl;
 				break;
 			}
 
-			m_messageStart = g_mime_parser_get_from_offset(m_pParser);
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
-			gint64 messageEnd = g_mime_parser_tell(m_pParser);
+#if GMIME_MAJOR_VERSION >= 3
+			m_messageStart = g_mime_parser_get_mbox_marker_offset(m_pParser);
 #else
-			off_t messageEnd = g_mime_parser_tell(m_pParser);
+			m_messageStart = g_mime_parser_get_from_offset(m_pParser);
 #endif
+			gint64 messageEnd = g_mime_parser_tell(m_pParser);
 #ifdef DEBUG
 			clog << "GMimeMboxFilter::extractMessage: message between offsets " << m_messageStart
 				<< " and " << messageEnd << endl;

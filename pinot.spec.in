@@ -24,11 +24,11 @@ Group: Applications/Internet
 Source: %{name}-%{version}.tar.gz
 URL: https://github.com/FabriceColin/pinot
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires: xapian-core-libs >= 1.0.4, libexttextcat, sqlite >= 3.3.1, libcurl >= 7.13, gmime >= 2.1
+Requires: xapian-core-libs >= 1.0.4, libexttextcat, sqlite >= 3.3.1, libcurl >= 7.13, gmime >= 2.6
 Requires: libxml++ >= 2.12, shared-mime-info
 Requires: taglib >= 1.4, exiv2-libs >= 0.18, unzip, antiword, unrtf, %{pftotext_pkg}
 #Suggests: xapian-omega
-BuildRequires: xapian-core-devel >= 1.0.4, libuuid-devel, libexttextcat-devel, sqlite-devel >= 3.3.1, libcurl-devel >= 7.13, gmime-devel >= 2.1, boost-devel >= 1.32
+BuildRequires: xapian-core-devel >= 1.0.4, libuuid-devel, libexttextcat-devel, sqlite-devel >= 3.3.1, libcurl-devel >= 7.13, gmime-devel >= 2.6, boost-devel >= 1.32
 BuildRequires: libxml++-devel >= 2.12, gettext-devel, desktop-file-utils, help2man
 BuildRequires: taglib-devel >= 1.4, exiv2-devel >= 0.18
 BuildRequires: gcc-c++
