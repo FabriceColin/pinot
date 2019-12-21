@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2015 Fabrice Colin
+ *  Copyright 2005-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -2125,7 +2125,11 @@ bool XapianIndex::flush(void)
 		Xapian::WritableDatabase *pIndex = pDatabase->writeLock();
 		if (pIndex != NULL)
 		{
+#if XAPIAN_NUM_VERSION >= 1001000
+			pIndex->commit();
+#else
 			pIndex->flush();
+#endif
 			flushed = true;
 		}
 	}

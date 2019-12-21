@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2015 Fabrice Colin
+ *  Copyright 2005-2019 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,11 +91,19 @@ static void checkFilter(const string &freeQuery, string::size_type filterValueSt
 	}
 }
 
+#if XAPIAN_NUM_VERSION >= 1003006
+class TimeValueRangeProcessor : public Xapian::RangeProcessor
+#else
 class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
+#endif
 {
 	public:
 		TimeValueRangeProcessor(Xapian::valueno valueNumber) :
+#if XAPIAN_NUM_VERSION >= 1003006
+			Xapian::RangeProcessor(),
+#else
 			Xapian::ValueRangeProcessor(),
+#endif
 			m_valueNumber(valueNumber)
 		{
 		}
@@ -103,36 +111,63 @@ class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
 		{
 		}
 
+#if XAPIAN_NUM_VERSION >= 1003006
+		virtual Xapian::Query operator()(const std::string &begin, const std::string &end)
+#else
 		virtual Xapian::valueno operator()(string &begin, string &end)
+#endif
 		{
 			if ((begin.size() == 6) &&
-					(end.size() == 6))
+				(end.size() == 6))
 			{
 				// HHMMSS
 #ifdef DEBUG
 				clog << "TimeValueRangeProcessor::operator: accepting " << begin << ".." << end << endl;
 #endif
+
+#if XAPIAN_NUM_VERSION >= 1003006
+				return Xapian::Query(Xapian::Query::OP_VALUE_RANGE,
+					m_valueNumber,
+					begin,end);
+#else
 				return m_valueNumber;
+#endif
 			}
 			if ((begin.size() == 8) && (end.size() == 8) &&
-					(begin[2] == begin[5]) && (end[2] == end[5]) && (begin[2] == end[2]) &&
-					(end[4] == ':'))
+				(begin[2] == begin[5]) && (end[2] == end[5]) && (begin[2] == end[2]) &&
+				(end[4] == ':'))
 			{
+				std::string lower(begin), upper(end);
+
 				// HH:MM:SS
-				begin.erase(2, 1);
-				begin.erase(5, 1);
-				end.erase(2, 1);
-				end.erase(5, 1);
+				lower.erase(2, 1);
+				lower.erase(5, 1);
+				upper.erase(2, 1);
+				upper.erase(5, 1);
 #ifdef DEBUG
-				clog << "TimeValueRangeProcessor::operator: accepting " << begin << ".." << end << endl;
+				clog << "TimeValueRangeProcessor::operator: accepting " << lower << ".." << upper << endl;
 #endif
+
+#if XAPIAN_NUM_VERSION >= 1003006
+				return Xapian::Query(Xapian::Query::OP_VALUE_RANGE,
+					m_valueNumber,
+					lower, upper);
+#else
+				begin = lower;
+				end = upper;
+
 				return m_valueNumber;
+#endif
 			}
 #ifdef DEBUG
 			clog << "TimeValueRangeProcessor::operator: rejecting " << begin << ".." << end << endl;
 #endif
 
+#if XAPIAN_NUM_VERSION >= 1003006
+			return Xapian::Query(Xapian::Query::OP_INVALID);
+#else
 			return Xapian::BAD_VALUENO;
+#endif
 		}
 
 	protected:
@@ -721,11 +756,19 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	}
 
 	// Date range
+#if XAPIAN_NUM_VERSION >= 1003006
+	Xapian::DateRangeProcessor dateProcessor(0);
+	parser.add_rangeprocessor(&dateProcessor);
+#else
 	Xapian::DateValueRangeProcessor dateProcessor(0);
 	parser.add_valuerangeprocessor(&dateProcessor);
+#endif
 
 	// Size with a "b" suffix, ie 1024..10240b
-#if XAPIAN_NUM_VERSION >= 1001000
+#if XAPIAN_NUM_VERSION >= 1003006
+	Xapian::NumberRangeProcessor sizeProcessor(2, "b", false);
+	parser.add_rangeprocessor(&sizeProcessor);
+#elif XAPIAN_NUM_VERSION >= 1001000
 	Xapian::NumberValueRangeProcessor sizeProcessor(2, "b", false);
 	parser.add_valuerangeprocessor(&sizeProcessor);
 #elif XAPIAN_NUM_VERSION >= 1000002
@@ -736,7 +779,11 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 
 	// Time range
 	TimeValueRangeProcessor timeProcessor(3);
+#if XAPIAN_NUM_VERSION >= 1003006
+	parser.add_rangeprocessor(&timeProcessor);
+#else
 	parser.add_valuerangeprocessor(&timeProcessor);
+#endif
 
 	// What type of query is this ?
 	QueryProperties::QueryType type = queryProps.getType();
