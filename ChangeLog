@@ -1,0 +1,725 @@
+------------------------------------------------------------------------
+r37 | fabricecolin | 2020-02-09 18:09:21 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   M /trunk/aclocal.m4
+   M /trunk/ltmain.sh
+
+Regenerated with aclocal 1.16.1 and libtool 2.4.6.
+
+------------------------------------------------------------------------
+r36 | fabricecolin | 2020-02-09 18:05:42 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/NEWS
+   M /trunk/README
+   M /trunk/UI/GTK2/src/mainWindow.cc
+   M /trunk/configure.in
+   M /trunk/po/cs.po
+   M /trunk/po/de.po
+   M /trunk/po/es.po
+   M /trunk/po/fr.po
+   M /trunk/po/he.po
+   M /trunk/po/it.po
+   M /trunk/po/ja.po
+   M /trunk/po/nl.po
+   M /trunk/po/pt.po
+   M /trunk/po/pt_BR.po
+   M /trunk/po/ru.po
+   M /trunk/po/sv.po
+   M /trunk/po/zh_CN.po
+   M /trunk/po/zh_TW.po
+
+Updating for 1.10.
+
+------------------------------------------------------------------------
+r35 | fabricecolin | 2020-02-09 17:59:21 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   M /trunk/pinot.spec.in
+
+Fedora 31 require dbus-glib-devel. Also added openssl-devel.
+
+------------------------------------------------------------------------
+r34 | fabricecolin | 2019-12-21 17:29:59 +0100 (Sat, 21 Dec 2019) | 2 lines
+Changed paths:
+   M /trunk/IndexSearch/Xapian/XapianEngine.cpp
+   M /trunk/IndexSearch/Xapian/XapianIndex.cpp
+
+Support for Xapian 1.1.0 (commit()) and 1.3.6 (RangeProcessor) APIs.
+
+------------------------------------------------------------------------
+r33 | fabricecolin | 2019-10-18 19:31:17 +0200 (Fri, 18 Oct 2019) | 3 lines
+
+Merge pull request #6 from ojwb/gmime3-support
+
+Add support for gmime >= 3.0
+------------------------------------------------------------------------
+r32 | olly.betts | 2019-10-18 05:40:32 +0200 (Fri, 18 Oct 2019) | 15 lines
+Changed paths:
+   M /trunk/README
+   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
+   M /trunk/configure.in
+   M /trunk/pinot.spec.in
+
+Add support for gmime >= 3.0
+
+The minimum required gmime version is now 2.6, though 2.4 may work
+if you adjust the configure check (but gmime 2.4 is really old now,
+and I'm not able to check with it).
+
+Before this change it seems GMIME_ENABLE_RFC2047_WORKAROUNDS was
+abused as a gmime version indicator - ChangeLog-dijon says:
+
+> If GMIME_ENABLE_RFC2047_WORKAROUNDS is defined, assume gmime 2.4.
+
+But this is no longer defined by gmime >= 3.0, and gmime < 2.4 seems
+completely irrelevant now so I've stripped out these checks instead
+of trying to adjust them to keep working.
+
+------------------------------------------------------------------------
+r31 | fabricecolin | 2019-07-23 22:34:46 +0200 (Tue, 23 Jul 2019) | 2 lines
+Changed paths:
+   M /trunk/README
+   M /trunk/pinot.spec.in
+   M /trunk/textcat_conf.txt
+
+libtextcat 2.2 is too ancient...
+
+------------------------------------------------------------------------
+r30 | fabricecolin | 2019-07-23 22:04:43 +0200 (Tue, 23 Jul 2019) | 2 lines
+Changed paths:
+   M /trunk/README
+
+Updated copyright years.
+
+------------------------------------------------------------------------
+r29 | fabricecolin | 2019-07-23 22:03:52 +0200 (Tue, 23 Jul 2019) | 2 lines
+Changed paths:
+   M /trunk/Core/Makefile.am
+
+The Thread library wasn't listed as a dependency.
+
+------------------------------------------------------------------------
+r28 | fabricecolin | 2019-07-23 22:03:14 +0200 (Tue, 23 Jul 2019) | 2 lines
+Changed paths:
+   M /trunk/Tokenize/filters/Exiv2ImageFilter.cc
+   M /trunk/configure.in
+
+Handle newer versions of exiv2.
+
+------------------------------------------------------------------------
+r27 | fabricecolin | 2019-05-12 18:27:41 +0200 (Sun, 12 May 2019) | 3 lines
+Changed paths:
+   M /trunk/Core/pinot-dbus-daemon.cpp
+   M /trunk/IndexSearch/SherlockParser.cpp
+   M /trunk/IndexSearch/XesamGLib/XesamEngine.cpp
+   M /trunk/IndexSearch/pinot-label.cpp
+   M /trunk/UI/GTK2/src/mainWindow.cc
+   M /trunk/UI/GTK2/src/pinot.cc
+   M /trunk/configure.in
+
+Added a check on boost/spirit/include/classic.hpp, on Glib for versions that
+have obsoleted g_type_init. Updated copyright years.
+
+------------------------------------------------------------------------
+r26 | fabricecolin | 2018-06-18 09:23:49 +0200 (Mon, 18 Jun 2018) | 3 lines
+
+Merge pull request #5 from ojwb/fix-occurred-typos
+
+Fix widespread typos for "occurred"
+------------------------------------------------------------------------
+r25 | olly.betts | 2018-06-18 02:12:33 +0200 (Mon, 18 Jun 2018) | 5 lines
+Changed paths:
+   M /trunk/Core/ServerThreads.cpp
+   M /trunk/Core/WorkerThreads.cpp
+   M /trunk/IndexSearch/ResultsExporter.h
+   M /trunk/IndexSearch/Xapian/XapianIndex.cpp
+   M /trunk/Tokenize/filters/ArchiveFilter.h
+   M /trunk/Tokenize/filters/ChmFilter.h
+   M /trunk/Tokenize/filters/ExifImageFilter.h
+   M /trunk/Tokenize/filters/Exiv2ImageFilter.h
+   M /trunk/Tokenize/filters/ExternalFilter.h
+   M /trunk/Tokenize/filters/FileOutputFilter.cc
+   M /trunk/Tokenize/filters/Filter.h
+   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
+   M /trunk/Tokenize/filters/GMimeMboxFilter.h
+   M /trunk/Tokenize/filters/HtmlFilter.h
+   M /trunk/Tokenize/filters/JsonFilter.h
+   M /trunk/Tokenize/filters/TagLibMusicFilter.h
+   M /trunk/Tokenize/filters/TarFilter.h
+   M /trunk/Tokenize/filters/TextFilter.h
+   M /trunk/Tokenize/filters/XmlFilter.h
+   M /trunk/UI/GTK2/src/mainWindow.cc
+   M /trunk/Utils/CommandLine.cpp
+
+Fix widespread typos for "occurred"
+
+Reported on the Debian package by lintian's spelling-error-in-binary
+check.
+
+------------------------------------------------------------------------
+r24 | fabricecolin | 2017-12-22 18:31:49 +0100 (Fri, 22 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/configure.in
+
+It looks like Centos 7 needs the option "-std=c++11".
+
+------------------------------------------------------------------------
+r23 | fabricecolin | 2017-12-17 16:10:04 +0100 (Sun, 17 Dec 2017) | 2 lines
+Changed paths:
+   M /trunk/Collect/DownloaderInterface.cpp
+   M /trunk/Utils/MIMEScanner.cpp
+
+Catch up with current glib and OpenSSL.
+
+------------------------------------------------------------------------
+r22 | fabricecolin | 2017-03-03 14:43:26 +0100 (Fri, 03 Mar 2017) | 3 lines
+
+Merge pull request #4 from ojwb/faq-fixes
+
+FAQ fixes from Olly Betts
+------------------------------------------------------------------------
+r21 | olly.betts | 2017-02-28 22:42:40 +0100 (Tue, 28 Feb 2017) | 18 lines
+Changed paths:
+   M /trunk/FAQ
+
+Remove suggestion to delete "flintlock"
+
+Xapian's `flintlock` is not a lock file whose presence indicates that
+the lock is held, but rather a file which is locked using `fcntl()`
+locking.  Such locks are automatically released by the OS when the
+process holding them terminates, so there's no such thing as a "stale
+lock", and the `flintlock` file should always exist.
+
+The `flicklock` file was a typo and fixed back in 2006, before Xapian
+1.0.0 - so the name only of historic interest now, but similarly it
+should not be deleted.
+
+The `db_lock` file was used by the old `quartz` backend and did work
+by its presence indicating that the lock was held.  But `flint` was
+the default backend from 1.0.0 and `quartz` was removed completely
+in 2008, so I find it hard to believe that anyone will have such a
+database.
+
+------------------------------------------------------------------------
+r20 | olly.betts | 2017-02-28 22:42:07 +0100 (Tue, 28 Feb 2017) | 4 lines
+Changed paths:
+   M /trunk/FAQ
+
+Remove Xapian-related entries more than a decade old
+
+Nobody will be using Xapian versions from 2006 now.
+
+------------------------------------------------------------------------
+r19 | fabricecolin | 2017-02-13 19:51:11 +0100 (Mon, 13 Feb 2017) | 2 lines
+Changed paths:
+   M /trunk/UI/GTK2/src/mainWindow.cc
+
+Extended copyright years, updated the Web site URL.
+
+------------------------------------------------------------------------
+r18 | fabricecolin | 2017-02-13 19:49:32 +0100 (Mon, 13 Feb 2017) | 3 lines
+Changed paths:
+   M /trunk/Core/WorkerThreads.cpp
+   M /trunk/IndexSearch/SherlockParser.cpp
+   M /trunk/Tokenize/filters/ArchiveFilter.cc
+   M /trunk/Tokenize/filters/ArchiveFilter.h
+   M /trunk/Tokenize/filters/ChmFilter.cc
+   M /trunk/Tokenize/filters/ChmFilter.h
+   M /trunk/Tokenize/filters/ExifImageFilter.cc
+   M /trunk/Tokenize/filters/ExifImageFilter.h
+   M /trunk/Tokenize/filters/Exiv2ImageFilter.cc
+   M /trunk/Tokenize/filters/Exiv2ImageFilter.h
+   M /trunk/Tokenize/filters/ExternalFilter.cc
+   M /trunk/Tokenize/filters/ExternalFilter.h
+   M /trunk/Tokenize/filters/FileOutputFilter.cc
+   M /trunk/Tokenize/filters/FileOutputFilter.h
+   M /trunk/Tokenize/filters/Filter.cc
+   M /trunk/Tokenize/filters/Filter.h
+   M /trunk/Tokenize/filters/FilterFactory.cc
+   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
+   M /trunk/Tokenize/filters/GMimeMboxFilter.h
+   M /trunk/Tokenize/filters/HtmlFilter.cc
+   M /trunk/Tokenize/filters/HtmlFilter.h
+   M /trunk/Tokenize/filters/JsonFilter.cc
+   M /trunk/Tokenize/filters/JsonFilter.h
+   M /trunk/Tokenize/filters/TagLibMusicFilter.cc
+   M /trunk/Tokenize/filters/TagLibMusicFilter.h
+   M /trunk/Tokenize/filters/TarFilter.cc
+   M /trunk/Tokenize/filters/TarFilter.h
+   M /trunk/Tokenize/filters/TextFilter.cc
+   M /trunk/Tokenize/filters/TextFilter.h
+   M /trunk/Tokenize/filters/XmlFilter.cc
+   M /trunk/Tokenize/filters/XmlFilter.h
+
+Changed the filter interface, and the entry points dynamic filter libraries
+should export to hopefully compiler-agnostic mangled names.
+
+------------------------------------------------------------------------
+r17 | fabricecolin | 2017-02-12 18:28:05 +0100 (Sun, 12 Feb 2017) | 2 lines
+Changed paths:
+   D /trunk/ChangeLog
+   A /trunk/ChangeLog-svn
+   M /trunk/Makefile.am
+   M /trunk/README
+   M /trunk/pinot.spec.in
+
+Moved the old repo's ChangeLog file, updated URLs.
+
+------------------------------------------------------------------------
+r16 | fabricecolin | 2017-02-12 18:26:38 +0100 (Sun, 12 Feb 2017) | 2 lines
+Changed paths:
+   M /trunk/SQL/SQLDB.cpp
+   M /trunk/SQL/SQLDB.h
+
+Useful upgrade() method.
+
+------------------------------------------------------------------------
+r15 | fabricecolin | 2016-11-13 20:57:38 +0100 (Sun, 13 Nov 2016) | 3 lines
+Changed paths:
+   M /trunk/IndexSearch/Xapian/Makefile.am
+   M /trunk/configure.in
+
+There's nothing in the Xapian backend that requires OpenSSL so we probably can
+avoid linking to it, and sidestep https://bugs.debian.org/833692.
+
+------------------------------------------------------------------------
+r14 | fabricecolin | 2016-10-18 16:59:24 +0200 (Tue, 18 Oct 2016) | 3 lines
+Changed paths:
+   M /trunk/Tokenize/filters/FilterFactory.cc
+
+Merge pull request #2 from ojwb/fix-c++11-warning
+
+Fix GCC C++11 -Wliteral-suffix warning
+------------------------------------------------------------------------
+r13 | olly.betts | 2016-10-01 00:41:09 +0200 (Sat, 01 Oct 2016) | 6 lines
+Changed paths:
+   M /trunk/Tokenize/filters/FilterFactory.cc
+   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
+
+Fix GCC C++11 -Wliteral-suffix warning
+
+../Tokenize/filters/GMimeMboxFilter.cc:304:28: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]
+  if (sscanf(ipath.c_str(), "o="GMIME_OFFSET_MODIFIER"&l=[", &m_messageStart) != 1)
+                            ^
+
+------------------------------------------------------------------------
+r12 | fabricecolin | 2016-10-18 16:58:54 +0200 (Tue, 18 Oct 2016) | 3 lines
+
+Merge pull request #1 from ojwb/cx11-abi-mangling-fix
+
+Fix condition under which C++11 ABI symbol is used
+------------------------------------------------------------------------
+r11 | olly.betts | 2016-10-01 00:15:51 +0200 (Sat, 01 Oct 2016) | 2 lines
+Changed paths:
+   M /trunk/Tokenize/filters/FilterFactory.cc
+
+Fix condition under which C++11 ABI symbol is used
+
+------------------------------------------------------------------------
+r10 | fabricecolin | 2016-06-20 20:07:02 +0200 (Mon, 20 Jun 2016) | 2 lines
+Changed paths:
+   M /trunk/AUTHORS
+
+Forgot to add Olly Betts here for the configure patch.
+
+------------------------------------------------------------------------
+r9 | fabricecolin | 2016-06-19 11:16:18 +0200 (Sun, 19 Jun 2016) | 7 lines
+Changed paths:
+   M /trunk/configure.in
+
+Patch from Olly Betts to "fix a bug in pinot's configure which makes things
+like this misbehave:
+
+./configure XAPIAN_CONFIG=/usr/bin/xapian-config-1.3
+"
+Also, always link with -lboost_system to help with newer versions of boost.
+
+------------------------------------------------------------------------
+r8 | fabricecolin | 2016-06-19 11:11:47 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   M /trunk/IndexSearch/ModuleFactory.cpp
+
+Fix return value (https://bugs.debian.org/812165).
+
+------------------------------------------------------------------------
+r7 | fabricecolin | 2016-06-19 11:10:22 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/ChangeLog
+   A /trunk/ChangeLog-dijon
+   A /trunk/Makefile.am
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r6 | fabricecolin | 2016-06-19 11:08:58 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/AUTHORS
+   A /trunk/COPYING
+   A /trunk/FAQ
+   A /trunk/INSTALL
+   A /trunk/NEWS
+   A /trunk/README
+   A /trunk/TODO
+   A /trunk/acinclude.m4
+   A /trunk/aclocal.m4
+   A /trunk/autogen.sh
+   A /trunk/configure.in
+   A /trunk/globalconfig.xml
+   A /trunk/ltmain.sh
+   A /trunk/mkinstalldirs
+   A /trunk/pinot-dbus-daemon.desktop
+   A /trunk/pinot-prefs.desktop
+   A /trunk/pinot.desktop
+   A /trunk/pinot.spec.in
+   A /trunk/po
+   A /trunk/po/Makefile.in.in
+   A /trunk/po/Makevars
+   A /trunk/po/POTFILES.in
+   A /trunk/po/cs.po
+   A /trunk/po/de.po
+   A /trunk/po/es.po
+   A /trunk/po/fr.po
+   A /trunk/po/he.po
+   A /trunk/po/it.po
+   A /trunk/po/ja.po
+   A /trunk/po/nl.po
+   A /trunk/po/pt.po
+   A /trunk/po/pt_BR.po
+   A /trunk/po/ru.po
+   A /trunk/po/sv.po
+   A /trunk/po/zh_CN.po
+   A /trunk/po/zh_TW.po
+   A /trunk/scripts
+   A /trunk/scripts/bash
+   A /trunk/scripts/bash/pinot-cd.sh
+   A /trunk/scripts/bash/pinot-check-file.sh
+   A /trunk/scripts/bash/pinot-enum-index.sh
+   A /trunk/textcat31_conf.txt
+   A /trunk/textcat32_conf.txt
+   A /trunk/textcat3_conf.txt
+   A /trunk/textcat_conf.txt
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r5 | fabricecolin | 2016-06-19 11:07:31 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/UI
+   A /trunk/UI/GTK2
+   A /trunk/UI/GTK2/metase-gtk2.glade
+   A /trunk/UI/GTK2/metase-gtk2.gladep
+   A /trunk/UI/GTK2/src
+   A /trunk/UI/GTK2/src/EnginesTree.cc
+   A /trunk/UI/GTK2/src/EnginesTree.hh
+   A /trunk/UI/GTK2/src/IndexPage.cc
+   A /trunk/UI/GTK2/src/IndexPage.hh
+   A /trunk/UI/GTK2/src/Makefile.am
+   A /trunk/UI/GTK2/src/ModelColumns.cc
+   A /trunk/UI/GTK2/src/ModelColumns.hh
+   A /trunk/UI/GTK2/src/Notebook.cc
+   A /trunk/UI/GTK2/src/Notebook.hh
+   A /trunk/UI/GTK2/src/PinotUtils.cc
+   A /trunk/UI/GTK2/src/PinotUtils.hh
+   A /trunk/UI/GTK2/src/ResultsTree.cc
+   A /trunk/UI/GTK2/src/ResultsTree.hh
+   A /trunk/UI/GTK2/src/UIThreads.cc
+   A /trunk/UI/GTK2/src/UIThreads.hh
+   A /trunk/UI/GTK2/src/importDialog.cc
+   A /trunk/UI/GTK2/src/importDialog.hh
+   A /trunk/UI/GTK2/src/importDialog_glade.cc
+   A /trunk/UI/GTK2/src/importDialog_glade.hh
+   A /trunk/UI/GTK2/src/indexDialog.cc
+   A /trunk/UI/GTK2/src/indexDialog.hh
+   A /trunk/UI/GTK2/src/indexDialog_glade.cc
+   A /trunk/UI/GTK2/src/indexDialog_glade.hh
+   A /trunk/UI/GTK2/src/launcherDialog.cc
+   A /trunk/UI/GTK2/src/launcherDialog.hh
+   A /trunk/UI/GTK2/src/launcherDialog_glade.cc
+   A /trunk/UI/GTK2/src/launcherDialog_glade.hh
+   A /trunk/UI/GTK2/src/mainWindow.cc
+   A /trunk/UI/GTK2/src/mainWindow.hh
+   A /trunk/UI/GTK2/src/mainWindow_glade.cc
+   A /trunk/UI/GTK2/src/mainWindow_glade.hh
+   A /trunk/UI/GTK2/src/pinot.1
+   A /trunk/UI/GTK2/src/pinot.cc
+   A /trunk/UI/GTK2/src/prefsWindow.cc
+   A /trunk/UI/GTK2/src/prefsWindow.hh
+   A /trunk/UI/GTK2/src/prefsWindow_glade.cc
+   A /trunk/UI/GTK2/src/prefsWindow_glade.hh
+   A /trunk/UI/GTK2/src/propertiesDialog.cc
+   A /trunk/UI/GTK2/src/propertiesDialog.hh
+   A /trunk/UI/GTK2/src/propertiesDialog_glade.cc
+   A /trunk/UI/GTK2/src/propertiesDialog_glade.hh
+   A /trunk/UI/GTK2/src/queryDialog.cc
+   A /trunk/UI/GTK2/src/queryDialog.hh
+   A /trunk/UI/GTK2/src/queryDialog_glade.cc
+   A /trunk/UI/GTK2/src/queryDialog_glade.hh
+   A /trunk/UI/GTK2/src/statisticsDialog.cc
+   A /trunk/UI/GTK2/src/statisticsDialog.hh
+   A /trunk/UI/GTK2/src/statisticsDialog_glade.cc
+   A /trunk/UI/GTK2/src/statisticsDialog_glade.hh
+   A /trunk/UI/GTK2/xapian-powered.png
+   A /trunk/UI/icons
+   A /trunk/UI/icons/16x16
+   A /trunk/UI/icons/16x16/pinot.png
+   A /trunk/UI/icons/22x22
+   A /trunk/UI/icons/22x22/pinot.png
+   A /trunk/UI/icons/24x24
+   A /trunk/UI/icons/24x24/pinot.png
+   A /trunk/UI/icons/32x32
+   A /trunk/UI/icons/32x32/pinot.png
+   A /trunk/UI/icons/48x48
+   A /trunk/UI/icons/48x48/pinot.png
+   A /trunk/UI/icons/pinot.xcf
+   A /trunk/Utils
+   A /trunk/Utils/CommandLine.cpp
+   A /trunk/Utils/CommandLine.h
+   A /trunk/Utils/Document.cpp
+   A /trunk/Utils/Document.h
+   A /trunk/Utils/DocumentInfo.cpp
+   A /trunk/Utils/DocumentInfo.h
+   A /trunk/Utils/Languages.cpp
+   A /trunk/Utils/Languages.h
+   A /trunk/Utils/MIMEScanner.cpp
+   A /trunk/Utils/MIMEScanner.h
+   A /trunk/Utils/Makefile.am
+   A /trunk/Utils/Memory.cpp
+   A /trunk/Utils/Memory.h
+   A /trunk/Utils/NLS.h
+   A /trunk/Utils/StringManip.cpp
+   A /trunk/Utils/StringManip.h
+   A /trunk/Utils/TimeConverter.cpp
+   A /trunk/Utils/TimeConverter.h
+   A /trunk/Utils/Timer.cpp
+   A /trunk/Utils/Timer.h
+   A /trunk/Utils/Url.cpp
+   A /trunk/Utils/Url.h
+   A /trunk/Utils/Visibility.h
+   A /trunk/Utils/xdgmime
+   A /trunk/Utils/xdgmime/ChangeLog
+   A /trunk/Utils/xdgmime/xdgmime.c
+   A /trunk/Utils/xdgmime/xdgmime.h
+   A /trunk/Utils/xdgmime/xdgmimealias.c
+   A /trunk/Utils/xdgmime/xdgmimealias.h
+   A /trunk/Utils/xdgmime/xdgmimecache.c
+   A /trunk/Utils/xdgmime/xdgmimecache.h
+   A /trunk/Utils/xdgmime/xdgmimeglob.c
+   A /trunk/Utils/xdgmime/xdgmimeglob.h
+   A /trunk/Utils/xdgmime/xdgmimeint.c
+   A /trunk/Utils/xdgmime/xdgmimeint.h
+   A /trunk/Utils/xdgmime/xdgmimemagic.c
+   A /trunk/Utils/xdgmime/xdgmimemagic.h
+   A /trunk/Utils/xdgmime/xdgmimeparent.c
+   A /trunk/Utils/xdgmime/xdgmimeparent.h
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r4 | fabricecolin | 2016-06-19 11:06:55 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/SQL
+   A /trunk/SQL/ActionQueue.cpp
+   A /trunk/SQL/ActionQueue.h
+   A /trunk/SQL/CrawlHistory.cpp
+   A /trunk/SQL/CrawlHistory.h
+   A /trunk/SQL/Makefile.am
+   A /trunk/SQL/MetaDataBackup.cpp
+   A /trunk/SQL/MetaDataBackup.h
+   A /trunk/SQL/QueryHistory.cpp
+   A /trunk/SQL/QueryHistory.h
+   A /trunk/SQL/SQLDB.cpp
+   A /trunk/SQL/SQLDB.h
+   A /trunk/SQL/SQLiteBase.cpp
+   A /trunk/SQL/SQLiteBase.h
+   A /trunk/SQL/ViewHistory.cpp
+   A /trunk/SQL/ViewHistory.h
+   A /trunk/Tokenize
+   A /trunk/Tokenize/FilterUtils.cpp
+   A /trunk/Tokenize/FilterUtils.h
+   A /trunk/Tokenize/Makefile.am
+   A /trunk/Tokenize/TextConverter.cpp
+   A /trunk/Tokenize/TextConverter.h
+   A /trunk/Tokenize/filters
+   A /trunk/Tokenize/filters/ArchiveFilter.cc
+   A /trunk/Tokenize/filters/ArchiveFilter.h
+   A /trunk/Tokenize/filters/ChmFilter.cc
+   A /trunk/Tokenize/filters/ChmFilter.h
+   A /trunk/Tokenize/filters/ExifImageFilter.cc
+   A /trunk/Tokenize/filters/ExifImageFilter.h
+   A /trunk/Tokenize/filters/Exiv2ImageFilter.cc
+   A /trunk/Tokenize/filters/Exiv2ImageFilter.h
+   A /trunk/Tokenize/filters/ExternalFilter.cc
+   A /trunk/Tokenize/filters/ExternalFilter.h
+   A /trunk/Tokenize/filters/FileOutputFilter.cc
+   A /trunk/Tokenize/filters/FileOutputFilter.h
+   A /trunk/Tokenize/filters/Filter.cc
+   A /trunk/Tokenize/filters/Filter.h
+   A /trunk/Tokenize/filters/FilterFactory.cc
+   A /trunk/Tokenize/filters/FilterFactory.h
+   A /trunk/Tokenize/filters/GMimeMboxFilter.cc
+   A /trunk/Tokenize/filters/GMimeMboxFilter.h
+   A /trunk/Tokenize/filters/HtmlFilter.cc
+   A /trunk/Tokenize/filters/HtmlFilter.h
+   A /trunk/Tokenize/filters/HtmlParser.cc
+   A /trunk/Tokenize/filters/HtmlParser.h
+   A /trunk/Tokenize/filters/JsonFilter.cc
+   A /trunk/Tokenize/filters/JsonFilter.h
+   A /trunk/Tokenize/filters/TagLibMusicFilter.cc
+   A /trunk/Tokenize/filters/TagLibMusicFilter.h
+   A /trunk/Tokenize/filters/TarFilter.cc
+   A /trunk/Tokenize/filters/TarFilter.h
+   A /trunk/Tokenize/filters/TextFilter.cc
+   A /trunk/Tokenize/filters/TextFilter.h
+   A /trunk/Tokenize/filters/XmlFilter.cc
+   A /trunk/Tokenize/filters/XmlFilter.h
+   A /trunk/Tokenize/filters/external-filters.xml
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r3 | fabricecolin | 2016-06-19 11:06:31 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/IndexSearch
+   A /trunk/IndexSearch/DBusIndex.cpp
+   A /trunk/IndexSearch/DBusIndex.h
+   A /trunk/IndexSearch/FieldMapperInterface.h
+   A /trunk/IndexSearch/FilterWrapper.cpp
+   A /trunk/IndexSearch/FilterWrapper.h
+   A /trunk/IndexSearch/Google
+   A /trunk/IndexSearch/Google/GAPI.nsmap
+   A /trunk/IndexSearch/Google/GAPIC.cpp
+   A /trunk/IndexSearch/Google/GAPIClient.cpp
+   A /trunk/IndexSearch/Google/GAPIClientLib.cpp
+   A /trunk/IndexSearch/Google/GAPIGoogleSearchBindingProxy.h
+   A /trunk/IndexSearch/Google/GAPIH.h
+   A /trunk/IndexSearch/Google/GAPIStub.h
+   A /trunk/IndexSearch/Google/GoogleAPIEngine.cpp
+   A /trunk/IndexSearch/Google/GoogleAPIEngine.h
+   A /trunk/IndexSearch/Google/GoogleSearch.h
+   A /trunk/IndexSearch/Google/Makefile.am
+   A /trunk/IndexSearch/Google/ModuleExports.cpp
+   A /trunk/IndexSearch/IndexInterface.h
+   A /trunk/IndexSearch/Makefile.am
+   A /trunk/IndexSearch/ModuleFactory.cpp
+   A /trunk/IndexSearch/ModuleFactory.h
+   A /trunk/IndexSearch/ModuleProperties.h
+   A /trunk/IndexSearch/OpenSearchParser.cpp
+   A /trunk/IndexSearch/OpenSearchParser.h
+   A /trunk/IndexSearch/PluginParsers.h
+   A /trunk/IndexSearch/PluginWebEngine.cpp
+   A /trunk/IndexSearch/PluginWebEngine.h
+   A /trunk/IndexSearch/Plugins
+   A /trunk/IndexSearch/Plugins/AmazonAPI.src
+   A /trunk/IndexSearch/Plugins/Bing.src
+   A /trunk/IndexSearch/Plugins/Clusty.src
+   A /trunk/IndexSearch/Plugins/Freecode.src
+   A /trunk/IndexSearch/Plugins/Google.src
+   A /trunk/IndexSearch/Plugins/KodersDescription.xml
+   A /trunk/IndexSearch/Plugins/OmegaDescription.xml
+   A /trunk/IndexSearch/Plugins/Topix.src
+   A /trunk/IndexSearch/Plugins/UNData.src
+   A /trunk/IndexSearch/Plugins/Wikipedia.src
+   A /trunk/IndexSearch/QueryProperties.cpp
+   A /trunk/IndexSearch/QueryProperties.h
+   A /trunk/IndexSearch/ResultsExporter.cpp
+   A /trunk/IndexSearch/ResultsExporter.h
+   A /trunk/IndexSearch/SearchEngineInterface.cpp
+   A /trunk/IndexSearch/SearchEngineInterface.h
+   A /trunk/IndexSearch/SearchPluginProperties.cpp
+   A /trunk/IndexSearch/SearchPluginProperties.h
+   A /trunk/IndexSearch/SherlockParser.cpp
+   A /trunk/IndexSearch/SherlockParser.h
+   A /trunk/IndexSearch/WebEngine.cpp
+   A /trunk/IndexSearch/WebEngine.h
+   A /trunk/IndexSearch/Xapian
+   A /trunk/IndexSearch/Xapian/AbstractGenerator.cpp
+   A /trunk/IndexSearch/Xapian/AbstractGenerator.h
+   A /trunk/IndexSearch/Xapian/LanguageDetector.cpp
+   A /trunk/IndexSearch/Xapian/LanguageDetector.h
+   A /trunk/IndexSearch/Xapian/Makefile.am
+   A /trunk/IndexSearch/Xapian/ModuleExports.cpp
+   A /trunk/IndexSearch/Xapian/XapianDatabase.cpp
+   A /trunk/IndexSearch/Xapian/XapianDatabase.h
+   A /trunk/IndexSearch/Xapian/XapianDatabaseFactory.cpp
+   A /trunk/IndexSearch/Xapian/XapianDatabaseFactory.h
+   A /trunk/IndexSearch/Xapian/XapianEngine.cpp
+   A /trunk/IndexSearch/Xapian/XapianEngine.h
+   A /trunk/IndexSearch/Xapian/XapianIndex.cpp
+   A /trunk/IndexSearch/Xapian/XapianIndex.h
+   A /trunk/IndexSearch/XesamGLib
+   A /trunk/IndexSearch/XesamGLib/Makefile.am
+   A /trunk/IndexSearch/XesamGLib/ModuleExports.cpp
+   A /trunk/IndexSearch/XesamGLib/XesamEngine.cpp
+   A /trunk/IndexSearch/XesamGLib/XesamEngine.h
+   A /trunk/IndexSearch/XesamLog.h
+   A /trunk/IndexSearch/cjkv
+   A /trunk/IndexSearch/cjkv/CJKVTokenizer.cc
+   A /trunk/IndexSearch/cjkv/CJKVTokenizer.h
+   A /trunk/IndexSearch/pinot-label.1
+   A /trunk/IndexSearch/pinot-label.cpp
+   A /trunk/Monitor
+   A /trunk/Monitor/INotifyMonitor.cpp
+   A /trunk/Monitor/INotifyMonitor.h
+   A /trunk/Monitor/Makefile.am
+   A /trunk/Monitor/MonitorEvent.cpp
+   A /trunk/Monitor/MonitorEvent.h
+   A /trunk/Monitor/MonitorFactory.cpp
+   A /trunk/Monitor/MonitorFactory.h
+   A /trunk/Monitor/MonitorHandler.cpp
+   A /trunk/Monitor/MonitorHandler.h
+   A /trunk/Monitor/MonitorInterface.h
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r2 | fabricecolin | 2016-06-19 11:05:58 +0200 (Sun, 19 Jun 2016) | 2 lines
+Changed paths:
+   A /trunk/Collect
+   A /trunk/Collect/CurlDownloader.cpp
+   A /trunk/Collect/CurlDownloader.h
+   A /trunk/Collect/DownloaderFactory.cpp
+   A /trunk/Collect/DownloaderFactory.h
+   A /trunk/Collect/DownloaderInterface.cpp
+   A /trunk/Collect/DownloaderInterface.h
+   A /trunk/Collect/FileCollector.cpp
+   A /trunk/Collect/FileCollector.h
+   A /trunk/Collect/Makefile.am
+   A /trunk/Collect/NeonDownloader.cpp
+   A /trunk/Collect/NeonDownloader.h
+   A /trunk/Core
+   A /trunk/Core/DaemonState.cpp
+   A /trunk/Core/DaemonState.h
+   A /trunk/Core/Makefile.am
+   A /trunk/Core/OnDiskHandler.cpp
+   A /trunk/Core/OnDiskHandler.h
+   A /trunk/Core/PinotSettings.cpp
+   A /trunk/Core/PinotSettings.h
+   A /trunk/Core/ServerThreads.cpp
+   A /trunk/Core/ServerThreads.h
+   A /trunk/Core/UniqueApplication.cpp
+   A /trunk/Core/UniqueApplication.h
+   A /trunk/Core/WorkerThread.cpp
+   A /trunk/Core/WorkerThread.h
+   A /trunk/Core/WorkerThreads.cpp
+   A /trunk/Core/WorkerThreads.h
+   A /trunk/Core/de.berlios.Pinot.service.in
+   A /trunk/Core/pinot-daemon.1
+   A /trunk/Core/pinot-dbus-daemon.1
+   A /trunk/Core/pinot-dbus-daemon.cpp
+   A /trunk/Core/pinot-dbus-daemon.xml
+   A /trunk/Core/pinot-index.1
+   A /trunk/Core/pinot-index.cpp
+   A /trunk/Core/pinot-search.1
+   A /trunk/Core/pinot-search.cpp
+
+Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+------------------------------------------------------------------------
+r1 | fabricecolin | 2016-06-19 10:41:10 +0200 (Sun, 19 Jun 2016) | 1 line
+Changed paths:
+   A /branches
+   A /trunk
+   A /trunk/LICENSE
+
+Initial commit
+------------------------------------------------------------------------
