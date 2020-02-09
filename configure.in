@@ -1,9 +1,8 @@
-# generated 2005/12/14 20:48:47 SGT by fabrice@amra.dyndns.org.(none)
-# using glademm V2.6.0
+# First generated 2005/12/14 20:48:47 SGT
 
 AC_PREREQ(2.50)
 AC_INIT(pinot, 1.10, [fabrice.colin@gmail.com])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
 AC_ISC_POSIX
@@ -88,7 +87,7 @@ AC_MSG_RESULT($enable_debug)
 dnl Set compiler specific flags
 VISIB_CFLAGS=""
 if test "x$GCC" = "xyes"; then
-gxx_version=`$CXX --version 2>&1 | head -1 | $SED 's/^[[^ ]]* (GCC) //;s/ .*//'`
+gxx_version=`$CXX --version 2>&1 | head -1 | sed 's/^[[^ ]]* (GCC) //;s/ .*//'`
 case $gxx_version in
 4.*)
 VISIB_CFLAGS="-fvisibility=hidden"
@@ -113,7 +112,7 @@ AC_MSG_RESULT($enable_dbus)
 AM_CONDITIONAL(HAVE_DBUS, false)
 if test "x$enable_dbus" = "xyes"; then
    PKG_CHECK_MODULES(DBUS, dbus-glib-1)
-   DBUS_NUM_VERSION=`pkg-config --modversion dbus-1 | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+   DBUS_NUM_VERSION=`pkg-config --modversion dbus-1 | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
    AC_DEFINE_UNQUOTED(DBUS_NUM_VERSION,$DBUS_NUM_VERSION, [DBus version number])
    AM_CONDITIONAL(HAVE_DBUS, true)
 fi
@@ -193,7 +192,7 @@ if test "$XAPIAN_CONFIG" = "no" ; then
 fi
 XAPIAN_CFLAGS=`$XAPIAN_CONFIG --cxxflags`
 XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
-XAPIAN_NUM_VERSION=`$XAPIAN_CONFIG --version | $SED -e "s/xapian-config - xapian-core //g" | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+XAPIAN_NUM_VERSION=`$XAPIAN_CONFIG --version | sed -e "s/xapian-config - xapian-core //g" | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 AC_DEFINE_UNQUOTED(XAPIAN_NUM_VERSION,$XAPIAN_NUM_VERSION,
     [Xapian version number])
 AC_MSG_CHECKING(for Xapian >= 1.0.4)
