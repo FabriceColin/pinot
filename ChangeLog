@@ -1,4 +1,32 @@
 ------------------------------------------------------------------------
+r39 | fabricecolin | 2020-02-09 18:32:03 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   M /trunk/configure.in
+   M /trunk/po/cs.po
+   M /trunk/po/de.po
+   M /trunk/po/es.po
+   M /trunk/po/fr.po
+   M /trunk/po/he.po
+   M /trunk/po/it.po
+   M /trunk/po/ja.po
+   M /trunk/po/nl.po
+   M /trunk/po/pt.po
+   M /trunk/po/pt_BR.po
+   M /trunk/po/ru.po
+   M /trunk/po/sv.po
+   M /trunk/po/zh_CN.po
+   M /trunk/po/zh_TW.po
+
+Make automake stop complain about subdir-objects.
+
+------------------------------------------------------------------------
+r38 | fabricecolin | 2020-02-09 18:11:06 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   A /trunk/ChangeLog
+
+Changelog for commits to the current repository.
+
+------------------------------------------------------------------------
 r37 | fabricecolin | 2020-02-09 18:09:21 +0100 (Sun, 09 Feb 2020) | 2 lines
 Changed paths:
    M /trunk/aclocal.m4
