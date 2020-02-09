@@ -1,3 +1,7 @@
+2020/01/09 version_1_1_0
+General:
+ - updated gmime, textcat, exiv, glib, OpenSSL and Xapian dependencies
+
 2015/06/11 version_1_0_9
 Tokenize :
  - new JSON filter

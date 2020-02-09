@@ -2,7 +2,7 @@
 # using glademm V2.6.0
 
 AC_PREREQ(2.50)
-AC_INIT(pinot, 1.09, [fabrice.colin@gmail.com])
+AC_INIT(pinot, 1.10, [fabrice.colin@gmail.com])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS(config.h)
 
