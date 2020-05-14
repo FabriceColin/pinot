@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2020 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -227,6 +227,11 @@ bool statisticsDialog::on_activity_timeout(void)
 	TreeModel::Row row;
 	std::map<unsigned int, string> sources;
 	string daemonDBusStatus;
+#ifdef HAVE_DBUS
+	string programName("pinot-dbus-daemon");
+#else
+	string programName("pinot-daemon");
+#endif
 	char countStr[64];
 
 	row = *m_myWebPagesIter;
@@ -266,7 +271,7 @@ bool statisticsDialog::on_activity_timeout(void)
 	populate_history();
 
 	// Is the daemon still running ?
-	string pidFileName(PinotSettings::getInstance().getConfigurationDirectory() + "/pinot-dbus-daemon.pid");
+	string pidFileName(PinotSettings::getInstance().getConfigurationDirectory() + "/" + programName + ".pid");
 	pid_t daemonPID = 0;
 	ifstream pidFile;
 	pidFile.open(pidFileName.c_str());
