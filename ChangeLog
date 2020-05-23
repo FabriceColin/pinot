@@ -1,4 +1,18 @@
 ------------------------------------------------------------------------
+r42 | fabricecolin | 2020-05-14 21:57:00 +0200 (Thu, 14 May 2020) | 2 lines
+Changed paths:
+   M /trunk/UI/GTK2/src/statisticsDialog.cc
+
+Fixed what PID file to open when built without D-Bus support.
+
+------------------------------------------------------------------------
+r40 | fabricecolin | 2020-02-09 18:33:00 +0100 (Sun, 09 Feb 2020) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+Current log.
+
+------------------------------------------------------------------------
 r39 | fabricecolin | 2020-02-09 18:32:03 +0100 (Sun, 09 Feb 2020) | 2 lines
 Changed paths:
    M /trunk/configure.in
