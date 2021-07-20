@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2020 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -2749,7 +2749,7 @@ void mainWindow::on_about_activate()
 
 	aboutBox.set_comments(_("A metasearch tool for the Free Desktop") + string(".\n") +
 		_("Search the Web and your documents !"));
-	aboutBox.set_copyright("(C) 2005-2020 Fabrice Colin");
+	aboutBox.set_copyright("(C) 2005-2021 Fabrice Colin");
 	aboutBox.set_name("Pinot");
 	aboutBox.set_version(VERSION);
 	aboutBox.set_website("https://github.com/FabriceColin/pinot");
