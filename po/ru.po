@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:30+0100\n"
+"POT-Creation-Date: 2021-07-20 15:53+0200\n"
 "PO-Revision-Date: 2011-01-05 20:28+0000\n"
 "Last-Translator: Nikolay Kachanov <Nikolay.Kachanov@gmail.Com>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -207,8 +207,8 @@ msgstr "Мета-тег ROBOTS запрещает индексирование"
 msgid "No monitoring handler"
 msgstr "Нет обработчика мониторинга"
 
-#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
-#: UI/GTK2/src/statisticsDialog.cc:263
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:250
+#: UI/GTK2/src/statisticsDialog.cc:268
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
@@ -974,39 +974,39 @@ msgstr "Просканировано"
 msgid "files"
 msgstr "файлов"
 
-#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+#: UI/GTK2/src/statisticsDialog.cc:244 UI/GTK2/src/statisticsDialog.cc:260
 msgid "documents"
 msgstr "документ(ов)"
 
 #. FIXME: check whether it's actually running !
-#: UI/GTK2/src/statisticsDialog.cc:284
+#: UI/GTK2/src/statisticsDialog.cc:289
 msgid "Running under PID"
 msgstr "Работает, идентификатор процесса"
 
-#: UI/GTK2/src/statisticsDialog.cc:306
+#: UI/GTK2/src/statisticsDialog.cc:311
 msgid "Disconnected from D-Bus"
 msgstr "Отключен от D-Bus"
 
-#: UI/GTK2/src/statisticsDialog.cc:310
+#: UI/GTK2/src/statisticsDialog.cc:315
 msgid "Stopped"
 msgstr "Остановлен"
 
-#: UI/GTK2/src/statisticsDialog.cc:314
+#: UI/GTK2/src/statisticsDialog.cc:319
 msgid "Currently not running"
 msgstr "В настоящее время не работает"
 
-#: UI/GTK2/src/statisticsDialog.cc:328
+#: UI/GTK2/src/statisticsDialog.cc:333
 msgid "Low disk space"
 msgstr "Мало места на диске"
 
-#: UI/GTK2/src/statisticsDialog.cc:345
+#: UI/GTK2/src/statisticsDialog.cc:350
 msgid "System on battery"
 msgstr "Работа от батареи"
 
-#: UI/GTK2/src/statisticsDialog.cc:363
+#: UI/GTK2/src/statisticsDialog.cc:368
 msgid "Crawling"
 msgstr "Сканирование"
 
-#: UI/GTK2/src/statisticsDialog.cc:402
+#: UI/GTK2/src/statisticsDialog.cc:407
 msgid "Errors"
 msgstr "Ошибки"

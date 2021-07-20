@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:30+0100\n"
+"POT-Creation-Date: 2021-07-20 15:53+0200\n"
 "PO-Revision-Date: 2011-03-07 14:16+0000\n"
 "Last-Translator: Tico <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -207,8 +207,8 @@ msgstr "Robots META tag verbiedt indexeren"
 msgid "No monitoring handler"
 msgstr "Geen monitoring handler"
 
-#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
-#: UI/GTK2/src/statisticsDialog.cc:263
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:250
+#: UI/GTK2/src/statisticsDialog.cc:268
 msgid "Unknown error"
 msgstr "Onbekende fout."
 
@@ -974,39 +974,39 @@ msgstr "Doorzocht"
 msgid "files"
 msgstr "bestanden"
 
-#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+#: UI/GTK2/src/statisticsDialog.cc:244 UI/GTK2/src/statisticsDialog.cc:260
 msgid "documents"
 msgstr "documenten"
 
 #. FIXME: check whether it's actually running !
-#: UI/GTK2/src/statisticsDialog.cc:284
+#: UI/GTK2/src/statisticsDialog.cc:289
 msgid "Running under PID"
 msgstr "Wordt uitgevoerd met het PID"
 
-#: UI/GTK2/src/statisticsDialog.cc:306
+#: UI/GTK2/src/statisticsDialog.cc:311
 msgid "Disconnected from D-Bus"
 msgstr "Losgekoppeld van D-Bus"
 
-#: UI/GTK2/src/statisticsDialog.cc:310
+#: UI/GTK2/src/statisticsDialog.cc:315
 msgid "Stopped"
 msgstr "Gestopt"
 
-#: UI/GTK2/src/statisticsDialog.cc:314
+#: UI/GTK2/src/statisticsDialog.cc:319
 msgid "Currently not running"
 msgstr "Wordt momenteel niet uitgevoerd"
 
-#: UI/GTK2/src/statisticsDialog.cc:328
+#: UI/GTK2/src/statisticsDialog.cc:333
 msgid "Low disk space"
 msgstr "Schijf bijna vol"
 
-#: UI/GTK2/src/statisticsDialog.cc:345
+#: UI/GTK2/src/statisticsDialog.cc:350
 msgid "System on battery"
 msgstr "Systeem op batterij"
 
-#: UI/GTK2/src/statisticsDialog.cc:363
+#: UI/GTK2/src/statisticsDialog.cc:368
 msgid "Crawling"
 msgstr "Aan het doorzoeken"
 
-#: UI/GTK2/src/statisticsDialog.cc:402
+#: UI/GTK2/src/statisticsDialog.cc:407
 msgid "Errors"
 msgstr "Fouten"

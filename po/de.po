@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:30+0100\n"
+"POT-Creation-Date: 2021-07-20 15:53+0200\n"
 "PO-Revision-Date: 2012-02-20 12:32+0000\n"
 "Last-Translator: GH <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
@@ -207,8 +207,8 @@ msgstr "Robots META-Tag verbietet das Indizieren"
 msgid "No monitoring handler"
 msgstr "Kein Überwachungsprogramm vorhanden"
 
-#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
-#: UI/GTK2/src/statisticsDialog.cc:263
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:250
+#: UI/GTK2/src/statisticsDialog.cc:268
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
@@ -973,39 +973,39 @@ msgstr "Gesammelt"
 msgid "files"
 msgstr "Dateien"
 
-#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+#: UI/GTK2/src/statisticsDialog.cc:244 UI/GTK2/src/statisticsDialog.cc:260
 msgid "documents"
 msgstr "Dokumente"
 
 #. FIXME: check whether it's actually running !
-#: UI/GTK2/src/statisticsDialog.cc:284
+#: UI/GTK2/src/statisticsDialog.cc:289
 msgid "Running under PID"
 msgstr "Läuft unter PID"
 
-#: UI/GTK2/src/statisticsDialog.cc:306
+#: UI/GTK2/src/statisticsDialog.cc:311
 msgid "Disconnected from D-Bus"
 msgstr "Nicht verbunden mit D-Bus"
 
-#: UI/GTK2/src/statisticsDialog.cc:310
+#: UI/GTK2/src/statisticsDialog.cc:315
 msgid "Stopped"
 msgstr "Angehalten"
 
-#: UI/GTK2/src/statisticsDialog.cc:314
+#: UI/GTK2/src/statisticsDialog.cc:319
 msgid "Currently not running"
 msgstr "Läuft derzeit nicht"
 
-#: UI/GTK2/src/statisticsDialog.cc:328
+#: UI/GTK2/src/statisticsDialog.cc:333
 msgid "Low disk space"
 msgstr "Wenig Speicherplatz"
 
-#: UI/GTK2/src/statisticsDialog.cc:345
+#: UI/GTK2/src/statisticsDialog.cc:350
 msgid "System on battery"
 msgstr "Batteriebetrieb"
 
-#: UI/GTK2/src/statisticsDialog.cc:363
+#: UI/GTK2/src/statisticsDialog.cc:368
 msgid "Crawling"
 msgstr "Durchsuchen"
 
-#: UI/GTK2/src/statisticsDialog.cc:402
+#: UI/GTK2/src/statisticsDialog.cc:407
 msgid "Errors"
 msgstr "Fehler"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:30+0100\n"
+"POT-Creation-Date: 2021-07-20 15:53+0200\n"
 "PO-Revision-Date: 2008-08-23 16:15+0000\n"
 "Last-Translator: Yung-chung Lin <henearkrxern@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -208,8 +208,8 @@ msgstr "Robots的meta標記不允許索引"
 msgid "No monitoring handler"
 msgstr "無監控處理程序"
 
-#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
-#: UI/GTK2/src/statisticsDialog.cc:263
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:250
+#: UI/GTK2/src/statisticsDialog.cc:268
 msgid "Unknown error"
 msgstr "原因不明的錯誤"
 
@@ -969,39 +969,39 @@ msgstr "已抓回的"
 msgid "files"
 msgstr "檔案"
 
-#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+#: UI/GTK2/src/statisticsDialog.cc:244 UI/GTK2/src/statisticsDialog.cc:260
 msgid "documents"
 msgstr "文件"
 
 #. FIXME: check whether it's actually running !
-#: UI/GTK2/src/statisticsDialog.cc:284
+#: UI/GTK2/src/statisticsDialog.cc:289
 msgid "Running under PID"
 msgstr "程式執行的行程代碼"
 
-#: UI/GTK2/src/statisticsDialog.cc:306
+#: UI/GTK2/src/statisticsDialog.cc:311
 msgid "Disconnected from D-Bus"
 msgstr ""
 
-#: UI/GTK2/src/statisticsDialog.cc:310
+#: UI/GTK2/src/statisticsDialog.cc:315
 msgid "Stopped"
 msgstr ""
 
-#: UI/GTK2/src/statisticsDialog.cc:314
+#: UI/GTK2/src/statisticsDialog.cc:319
 msgid "Currently not running"
 msgstr "目前沒有執行的"
 
-#: UI/GTK2/src/statisticsDialog.cc:328
+#: UI/GTK2/src/statisticsDialog.cc:333
 msgid "Low disk space"
 msgstr ""
 
-#: UI/GTK2/src/statisticsDialog.cc:345
+#: UI/GTK2/src/statisticsDialog.cc:350
 msgid "System on battery"
 msgstr ""
 
-#: UI/GTK2/src/statisticsDialog.cc:363
+#: UI/GTK2/src/statisticsDialog.cc:368
 msgid "Crawling"
 msgstr ""
 
-#: UI/GTK2/src/statisticsDialog.cc:402
+#: UI/GTK2/src/statisticsDialog.cc:407
 msgid "Errors"
 msgstr "錯誤"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:30+0100\n"
+"POT-Creation-Date: 2021-07-20 15:53+0200\n"
 "PO-Revision-Date: 2012-09-07 11:52+0000\n"
 "Last-Translator: tkf <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -208,8 +208,8 @@ msgstr "ロボット用メタタグのインデックス化を禁止"
 msgid "No monitoring handler"
 msgstr "モニタリングハンドラーがありません"
 
-#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:245
-#: UI/GTK2/src/statisticsDialog.cc:263
+#: Core/WorkerThread.cpp:118 UI/GTK2/src/statisticsDialog.cc:250
+#: UI/GTK2/src/statisticsDialog.cc:268
 msgid "Unknown error"
 msgstr "不明なエラー"
 
@@ -973,39 +973,39 @@ msgstr "探索済み"
 msgid "files"
 msgstr "ファイル"
 
-#: UI/GTK2/src/statisticsDialog.cc:239 UI/GTK2/src/statisticsDialog.cc:255
+#: UI/GTK2/src/statisticsDialog.cc:244 UI/GTK2/src/statisticsDialog.cc:260
 msgid "documents"
 msgstr "文書"
 
 #. FIXME: check whether it's actually running !
-#: UI/GTK2/src/statisticsDialog.cc:284
+#: UI/GTK2/src/statisticsDialog.cc:289
 msgid "Running under PID"
 msgstr "稼働中 PID"
 
-#: UI/GTK2/src/statisticsDialog.cc:306
+#: UI/GTK2/src/statisticsDialog.cc:311
 msgid "Disconnected from D-Bus"
 msgstr "D-Busより切断"
 
-#: UI/GTK2/src/statisticsDialog.cc:310
+#: UI/GTK2/src/statisticsDialog.cc:315
 msgid "Stopped"
 msgstr "停止中"
 
-#: UI/GTK2/src/statisticsDialog.cc:314
+#: UI/GTK2/src/statisticsDialog.cc:319
 msgid "Currently not running"
 msgstr "現在停止中"
 
-#: UI/GTK2/src/statisticsDialog.cc:328
+#: UI/GTK2/src/statisticsDialog.cc:333
 msgid "Low disk space"
 msgstr "ディスク空き容量が少ない"
 
-#: UI/GTK2/src/statisticsDialog.cc:345
+#: UI/GTK2/src/statisticsDialog.cc:350
 msgid "System on battery"
 msgstr "バッテリーで動作中"
 
-#: UI/GTK2/src/statisticsDialog.cc:363
+#: UI/GTK2/src/statisticsDialog.cc:368
 msgid "Crawling"
 msgstr "探索中"
 
-#: UI/GTK2/src/statisticsDialog.cc:402
+#: UI/GTK2/src/statisticsDialog.cc:407
 msgid "Errors"
 msgstr "エラー"
