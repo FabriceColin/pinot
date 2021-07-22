@@ -225,7 +225,7 @@ else
 fi
 
 dnl boost
-BOOST_LIBS="-lboost_system"
+BOOST_LIBS=""
 AM_CONDITIONAL(HAVE_BOOST_SPIRIT, false)
 AC_CHECK_HEADERS([boost/spirit/core.hpp],
    [AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)],

@@ -536,7 +536,7 @@ http://cgit.freedesktop.org/libreoffice/libexttextcat/
 gmime (3)						2.6.0
 http://spruce.sourceforge.net/gmime
 
-boost (4)						1.32
+boost (4)						1.75
 http://www.boost.org/
 
 D-Bus with GLib bindings				0.61
