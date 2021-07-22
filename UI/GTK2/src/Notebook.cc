@@ -99,6 +99,7 @@ ResultsPage::ResultsPage(const ustring &queryName, ResultsTree *pTree,
 		m_pCloseButton->set_alignment(0, 0);
 		m_pCloseButton->add(*m_pCloseImage);
 #if GTK_CHECK_VERSION(3, 0, 0)
+#if GTK_VERSION_LT(3, 14)
 		RefPtr<CssProvider> cssProvider = CssProvider::create();
 		RefPtr<StyleContext> styleContext = StyleContext::create();
 
@@ -114,6 +115,7 @@ ResultsPage::ResultsPage(const ustring &queryName, ResultsTree *pTree,
 
 		styleContext->add_provider(cssProvider, 0);
 		styleContext->set_path(m_pCloseButton->get_path());
+#endif
 #endif
 		m_pHBox = manage(new HBox(false, 0));
 		m_pHBox->pack_start(*m_pLabel, Gtk::PACK_SHRINK, 4);
@@ -273,6 +275,7 @@ NotebookTabBox::NotebookTabBox(const Glib::ustring &title, NotebookPageBox::Page
 	m_pTabButton->set_alignment(0, 0);
 	m_pTabButton->add(*m_pTabImage);
 #if GTK_CHECK_VERSION(3, 0, 0)
+#if GTK_VERSION_LT(3, 14)
 	RefPtr<CssProvider> cssProvider = CssProvider::create();
 	RefPtr<StyleContext> styleContext = StyleContext::create();
 
@@ -288,6 +291,7 @@ NotebookTabBox::NotebookTabBox(const Glib::ustring &title, NotebookPageBox::Page
 
 	styleContext->add_provider(cssProvider, 0);
 	styleContext->set_path(m_pTabButton->get_path());
+#endif
 #endif
 	pack_start(*m_pTabLabel);
 	pack_start(*m_pTabButton, PACK_SHRINK);
