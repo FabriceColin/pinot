@@ -32,10 +32,6 @@ public:
 #endif //GLADEMM_DATA
 
 #include <gtkmm/window.h>
-#include <gtkmm/imagemenuitem.h>
-#include <gtkmm/menuitem.h>
-#include <gtkmm/radiomenuitem.h>
-#include <gtkmm/checkmenuitem.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
@@ -46,6 +42,7 @@ public:
 #include <gtkmm/paned.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/statusbar.h>
+#include <gtkmm/menubar.h>
 
 class mainWindow_glade : public Gtk::Window
 {  
@@ -54,33 +51,6 @@ class mainWindow_glade : public Gtk::Window
 public:
         class Gtk::Window * mainWindow;
 protected:
-        class Gtk::ImageMenuItem * open1;
-        class Gtk::MenuItem * opencache1;
-        class Gtk::ImageMenuItem * openparent1;
-        class Gtk::ImageMenuItem * addtoindex1;
-        class Gtk::ImageMenuItem * updateindex1;
-        class Gtk::ImageMenuItem * unindex1;
-        class Gtk::MenuItem * morelikethis1;
-        class Gtk::MenuItem * searchthisfor1;
-        class Gtk::ImageMenuItem * properties1;
-        class Gtk::MenuItem * separatormenuitem1;
-        class Gtk::ImageMenuItem * quit1;
-        class Gtk::MenuItem * fileMenuitem;
-        class Gtk::ImageMenuItem * cut1;
-        class Gtk::ImageMenuItem * copy1;
-        class Gtk::ImageMenuItem * paste1;
-        class Gtk::ImageMenuItem * delete1;
-        class Gtk::ImageMenuItem * preferences1;
-        class Gtk::MenuItem * editMenuitem;
-        class Gtk::MenuItem * listcontents1;
-        class Gtk::RadioMenuItem * searchenginegroup1;
-        class Gtk::RadioMenuItem * hostnamegroup1;
-        class Gtk::MenuItem * groupresults1;
-        class Gtk::CheckMenuItem * showextracts1;
-        class Gtk::ImageMenuItem * import1;
-        class Gtk::ImageMenuItem * export1;
-        class Gtk::ImageMenuItem * about1;
-        class Gtk::MenuItem * helpMenuitem;
         class Gtk::VBox * enginesVbox;
         class Gtk::Button * addIndexButton;
         class Gtk::Button * removeIndexButton;
@@ -98,6 +68,7 @@ protected:
         class Gtk::HPaned * mainHpaned;
         class Gtk::ProgressBar * mainProgressbar;
         class Gtk::Statusbar * mainStatusbar;
+        class Gtk::MenuBar * mainMenubar;
         
         mainWindow_glade();
         

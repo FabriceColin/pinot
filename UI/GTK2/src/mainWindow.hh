@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
 #include <gtkmm/treeselection.h>
 #include <gtkmm/selectiondata.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/radiomenuitem.h>
 #if GTK_VERSION_LT(2, 90)
 #include <gtkmm/tooltips.h>
 #endif
@@ -64,6 +67,7 @@ protected:
 	// Utility methods
 	void populate_queryTreeview(const std::string &selectedQueryName);
 	void save_queryTreeview();
+	void populate_menuItems();
 	void populate_cacheMenu();
 	void populate_indexMenu();
 	void populate_findMenu();
@@ -175,6 +179,33 @@ private:
 	// Notebook
 	Gtk::Notebook *m_pNotebook;
 	// Menus
+	Gtk::ImageMenuItem * open1;
+	Gtk::MenuItem * opencache1;
+	Gtk::ImageMenuItem * openparent1;
+	Gtk::ImageMenuItem * addtoindex1;
+	Gtk::ImageMenuItem * updateindex1;
+	Gtk::ImageMenuItem * unindex1;
+	Gtk::MenuItem * morelikethis1;
+	Gtk::MenuItem * searchthisfor1;
+	Gtk::ImageMenuItem * properties1;
+	Gtk::MenuItem * separatormenuitem1;
+	Gtk::ImageMenuItem * quit1;
+	Gtk::MenuItem * fileMenuitem;
+	Gtk::ImageMenuItem * cut1;
+	Gtk::ImageMenuItem * copy1;
+	Gtk::ImageMenuItem * paste1;
+	Gtk::ImageMenuItem * delete1;
+	Gtk::ImageMenuItem * preferences1;
+	Gtk::MenuItem * editMenuitem;
+	Gtk::MenuItem * listcontents1;
+	Gtk::RadioMenuItem * searchenginegroup1;
+	Gtk::RadioMenuItem * hostnamegroup1;
+	Gtk::MenuItem * groupresults1;
+	Gtk::CheckMenuItem * showextracts1;
+	Gtk::ImageMenuItem * import1;
+	Gtk::ImageMenuItem * export1;
+	Gtk::ImageMenuItem * about1;
+	Gtk::MenuItem * helpMenuitem;
 	Gtk::Menu *m_pIndexMenu;
 	Gtk::Menu *m_pCacheMenu;
 	Gtk::Menu *m_pFindMenu;
