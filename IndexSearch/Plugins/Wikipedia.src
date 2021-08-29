@@ -17,7 +17,7 @@
 <INTERPRET
 resultListStart="<ul class='mw-search-results'>"
 resultListEnd="</ul>"
-resultItemStart="<li>"
+resultItemStart="<li class='mw-search-result'>"
 resultItemEnd="</li>"
 >
 
