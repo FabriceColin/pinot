@@ -3,6 +3,7 @@
 pkginclude_HEADERS = \
 	DaemonState.h \
 	OnDiskHandler.h \
+	PinotDBus_stub.h \
 	PinotSettings.h \
 	ServerThreads.h \
 	UniqueApplication.h \
@@ -41,7 +42,8 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/Collect \
 	-I$(top_srcdir)/IndexSearch \
 	@SQL_CFLAGS@ @HTTP_CFLAGS@ @XML_CFLAGS@ @DBUS_CFLAGS@ \
-	@INDEX_CFLAGS@ @GTHREAD_CFLAGS@ @GTKMM_CFLAGS@
+	@INDEX_CFLAGS@ @GTHREAD_CFLAGS@ @GIOMM_CFLAGS@ \
+	@GLIBMM_CFLAGS@ @GTKMM_CFLAGS@
 
 if HAVE_DBUS
 AM_CXXFLAGS += -DHAVE_DBUS
@@ -59,7 +61,7 @@ pinot_index_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 
 pinot_index_SOURCES = pinot-index.cpp
@@ -76,7 +78,7 @@ pinot_search_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lCollect -lTokenize -lFilter \
 	-lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @DBUS_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ \
 	@XML_LIBS@ @HTTP_LIBS@ @MISC_LIBS@
 
 pinot_search_SOURCES = \
@@ -96,12 +98,13 @@ pinot_dbus_daemon_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 
 pinot_dbus_daemon_SOURCES = \
 	DaemonState.cpp \
 	OnDiskHandler.cpp \
+	PinotDBus_stub.cpp \
 	ServerThreads.cpp \
 	pinot-dbus-daemon.cpp
 
@@ -119,7 +122,7 @@ pinot_daemon_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 
 pinot_daemon_SOURCES = \
