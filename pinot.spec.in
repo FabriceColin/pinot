@@ -130,7 +130,7 @@ fi
 %{_libdir}/pinot/filters/libmboxfilter.so*
 %{_libdir}/pinot/filters/libtaglibfilter.so*
 %if 0%{?!_with_nodbus:1}
-%{_datadir}/dbus-1/services/de.berlios.Pinot.service
+%{_datadir}/dbus-1/services/com.github.fabricecolin.Pinot.service
 %endif
 %{_datadir}/pinot/
 %{_datadir}/icons/hicolor/48x48/apps/pinot.png
