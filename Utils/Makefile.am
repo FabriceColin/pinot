@@ -8,6 +8,7 @@ pkginclude_HEADERS = \
 	MIMEScanner.h \
 	Memory.h \
 	NLS.h \
+	PinotDBus_common.h \
 	StringManip.h \
 	TimeConverter.h \
 	Timer.h \
@@ -54,6 +55,7 @@ libUtils_la_LDFLAGS = \
 libUtils_la_SOURCES = \
 	Languages.cpp \
 	MIMEScanner.cpp \
+	PinotDBus_common.cpp \
 	Memory.cpp
 
 if HAVE_GIO_MIME
@@ -71,5 +73,6 @@ endif
 AM_CFLAGS = -fPIC -DXDG_PREFIX=pinot_xdg -DUNAC_VERSION=\"1.0.7\"
 AM_CXXFLAGS = \
 	@MISC_CFLAGS@ \
-	@HTTP_CFLAGS@ @INDEX_CFLAGS@ @GLIBMM_CFLAGS@ -DXDG_PREFIX=pinot_xdg -DUNAC_VERSION=\"1.0.7\"
+	@HTTP_CFLAGS@ @INDEX_CFLAGS@ \
+	@GIOMM_CFLAGS@ @GLIBMM_CFLAGS@ -DXDG_PREFIX=pinot_xdg -DUNAC_VERSION=\"1.0.7\"
 
