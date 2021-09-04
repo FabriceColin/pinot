@@ -8,9 +8,9 @@
   <!--
 	WARNING: This interface WILL change before 1.0 is released !
 	-->
-  <interface name="de.berlios.Pinot">
+  <interface name="com.github.fabricecolin.Pinot">
     <signal name="IndexFlushed">
-      <annotation name="de.berlios.Pinot.IndexFlushed" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.IndexFlushed" value="pinotDBus"/>
       <arg type="u" name="docsCount" direction="out"/>
     </signal>
     <!--
@@ -19,7 +19,7 @@
 	 docsCount: the number of documents in the index
 	-->
     <method name="GetStatistics">
-      <annotation name="de.berlios.Pinot.GetStatistics" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.GetStatistics" value="pinotDBus"/>
       <arg type="u" name="crawledCount" direction="out"/>
       <arg type="u" name="docsCount" direction="out"/>
       <arg type="b" name="lowDiskSpace" direction="out" />
@@ -31,7 +31,7 @@
 	 reloading: TRUE if the configuration is being reloaded
 	-->
     <method name="Reload">
-      <annotation name="de.berlios.Pinot.Reload" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.Reload" value="pinotDBus"/>
       <arg type="b" name="reloading" direction="out" />
     </method>
     <!--
@@ -39,7 +39,7 @@
 	 exitStatus: the daemon's exit status
 	-->
     <method name="Stop">
-      <annotation name="de.berlios.Pinot.Stop" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.Stop" value="pinotDBus"/>
       <arg type="i" name="exitStatus" direction="out" />
     </method>
     <!--
@@ -47,7 +47,7 @@
 	 docId: the document's ID
 	-->
     <method name="HasDocument">
-      <annotation name="de.berlios.Pinot.HasDocument" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.HasDocument" value="pinotDBus"/>
       <arg type="s" name="url" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
     </method>
@@ -56,7 +56,7 @@
 	 labels: array of labels
 	-->
     <method name="GetLabels">
-      <annotation name="de.berlios.Pinot.GetLabels" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.GetLabels" value="pinotDBus"/>
       <arg type="as" name="labels" direction="out"/>
     </method>
     <!--
@@ -65,7 +65,7 @@
         This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="AddLabel">
-      <annotation name="de.berlios.Pinot.AddLabel" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.AddLabel" value="pinotDBus"/>
       <arg type="s" name="label" direction="in"/>
       <arg type="s" name="label" direction="out"/>
     </method>
@@ -75,7 +75,7 @@
         This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="DeleteLabel">
-      <annotation name="de.berlios.Pinot.DeleteLabel" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.DeleteLabel" value="pinotDBus"/>
       <arg type="s" name="label" direction="in"/>
       <arg type="s" name="label" direction="out"/>
     </method>
@@ -85,7 +85,7 @@
 	 labels: array of labels applied to the document
 	-->
     <method name="GetDocumentLabels">
-      <annotation name="de.berlios.Pinot.GetDocumentLabels" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentLabels" value="pinotDBus"/>
       <arg type="u" name="docId" direction="in"/>
       <arg type="as" name="labels" direction="out"/>
     </method>
@@ -96,7 +96,7 @@
 	 resetLabels: TRUE if existing labels should be unset
 	-->
     <method name="SetDocumentLabels">
-      <annotation name="de.berlios.Pinot.SetDocumentLabels" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.SetDocumentLabels" value="pinotDBus"/>
       <arg type="u" name="docId" direction="in"/>
       <arg type="as" name="labels" direction="in"/>
       <arg type="b" name="resetLabels" direction="in"/>
@@ -109,7 +109,7 @@
 	 resetLabels: TRUE if existing labels should be unset
 	-->
     <method name="SetDocumentsLabels">
-      <annotation name="de.berlios.Pinot.SetDocumentsLabels" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.SetDocumentsLabels" value="pinotDBus"/>
       <arg type="as" name="docIds" direction="in"/>
       <arg type="as" name="labels" direction="in"/>
       <arg type="b" name="resetLabels" direction="in"/>
@@ -122,7 +122,7 @@
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
     <method name="GetDocumentInfo">
-      <annotation name="de.berlios.Pinot.GetDocumentInfo" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentInfo" value="pinotDBus"/>
       <arg type="u" name="docId" direction="in"/>
       <arg type="a(ss)" name="fields" direction="out"/>
     </method>
@@ -133,7 +133,7 @@
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
     <method name="SetDocumentInfo">
-      <annotation name="de.berlios.Pinot.SetDocumentInfo" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.SetDocumentInfo" value="pinotDBus"/>
       <arg type="u" name="docId" direction="in"/>
       <arg type="a(ss)" name="fields" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
@@ -149,7 +149,7 @@
 	 hitsList: hit properties
 	-->
     <method name="Query">
-      <annotation name="de.berlios.Pinot.Query" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.Query" value="pinotDBus"/>
       <arg type="s" name="engineType" direction="in" />
       <arg type="s" name="engineName" direction="in" />
       <arg type="s" name="searchText" direction="in" />
@@ -167,7 +167,7 @@
         WARNING: this method is obsolete
 	-->
     <method name="SimpleQuery">
-      <annotation name="de.berlios.Pinot.SimpleQuery" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.SimpleQuery" value="pinotDBus"/>
       <arg type="s" name="searchText" direction="in" />
       <arg type="u" name="maxHits" direction="in" />
       <arg type="as" name="docIds" direction="out" />
@@ -177,7 +177,7 @@
 	 docId: the document's ID
 	-->
     <method name="UpdateDocument">
-      <annotation name="de.berlios.Pinot.UpdateDocument" value="pinotDBus"/>
+      <annotation name="com.github.fabricecolin.Pinot.UpdateDocument" value="pinotDBus"/>
       <arg type="u" name="docId" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
     </method>
