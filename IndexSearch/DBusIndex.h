@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2009 Fabrice Colin
+ *  Copyright 2007-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 
 #include <string>
 #include <set>
+#include <tuple>
 #include <map>
+#include <vector>
 #include "config.h"
 extern "C"
 {
@@ -34,9 +36,10 @@ extern "C"
 }
 
 #include "IndexInterface.h"
+#include "PinotDBus_proxy.h"
 
-#define PINOT_DBUS_SERVICE_NAME "de.berlios.Pinot"
-#define PINOT_DBUS_OBJECT_PATH "/de/berlios/Pinot"
+#define PINOT_DBUS_SERVICE_NAME "com.github.fabricecolin.Pinot"
+#define PINOT_DBUS_OBJECT_PATH "/com/github/fabricecolin/Pinot"
 
 /// Allows to write to the daemon index via D-Bus. 
 class DBusIndex : public IndexInterface
@@ -48,19 +51,19 @@ class DBusIndex : public IndexInterface
 
 		DBusIndex &operator=(const DBusIndex &other);
 
-		/// Extracts docId and docInfo from a dbus message.
-		static bool documentInfoFromDBus(DBusMessageIter *iter, unsigned int &docId,
+		/// Extracts docInfo from tuples.
+		static void documentInfoFromTuples(const std::vector<std::tuple<Glib::ustring, Glib::ustring>> &tuples,
 			DocumentInfo &docInfo);
 
-		/// Converts docId and docInfo to a dbus message.
-		static bool documentInfoToDBus(DBusMessageIter *iter, unsigned int docId,
-			const DocumentInfo &docInfo);
+		/// Converts docInfo to tuples.
+		static void documentInfoToTuples(const DocumentInfo &docInfo,
+			std::vector<std::tuple<Glib::ustring, Glib::ustring>> &tuples);
 
 		/// Asks the D-Bus service to reload its configuration.
-		static bool reload(void);
+		 bool reload(void);
 
 		/// Gets some statistics from the D-Bus service.
-		static bool getStatistics(unsigned int crawledCount, unsigned int docsCount,
+		bool getStatistics(unsigned int &crawledCount, unsigned int &docsCount,
 			bool &lowDiskSpace, bool &onBattery, bool &crawling);
 
 		/// Returns false if the index couldn't be opened.
@@ -163,6 +166,7 @@ class DBusIndex : public IndexInterface
 		virtual bool reset(void);
 
 	protected:
+		Glib::RefPtr<com::github::fabricecolin::PinotProxy> m_refProxy;
 		IndexInterface *m_pROIndex;
 
 };

@@ -8,6 +8,7 @@ pkginclude_HEADERS = \
 	ModuleFactory.h \
 	ModuleProperties.h \
 	OpenSearchParser.h \
+	PinotDBus_proxy.h \
 	PluginParsers.h \
 	PluginWebEngine.h \
 	QueryProperties.h \
@@ -30,6 +31,7 @@ libIndex_la_LDFLAGS = \
 	-static
 
 libIndex_la_SOURCES = \
+	PinotDBus_proxy.cpp \
 	DBusIndex.cpp
 
 libIndexSearch_la_LDFLAGS = \
@@ -47,7 +49,7 @@ libIndexSearch_la_SOURCES = \
 	WebEngine.cpp
 
 if HAVE_DBUS
-libIndexSearch_la_SOURCES += DBusIndex.cpp
+libIndexSearch_la_SOURCES += PinotDBus_proxy.cpp DBusIndex.cpp
 endif
 
 if HAVE_BOOST_SPIRIT
@@ -64,7 +66,7 @@ pinot_label_LDFLAGS = \
 pinot_label_LDADD = \
 	-L$(top_builddir)/Utils \
 	-lIndex -lUtils -lBasicUtils \
-	@GLIBMM_LIBS@ @DBUS_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ \
 	@GTHREAD_LIBS@ @HTTP_LIBS@ @MISC_LIBS@
 
 pinot_label_SOURCES = pinot-label.cpp
@@ -80,7 +82,7 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/IndexSearch/cjkv \
 	-I$(top_srcdir)/IndexSearch/Google \
 	@HTTP_CFLAGS@ @XML_CFLAGS@ \
-	@INDEX_CFLAGS@ @GLIBMM_CFLAGS@
+	@INDEX_CFLAGS@ @GIOMM_CFLAGS@ @GLIBMM_CFLAGS@
 
 if HAVE_DBUS
 AM_CXXFLAGS += @DBUS_CFLAGS@ \

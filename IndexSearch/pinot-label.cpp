@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2019 Fabrice Colin
+ *  Copyright 2007-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <giomm/init.h>
+#include <glibmm/init.h>
 
 #include "config.h"
 #include "StringManip.h"
@@ -34,6 +36,7 @@ static struct option g_longOptions[] = {
 	{"get", 0, 0, 'g'},
 	{"help", 0, 0, 'h'},
 	{"list", 0, 0, 'l'},
+	{"reload", 0, 0, 'r'},
 	{"set", 1, 0, 's'},
 	{"version", 0, 0, 'v'},
 	{0, 0, 0, 0}
@@ -69,6 +72,7 @@ static void printHelp(void)
 		<< "  -g, --get                 get the labels list for the given file\n"
 		<< "  -h, --help                display this help and exit\n"
 		<< "  -l, --list                list known labels\n"
+		<< "  -r, --reload              get the daemon to reload the configuration\n"
 		<< "  -s, --set                 set labels on the given file\n"
 		<< "  -v, --version             output version information and exit\n\n";
 	clog << "Examples:\n"
@@ -85,10 +89,10 @@ int main(int argc, char **argv)
 	int longOptionIndex = 0;
 	unsigned int docId = 0;
 	int minArgNum = 1;
-	bool getLabels = false, getDocumentLabels = false, setDocumentLabels = false, success = false;
+	bool getLabels = false, getDocumentLabels = false, reloadIndex = false, setDocumentLabels = false, success = false;
 
 	// Look at the options
-	int optionChar = getopt_long(argc, argv, "ghls:v", g_longOptions, &longOptionIndex);
+	int optionChar = getopt_long(argc, argv, "ghlrs:v", g_longOptions, &longOptionIndex);
 	while (optionChar != -1)
 	{
 		set<string> engines;
@@ -104,6 +108,10 @@ int main(int argc, char **argv)
 			case 'l':
 				minArgNum = 0;
 				getLabels = true;
+				break;
+			case 'r':
+				minArgNum = 0;
+				reloadIndex = true;
 				break;
 			case 's':
 				setDocumentLabels = true;
@@ -151,6 +159,8 @@ int main(int argc, char **argv)
 	g_type_init();
 #endif
 
+	Glib::init();
+	Gio::init();
 	MIMEScanner::initialize("", "");
 
 	// We need a pure DBusIndex object
@@ -238,6 +248,11 @@ int main(int argc, char **argv)
 
 		// Next
 		++optind;
+	}
+
+	if (reloadIndex == true)
+	{
+		index.reload();
 	}
 
 	MIMEScanner::shutdown();
