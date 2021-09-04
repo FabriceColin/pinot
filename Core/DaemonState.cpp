@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@
 #endif
 #endif
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <glibmm/ustring.h>
 #include <glibmm/stringutils.h>
@@ -69,6 +70,7 @@
 #include "Url.h"
 #include "MonitorFactory.h"
 #include "CrawlHistory.h"
+#include "MetaDataBackup.h"
 #ifdef HAVE_DBUS
 #include "DBusIndex.h"
 #endif
@@ -118,6 +120,68 @@ static double getFSFreeSpace(const string &path)
 	return availableMbSize;
 }
 
+static string loadXMLDescription(void)
+{
+	ifstream xmlFile;
+	string xmlFileName(PREFIX);
+	ustring xmlDescription;
+	bool readFile = false;
+
+	xmlFileName += "/share/pinot/pinot-dbus-daemon.xml";
+	xmlFile.open(xmlFileName.c_str());
+	if (xmlFile.good() == true)
+	{
+		xmlFile.seekg(0, ios::end);
+		int length = xmlFile.tellg();
+		xmlFile.seekg(0, ios::beg);
+
+		char *pXmlBuffer = new char[length + 1];
+		xmlFile.read(pXmlBuffer, length);
+		if (xmlFile.fail() == false)
+		{
+			pXmlBuffer[length] = '\0';
+			xmlDescription = pXmlBuffer;
+			readFile = true;
+		}
+		delete[] pXmlBuffer;
+	}
+	xmlFile.close();
+
+	if (readFile == false)
+	{
+		clog << "File " << xmlFileName << " couldn't be read" << endl;
+	}
+
+	return xmlDescription;
+}
+
+static void updateLabels(unsigned int docId, MetaDataBackup &metaData,
+	IndexInterface *pIndex, set<string> &labels, bool resetLabels)
+{
+	DocumentInfo docInfo;
+
+	if (pIndex == NULL)
+	{
+		return;
+	}
+
+	// If it's a reset, remove labels from the metadata backup
+	if ((resetLabels == true) &&
+		(pIndex->getDocumentInfo(docId, docInfo) == true))
+	{
+		metaData.deleteItem(docInfo, DocumentInfo::SERIAL_LABELS);
+	}
+
+	// Get the current labels
+	if (resetLabels == true)
+	{
+		labels.clear();
+		pIndex->getDocumentLabels(docId, labels);
+	}
+	docInfo.setLabels(labels);
+	metaData.addItem(docInfo, DocumentInfo::SERIAL_LABELS);
+}
+
 // A function object to stop Crawler threads with for_each()
 struct StopCrawlerThreadFunc
 {
@@ -137,188 +201,602 @@ public:
 };
 
 #ifdef HAVE_DBUS
-DBusServletInfo::DBusServletInfo(DBusConnection *pConnection, DBusMessage *pRequest) :
-	m_pConnection(pConnection),
-	m_pRequest(pRequest),
-	m_pReply(NULL),
-	m_pArray(NULL),
-	m_simpleQuery(true),
-	m_pThread(NULL),
-	m_replied(false)
+DaemonState::DBusIntrospectHandler::DBusIntrospectHandler() :
+	IntrospectableStub()
 {
 }
 
-DBusServletInfo::~DBusServletInfo()
+DaemonState::DBusIntrospectHandler::~DBusIntrospectHandler()
 {
-	if (m_pReply != NULL)
-	{
-		dbus_message_unref(m_pReply);
-	}
-	if (m_pRequest != NULL)
-	{
-		dbus_message_unref(m_pRequest);
-	}
-	if (m_pConnection != NULL)
-	{
-		dbus_connection_unref(m_pConnection);
-	}
-	if (m_pArray != NULL)
-	{
-		// Free the array
-		g_ptr_array_free(m_pArray, TRUE);
-	}
 }
 
-bool DBusServletInfo::newReply(void)
+void DaemonState::DBusIntrospectHandler::Introspect(IntrospectableStub::MethodInvocation &invocation)
 {
-        if (m_pRequest == NULL) 
-        {
-                return false;
-        }
+	ustring xmlDescription(loadXMLDescription());
 
-        m_pReply = dbus_message_new_method_return(m_pRequest);
-        if (m_pReply != NULL)
-        {
-                return true;
-        }
-
-        return false;
+#ifdef DEBUG
+	clog << "DaemonState::DBusIntrospectHandler::Introspect: called" << endl;
+#endif
+	invocation.ret(xmlDescription);
 }
 
-bool DBusServletInfo::newErrorReply(const string &name, const string &message)
+DaemonState::DBusMessageHandler::DBusMessageHandler(DaemonState *pServer) :
+	PinotStub(),
+	m_pServer(pServer),
+	m_mustQuit(false)
 {
-        if (m_pRequest == NULL) 
-        {
-                return false;
-        }
+}
 
-	if (m_pReply != NULL)
+DaemonState::DBusMessageHandler::~DBusMessageHandler()
+{
+}
+
+bool DaemonState::DBusMessageHandler::mustQuit(void) const
+{
+	return m_mustQuit;
+}
+
+void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
+{
+	vector<ustring> busNames;
+
+	// Emit to all listeners, not just PINOT_DBUS_SERVICE_NAME
+	IndexFlushed_emitter(busNames, docsCount);
+}
+
+void DaemonState::DBusMessageHandler::flushIndexAndSignal(IndexInterface *pIndex)
+{
+	if (pIndex == NULL)
 	{
-		dbus_message_unref(m_pReply);
-		m_pReply = NULL;
+#ifdef DEBUG
+		clog << "DaemonState::DBusMessageHandler::flushIndexAndSignal: flushing" << endl;
+#endif
+		pIndex->flush();
 	}
 
-	string fullName(PINOT_DBUS_SERVICE_NAME);
-	fullName += ".";
-	fullName += name;
-	m_pReply = dbus_message_new_error(m_pRequest,
-		fullName.c_str(), message.c_str());
-        if (m_pReply != NULL)
-        {
-                return true;
-        }
-
-        return false;
+	// Signal
+	emit_IndexFlushed(pIndex->getDocumentsCount());
 }
 
-bool DBusServletInfo::newReplyWithArray(void)
+void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation &invocation)
 {
-	if (newReply() == true)
-	{
-		dbus_message_append_args(m_pReply,
-			DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &m_pArray->pdata, m_pArray->len,
-			DBUS_TYPE_INVALID);
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	CrawlHistory crawlHistory(settings.getHistoryDatabaseName());
+	unsigned int crawledFilesCount = crawlHistory.getItemsCount(CrawlHistory::CRAWLED);
+	unsigned int docsCount = pIndex->getDocumentsCount();
+	bool lowDiskSpace = false, onBattery = false, crawling = false;
 
-		return true;
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetStatistics: called" << endl;
+#endif
+	// Prepare the reply
+	if (m_pServer->is_flag_set(DaemonState::LOW_DISK_SPACE) == true)
+	{
+		lowDiskSpace = true;
 	}
+	if (m_pServer->is_flag_set(DaemonState::ON_BATTERY) == true)
+	{
+		onBattery = true;
+	}
+	if (m_pServer->is_flag_set(DaemonState::CRAWLING) == true)
+	{
+		crawling = true;
+	}
+#ifdef DEBUG
+	crawledFilesCount += 5;
+	docsCount += 6;
+	crawling = true;
+	clog << "DaemonState::DBusMessageHandler::GetStatistics: replying with " << crawledFilesCount
+		<< " " << docsCount << " " << lowDiskSpace << onBattery << crawling << endl;
+#endif
 
-	return false;
+	invocation.ret(crawledFilesCount,
+		docsCount,
+		lowDiskSpace,
+		onBattery,
+		crawling);
 }
 
-bool DBusServletInfo::newQueryReply(const vector<DocumentInfo> &resultsList,
-	unsigned int resultsEstimate)
+void DaemonState::DBusMessageHandler::Reload(PinotStub::MethodInvocation &invocation)
 {
-	DBusMessageIter iter, subIter;
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::Reload: called" << endl;
+#endif
+	m_pServer->reload();
 
-	if (m_simpleQuery == false)
+	invocation.ret(true);
+}
+
+void DaemonState::DBusMessageHandler::Stop(PinotStub::MethodInvocation &invocation)
+{
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::Stop: called" << endl;
+#endif
+	m_pServer->set_flag(DaemonState::STOPPED);
+
+	invocation.ret(EXIT_SUCCESS);
+
+	m_mustQuit = true;
+}
+
+void DaemonState::DBusMessageHandler::HasDocument(const ustring &url,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::HasDocument: called on " << url << endl;
+#endif
+	// Check the index
+	unsigned int docId = pIndex->hasDocument(url);
+
+	invocation.ret(docId);
+}
+
+void DaemonState::DBusMessageHandler::GetLabels(PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	set<string> &labelsCache = settings.m_labels;
+	vector<ustring> labelsList;
+
+	if (labelsCache.empty() == true)
 	{
-		// Create the reply
-		if (newReply() == false)
+		IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+		if (pIndex != NULL)
 		{
-			return false;
+			pIndex->getLabels(labelsCache);
+
+			delete pIndex;
+		}
+	}
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetLabels: called" << endl;
+#endif
+	for (set<string>::const_iterator labelIter = labelsCache.begin();
+		labelIter != labelsCache.end(); ++labelIter)
+	{
+		labelsList.push_back(labelIter->c_str());
+	}
+
+	invocation.ret(labelsList);
+}
+
+void DaemonState::DBusMessageHandler::AddLabel(const ustring &label,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	set<string> &labelsCache = settings.m_labels;
+
+	if (labelsCache.empty() == true)
+	{
+		if (pIndex != NULL)
+		{
+			pIndex->getLabels(labelsCache);
+		}
+	}
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::AddLabel: called on " << label << endl;
+#endif
+	string labelName(label.c_str());
+
+	// Add the label
+	if (pIndex->addLabel(labelName) == true)
+	{
+		flushIndexAndSignal(pIndex);
+	}
+	// Is this a known label ?
+	if (labelsCache.find(labelName) == labelsCache.end())
+	{
+		// No, it isn't but that's okay
+		labelsCache.insert(labelName);
+
+		if (pIndex != NULL)
+		{
+			pIndex->setLabels(labelsCache, false);
+		}
+	}
+
+	invocation.ret(label);
+
+	if (pIndex != NULL)
+	{
+		delete pIndex;
+	}
+}
+
+void DaemonState::DBusMessageHandler::DeleteLabel(const ustring &label,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	MetaDataBackup metaData(settings.getHistoryDatabaseName());
+	set<string> &labelsCache = settings.m_labels;
+
+	if (labelsCache.empty() == true)
+	{
+		if (pIndex != NULL)
+		{
+			pIndex->getLabels(labelsCache);
+		}
+	}
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::DeleteLabel: called on " << label << endl;
+#endif
+	string labelName(label.c_str());
+
+	// Delete the label
+	if (pIndex->deleteLabel(labelName) == true)
+	{
+		flushIndexAndSignal(pIndex);
+	}
+	// Update the labels list
+	set<string>::const_iterator labelIter = labelsCache.find(labelName);
+	if (labelIter != labelsCache.end())
+	{
+		labelsCache.erase(labelIter);
+
+		if (pIndex != NULL)
+		{
+			pIndex->setLabels(labelsCache, false);
+		}
+	}
+
+	// Update the metadata backup
+	metaData.deleteLabel(label.c_str());
+
+	invocation.ret(label);
+
+	if (pIndex != NULL)
+	{
+		delete pIndex;
+	}
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentLabels(guint32 docId,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	set<string> labels;
+	bool failed = true;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentLabels: called on " << docId << endl;
+#endif
+	if (pIndex != NULL)
+	{
+		if (pIndex->getDocumentLabels(docId, labels) == true)
+		{
+			vector<ustring> labelsList;
+
+			for (set<string>::const_iterator labelIter = labels.begin();
+				labelIter != labels.end(); ++labelIter)
+			{
+				labelsList.push_back(labelIter->c_str());
+			}
+
+			invocation.ret(labelsList);
+			failed = false;
 		}
 
-		// ...and attach a container
-		dbus_message_iter_init_append(m_pReply, &iter);
-		dbus_message_iter_append_basic(&iter, DBUS_TYPE_UINT32,
-			&resultsEstimate);
-		dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY,
-			 DBUS_TYPE_ARRAY_AS_STRING \
-			 DBUS_STRUCT_BEGIN_CHAR_AS_STRING \
-			 DBUS_TYPE_STRING_AS_STRING \
-			 DBUS_TYPE_STRING_AS_STRING \
-			 DBUS_STRUCT_END_CHAR_AS_STRING, &subIter);
+		delete pIndex;
+	}
+
+	if (failed == true)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "GetDocumentLabels failed");
+
+		invocation.ret(error);
+	}
+}
+
+void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
+	const std::vector<ustring> &labels,
+	bool resetLabels,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	MetaDataBackup metaData(settings.getHistoryDatabaseName());
+	set<string> &labelsCache = settings.m_labels;
+	bool updateLabelsCache = false;
+
+	if (labelsCache.empty() == true)
+	{
+		if (pIndex != NULL)
+		{
+			pIndex->getLabels(labelsCache);
+		}
+	}
+
+	set<string> labelsList;
+
+	for (vector<ustring>::const_iterator labelIter = labels.begin();
+		labelIter != labels.end(); ++labelIter)
+	{
+		string labelName(labelIter->c_str());
+
+		labelsList.insert(labelName);
+		// Is this a known label ?
+		if (labelsCache.find(labelName) == labelsCache.end())
+		{
+			// No, it isn't but that's okay
+			labelsCache.insert(labelName);
+			updateLabelsCache = true;
+		}
+	}
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::SetDocumentLabels: called on " << docId
+		<< ", " << labels.size() << " labels" << ", " << resetLabels << endl;
+#endif
+
+	// Set labels
+	if (pIndex->setDocumentLabels(docId, labelsList, resetLabels) == true)
+	{
+		flushIndexAndSignal(pIndex);
+
+		// Update the metadata backup
+		updateLabels(docId, metaData, pIndex, labelsList, resetLabels);
+	}
+
+	invocation.ret(docId);
+
+	if (pIndex != NULL)
+	{
+		if (updateLabelsCache == true)
+		{
+			pIndex->setLabels(labelsCache, false);
+		}
+
+		delete pIndex;
+	}
+}
+
+void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustring> &docIds,
+	const std::vector<ustring> &labels,
+	bool resetLabels,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	MetaDataBackup metaData(settings.getHistoryDatabaseName());
+	set<string> &labelsCache = settings.m_labels;
+	bool updateLabelsCache = false;
+
+	if (labelsCache.empty() == true)
+	{
+		if (pIndex != NULL)
+		{
+			pIndex->getLabels(labelsCache);
+		}
+	}
+
+	set<unsigned int> idsList;
+	set<string> labelsList;
+
+	for (vector<ustring>::const_iterator idIter = docIds.begin();
+		idIter != docIds.end(); ++idIter)
+	{
+		idsList.insert((unsigned int)atoi(idIter->c_str()));
+	}
+	for (vector<ustring>::const_iterator labelIter = labels.begin();
+		labelIter != labels.end(); ++labelIter)
+	{
+		string labelName(labelIter->c_str());
+
+		labelsList.insert(labelName);
+		// Is this a known label ?
+		if (labelsCache.find(labelName) == labelsCache.end())
+		{
+			// No, it isn't but that's okay
+			labelsCache.insert(labelName);
+			updateLabelsCache = true;
+		}
+	}
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::SetDocumentsLabels: called on " << docIds.size()
+		<< " IDs, " << labels.size() << " labels" << ", " << resetLabels << endl;
+#endif
+
+	// Set labels
+	if (pIndex->setDocumentsLabels(idsList, labelsList, resetLabels) == true)
+	{
+		flushIndexAndSignal(pIndex);
+
+		for (set<unsigned int>::const_iterator docIter = idsList.begin();
+			docIter != idsList.end(); ++docIter)
+		{
+			// Update the metadata backup
+			updateLabels(*docIter, metaData, pIndex, labelsList, resetLabels);
+		}
+	}
+
+	invocation.ret(resetLabels);
+
+	if (pIndex != NULL)
+	{
+		if (updateLabelsCache == true)
+		{
+			pIndex->setLabels(labelsCache, false);
+		}
+
+		delete pIndex;
+	}
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	DocumentInfo docInfo;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentInfo: called on " << docId << endl;
+#endif
+	if (pIndex->getDocumentInfo(docId, docInfo) == true)
+	{
+		vector<tuple<ustring, ustring>> tuples;
+
+		DBusIndex::documentInfoToTuples(docInfo, tuples);
+
+		invocation.ret(tuples);
 	}
 	else
 	{
-		// Create an array
-		// FIXME: use a container for this too
-		m_pArray = g_ptr_array_new();
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "GetDocumentInfo unknown document");
+
+		invocation.ret(error);
 	}
 
-	for (vector<DocumentInfo>::const_iterator resultIter = resultsList.begin();
-		resultIter != resultsList.end(); ++resultIter)
+	if (pIndex != NULL)
 	{
-		unsigned int indexId = 0;
-		unsigned int docId = resultIter->getIsIndexed(indexId);
-
-#ifdef DEBUG
-		clog << "DBusServletInfo::newQueryReply: adding result " << docId << endl;
-#endif
-		if (m_simpleQuery == false)
-		{
-			// The document ID isn't needed here
-			if (DBusIndex::documentInfoToDBus(&subIter, 0, *resultIter) == false)
-			{
-				newErrorReply("Query", "Unknown error");
-				return false;
-			}
-		}
-		else if (docId > 0)
-		{
-			char docIdStr[64];
-
-			// We only need the document ID
-			snprintf(docIdStr, 64, "%u", docId);
-			g_ptr_array_add(m_pArray, const_cast<char*>(docIdStr));
-		}
+		delete pIndex;
 	}
-
-	if (m_simpleQuery == false)
-	{
-		// Close the container
-		dbus_message_iter_close_container(&iter, &subIter);
-		return true;
-	}
-
-	// Attach the array to the reply
-	return newReplyWithArray();
 }
 
-bool DBusServletInfo::reply(void)
+void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
+	const std::vector<std::tuple<ustring,ustring>> &fields,
+	PinotStub::MethodInvocation &invocation)
 {
-	// Send a reply ?
-	if ((m_pConnection != NULL) &&
-		(m_pReply != NULL) &&
-		(m_replied == false))
-	{
-		m_replied = true;
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	MetaDataBackup metaData(settings.getHistoryDatabaseName());
+	DocumentInfo docInfo;
 
-		dbus_connection_send(m_pConnection, m_pReply, NULL);
-		dbus_connection_flush(m_pConnection);
 #ifdef DEBUG
-		clog << "DBusServletInfo::reply: sent reply" << endl;
+	clog << "DaemonState::DBusMessageHandler::SetDocumentInfo: called on " << docId << endl;
 #endif
+	DBusIndex::documentInfoFromTuples(fields, docInfo);
 
-		return true;
+	// Update the document info
+	if (pIndex->updateDocumentInfo(docId, docInfo) == true)
+	{
+		flushIndexAndSignal(pIndex);
 	}
 
-	return false;
+	// Update the metadata backup
+	metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
+
+	invocation.ret(docId);
+
+	if (pIndex != NULL)
+	{
+		delete pIndex;
+	}
+}
+
+void DaemonState::DBusMessageHandler::Query(const ustring &engineType,
+	const ustring &engineName,
+	const ustring &searchText,
+	guint32 startDoc,
+	guint32 maxHits,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::Query: called on " << searchText
+		<< ", " << startDoc << "/" << maxHits << endl;
+#endif
+	if (searchText.empty() == true)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "Query failed");
+
+		invocation.ret(error);
+	}
+	else
+	{
+		DBusEngineQueryThread *pEngineQueryThread = NULL;
+		QueryProperties queryProps("", searchText.c_str());
+
+		queryProps.setMaximumResultsCount(maxHits);
+
+		// Provide reasonable defaults
+		if ((engineType.empty() == true) &&
+			(engineName.empty() == true))
+		{
+			pEngineQueryThread = new DBusEngineQueryThread(invocation,
+				settings.m_defaultBackend, settings.m_defaultBackend,
+				settings.m_daemonIndexLocation, queryProps,
+				startDoc, false);
+		}
+		else
+		{
+			pEngineQueryThread = new DBusEngineQueryThread(invocation,
+				engineType.c_str(), engineType.c_str(),
+				engineName, queryProps,
+				startDoc, false);
+		}
+
+		m_pServer->start_thread(pEngineQueryThread);
+	}
+}
+
+void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
+	guint32 maxHits,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::SimpleQuery: called on " << searchText
+		<< ", " << maxHits << endl;
+#endif
+	if (searchText.empty() == true)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "SimpleQuery failed");
+
+		invocation.ret(error);
+	}
+	else
+	{
+		QueryProperties queryProps("", searchText.c_str());
+
+		queryProps.setMaximumResultsCount(maxHits);
+
+		m_pServer->start_thread(new DBusEngineQueryThread(invocation,
+			settings.m_defaultBackend, settings.m_defaultBackend,
+			settings.m_daemonIndexLocation, queryProps,
+			0, true));
+	}
+}
+
+void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	DocumentInfo docInfo;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::UpdateDocument: called on " << docId << endl;
+#endif
+	if (pIndex->getDocumentInfo(docId, docInfo) == true)
+	{
+		// Update document
+		m_pServer->queue_index(docInfo);
+	}
+
+	invocation.ret(docId);
 }
 #endif
 
 DaemonState::DaemonState() :
 	QueueManager(PinotSettings::getInstance().m_daemonIndexLocation),
+#ifdef HAVE_DBUS
+	m_refSessionBus(Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION)),
+	m_introspectionHandler(),
+	m_messageHandler(this),
+	m_connectionId(0),
+#endif
 	m_isReindex(false),
 	m_reload(false),
 	m_flush(false),
@@ -330,7 +808,7 @@ DaemonState::DaemonState() :
 	FD_ZERO(&m_flagsSet);
 
 	// Check disk usage every minute
-	m_timeoutConnection = Glib::signal_timeout().connect(sigc::mem_fun(*this,
+	m_timeoutConnection = signal_timeout().connect(sigc::mem_fun(*this,
 		&DaemonState::on_activity_timeout), 60000);
 	// Check right now before doing anything else
 	DaemonState::on_activity_timeout();
@@ -342,6 +820,18 @@ DaemonState::~DaemonState()
 {
 	// Don't delete m_pDiskMonitor and m_pDiskHandler, threads may need them
 	// Since DaemonState is destroyed when the program exits, it's a leak we can live with
+}
+
+void DaemonState::disconnect(void)
+{
+	QueueManager::disconnect();
+
+#ifdef HAVE_DBUS
+	if (m_connectionId > 0)
+	{
+		Gio::DBus::unown_name(m_connectionId);
+	}
+#endif
 }
 
 bool DaemonState::on_activity_timeout(void)
@@ -485,15 +975,57 @@ void DaemonState::flush_and_reclaim(void)
 	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
 	if (pIndex != NULL)
 	{
-#ifdef HAVE_DBUS
-		DBusServletThread::flushIndexAndSignal(pIndex);
-#endif
+		// Flush
+		pIndex->flush();
+
+		// Signal
+		emit_IndexFlushed(pIndex->getDocumentsCount());
 
 		delete pIndex;
 	}
 
 	int inUse = Memory::getUsage();
 	Memory::reclaim();
+}
+
+void DaemonState::register_session(void)
+{
+#ifdef HAVE_DBUS
+	m_connectionId = Gio::DBus::own_name(
+            Gio::DBus::BUS_TYPE_SESSION,
+            PINOT_DBUS_SERVICE_NAME,
+            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
+                const Glib::ustring & /* name */) {
+				guint introId = m_introspectionHandler.register_object(m_refSessionBus,
+					PINOT_DBUS_OBJECT_PATH);
+				guint messageId = m_messageHandler.register_object(m_refSessionBus,
+					PINOT_DBUS_OBJECT_PATH);
+#ifdef DEBUG
+				clog << "DaemonState::register_object: registered on " << PINOT_DBUS_OBJECT_PATH
+					<< " with IDs " << introId << " " << messageId << endl;
+#endif
+            },
+            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
+                const Glib::ustring &name) {
+#ifdef DEBUG
+				clog << "DaemonState::register_object: acquired " << name << endl;
+#endif
+            },
+            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
+                const Glib::ustring &name) {
+#ifdef DEBUG
+				clog << "DaemonState::register_object: lost " << name << endl;
+#endif
+				mustQuit(true);
+            });
+#endif
+}
+
+void DaemonState::emit_IndexFlushed(unsigned int docsCount)
+{
+#ifdef HAVE_DBUS
+	m_messageHandler.emit_IndexFlushed(docsCount);
+#endif
 }
 
 void DaemonState::start(bool isReindex)
@@ -672,84 +1204,6 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 	{
 		// FIXME: do something about this
 	}
-#ifdef HAVE_DBUS
-	else if (type == "DBusServletThread")
-	{
-		DBusServletThread *pDBusThread = dynamic_cast<DBusServletThread *>(pThread);
-		if (pDBusThread == NULL)
-		{
-			delete pThread;
-			return;
-		}
-
-		// Send the reply ?
-		DBusServletInfo *pInfo = pDBusThread->getServletInfo();
-		if (pInfo != NULL)
-		{
-			if (pInfo->m_pThread != NULL)
-			{
-				m_servletsInfo.insert(pInfo);
-
-				start_thread(pInfo->m_pThread);
-			}
-			else
-			{
-				pInfo->reply();
-
-				delete pInfo;
-			}
-		}
-
-		if (pDBusThread->mustQuit() == true)
-		{
-			// Disconnect the timeout signal
-			if (m_timeoutConnection.connected() == true)
-			{
-				m_timeoutConnection.block();
-				m_timeoutConnection.disconnect();
-			}
-			m_signalQuit(0);
-		}
-	}
-#endif
-	else if (type == "QueryingThread")
-	{
-		QueryingThread *pQueryThread = dynamic_cast<QueryingThread *>(pThread);
-		if (pQueryThread == NULL)
-		{
-			delete pThread;
-			return;
-		}
-
-		bool wasCorrected = false;
-		QueryProperties queryProps(pQueryThread->getQuery(wasCorrected));
-		const vector<DocumentInfo> &resultsList = pQueryThread->getDocuments();
-
-#ifdef HAVE_DBUS
-		// Find the servlet info
-		for (set<DBusServletInfo *>::const_iterator servIter = m_servletsInfo.begin();
-			servIter != m_servletsInfo.end(); ++servIter)
-		{
-			DBusServletInfo *pInfo = const_cast<DBusServletInfo *>(*servIter);
-
-			if ((pInfo != NULL) &&
-				(pInfo->m_pThread->getId() == pThread->getId()))
-			{
-#ifdef DEBUG
-				clog << "DaemonState::on_thread_end: ran query " << queryProps.getName() << endl;
-#endif
-				// Prepare and send the reply
-				pInfo->newQueryReply(resultsList, pQueryThread->getDocumentsCount());
-				pInfo->reply();
-
-				m_servletsInfo.erase(servIter);
-				delete pInfo;
-
-				break;
-			}
-		}
-#endif
-	}
 	else if (type == "RestoreMetaDataThread")
 	{
 		// Do the actual flush here
@@ -808,6 +1262,17 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			// Flush now
 			flush_and_reclaim();
 		}
+	}
+
+	if (m_messageHandler.mustQuit() == true)
+	{
+		// Disconnect the timeout signal
+		if (m_timeoutConnection.connected() == true)
+		{
+			m_timeoutConnection.block();
+			m_timeoutConnection.disconnect();
+		}
+		m_signalQuit(0);
 	}
 }
 

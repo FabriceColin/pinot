@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2019 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 #include <string.h>
 #include <strings.h>
 #include <sigc++/sigc++.h>
+#include <giomm/init.h>
 #include <glibmm.h>
 #include <glibmm/thread.h>
 #include <glibmm/ustring.h>
@@ -74,17 +75,10 @@ static struct option g_longOptions[] = {
 	{"version", 0, 0, 'v'},
 	{0, 0, 0, 0}
 };
-#ifdef HAVE_DBUS
-static void unregisteredHandler(DBusConnection *pConnection, void *pData);
-static DBusHandlerResult messageHandler(DBusConnection *pConnection, DBusMessage *pMessage, void *pData);
-static DBusObjectPathVTable g_callVTable = {
-	(DBusObjectPathUnregisterFunction)unregisteredHandler,
-        (DBusObjectPathMessageFunction)messageHandler,
-	NULL,
-};
-#endif
 static Glib::RefPtr<Glib::MainLoop> g_refMainLoop;
-static ThreadsManager *g_pState = NULL;
+static DaemonState *g_pState = NULL;
+static DBusGConnection *g_pSystemBus = NULL;
+static DBusGConnection *g_pSessionBus = NULL;
 
 static void closeAll(void)
 {
@@ -149,14 +143,14 @@ static bool getBatteryState(const string &name, bool systemBus,
 	gboolean callStatus = FALSE;
 
 	if ((systemBus == true) &&
-		(DBusServletThread::m_pSystemBus != NULL))
+		(g_pSystemBus != NULL))
 	{
-		pBusProxy = dbus_g_proxy_new_for_name(DBusServletThread::m_pSystemBus,
+		pBusProxy = dbus_g_proxy_new_for_name(g_pSystemBus,
 			name.c_str(), path.c_str(), interfaceName.c_str());
 	}
-	else if (DBusServletThread::m_pSessionBus != NULL)
+	else if (g_pSessionBus != NULL)
 	{
-		pBusProxy = dbus_g_proxy_new_for_name(DBusServletThread::m_pSessionBus,
+		pBusProxy = dbus_g_proxy_new_for_name(g_pSessionBus,
 			name.c_str(), path.c_str(), interfaceName.c_str());
 	}
 	if (pBusProxy != NULL)
@@ -331,34 +325,6 @@ static DBusHandlerResult filterHandler(DBusConnection *pConnection, DBusMessage 
 
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
-
-static void unregisteredHandler(DBusConnection *pConnection, void *pData)
-{
-#ifdef DEBUG
-	clog << "unregisteredHandler: called" << endl;
-#endif
-}
-
-static DBusHandlerResult messageHandler(DBusConnection *pConnection, DBusMessage *pMessage, void *pData)
-{
-	DaemonState *pServer = (DaemonState *)pData;
-
-	if ((pConnection != NULL) &&
-		(pMessage != NULL))
-	{
-		dbus_connection_ref(pConnection);
-		dbus_message_ref(pMessage);
-
-		if (pServer != NULL)
-		{
-			DBusServletInfo *pInfo = new DBusServletInfo(pConnection, pMessage);
-
-			pServer->start_thread(new DBusServletThread(pServer, pInfo));
-		}
-	}
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
 #endif
 
 int main(int argc, char **argv)
@@ -433,6 +399,8 @@ int main(int argc, char **argv)
 	textdomain(GETTEXT_PACKAGE);
 #endif //ENABLE_NLS
 
+	Glib::init();
+	Gio::init();
 	// Initialize threads support before doing anything else
 	if (Glib::thread_supported() == false)
 	{
@@ -496,9 +464,9 @@ int main(int argc, char **argv)
 
 	// Make sure only one instance runs
 #ifdef HAVE_DBUS
-	UniqueApplication uniqueApp("de.berlios.PinotDBusDaemon");
+	UniqueApplication uniqueApp("com.github.FabriceColin.PinotDBusDaemon");
 #else
-	UniqueApplication uniqueApp("de.berlios.PinotDaemon");
+	UniqueApplication uniqueApp("com.github.FabriceColin.PinotDaemon");
 #endif
 	string confDirectory(PinotSettings::getConfigurationDirectory());
 	g_pidFileName = confDirectory + "/" + programName + ".pid";
@@ -655,8 +623,8 @@ int main(int argc, char **argv)
 	GError *pError = NULL;
 
 	// Get on the bus(es) !
-	DBusServletThread::m_pSystemBus = dbus_g_bus_get(DBUS_BUS_SYSTEM, &pError);
-	if (DBusServletThread::m_pSystemBus == NULL)
+	g_pSystemBus = dbus_g_bus_get(DBUS_BUS_SYSTEM, &pError);
+	if (g_pSystemBus == NULL)
 	{
 		if (pError != NULL)
 		{
@@ -670,8 +638,8 @@ int main(int argc, char **argv)
 
 		return EXIT_FAILURE;
 	}
-	DBusServletThread::m_pSessionBus = dbus_g_bus_get(DBUS_BUS_SESSION, &pError);
-	if (DBusServletThread::m_pSessionBus == NULL)
+	g_pSessionBus = dbus_g_bus_get(DBUS_BUS_SESSION, &pError);
+	if (g_pSessionBus == NULL)
 	{
 		if (pError != NULL)
 		{
@@ -686,13 +654,13 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	DBusConnection *pSystemConnection = dbus_g_connection_get_connection(DBusServletThread::m_pSystemBus);
+	DBusConnection *pSystemConnection = dbus_g_connection_get_connection(g_pSystemBus);
 	if (pSystemConnection == NULL)
 	{
 		clog << "Couldn't get system connection" << endl;
 		return EXIT_FAILURE;
 	}
-	DBusConnection *pSessionConnection = dbus_g_connection_get_connection(DBusServletThread::m_pSessionBus);
+	DBusConnection *pSessionConnection = dbus_g_connection_get_connection(g_pSessionBus);
 	if (pSessionConnection == NULL)
 	{
 		clog << "Couldn't get session connection" << endl;
@@ -704,45 +672,9 @@ int main(int argc, char **argv)
 	IndexInterface *pIndex = NULL;
 
 	g_pState = &server;
-#ifdef HAVE_DBUS
-	DBusError error;
-	dbus_error_init(&error);
-	dbus_connection_set_exit_on_disconnect(pSystemConnection, FALSE);
-	dbus_connection_set_exit_on_disconnect(pSessionConnection, FALSE);
-	dbus_connection_setup_with_g_main(pSessionConnection, NULL);
 
-	if (dbus_connection_register_object_path(pSessionConnection, PINOT_DBUS_OBJECT_PATH,
-		&g_callVTable, &server) == TRUE)
-	{
-		// Request to be identified by this name
-		// FIXME: flags are currently broken ?
-		dbus_bus_request_name(pSessionConnection, PINOT_DBUS_SERVICE_NAME, 0, &error);
-		if (dbus_error_is_set(&error) == FALSE)
-		{
-			// See power management signals
-			dbus_bus_add_match(pSystemConnection,
-				"type='signal',interface='org.freedesktop.UPower'", &error);
-			dbus_bus_add_match(pSystemConnection,
-				"type='signal',interface='org.freedesktop.DeviceKit.Power'", &error);
-			dbus_bus_add_match(pSessionConnection,
-				"type='signal',interface='org.freedesktop.PowerManagement'", &error);
-			dbus_bus_add_match(pSessionConnection,
-				"type='signal',interface='org.gnome.PowerManager'", &error);
-
-			dbus_connection_add_filter(pSystemConnection,
-				(DBusHandleMessageFunction)filterHandler, &server, NULL);
-			dbus_connection_add_filter(pSessionConnection,
-				(DBusHandleMessageFunction)filterHandler, &server, NULL);
-		}
-		else
-		{
-			clog << "Couldn't obtain name " << PINOT_DBUS_SERVICE_NAME << endl;
-			if (error.message != NULL)
-			{
-				clog << "Error is " << error.message << endl;
-			}
-		}
-#endif
+	server.register_session();
+	// FIXME: power management signals
 
 		try
 		{
@@ -777,9 +709,8 @@ int main(int argc, char **argv)
 				{
 					// Reset the index so that all documents are reindexed
 					pIndex->reset();
-#ifdef HAVE_DBUS
-					DBusServletThread::flushIndexAndSignal(pIndex);
-#endif
+					pIndex->flush();
+					server.emit_IndexFlushed(0);
 
 					clog << "Reset index" << endl;
 
@@ -911,14 +842,6 @@ int main(int argc, char **argv)
 			clog << "Unknown exception" << endl;
 			return EXIT_FAILURE;
 		}
-#ifdef HAVE_DBUS
-	}
-	else
-	{
-		clog << "Couldn't register object path" << endl;
-	}
-	dbus_error_free(&error);
-#endif
 
 	if (pIndex != NULL)
 	{
