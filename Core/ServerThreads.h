@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,21 +20,16 @@
 #define _SERVERTHREADS_HH
 
 #include <string>
-#include <vector>
 #include <stack>
-#include <sigc++/sigc++.h>
-#include <glibmm/ustring.h>
 
 #include "DocumentInfo.h"
 #include "CrawlHistory.h"
 #include "IndexInterface.h"
-#ifdef HAVE_DBUS
-#include "DBusIndex.h"
-#endif
 #include "MonitorInterface.h"
 #include "MonitorHandler.h"
 #include "QueryProperties.h"
 #include "DaemonState.h"
+#include "PinotDBus_stub.h"
 #include "WorkerThreads.h"
 
 class CrawlerThread : public DirectoryScannerThread
@@ -75,34 +70,24 @@ class CrawlerThread : public DirectoryScannerThread
 };
 
 #ifdef HAVE_DBUS
-class DBusServletThread : public WorkerThread
+class DBusEngineQueryThread : public EngineQueryThread
 {
 	public:
-		DBusServletThread(DaemonState *pServer, DBusServletInfo *pInfo);
-		virtual ~DBusServletThread();
-
-		static DBusGConnection *m_pSystemBus;
-
-		static DBusGConnection *m_pSessionBus;
-
-		static void flushIndexAndSignal(IndexInterface *pIndex);
-
-		virtual std::string getType(void) const;
-
-		DBusServletInfo *getServletInfo(void) const;
-
-		bool mustQuit(void) const;
+		DBusEngineQueryThread(com::github::fabricecolin::PinotStub::MethodInvocation &invocation,
+			const std::string &engineName, const std::string &engineDisplayableName,
+			const std::string &engineOption, const QueryProperties &queryProps,
+			unsigned int startDoc, bool simpleQuery);
+		virtual ~DBusEngineQueryThread();
 
 	protected:
-		DaemonState *m_pServer;
-		DBusServletInfo *m_pServletInfo;
-		bool m_mustQuit;
+		com::github::fabricecolin::PinotStub::MethodInvocation m_invocation;
+		bool m_simpleQuery;
 
 		virtual void doWork(void);
 
 	private:
-		DBusServletThread(const DBusServletThread &other);
-		DBusServletThread &operator=(const DBusServletThread &other);
+		DBusEngineQueryThread(const DBusEngineQueryThread &other);
+		DBusEngineQueryThread &operator=(const DBusEngineQueryThread &other);
 
 };
 #endif

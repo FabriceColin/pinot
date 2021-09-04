@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,11 @@
 #include <string>
 #include <queue>
 #include <set>
+#include <tuple>
 #include <sigc++/sigc++.h>
+#ifdef HAVE_DBUS
+#include <giomm/dbusconnection.h>
+#endif
 
 #include "CrawlHistory.h"
 #ifdef HAVE_DBUS
@@ -32,38 +36,8 @@
 #include "MonitorInterface.h"
 #include "MonitorHandler.h"
 #include "PinotSettings.h"
+#include "PinotDBus_stub.h"
 #include "WorkerThreads.h"
-
-#ifdef HAVE_DBUS
-class DBusServletInfo
-{
-	public:
-		DBusServletInfo(DBusConnection *pConnection, DBusMessage *pRequest);
-		~DBusServletInfo();
-
-		bool newReply(void);
-
-		bool newErrorReply(const std::string &name, const std::string &message);
-
-		bool newReplyWithArray(void);
-
-		bool newQueryReply(const vector<DocumentInfo> &resultsList,
-			unsigned int resultsEstimate);
-
-		bool reply(void);
-
-		DBusConnection *m_pConnection;
-		DBusMessage *m_pRequest;
-		DBusMessage *m_pReply;
-		GPtrArray *m_pArray;
-		bool m_simpleQuery;
-		WorkerThread *m_pThread;
-
-	protected:
-		bool m_replied;
-
-};
-#endif
 
 class DaemonState : public QueueManager
 {
@@ -72,6 +46,12 @@ class DaemonState : public QueueManager
 		virtual ~DaemonState();
 
 		typedef enum { LOW_DISK_SPACE = 0, ON_BATTERY, CRAWLING, STOPPED, DISCONNECTED } StatusFlag;
+
+		virtual void disconnect(void);
+
+		void register_session(void);
+
+		void emit_IndexFlushed(unsigned int docsCount);
 
 		void start(bool isReindex);
 
@@ -94,6 +74,92 @@ class DaemonState : public QueueManager
 		void reset_flag(StatusFlag flag);
 
 	protected:
+		class DBusIntrospectHandler : public org::freedesktop::DBus::IntrospectableStub
+		{
+			public:
+				DBusIntrospectHandler();
+				virtual ~DBusIntrospectHandler();
+
+			protected:
+				virtual void Introspect(IntrospectableStub::MethodInvocation &invocation);
+
+		};
+
+		class DBusMessageHandler : public com::github::fabricecolin::PinotStub
+		{
+			public:
+				DBusMessageHandler(DaemonState *pServer);
+				virtual ~DBusMessageHandler();
+
+				bool mustQuit(void) const;
+
+				void emit_IndexFlushed(unsigned int docsCount);
+
+			protected:
+				DaemonState *m_pServer;
+				bool m_mustQuit;
+
+				void flushIndexAndSignal(IndexInterface *pIndex);
+
+			    virtual void GetStatistics(PinotStub::MethodInvocation &invocation);
+
+			    virtual void Reload(PinotStub::MethodInvocation &invocation);
+
+			    virtual void Stop(PinotStub::MethodInvocation &invocation);
+
+			    virtual void HasDocument(const Glib::ustring &url,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void GetLabels(PinotStub::MethodInvocation &invocation);
+
+			    virtual void AddLabel(const Glib::ustring &label,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void DeleteLabel(const Glib::ustring &label,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void GetDocumentLabels(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void SetDocumentLabels(guint32 docId,
+					const std::vector<Glib::ustring> &labels,
+					bool resetLabels,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void SetDocumentsLabels(const std::vector<Glib::ustring> &docIds,
+					const std::vector<Glib::ustring> &labels,
+					bool resetLabels,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void GetDocumentInfo(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void SetDocumentInfo(guint32 docId,
+					const std::vector<std::tuple<Glib::ustring,Glib::ustring>> &fields,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void Query(const Glib::ustring &engineType,
+					const Glib::ustring &engineName,
+					const Glib::ustring &searchText,
+					guint32 startDoc,
+					guint32 maxHits,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void SimpleQuery(const Glib::ustring &searchText,
+					guint32 maxHits,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void UpdateDocument(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+		};
+
+#ifdef HAVE_DBUS
+		Glib::RefPtr<Gio::DBus::Connection> m_refSessionBus;
+		DBusIntrospectHandler m_introspectionHandler;
+		DBusMessageHandler m_messageHandler;
+		guint m_connectionId;
+#endif
 		bool m_isReindex;
 		bool m_reload;
 		bool m_flush;
@@ -105,9 +171,6 @@ class DaemonState : public QueueManager
 		sigc::signal1<void, int> m_signalQuit;
 		unsigned int m_crawlers;
 		std::queue<PinotSettings::IndexableLocation> m_crawlQueue;
-#ifdef HAVE_DBUS
-		std::set<DBusServletInfo *> m_servletsInfo;
-#endif
 
 		bool on_activity_timeout(void);
 
