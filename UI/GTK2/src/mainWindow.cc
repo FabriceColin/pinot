@@ -2438,7 +2438,7 @@ void mainWindow::on_status_activate()
 
 void mainWindow::on_preferences_activate()
 {
-	MIMEAction prefsAction("pinot-prefs", "pinot -p");
+	MIMEAction prefsAction("pinot-prefs", "pinot-prefs");
 	vector<string> arguments;
 
 	// Save the settings first as any change in preferences will make the daemon reload the whole thing
