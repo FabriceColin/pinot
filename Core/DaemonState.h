@@ -158,6 +158,7 @@ class DaemonState : public QueueManager
 		Glib::RefPtr<Gio::DBus::Connection> m_refSessionBus;
 		DBusIntrospectHandler m_introspectionHandler;
 		DBusMessageHandler m_messageHandler;
+		Glib::RefPtr<Gio::DBus::Proxy> m_powerProxy;
 		guint m_connectionId;
 #endif
 		bool m_isReindex;
@@ -171,6 +172,9 @@ class DaemonState : public QueueManager
 		sigc::signal1<void, int> m_signalQuit;
 		unsigned int m_crawlers;
 		std::queue<PinotSettings::IndexableLocation> m_crawlQueue;
+
+		void handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
+			const std::vector<Glib::ustring> &invalidated_properties);
 
 		bool on_activity_timeout(void);
 

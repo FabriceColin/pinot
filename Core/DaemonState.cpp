@@ -795,6 +795,10 @@ DaemonState::DaemonState() :
 	m_refSessionBus(Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION)),
 	m_introspectionHandler(),
 	m_messageHandler(this),
+    m_powerProxy(Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
+		"org.freedesktop.UPower", "/org/freedesktop/UPower",
+		"org.freedesktop.UPower", {}, {},
+		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION)),
 	m_connectionId(0),
 #endif
 	m_isReindex(false),
@@ -810,6 +814,13 @@ DaemonState::DaemonState() :
 	// Check disk usage every minute
 	m_timeoutConnection = signal_timeout().connect(sigc::mem_fun(*this,
 		&DaemonState::on_activity_timeout), 60000);
+#ifndef CHECK_BATTERY_SYSCTL
+#ifdef HAVE_DBUS
+	// Listen for battery property changes
+	m_powerProxy->signal_properties_changed().
+		connect(sigc::mem_fun(this, &DaemonState::handle_power_properties_changed));
+#endif
+#endif
 	// Check right now before doing anything else
 	DaemonState::on_activity_timeout();
 
@@ -832,6 +843,34 @@ void DaemonState::disconnect(void)
 		Gio::DBus::unown_name(m_connectionId);
 	}
 #endif
+}
+
+void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
+	const std::vector<Glib::ustring> &invalidated_properties)
+{
+	if (changed_properties.find("OnBattery") != changed_properties.cend())
+	{
+		Glib::Variant<bool> boolValue;
+
+		m_powerProxy->get_cached_property(boolValue, "OnBattery");
+
+		if (boolValue)
+		{
+			// We are now on battery
+			set_flag(ON_BATTERY);
+			stop_crawling();
+
+			clog << "System is now on battery" << endl;
+		}
+		else
+		{
+			// Back on-line
+			reset_flag(ON_BATTERY);
+			start_crawling();
+
+			clog << "System is now on AC" << endl;
+		}
+	}
 }
 
 bool DaemonState::on_activity_timeout(void)
@@ -870,6 +909,17 @@ bool DaemonState::on_activity_timeout(void)
 		// Check the battery state too
 		check_battery_state();
 #endif
+
+		if (m_messageHandler.mustQuit() == true)
+		{
+			// Disconnect the timeout signal
+			if (m_timeoutConnection.connected() == true)
+			{
+				m_timeoutConnection.block();
+				m_timeoutConnection.disconnect();
+			}
+			m_signalQuit(0);
+		}
 	}
 
 	return true;
@@ -1262,17 +1312,6 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			// Flush now
 			flush_and_reclaim();
 		}
-	}
-
-	if (m_messageHandler.mustQuit() == true)
-	{
-		// Disconnect the timeout signal
-		if (m_timeoutConnection.connected() == true)
-		{
-			m_timeoutConnection.block();
-			m_timeoutConnection.disconnect();
-		}
-		m_signalQuit(0);
 	}
 }
 

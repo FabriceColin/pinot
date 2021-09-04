@@ -124,209 +124,6 @@ static void quitAll(int sigNum)
 	}
 }
 
-#ifdef HAVE_DBUS
-static bool getBatteryState(const string &name, bool systemBus,
-	const string &path, const string &interfaceName,
-	const string &method, const string &parameter,
-	gboolean &result)
-{
-	if ((name.empty() == true) ||
-		(path.empty() == true) ||
-		(interfaceName.empty() == true) ||
-		(method.empty() == true))
-	{
-		return false;
-	}
-
-	DBusGProxy *pBusProxy = NULL;
-	GError *pError = NULL;
-	gboolean callStatus = FALSE;
-
-	if ((systemBus == true) &&
-		(g_pSystemBus != NULL))
-	{
-		pBusProxy = dbus_g_proxy_new_for_name(g_pSystemBus,
-			name.c_str(), path.c_str(), interfaceName.c_str());
-	}
-	else if (g_pSessionBus != NULL)
-	{
-		pBusProxy = dbus_g_proxy_new_for_name(g_pSessionBus,
-			name.c_str(), path.c_str(), interfaceName.c_str());
-	}
-	if (pBusProxy != NULL)
-	{
-		if (parameter.empty() == false)
-		{
-			GHashTable *pProps = NULL;
-			const char *pParameter = parameter.c_str();
-
-			// Battery status is provided by the OnBattery property
-			// This only works for org.freedesktop.(UPower|DeviceKit.Power)
-			callStatus = dbus_g_proxy_call(pBusProxy, method.c_str(), &pError,
-				G_TYPE_STRING, pParameter,
-				G_TYPE_INVALID,
-				dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE), &pProps,
-				G_TYPE_INVALID);
-			if (callStatus == TRUE)
-			{
-				GValue *pValue = (GValue *)g_hash_table_lookup(pProps, "OnBattery");
-				if (pValue != NULL)
-				{
-					result = g_value_get_boolean(pValue);
-				}
-			}
-
-			if (pProps != NULL)
-			{
-				g_hash_table_unref(pProps);
-			}
-		}
-		else
-		{
-			// Battery status is returned by the method
-			// This works for other interfaces
-			callStatus = dbus_g_proxy_call(pBusProxy, method.c_str(), &pError,
-				G_TYPE_INVALID,
-				G_TYPE_BOOLEAN, &result,
-				G_TYPE_INVALID);
-		}
-
-		g_object_unref(pBusProxy);
-	}
-
-	if (callStatus == FALSE)
-	{
-		if (pError != NULL)
-		{
-			clog << "Couldn't get battery state: " << pError->message << endl;
-			g_error_free(pError);
-		}
-
-		return false;
-	}
-
-	return true;
-}
-
-static DBusHandlerResult filterHandler(DBusConnection *pConnection, DBusMessage *pMessage, void *pData)
-{
-	DaemonState *pServer = (DaemonState *)pData;
-	gboolean onBattery = FALSE;
-	bool batteryChange = false;
-
-#ifdef DEBUG
-	clog << "filterHandler: called" << endl;
-#endif
-	// Are we about to be disconnected ?
-	if (dbus_message_is_signal(pMessage, DBUS_INTERFACE_LOCAL, "Disconnected") == TRUE)
-	{
-#ifdef DEBUG
-		clog << "filterHandler: received Disconnected" << endl;
-#endif
-		if (pServer != NULL)
-		{
-			pServer->set_flag(DaemonState::DISCONNECTED);
-		}
-		quitAll(0);
-	}
-	else if (dbus_message_is_signal(pMessage, DBUS_INTERFACE_DBUS, "NameOwnerChanged") == TRUE)
-	{
-#ifdef DEBUG
-		clog << "filterHandler: received NameOwnerChanged" << endl;
-#endif
-	}
-	else if (dbus_message_is_signal(pMessage, "org.freedesktop.DeviceKit.Power", "Changed") == TRUE)
-	{
-#ifdef DEBUG
-		clog << "filterHandler: received Changed" << endl;
-#endif
-		// Properties changed, check again
-		batteryChange = getBatteryState("org.freedesktop.DeviceKit.Power", true,
-			"/org/freedesktop/DeviceKit/Power",
-			"org.freedesktop.DBus.Properties",
-			"GetAll",
-			"org.freedesktop.DeviceKit.Power",
-			onBattery);
-	}
-	else if (dbus_message_is_signal(pMessage, "org.freedesktop.UPower", "Changed") == TRUE)
-	{
-#ifdef DEBUG
-		clog << "filterHandler: received Changed" << endl;
-#endif
-		// Properties changed, check again
-		batteryChange = getBatteryState("org.freedesktop.UPower", true,
-			"/org/freedesktop/UPower",
-			"org.freedesktop.DBus.Properties",
-			"GetAll",
-			"org.freedesktop.UPower",
-			onBattery);
-	}
-	// The first two signals are specified by the freedesktop.org Power Management spec v0.1 and v0.2
-	else if ((dbus_message_is_signal(pMessage, "org.freedesktop.PowerManagement", "BatteryStateChanged") == TRUE) ||
-		(dbus_message_is_signal(pMessage, "org.freedesktop.PowerManagement", "OnBatteryChanged") == TRUE) ||
-		(dbus_message_is_signal(pMessage, "org.gnome.PowerManager", "OnAcChanged") == TRUE))
-	{
-		DBusError error;
-
-#ifdef DEBUG
-		clog << "filterHandler: received OnBatteryChanged" << endl;
-#endif
-		dbus_error_init(&error);
-		if ((dbus_message_get_args(pMessage, &error,
-			DBUS_TYPE_BOOLEAN, &onBattery,
-			DBUS_TYPE_INVALID) == TRUE) &&
-			(pData != NULL))
-		{
-			if (dbus_message_is_signal(pMessage, "org.gnome.PowerManager", "OnAcChanged") == TRUE)
-			{
-				// This tells us if we are on AC, not on battery
-				if (onBattery == TRUE)
-				{
-					onBattery = FALSE;
-				}
-				else
-				{
-					onBattery = TRUE;
-				}
-			}
-
-			batteryChange = true;
-		}
-		dbus_error_free(&error);
-	}
-
-	if (batteryChange == true)
-	{
-		if (onBattery == TRUE)
-		{
-			// We are now on battery
-			if (pServer != NULL)
-			{
-				pServer->set_flag(DaemonState::ON_BATTERY);
-				pServer->stop_crawling();
-			}
-
-			clog << "System is now on battery" << endl;
-		}
-		else
-		{
-			// Back on-line
-			if (pServer != NULL)
-			{
-				pServer->reset_flag(DaemonState::ON_BATTERY);
-				pServer->start_crawling();
-			}
-
-			clog << "System is now on AC" << endl;
-		}
-
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
-
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-#endif
-
 int main(int argc, char **argv)
 {
 #ifdef HAVE_DBUS
@@ -619,229 +416,119 @@ int main(int argc, char **argv)
 	}
 #endif
 
-#ifdef HAVE_DBUS
-	GError *pError = NULL;
-
-	// Get on the bus(es) !
-	g_pSystemBus = dbus_g_bus_get(DBUS_BUS_SYSTEM, &pError);
-	if (g_pSystemBus == NULL)
-	{
-		if (pError != NULL)
-		{
-			clog << "Couldn't open system bus connection: " << pError->message << endl;
-			if (pError->message != NULL)
-			{
-				clog << "Error is " << pError->message << endl;
-			}
-			g_error_free(pError);
-		}
-
-		return EXIT_FAILURE;
-	}
-	g_pSessionBus = dbus_g_bus_get(DBUS_BUS_SESSION, &pError);
-	if (g_pSessionBus == NULL)
-	{
-		if (pError != NULL)
-		{
-			clog << "Couldn't open session bus connection: " << pError->message << endl;
-			if (pError->message != NULL)
-			{
-				clog << "Error is " << pError->message << endl;
-			}
-			g_error_free(pError);
-		}
-
-		return EXIT_FAILURE;
-	}
-
-	DBusConnection *pSystemConnection = dbus_g_connection_get_connection(g_pSystemBus);
-	if (pSystemConnection == NULL)
-	{
-		clog << "Couldn't get system connection" << endl;
-		return EXIT_FAILURE;
-	}
-	DBusConnection *pSessionConnection = dbus_g_connection_get_connection(g_pSessionBus);
-	if (pSessionConnection == NULL)
-	{
-		clog << "Couldn't get session connection" << endl;
-		return EXIT_FAILURE;
-	}
-#endif
-
 	DaemonState server;
 	IndexInterface *pIndex = NULL;
 
 	g_pState = &server;
 
 	server.register_session();
-	// FIXME: power management signals
 
-		try
+	try
+	{
+		set<string> labels;
+		bool gotLabels = false;
+
+		pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+		if (pIndex != NULL)
 		{
-			set<string> labels;
-			bool gotLabels = false;
-			bool onBattery = false;
+			string indexVersion(pIndex->getMetadata("version"));
 
-			pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-			if (pIndex != NULL)
+			gotLabels = pIndex->getLabels(labels);
+
+			// What version is the index at ?
+			if (indexVersion.empty() == true)
 			{
-				string indexVersion(pIndex->getMetadata("version"));
+				indexVersion = "0.0";
+			}
+			if (ignoreVersion == true)
+			{
+				// Better reset labels, they may have been lost too
+				resetLabels = true;
+			}
+			else if (indexVersion < PINOT_INDEX_MIN_VERSION)
+			{
+				clog << "Upgrading index from version " << indexVersion << " to " << VERSION << endl;
 
-				gotLabels = pIndex->getLabels(labels);
+				reindex = true;
+			}
+			if (reindex == true)
+			{
+				// Reset the index so that all documents are reindexed
+				pIndex->reset();
+				pIndex->flush();
+				server.emit_IndexFlushed(0);
 
-				// What version is the index at ?
-				if (indexVersion.empty() == true)
-				{
-					indexVersion = "0.0";
-				}
-				if (ignoreVersion == true)
-				{
-					// Better reset labels, they may have been lost too
-					resetLabels = true;
-				}
-				else if (indexVersion < PINOT_INDEX_MIN_VERSION)
-				{
-					clog << "Upgrading index from version " << indexVersion << " to " << VERSION << endl;
+				clog << "Reset index" << endl;
 
-					reindex = true;
-				}
-				if (reindex == true)
-				{
-					// Reset the index so that all documents are reindexed
-					pIndex->reset();
-					pIndex->flush();
-					server.emit_IndexFlushed(0);
-
-					clog << "Reset index" << endl;
-
-					resetHistory = resetLabels = true;
-				}
-
-				pIndex->setMetadata("version", VERSION);
-				pIndex->setMetadata("dbus-status", "Running");
+				resetHistory = resetLabels = true;
 			}
 
-			if (resetHistory == true)
+			pIndex->setMetadata("version", VERSION);
+			pIndex->setMetadata("dbus-status", "Running");
+		}
+
+		if (resetHistory == true)
+		{
+			CrawlHistory crawlHistory(historyDatabase);
+			map<unsigned int, string> sources;
+
+			// Reset the history
+			crawlHistory.getSources(sources);
+			for (std::map<unsigned int, string>::iterator sourceIter = sources.begin();
+				sourceIter != sources.end(); ++sourceIter)
 			{
-				CrawlHistory crawlHistory(historyDatabase);
-				map<unsigned int, string> sources;
-
-				// Reset the history
-				crawlHistory.getSources(sources);
-				for (std::map<unsigned int, string>::iterator sourceIter = sources.begin();
-					sourceIter != sources.end(); ++sourceIter)
-				{
-					crawlHistory.deleteItems(sourceIter->first);
-					crawlHistory.deleteSource(sourceIter->first);
-				}
-
-				clog << "Reset crawler history" << endl;
+				crawlHistory.deleteItems(sourceIter->first);
+				crawlHistory.deleteSource(sourceIter->first);
 			}
 
-			if ((resetLabels == true) &&
-				(pIndex != NULL))
+			clog << "Reset crawler history" << endl;
+		}
+
+		if ((resetLabels == true) &&
+			(pIndex != NULL))
+		{
+			// Re-apply the labels list
+			if (gotLabels == false)
 			{
-				// Re-apply the labels list
-				if (gotLabels == false)
-				{
-					// If this is an upgrade from a version < 0.80, the labels list
-					// needs to be pulled from the configuration file
-					pIndex->setLabels(settings.m_labels, true);
+				// If this is an upgrade from a version < 0.80, the labels list
+				// needs to be pulled from the configuration file
+				pIndex->setLabels(settings.m_labels, true);
 
-					clog << "Set labels as per the configuration file" << endl;
-				}
-				else
-				{
-					pIndex->setLabels(labels, true);
-				}
-			}
-
-			// Connect to the quit signal
-			server.getQuitSignal().connect(sigc::ptr_fun(&quitAll));
-
-			// Connect to threads' finished signal
-			server.connect();
-
-#ifdef HAVE_DBUS
-			// Try and get the battery state
-			gboolean result = FALSE;
-			if ((getBatteryState("org.freedesktop.UPower", true,
-	                        "/org/freedesktop/UPower",
-				"org.freedesktop.DBus.Properties",
-	                        "GetAll",
-	                        "org.freedesktop.UPower",
-                        	result) == true) ||
-				(getBatteryState("org.freedesktop.DeviceKit.Power", true,
-	                        "/org/freedesktop/DeviceKit/Power",
-				"org.freedesktop.DBus.Properties",
-	                        "GetAll",
-	                        "org.freedesktop.DeviceKit.Power",
-                        	result) == true) ||
-				(getBatteryState("org.freedesktop.PowerManagement", false,
-				"/org/freedesktop/PowerManagement",
-				"org.freedesktop.PowerManagement",
-				"GetOnBattery",
-				"",
-				result) == true) ||
-				(getBatteryState("org.freedesktop.PowerManagement", false,
-				"/org/freedesktop/PowerManagement",
-				"org.freedesktop.PowerManagement",
-				"GetBatteryState",
-				"",
-				result) == true))
-			{
-				if (result == TRUE)
-				{
-					onBattery = true;
-				}
-			}
-			else if (getBatteryState("org.gnome.PowerManager", false,
-				"/org/gnome/PowerManager",
-				"org.gnome.PowerManager",
-				"GetOnAc",
-				"",
-				result) == true)
-			{
-				if (result == FALSE)
-				{
-					onBattery = true;
-				}
-			}
-			if (onBattery == true)
-			{
-				// We are on battery
-				server.set_flag(DaemonState::ON_BATTERY);
-				server.stop_crawling();
-
-				clog << "System is on battery" << endl;
+				clog << "Set labels as per the configuration file" << endl;
 			}
 			else
 			{
-				clog << "System is on AC" << endl;
+				pIndex->setLabels(labels, true);
 			}
-#endif
+		}
 
-			server.start(reindex);
+		// Connect to the quit signal
+		server.getQuitSignal().connect(sigc::ptr_fun(&quitAll));
 
-			// Run the main loop
-			g_refMainLoop->run();
+		// Connect to threads' finished signal
+		server.connect();
 
-		}
-		catch (const Glib::Exception &e)
-		{
-			clog << e.what() << endl;
-			return EXIT_FAILURE;
-		}
-		catch (const char *pMsg)
-		{
-			clog << pMsg << endl;
-			return EXIT_FAILURE;
-		}
-		catch (...)
-		{
-			clog << "Unknown exception" << endl;
-			return EXIT_FAILURE;
-		}
+		server.start(reindex);
+
+		// Run the main loop
+		g_refMainLoop->run();
+
+	}
+	catch (const Glib::Exception &e)
+	{
+		clog << e.what() << endl;
+		return EXIT_FAILURE;
+	}
+	catch (const char *pMsg)
+	{
+		clog << pMsg << endl;
+		return EXIT_FAILURE;
+	}
+	catch (...)
+	{
+		clog << "Unknown exception" << endl;
+		return EXIT_FAILURE;
+	}
 
 	if (pIndex != NULL)
 	{
