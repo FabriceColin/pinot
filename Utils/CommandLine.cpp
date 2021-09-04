@@ -258,6 +258,9 @@ bool CommandLine::runSync(const string &commandLine, ssize_t maxSize,
 bool CommandLine::runAsync(const MIMEAction &action, const vector<string> &arguments)
 {
 #ifdef USE_GIO
+#ifdef DEBUG
+	clog << "CommandLine::runAsync: called with GIO" << endl;
+#endif
 	if (action.m_pAppInfo == NULL)
 	{
 		return false;
@@ -316,6 +319,9 @@ bool CommandLine::runAsync(const MIMEAction &action, const vector<string> &argum
 #else
 	string commandLine(action.m_exec);
 
+#ifdef DEBUG
+	clog << "CommandLine::runAsync: called" << endl;
+#endif
 	if (action.m_exec.empty() == true)
 	{
 		return false;
