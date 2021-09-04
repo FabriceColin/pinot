@@ -7,7 +7,7 @@ EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TOD
 	IndexSearch/Plugins/*src IndexSearch/Plugins/*.xml \
 	Core/pinot-*.1 IndexSearch/pinot-*.1 \
 	UI/GTK2/src/pinot.1 Core/pinot-dbus-daemon.xml \
-	Core/de.berlios.Pinot.service \
+	Core/com.github.fabricecolin.Pinot.service \
 	UI/GTK2/xapian-powered.png UI/icons/48x48/pinot.png \
 	UI/icons/32x32/pinot.png UI/icons/24x24/pinot.png \
 	UI/icons/22x22/pinot.png UI/icons/16x16/pinot.png \
@@ -21,6 +21,12 @@ else
 man_MANS = Core/pinot-index.1 Core/pinot-search.1 Core/pinot-daemon.1 \
 	UI/GTK2/src/pinot.1
 endif
+
+dbus-code:
+	@gdbus-codegen-glibmm3 --generate-cpp-code=PinotDBus ./Core/pinot-dbus-daemon.xml
+	@mv PinotDBus_common.* Utils/
+	@mv PinotDBus_stub.* Core/
+	@mv PinotDBus_proxy.* IndexSearch/
 
 manuals:
 	@help2man --no-info --no-discard-stderr --name "Index documents from the command-line" Core/pinot-index >Core/pinot-index.1
@@ -45,7 +51,7 @@ install-data-local:
 if HAVE_DBUS
 	$(INSTALL_DATA) $(srcdir)/Core/pinot-dbus-daemon.xml $(DESTDIR)$(datadir)/pinot/pinot-dbus-daemon.xml
 	@mkdir -p $(DESTDIR)$(datadir)/dbus-1/services
-	$(INSTALL_DATA) $(builddir)/Core/de.berlios.Pinot.service $(DESTDIR)$(datadir)/dbus-1/services/de.berlios.Pinot.service
+	$(INSTALL_DATA) $(builddir)/Core/com.github.fabricecolin.Pinot.service $(DESTDIR)$(datadir)/dbus-1/services/com.github.fabricecolin.Pinot.service
 endif
 	$(INSTALL_DATA) $(srcdir)/UI/GTK2/xapian-powered.png $(DESTDIR)$(datadir)/pinot/xapian-powered.png
 	$(INSTALL_DATA) $(srcdir)/UI/GTK2/metase-gtk2.glade $(DESTDIR)$(datadir)/pinot/metase-gtk2.glade
@@ -82,7 +88,7 @@ endif
 uninstall-local:
 	@rm -rf $(DESTDIR)$(sysconfdir)/pinot
 	@rm -rf $(DESTDIR)$(datadir)/pinot
-	@rm -rf $(DESTDIR)$(datadir)/dbus-1/services/de.berlios.Pinot.service
+	@rm -rf $(DESTDIR)$(datadir)/dbus-1/services/com.github.fabricecolin.Pinot.service
 	@rm -rf $(DESTDIR)$(libdir)/pinot
 	@rm -rf $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/pinot.png
 	@rm -rf $(DESTDIR)$(datadir)/icons/hicolor/32x32/apps/pinot.png

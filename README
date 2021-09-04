@@ -463,9 +463,9 @@ https://github.com/FabriceColin/pinot
   If you have dbus-send installed, you may also want to set the following
   aliases :
   $ alias pinot-stats='dbus-send --session --print-reply --type=method_call \
-    --dest=de.berlios.Pinot /de/berlios/Pinot de.berlios.Pinot.GetStatistics'
+    --dest=com.github.fabricecolin.Pinot /com/github/fabricecolin/Pinot com.github.fabricecolin.Pinot.GetStatistics'
   $ alias pinot-stop='dbus-send --session --print-reply --type=method_call \
-    --dest=de.berlios.Pinot /de/berlios/Pinot de.berlios.Pinot.Stop'
+    --dest=com.github.fabricecolin.Pinot /com/github/fabricecolin/Pinot com.github.fabricecolin.Pinot.Stop'
   The first will start the daemon by calling its GetStatistics method, while
   the second alias will stop it by calling the Stop method.
 
@@ -519,10 +519,7 @@ http://curl.haxx.se/
 neon (1)						0.24.7
 http://www.webdav.org/neon/
 
-Google SOAP API (2)	IndexSearch/Google/googleapi	beta2
-
- gSOAP (2)						2.7.9e
- http://www.cs.fsu.edu/~engelen/soap.html
+gdbus-codegen-glibmm (2)
 
 gtkmm							2.10
 http://www.gtkmm.org/
@@ -595,12 +592,12 @@ http://www.wagner.pp.ru/~vitus/software/catdoc/
 ---------------------------------------------------------------------
 Notes :
 (1) enabled with "./configure --with-http=neon|curl"
-(2) obsolete - enabled with "./configure --enable-soap=yes"
+(2) only to regenerate DBus code, with "make dbus-code"
 (3) for gmime 2.4.0 support, edit configure.in
 (4) for building only
     with boost > 1.48 and < 1.54, turning off memory pooling with "./configure --enable-mempool=no" may be preferable
-(5) experimental - enabled with "./configure --enable-libarchive=yes"
-(6) experimental - enabled with "./configure --enable-chmlib=yes"
+(5) optional - enabled with "./configure --enable-libarchive=yes"
+(6) optional - enabled with "./configure --enable-chmlib=yes"
 (7) experimental - required only if _SSH_TUNNEL is set
 ---------------------------------------------------------------------
 
