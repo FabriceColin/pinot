@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2019 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1376,7 +1376,18 @@ bool XapianIndex::getLabels(set<string> &labels) const
 /// Adds a label.
 bool XapianIndex::addLabel(const string &name)
 {
-	// Nothing to do here
+	set<string> labels;
+
+	if (getLabels(labels) == true)
+	{
+		labels.insert(name);
+
+		if (setLabels(labels, true) == true)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
