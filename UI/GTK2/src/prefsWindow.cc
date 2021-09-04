@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2012 Fabrice Colin
+ *  Copyright 2008-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,7 +69,10 @@ class StartDaemonThread : public WorkerThread
 
 			// Ask the daemon to reload its configuration
 			// Let D-Bus activate the service if necessary
-			DBusIndex::reload();
+			// We need a pure DBusIndex object
+			DBusIndex index(NULL);
+
+			index.reload();
 		}
 
 	private:

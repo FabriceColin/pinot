@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2020 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,10 @@ class DaemonStatusThread : public WorkerThread
         protected:
                 virtual void doWork(void)
 		{
-			if (DBusIndex::getStatistics(m_crawledCount, m_docsCount,
+			// We need a pure DBusIndex object
+			DBusIndex index(NULL);
+
+			if (index.getStatistics(m_crawledCount, m_docsCount,
 				m_lowDiskSpace, m_onBattery, m_crawling) == true)
 			{
 				m_gotStats = true;
