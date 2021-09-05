@@ -58,7 +58,7 @@
 class mainWindow : public mainWindow_glade
 {
 public:
-	mainWindow();
+	mainWindow(const Glib::ustring &statusText = Glib::ustring(""));
 	virtual ~mainWindow();
 
 	void set_status(const Glib::ustring &text, bool canBeSkipped = false);

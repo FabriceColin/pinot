@@ -133,7 +133,7 @@ mainWindow::InternalState::~InternalState()
 //
 // Constructor
 //
-mainWindow::mainWindow() :
+mainWindow::mainWindow(const Glib::ustring &statusText) :
 	mainWindow_glade(),
 	m_settings(PinotSettings::getInstance()),
 	m_pEnginesTree(NULL),
@@ -313,7 +313,14 @@ mainWindow::mainWindow() :
 	populate_findMenu();
 
 	// Now we are ready
-	set_status(_("Ready"));
+	if (statusText.empty() == true)
+	{
+		set_status(_("Ready"));
+	}
+	else
+	{
+		set_status(statusText);
+	}
 	m_pNotebook->show();
 	show();
 	liveQueryEntry->grab_focus();
