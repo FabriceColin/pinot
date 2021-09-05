@@ -79,6 +79,9 @@
 #include "PinotSettings.h"
 #include "ServerThreads.h"
 
+#define POWER_DBUS_SERVICE_NAME "org.freedesktop.UPower"
+#define POWER_DBUS_OBJECT_PATH "/org/freedesktop/UPower"
+
 using namespace std;
 using namespace Glib;
 
@@ -246,11 +249,11 @@ void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
 
 void DaemonState::DBusMessageHandler::flushIndexAndSignal(IndexInterface *pIndex)
 {
-	if (pIndex == NULL)
-	{
 #ifdef DEBUG
-		clog << "DaemonState::DBusMessageHandler::flushIndexAndSignal: flushing" << endl;
+	clog << "DaemonState::DBusMessageHandler::flushIndexAndSignal: called" << endl;
 #endif
+	if (pIndex != NULL)
+	{
 		pIndex->flush();
 	}
 
@@ -270,7 +273,15 @@ void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation 
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::GetStatistics: called" << endl;
 #endif
-	// Prepare the reply
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	if (m_pServer->is_flag_set(DaemonState::LOW_DISK_SPACE) == true)
 	{
 		lowDiskSpace = true;
@@ -284,9 +295,6 @@ void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation 
 		crawling = true;
 	}
 #ifdef DEBUG
-	crawledFilesCount += 5;
-	docsCount += 6;
-	crawling = true;
 	clog << "DaemonState::DBusMessageHandler::GetStatistics: replying with " << crawledFilesCount
 		<< " " << docsCount << " " << lowDiskSpace << onBattery << crawling << endl;
 #endif
@@ -296,6 +304,8 @@ void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation 
 		lowDiskSpace,
 		onBattery,
 		crawling);
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::Reload(PinotStub::MethodInvocation &invocation)
@@ -329,33 +339,56 @@ void DaemonState::DBusMessageHandler::HasDocument(const ustring &url,
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::HasDocument: called on " << url << endl;
 #endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	// Check the index
 	unsigned int docId = pIndex->hasDocument(url);
 
-	invocation.ret(docId);
+	if (docId > 0)
+	{
+		invocation.ret(docId);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::GetLabels(PinotStub::MethodInvocation &invocation)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 	set<string> &labelsCache = settings.m_labels;
 	vector<ustring> labelsList;
-
-	if (labelsCache.empty() == true)
-	{
-		IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-
-		if (pIndex != NULL)
-		{
-			pIndex->getLabels(labelsCache);
-
-			delete pIndex;
-		}
-	}
 
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::GetLabels: called" << endl;
 #endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (labelsCache.empty() == true)
+	{
+		pIndex->getLabels(labelsCache);
+	}
+
 	for (set<string>::const_iterator labelIter = labelsCache.begin();
 		labelIter != labelsCache.end(); ++labelIter)
 	{
@@ -363,6 +396,8 @@ void DaemonState::DBusMessageHandler::GetLabels(PinotStub::MethodInvocation &inv
 	}
 
 	invocation.ret(labelsList);
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::AddLabel(const ustring &label,
@@ -371,43 +406,35 @@ void DaemonState::DBusMessageHandler::AddLabel(const ustring &label,
 	PinotSettings &settings = PinotSettings::getInstance();
 	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 	set<string> &labelsCache = settings.m_labels;
-
-	if (labelsCache.empty() == true)
-	{
-		if (pIndex != NULL)
-		{
-			pIndex->getLabels(labelsCache);
-		}
-	}
+	string labelName(label.c_str());
 
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::AddLabel: called on " << label << endl;
 #endif
-	string labelName(label.c_str());
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
 
-	// Add the label
-	if (pIndex->addLabel(labelName) == true)
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (labelsCache.empty() == true)
+	{
+		pIndex->getLabels(labelsCache);
+	}
+
+	// Is this a known label ?
+	if ((labelsCache.find(labelName) == labelsCache.end()) &&
+		(pIndex->addLabel(labelName) == true))
 	{
 		flushIndexAndSignal(pIndex);
-	}
-	// Is this a known label ?
-	if (labelsCache.find(labelName) == labelsCache.end())
-	{
-		// No, it isn't but that's okay
-		labelsCache.insert(labelName);
-
-		if (pIndex != NULL)
-		{
-			pIndex->setLabels(labelsCache, false);
-		}
 	}
 
 	invocation.ret(label);
 
-	if (pIndex != NULL)
-	{
-		delete pIndex;
-	}
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::DeleteLabel(const ustring &label,
@@ -417,46 +444,43 @@ void DaemonState::DBusMessageHandler::DeleteLabel(const ustring &label,
 	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 	MetaDataBackup metaData(settings.getHistoryDatabaseName());
 	set<string> &labelsCache = settings.m_labels;
-
-	if (labelsCache.empty() == true)
-	{
-		if (pIndex != NULL)
-		{
-			pIndex->getLabels(labelsCache);
-		}
-	}
+	string labelName(label.c_str());
 
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::DeleteLabel: called on " << label << endl;
 #endif
-	string labelName(label.c_str());
-
-	// Delete the label
-	if (pIndex->deleteLabel(labelName) == true)
+	if (pIndex == NULL)
 	{
-		flushIndexAndSignal(pIndex);
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
 	}
-	// Update the labels list
-	set<string>::const_iterator labelIter = labelsCache.find(labelName);
-	if (labelIter != labelsCache.end())
+
+	if (labelsCache.empty() == true)
+	{
+		pIndex->getLabels(labelsCache);
+	}
+
+	// Is this a known label ?
+	set<string>::iterator labelIter = labelsCache.find(labelName);
+	if ((labelIter != labelsCache.end()) &&
+		(pIndex->deleteLabel(labelName) == true))
 	{
 		labelsCache.erase(labelIter);
 
-		if (pIndex != NULL)
-		{
-			pIndex->setLabels(labelsCache, false);
-		}
-	}
+		pIndex->setLabels(labelsCache, true);
 
-	// Update the metadata backup
-	metaData.deleteLabel(label.c_str());
+		flushIndexAndSignal(pIndex);
+
+		// Update the metadata backup
+		metaData.deleteLabel(label.c_str());
+	}
 
 	invocation.ret(label);
 
-	if (pIndex != NULL)
-	{
-		delete pIndex;
-	}
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::GetDocumentLabels(guint32 docId,
@@ -465,36 +489,39 @@ void DaemonState::DBusMessageHandler::GetDocumentLabels(guint32 docId,
 	PinotSettings &settings = PinotSettings::getInstance();
 	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 	set<string> labels;
-	bool failed = true;
 
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::GetDocumentLabels: called on " << docId << endl;
 #endif
-	if (pIndex != NULL)
+	if (pIndex == NULL)
 	{
-		if (pIndex->getDocumentLabels(docId, labels) == true)
-		{
-			vector<ustring> labelsList;
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
 
-			for (set<string>::const_iterator labelIter = labels.begin();
-				labelIter != labels.end(); ++labelIter)
-			{
-				labelsList.push_back(labelIter->c_str());
-			}
+		invocation.ret(error);
 
-			invocation.ret(labelsList);
-			failed = false;
-		}
-
-		delete pIndex;
+		return;
 	}
 
-	if (failed == true)
+	if (pIndex->getDocumentLabels(docId, labels) == true)
 	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "GetDocumentLabels failed");
+		vector<ustring> labelsList;
+
+		for (set<string>::const_iterator labelIter = labels.begin();
+			labelIter != labels.end(); ++labelIter)
+		{
+			labelsList.push_back(labelIter->c_str());
+		}
+
+		invocation.ret(labelsList);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
 
 		invocation.ret(error);
 	}
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
@@ -508,12 +535,22 @@ void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
 	set<string> &labelsCache = settings.m_labels;
 	bool updateLabelsCache = false;
 
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::SetDocumentLabels: called on " << docId
+		<< ", " << labels.size() << " labels" << ", " << resetLabels << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	if (labelsCache.empty() == true)
 	{
-		if (pIndex != NULL)
-		{
-			pIndex->getLabels(labelsCache);
-		}
+		pIndex->getLabels(labelsCache);
 	}
 
 	set<string> labelsList;
@@ -532,31 +569,30 @@ void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
 			updateLabelsCache = true;
 		}
 	}
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::SetDocumentLabels: called on " << docId
-		<< ", " << labels.size() << " labels" << ", " << resetLabels << endl;
-#endif
 
 	// Set labels
 	if (pIndex->setDocumentLabels(docId, labelsList, resetLabels) == true)
 	{
+		if (updateLabelsCache == true)
+		{
+			pIndex->setLabels(labelsCache, true);
+		}
+
 		flushIndexAndSignal(pIndex);
 
 		// Update the metadata backup
 		updateLabels(docId, metaData, pIndex, labelsList, resetLabels);
+
+		invocation.ret(docId);
 	}
-
-	invocation.ret(docId);
-
-	if (pIndex != NULL)
+	else
 	{
-		if (updateLabelsCache == true)
-		{
-			pIndex->setLabels(labelsCache, false);
-		}
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
 
-		delete pIndex;
+		invocation.ret(error);
 	}
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustring> &docIds,
@@ -570,12 +606,22 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustri
 	set<string> &labelsCache = settings.m_labels;
 	bool updateLabelsCache = false;
 
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::SetDocumentsLabels: called on " << docIds.size()
+		<< " IDs, " << labels.size() << " labels" << ", " << resetLabels << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	if (labelsCache.empty() == true)
 	{
-		if (pIndex != NULL)
-		{
-			pIndex->getLabels(labelsCache);
-		}
+		pIndex->getLabels(labelsCache);
 	}
 
 	set<unsigned int> idsList;
@@ -600,14 +646,15 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustri
 			updateLabelsCache = true;
 		}
 	}
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::SetDocumentsLabels: called on " << docIds.size()
-		<< " IDs, " << labels.size() << " labels" << ", " << resetLabels << endl;
-#endif
 
 	// Set labels
 	if (pIndex->setDocumentsLabels(idsList, labelsList, resetLabels) == true)
 	{
+		if (updateLabelsCache == true)
+		{
+			pIndex->setLabels(labelsCache, true);
+		}
+
 		flushIndexAndSignal(pIndex);
 
 		for (set<unsigned int>::const_iterator docIter = idsList.begin();
@@ -616,19 +663,17 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustri
 			// Update the metadata backup
 			updateLabels(*docIter, metaData, pIndex, labelsList, resetLabels);
 		}
+
+		invocation.ret(resetLabels);
 	}
-
-	invocation.ret(resetLabels);
-
-	if (pIndex != NULL)
+	else
 	{
-		if (updateLabelsCache == true)
-		{
-			pIndex->setLabels(labelsCache, false);
-		}
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown documents");
 
-		delete pIndex;
+		invocation.ret(error);
 	}
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
@@ -641,6 +686,15 @@ void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::GetDocumentInfo: called on " << docId << endl;
 #endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	if (pIndex->getDocumentInfo(docId, docInfo) == true)
 	{
 		vector<tuple<ustring, ustring>> tuples;
@@ -651,15 +705,12 @@ void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 	}
 	else
 	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "GetDocumentInfo unknown document");
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
 
 		invocation.ret(error);
 	}
 
-	if (pIndex != NULL)
-	{
-		delete pIndex;
-	}
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
@@ -674,23 +725,35 @@ void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::SetDocumentInfo: called on " << docId << endl;
 #endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	DBusIndex::documentInfoFromTuples(fields, docInfo);
 
 	// Update the document info
 	if (pIndex->updateDocumentInfo(docId, docInfo) == true)
 	{
 		flushIndexAndSignal(pIndex);
+
+		// Update the metadata backup
+		metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
+
+		invocation.ret(docId);
 	}
-
-	// Update the metadata backup
-	metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
-
-	invocation.ret(docId);
-
-	if (pIndex != NULL)
+	else
 	{
-		delete pIndex;
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
 	}
+
+	delete pIndex;
 }
 
 void DaemonState::DBusMessageHandler::Query(const ustring &engineType,
@@ -708,36 +771,36 @@ void DaemonState::DBusMessageHandler::Query(const ustring &engineType,
 #endif
 	if (searchText.empty() == true)
 	{
-		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "Query failed");
+		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "Query is not set");
 
 		invocation.ret(error);
+
+		return;
+	}
+
+	DBusEngineQueryThread *pEngineQueryThread = NULL;
+	QueryProperties queryProps("", searchText.c_str());
+
+	queryProps.setMaximumResultsCount(maxHits);
+
+	// Provide reasonable defaults
+	if ((engineType.empty() == true) &&
+		(engineName.empty() == true))
+	{
+		pEngineQueryThread = new DBusEngineQueryThread(invocation,
+			settings.m_defaultBackend, settings.m_defaultBackend,
+			settings.m_daemonIndexLocation, queryProps,
+			startDoc, false);
 	}
 	else
 	{
-		DBusEngineQueryThread *pEngineQueryThread = NULL;
-		QueryProperties queryProps("", searchText.c_str());
-
-		queryProps.setMaximumResultsCount(maxHits);
-
-		// Provide reasonable defaults
-		if ((engineType.empty() == true) &&
-			(engineName.empty() == true))
-		{
-			pEngineQueryThread = new DBusEngineQueryThread(invocation,
-				settings.m_defaultBackend, settings.m_defaultBackend,
-				settings.m_daemonIndexLocation, queryProps,
-				startDoc, false);
-		}
-		else
-		{
-			pEngineQueryThread = new DBusEngineQueryThread(invocation,
-				engineType.c_str(), engineType.c_str(),
-				engineName, queryProps,
-				startDoc, false);
-		}
-
-		m_pServer->start_thread(pEngineQueryThread);
+		pEngineQueryThread = new DBusEngineQueryThread(invocation,
+			engineType.c_str(), engineType.c_str(),
+			engineName, queryProps,
+			startDoc, false);
 	}
+
+	m_pServer->start_thread(pEngineQueryThread);
 }
 
 void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
@@ -752,21 +815,21 @@ void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
 #endif
 	if (searchText.empty() == true)
 	{
-		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "SimpleQuery failed");
+		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "Query is not set");
 
 		invocation.ret(error);
-	}
-	else
-	{
-		QueryProperties queryProps("", searchText.c_str());
 
-		queryProps.setMaximumResultsCount(maxHits);
-
-		m_pServer->start_thread(new DBusEngineQueryThread(invocation,
-			settings.m_defaultBackend, settings.m_defaultBackend,
-			settings.m_daemonIndexLocation, queryProps,
-			0, true));
+		return;
 	}
+
+	QueryProperties queryProps("", searchText.c_str());
+
+	queryProps.setMaximumResultsCount(maxHits);
+
+	m_pServer->start_thread(new DBusEngineQueryThread(invocation,
+		settings.m_defaultBackend, settings.m_defaultBackend,
+		settings.m_daemonIndexLocation, queryProps,
+		0, true));
 }
 
 void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
@@ -779,13 +842,30 @@ void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::UpdateDocument: called on " << docId << endl;
 #endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
 	if (pIndex->getDocumentInfo(docId, docInfo) == true)
 	{
 		// Update document
 		m_pServer->queue_index(docInfo);
+
+		invocation.ret(docId);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
 	}
 
-	invocation.ret(docId);
+	delete pIndex;
 }
 #endif
 
@@ -796,8 +876,8 @@ DaemonState::DaemonState() :
 	m_introspectionHandler(),
 	m_messageHandler(this),
     m_powerProxy(Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
-		"org.freedesktop.UPower", "/org/freedesktop/UPower",
-		"org.freedesktop.UPower", {}, {},
+		POWER_DBUS_SERVICE_NAME, POWER_DBUS_OBJECT_PATH,
+		POWER_DBUS_SERVICE_NAME, {}, {},
 		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION)),
 	m_connectionId(0),
 #endif
