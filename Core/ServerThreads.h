@@ -28,8 +28,6 @@
 #include "MonitorInterface.h"
 #include "MonitorHandler.h"
 #include "QueryProperties.h"
-#include "DaemonState.h"
-#include "PinotDBus_stub.h"
 #include "WorkerThreads.h"
 
 class CrawlerThread : public DirectoryScannerThread
@@ -68,29 +66,6 @@ class CrawlerThread : public DirectoryScannerThread
 		CrawlerThread &operator=(const CrawlerThread &other);
 
 };
-
-#ifdef HAVE_DBUS
-class DBusEngineQueryThread : public EngineQueryThread
-{
-	public:
-		DBusEngineQueryThread(com::github::fabricecolin::PinotStub::MethodInvocation &invocation,
-			const std::string &engineName, const std::string &engineDisplayableName,
-			const std::string &engineOption, const QueryProperties &queryProps,
-			unsigned int startDoc, bool simpleQuery);
-		virtual ~DBusEngineQueryThread();
-
-	protected:
-		com::github::fabricecolin::PinotStub::MethodInvocation m_invocation;
-		bool m_simpleQuery;
-
-		virtual void doWork(void);
-
-	private:
-		DBusEngineQueryThread(const DBusEngineQueryThread &other);
-		DBusEngineQueryThread &operator=(const DBusEngineQueryThread &other);
-
-};
-#endif
 
 class RestoreMetaDataThread : public WorkerThread
 {
