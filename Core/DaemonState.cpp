@@ -60,6 +60,8 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <map>
+#include <utility>
 #include <glibmm/ustring.h>
 #include <glibmm/stringutils.h>
 #include <glibmm/convert.h>
@@ -77,6 +79,9 @@
 #include "DaemonState.h"
 #include "OnDiskHandler.h"
 #include "PinotSettings.h"
+#ifdef HAVE_DBUS
+#include "DBusServerThreads.h"
+#endif
 #include "ServerThreads.h"
 
 #define POWER_DBUS_SERVICE_NAME "org.freedesktop.UPower"
@@ -525,7 +530,7 @@ void DaemonState::DBusMessageHandler::GetDocumentLabels(guint32 docId,
 }
 
 void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
-	const std::vector<ustring> &labels,
+	const vector<ustring> &labels,
 	bool resetLabels,
 	PinotStub::MethodInvocation &invocation)
 {
@@ -595,8 +600,8 @@ void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
 	delete pIndex;
 }
 
-void DaemonState::DBusMessageHandler::SetDocumentsLabels(const std::vector<ustring> &docIds,
-	const std::vector<ustring> &labels,
+void DaemonState::DBusMessageHandler::SetDocumentsLabels(const vector<ustring> &docIds,
+	const vector<ustring> &labels,
 	bool resetLabels,
 	PinotStub::MethodInvocation &invocation)
 {
@@ -714,7 +719,7 @@ void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 }
 
 void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
-	const std::vector<std::tuple<ustring,ustring>> &fields,
+	const vector<tuple<ustring,ustring>> &fields,
 	PinotStub::MethodInvocation &invocation)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
@@ -787,14 +792,14 @@ void DaemonState::DBusMessageHandler::Query(const ustring &engineType,
 	if ((engineType.empty() == true) &&
 		(engineName.empty() == true))
 	{
-		pEngineQueryThread = new DBusEngineQueryThread(invocation,
+		pEngineQueryThread = new DBusEngineQueryThread(invocation.getMessage(),
 			settings.m_defaultBackend, settings.m_defaultBackend,
 			settings.m_daemonIndexLocation, queryProps,
 			startDoc, false);
 	}
 	else
 	{
-		pEngineQueryThread = new DBusEngineQueryThread(invocation,
+		pEngineQueryThread = new DBusEngineQueryThread(invocation.getMessage(),
 			engineType.c_str(), engineType.c_str(),
 			engineName, queryProps,
 			startDoc, false);
@@ -826,7 +831,7 @@ void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
 
 	queryProps.setMaximumResultsCount(maxHits);
 
-	m_pServer->start_thread(new DBusEngineQueryThread(invocation,
+	m_pServer->start_thread(new DBusEngineQueryThread(invocation.getMessage(),
 		settings.m_defaultBackend, settings.m_defaultBackend,
 		settings.m_daemonIndexLocation, queryProps,
 		0, true));
@@ -926,11 +931,11 @@ void DaemonState::disconnect(void)
 }
 
 void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
-	const std::vector<Glib::ustring> &invalidated_properties)
+	const vector<ustring> &invalidated_properties)
 {
 	if (changed_properties.find("OnBattery") != changed_properties.cend())
 	{
-		Glib::Variant<bool> boolValue;
+		Variant<bool> boolValue;
 
 		m_powerProxy->get_cached_property(boolValue, "OnBattery");
 
@@ -1122,32 +1127,33 @@ void DaemonState::register_session(void)
 {
 #ifdef HAVE_DBUS
 	m_connectionId = Gio::DBus::own_name(
-            Gio::DBus::BUS_TYPE_SESSION,
-            PINOT_DBUS_SERVICE_NAME,
-            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
-                const Glib::ustring & /* name */) {
-				guint introId = m_introspectionHandler.register_object(m_refSessionBus,
-					PINOT_DBUS_OBJECT_PATH);
-				guint messageId = m_messageHandler.register_object(m_refSessionBus,
-					PINOT_DBUS_OBJECT_PATH);
+		Gio::DBus::BUS_TYPE_SESSION,
+		PINOT_DBUS_SERVICE_NAME,
+		[&](const RefPtr<Gio::DBus::Connection> &connection,
+			const ustring & /* name */) {
+			guint introId = m_introspectionHandler.register_object(m_refSessionBus,
+				PINOT_DBUS_OBJECT_PATH);
+			guint messageId = m_messageHandler.register_object(m_refSessionBus,
+				PINOT_DBUS_OBJECT_PATH);
 #ifdef DEBUG
-				clog << "DaemonState::register_object: registered on " << PINOT_DBUS_OBJECT_PATH
-					<< " with IDs " << introId << " " << messageId << endl;
+			clog << "DaemonState::register_object: registered on " << PINOT_DBUS_OBJECT_PATH
+				<< " with IDs " << introId << " " << messageId << endl;
 #endif
-            },
-            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
-                const Glib::ustring &name) {
+		},
+		[&](const RefPtr<Gio::DBus::Connection> &connection,
+			const ustring &name) {
 #ifdef DEBUG
-				clog << "DaemonState::register_object: acquired " << name << endl;
+			clog << "DaemonState::register_object: acquired " << name << endl;
 #endif
-            },
-            [&](const Glib::RefPtr<Gio::DBus::Connection> &connection,
-                const Glib::ustring &name) {
+		},
+		[&](const RefPtr<Gio::DBus::Connection> &connection,
+			const ustring &name) {
 #ifdef DEBUG
-				clog << "DaemonState::register_object: lost " << name << endl;
+			clog << "DaemonState::register_object: lost " << name << endl;
 #endif
-				mustQuit(true);
-            });
+			mustQuit(true);
+		}
+	);
 #endif
 }
 
@@ -1333,6 +1339,58 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 	else if (type == "MonitorThread")
 	{
 		// FIXME: do something about this
+	}
+	else if (type == "DBusEngineQueryThread")
+	{
+		DBusEngineQueryThread *pEngineQueryThread = dynamic_cast<DBusEngineQueryThread *>(pThread);
+		if (pEngineQueryThread == NULL)
+		{
+			delete pThread;
+			return;
+		}
+
+		RefPtr<Gio::DBus::MethodInvocation> refInvocation = pEngineQueryThread->getInvocation();
+		const vector<DocumentInfo> &documentsList = pEngineQueryThread->getDocuments();
+		unsigned int documentsCount = pEngineQueryThread->getDocumentsCount();
+		bool simpleQuery = pEngineQueryThread->isSimpleQuery();
+		vector<ustring> idsList;
+		vector<vector<tuple<ustring, ustring>>> docTuples;
+
+		for (vector<DocumentInfo>::const_iterator docIter = documentsList.begin();
+			docIter != documentsList.end(); ++docIter)
+		{
+			unsigned int indexId = 0;
+			unsigned int docId = docIter->getIsIndexed(indexId);
+
+			if (simpleQuery == false)
+			{
+				vector<tuple<ustring, ustring>> tuples;
+
+				// The document ID isn't needed here
+				DBusIndex::documentInfoToTuples(*docIter, tuples);
+
+				docTuples.push_back(tuples);
+			}
+			else if (docId > 0)
+			{
+				stringstream docIdStr;
+
+				// We only need the document ID
+				docIdStr << docId;
+				idsList.push_back(docIdStr.str().c_str());
+			}
+		}
+
+		com::github::fabricecolin::PinotStub::MethodInvocation pinotInvocation(refInvocation);
+
+		if (simpleQuery == false)
+		{
+			pinotInvocation.ret(documentsCount, docTuples);
+		}
+		else
+		{
+			pinotInvocation.ret(idsList);
+		}
 	}
 	else if (type == "RestoreMetaDataThread")
 	{

@@ -38,9 +38,6 @@
 #include "Timer.h"
 #include "Url.h"
 #include "MetaDataBackup.h"
-#ifdef HAVE_DBUS
-#include "DBusIndex.h"
-#endif
 #include "ModuleFactory.h"
 #include "DaemonState.h"
 #include "PinotSettings.h"
@@ -317,74 +314,6 @@ void CrawlerThread::doWork(void)
 	clog << "Cleaned up " << currentOffset + urls.size()
 		<< " history entries in " << scanTimer.stop() << " ms" << endl;
 }
-
-#ifdef HAVE_DBUS
-DBusEngineQueryThread::DBusEngineQueryThread(com::github::fabricecolin::PinotStub::MethodInvocation &invocation,
-	const std::string &engineName, const std::string &engineDisplayableName,
-	const std::string &engineOption, const QueryProperties &queryProps,
-	unsigned int startDoc, bool simpleQuery) :
-	EngineQueryThread(engineName, engineDisplayableName,
-		engineOption, queryProps, startDoc),
-	m_invocation(invocation),
-	m_simpleQuery(simpleQuery)
-{
-	stringstream queryNameStr;
-
-	// Give the query a unique name
-	queryNameStr << "DBUS " << m_id;
-
-	m_queryProps.setName(queryNameStr.str());
-}
-
-DBusEngineQueryThread::~DBusEngineQueryThread()
-{
-}
-
-void DBusEngineQueryThread::doWork(void)
-{
-	EngineQueryThread::doWork();
-
-	vector<ustring> idsList;
-	vector<vector<tuple<ustring, ustring>>> docTuples;
-
-	for (vector<DocumentInfo>::const_iterator docIter = m_documentsList.begin();
-		docIter != m_documentsList.end(); ++docIter)
-	{
-		unsigned int indexId = 0;
-		unsigned int docId = docIter->getIsIndexed(indexId);
-
-#ifdef DEBUG
-		clog << "DBusEngineQueryThread::doWork: adding result " << docId << endl;
-#endif
-		if (m_simpleQuery == false)
-		{
-			vector<tuple<ustring, ustring>> tuples;
-
-			// The document ID isn't needed here
-			DBusIndex::documentInfoToTuples(*docIter, tuples);
-
-			docTuples.push_back(tuples);
-		}
-		else if (docId > 0)
-		{
-			stringstream docIdStr;
-
-			// We only need the document ID
-			docIdStr << docId;
-			idsList.push_back(docIdStr.str().c_str());
-		}
-	}
-
-	if (m_simpleQuery == false)
-	{
-		m_invocation.ret(m_documentsCount, docTuples);
-	}
-	else
-	{
-		m_invocation.ret(idsList);
-	}
-}
-#endif
 
 RestoreMetaDataThread::RestoreMetaDataThread() :
 	WorkerThread()

@@ -24,9 +24,11 @@
 #include <queue>
 #include <set>
 #include <tuple>
+#include <vector>
 #include <sigc++/sigc++.h>
 #ifdef HAVE_DBUS
 #include <giomm/dbusconnection.h>
+#include <giomm/dbusproxy.h>
 #endif
 
 #include "CrawlHistory.h"
@@ -74,6 +76,7 @@ class DaemonState : public QueueManager
 		void reset_flag(StatusFlag flag);
 
 	protected:
+#ifdef HAVE_DBUS
 		class DBusIntrospectHandler : public org::freedesktop::DBus::IntrospectableStub
 		{
 			public:
@@ -153,8 +156,6 @@ class DaemonState : public QueueManager
 					PinotStub::MethodInvocation &invocation);
 
 		};
-
-#ifdef HAVE_DBUS
 		Glib::RefPtr<Gio::DBus::Connection> m_refSessionBus;
 		DBusIntrospectHandler m_introspectionHandler;
 		DBusMessageHandler m_messageHandler;
