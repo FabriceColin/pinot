@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2019 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ static DBusHandlerResult filterHandler(DBusConnection *pConnection, DBusMessage 
 int main(int argc, char **argv)
 {
 	string prefixDir(PREFIX);
-	Glib::ustring errorMsg;
+	Glib::ustring statusText;
 	int longOptionIndex = 0;
 	bool warnAboutVersion = false, prefsMode = false;
 
@@ -350,9 +350,9 @@ int main(int argc, char **argv)
 	bool wasObsoleteFormat = false;
 	if (ModuleFactory::openOrCreateIndex(settings.m_defaultBackend, settings.m_docsIndexLocation, wasObsoleteFormat, prefsMode) == false)
 	{
-		errorMsg = _("Couldn't open index");
-		errorMsg += " ";
-		errorMsg += settings.m_docsIndexLocation;
+		statusText = _("Couldn't open index");
+		statusText += " ";
+		statusText += settings.m_docsIndexLocation;
 	}
 	else
 	{
@@ -371,9 +371,9 @@ int main(int argc, char **argv)
 		(QueryHistory::create(historyDatabase) == false) ||
 		(ViewHistory::create(historyDatabase) == false))
 	{
-		errorMsg = _("Couldn't create history database");
-		errorMsg += " ";
-		errorMsg += historyDatabase;
+		statusText = _("Couldn't create history database");
+		statusText += " ";
+		statusText += historyDatabase;
 	}
 	else
 	{
@@ -474,11 +474,8 @@ int main(int argc, char **argv)
 		// Create and open the window
 		if (prefsMode == false)
 		{ 
-			mainWindow mainBox;
-			if (errorMsg.empty() == false)
-			{
-				mainBox.set_status(errorMsg);
-			}
+			mainWindow mainBox(statusText);
+
 			m.run(mainBox);
 		}
 		else
