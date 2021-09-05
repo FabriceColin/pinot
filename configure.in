@@ -344,69 +344,6 @@ AC_CHECK_LIB(dl, dlopen,
    ])
 )
 
-dnl Check whether we can use GIO instead of xdgmime
-AM_CONDITIONAL(HAVE_GIO_MIME, false)
-AC_MSG_CHECKING([if gio can sniff png])
-AC_ARG_ENABLE(gio,
-   [AS_HELP_STRING([--enable-gio], [enable gio [default=test]])],
-   ,[enable_gio=test])
-if test "x$enable_gio" = "xyes"; then
-   gio_can_sniff=yes
-   AM_CONDITIONAL(HAVE_GIO_MIME, true)
-else if test "x$enable_gio" = "xno"; then
-   gio_can_sniff=no
-   AM_CONDITIONAL(HAVE_GIO_MIME, false)
-else
-   dnl This test is from gtk's configure.in, with some modifications
-   gtk_save_LIBS="$LIBS"
-   gtk_save_CFLAGS="$CFLAGS"
-   gtk_save_CXXFLAGS="$CXXFLAGS"
-   LIBS="`$PKG_CONFIG --libs gio-2.0`"
-   CFLAGS="`$PKG_CONFIG --cflags gio-2.0`"
-   CXXFLAGS="`$PKG_CONFIG --cflags gio-2.0`"
-   AC_RUN_IFELSE([AC_LANG_SOURCE([[
-  #include <string.h>
-  #include <gio/gio.h>
-  static const gsize data_size = 159;
-  static const guint8 data[] = 
-  {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 
-    0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde, 0x00, 0x00, 0x00, 
-    0x01, 0x73, 0x52, 0x47, 0x42, 0x00, 0xae, 0xce, 0x1c, 0xe9, 0x00, 0x00, 
-    0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0b, 0x13, 0x00, 0x00, 
-    0x0b, 0x13, 0x01, 0x00, 0x9a, 0x9c, 0x18, 0x00, 0x00, 0x00, 0x07, 0x74, 
-    0x49, 0x4d, 0x45, 0x07, 0xd8, 0x07, 0x0f, 0x10, 0x08, 0x15, 0x61, 0xd8, 
-    0x35, 0x37, 0x00, 0x00, 0x00, 0x19, 0x74, 0x45, 0x58, 0x74, 0x43, 0x6f, 
-    0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x00, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 
-    0x64, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x47, 0x49, 0x4d, 0x50, 0x57, 
-    0x81, 0x0e, 0x17, 0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 
-    0xd7, 0x63, 0xf8, 0xff, 0xff, 0x3f, 0x00, 0x05, 0xfe, 0x02, 0xfe, 0xdc, 
-    0xcc, 0x59, 0xe7, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 
-    0x42, 0x60, 0x82
-  };
-  int
-  main (int argc, char **argv)
-  {
-    char *content_type;
-    char *mime_type;
-
-    g_type_init();
-
-    content_type = g_content_type_guess (NULL, data, data_size, NULL);  
-    mime_type = g_content_type_get_mime_type (content_type);
-    return !!strcmp (mime_type, "image/png");
-  }]])],
-  [gio_can_sniff=yes
-   AM_CONDITIONAL(HAVE_GIO_MIME, true)],
-  [gio_can_sniff=no])
-   LIBS="$gtk_save_LIBS"
-   CFLAGS="$gtk_save_CFLAGS"
-   CXXFLAGS="$gtk_save_CXXFLAGS"
-fi
-fi
-AC_MSG_RESULT($gio_can_sniff)
-
 dnl Other libraries
 MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64 -std=c++11"
 MISC_LIBS="$NOTIFY_LIBS $PTHREAD_LIBS $DL_LIBS $BOOST_LIBS"
@@ -474,13 +411,12 @@ else
 fi
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
-if test "$gio_can_sniff" = "yes" ; then
+dnl GIO
 PKG_CHECK_MODULES(GIO, gio-2.0)
-GLIBMM_CFLAGS=" -DUSE_GIO $GIO_CFLAGS $GLIBMM_CFLAGS"
+GLIBMM_CFLAGS=" $GIO_CFLAGS $GLIBMM_CFLAGS"
 GLIBMM_LIBS="$GIO_LIBS $GLIBMM_LIBS"
-GTKMM_CFLAGS=" -DUSE_GIO $GIO_CFLAGS $GTKMM_CFLAGS"
+GTKMM_CFLAGS=" $GIO_CFLAGS $GTKMM_CFLAGS"
 GTKMM_LIBS="$GIO_LIBS $GTKMM_LIBS"
-fi
 
 dnl Check for specific functions
 AC_CHECK_FUNCS(fork)

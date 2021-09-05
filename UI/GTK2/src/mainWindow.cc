@@ -3910,24 +3910,6 @@ void mainWindow::run_search(const QueryProperties &queryProps)
 		clog << "mainWindow::run_search: engine " << engineDisplayableName << endl;
 #endif
 
-		// Is it a web engine ?
-		if (engineType == EnginesModelColumns::WEB_ENGINE)
-		{
-			// There's a special case for the Google API...
-			if (engineName == "googleapi")
-			{
-				// Make sure this has been configured
-				if (m_settings.m_googleAPIKey.empty() == true)
-				{
-					set_status(_("Please set the Google API key first"));
-					// Skip this engine
-					continue;
-				}
-				// Option is the Google API key
-				engineOption = m_settings.m_googleAPIKey;
-			}
-		}
-
 		ustring status = _("Running query");
 		status += " \"";
 		status += queryProps.getName();

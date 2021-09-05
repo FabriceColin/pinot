@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2015 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -302,7 +302,6 @@ void PinotSettings::clear(void)
 	m_version.clear();
 	m_warnAboutVersion = false;
 	m_defaultBackend = "xapian";
-	m_googleAPIKey.clear();
 	m_xPos = 0;
 	m_yPos = 0;
 	m_width = 0;
@@ -642,10 +641,6 @@ bool PinotSettings::loadConfiguration(const string &fileName, bool isGlobal)
 				else if (nodeName == "backend")
 				{
 					m_defaultBackend = nodeContent;
-				}
-				else if (nodeName == "googleapikey")
-				{
-					m_googleAPIKey = nodeContent;
 				}
 				else if (nodeName == "ui")
 				{
@@ -1587,7 +1582,6 @@ bool PinotSettings::save(SaveWhat what)
 		if (what == SAVE_PREFS)
 		{
 			addChildElement(pRootElem, "backend", m_defaultBackend);
-			addChildElement(pRootElem, "googleapikey", m_googleAPIKey);
 			// Labels
 			for (set<string>::iterator labelIter = m_labels.begin(); labelIter != m_labels.end(); ++labelIter)
 			{

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -177,7 +177,6 @@ class PinotSettings
 		Glib::ustring m_version;
 		bool m_warnAboutVersion;
 		Glib::ustring m_defaultBackend;
-		Glib::ustring m_googleAPIKey;
 		Glib::ustring m_docsIndexLocation;
 		Glib::ustring m_daemonIndexLocation;
 		double m_minimumDiskSpace;

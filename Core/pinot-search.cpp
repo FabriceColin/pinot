@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2015 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,7 +77,6 @@ static void printHelp(void)
 	clog << "\n\nExamples:\n"
 		<< "pinot-search opensearch " << PREFIX << "/share/pinot/engines/KrustyDescription.xml \"clowns\"\n\n"
 		<< "pinot-search --max 20 sherlock " << PREFIX << "/share/pinot/engines/Bozo.src \"clowns\"\n\n"
-		<< "pinot-search googleapi mygoogleapikey \"clowns\"\n\n"
 		<< "pinot-search xapian ~/.pinot/index \"label:Clowns\"\n\n"
 		<< "pinot-search --stemming english xapian somehostname:12345 \"clowning\"\n\n"
 		<< "Report bugs to " << PACKAGE_BUGREPORT << endl;
