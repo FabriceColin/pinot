@@ -39,10 +39,6 @@
 #include <sigc++/sigc++.h>
 #include <giomm/init.h>
 #include <glibmm.h>
-#include <glibmm/thread.h>
-#include <glibmm/ustring.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/convert.h>
 
 #include "NLS.h"
 #include "FilterFactory.h"
@@ -419,12 +415,12 @@ int main(int argc, char **argv)
 
 	g_pState = &server;
 
-	server.register_session();
-
 	try
 	{
 		set<string> labels;
 		bool gotLabels = false;
+
+		server.register_session();
 
 		pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 		if (pIndex != NULL)
