@@ -54,6 +54,9 @@
 #include "QueryHistory.h"
 #include "ViewHistory.h"
 #include "ModuleFactory.h"
+#ifdef HAVE_DBUS
+#include "DBusIndex.h"
+#endif
 #include "PinotUtils.hh"
 #include "mainWindow.hh"
 #include "importDialog.hh"
@@ -119,15 +122,36 @@ mainWindow::ExpandSet::~ExpandSet()
 
 mainWindow::InternalState::InternalState(mainWindow *pWindow) :
 	QueueManager(PinotSettings::getInstance().m_docsIndexLocation, 60, true),
+	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
+		Gio::DBus::BUS_TYPE_SESSION,
+		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
+		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
 	m_liveQueryLength(0),
 	m_currentPage(0),
 	m_browsingIndex(false)
 {
 	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &mainWindow::on_thread_end));
+	m_refProxy->IndexFlushed_signal.connect(sigc::mem_fun(*this, &mainWindow::InternalState::on_IndexFlushed));
 }
 
 mainWindow::InternalState::~InternalState()
 {
+}
+
+void mainWindow::InternalState::on_IndexFlushed(guint32 docsCount)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+
+#ifdef DEBUG
+	clog << "mainWindow::InternalState::on_IndexFlushed: called with " << docsCount << endl;
+#endif
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	if (pIndex != NULL)
+	{
+		pIndex->reopen();
+
+		delete pIndex;
+	}
 }
 
 //
