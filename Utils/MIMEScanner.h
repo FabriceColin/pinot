@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#ifdef USE_GIO
 #include <gio/gio.h>
-#endif
 
 #include "Url.h"
 #include "Visibility.h"
@@ -41,11 +39,7 @@ class PINOT_EXPORT MIMEAction
 	public:
 		MIMEAction();
 		MIMEAction(const std::string &name, const std::string &cmdLine);
-#ifdef USE_GIO
 		MIMEAction(GAppInfo *pAppInfo);
-#else
-		MIMEAction(const std::string &desktopFile);
-#endif
 		MIMEAction(const MIMEAction &other);
 		virtual ~MIMEAction();
 
@@ -53,54 +47,14 @@ class PINOT_EXPORT MIMEAction
 
 		MIMEAction &operator=(const MIMEAction &other);
 
-#ifndef USE_GIO
-		void load(void);
-		void parseExec(void);
-#endif
-
 		bool m_multipleArgs;
 		bool m_localOnly;
 		std::string m_name;
 		std::string m_location;
 		std::string m_exec;
-#ifdef USE_GIO
 		GAppInfo *m_pAppInfo;
-#else
-		std::string m_icon;
-		std::string m_device;
-#endif
 
 };
-
-#ifndef USE_GIO 
-/** Caching of MIME type information.
-  * A cache can be reloaded as required.
-  */
-class MIMECache
-{
-	public:
-		MIMECache();
-		MIMECache(const std::string &file, const std::string &section);
-		MIMECache(const MIMECache& other);
-		~MIMECache();
-
-		bool operator<(const MIMECache &other) const;
-
-		MIMECache &operator=(const MIMECache &other);
-
-		bool load(const std::list<std::string> &desktopFilesPaths);
-		void reload(const std::list<std::string> &desktopFilesPaths);
-  
-		std::string m_file;
-		std::string m_section;
-		std::multimap<std::string, MIMEAction> m_defaultActions;
-
-	protected:
-		bool findDesktopFile(const std::string &desktopFile, const std::string &mimeType,
-			std::map<std::string, MIMEAction> &loadedActions);
-
-};
-#endif
 
 /**
   * Utility class to get a file's MIME type and the default application associated with it.
@@ -147,25 +101,12 @@ class PINOT_EXPORT MIMEScanner
 		static std::string getDescription(const std::string &mimeType);
 
 	protected:
-#ifndef USE_GIO
-		/// Mutex to protect access to xdgmime.
-		static pthread_mutex_t m_xdgMutex;
-		/// Lock to protect access to caches.
-		static pthread_rwlock_t m_cachesLock;
-		/// MIME type caches, ordered by decreasing priority.
-		static std::list<MIMECache> m_caches;
-#endif
 		/// MIME type overrides.
 		static std::map<std::string, std::string> m_overrides;
 
 		MIMEScanner();
 
 		static std::string scanFileType(const std::string &fileName);
-  
-#ifndef USE_GIO
-		static bool addCache(const std::string &file, const std::string &section,
-			const std::list<std::string> &desktopFilesPaths);
-#endif
   
 		static bool getDefaultActionsForType(const std::string &mimeType, bool isLocal,
 			std::set<std::string> &actionNames, std::vector<MIMEAction> &typeActions);

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -170,7 +170,7 @@ static void printHelp(void)
 	ModuleFactory::unloadModules();
 	clog << "\n\nExamples:\n"
 		<< "pinot-index --check --showinfo --backend xapian --db ~/.pinot/daemon ../Bozo.txt\n\n"
-		<< "pinot-index --index --db PinotOnTheWeb http://code.google.com/p/pinot-search/\n\n"
+		<< "pinot-index --index --db Docs https://github.com/FabriceColin/pinot\n\n"
 		<< "pinot-index --index --db Docs --override text/x-rst:rst /usr/share/doc/python-kitchen-1.1.1/docs/index.rst\n\n"
 		<< "Indexing documents to My Web Pages or My Documents with pinot-index is not recommended\n\n"
 		<< "Report bugs to " << PACKAGE_BUGREPORT << endl;

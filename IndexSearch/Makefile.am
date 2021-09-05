@@ -80,7 +80,6 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/Tokenize/filters \
 	-I$(top_srcdir)/Collect \
 	-I$(top_srcdir)/IndexSearch/cjkv \
-	-I$(top_srcdir)/IndexSearch/Google \
 	@HTTP_CFLAGS@ @XML_CFLAGS@ \
 	@INDEX_CFLAGS@ @GIOMM_CFLAGS@ @GLIBMM_CFLAGS@
 

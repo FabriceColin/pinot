@@ -159,11 +159,6 @@ prefsWindow::prefsWindow() :
 	// Initialize widgets
 	// Ignore robots directives
 	ignoreRobotsCheckbutton->set_active(m_settings.m_ignoreRobotsDirectives);
-	// Google API key
-	if (m_settings.m_googleAPIKey.empty() == false)
-	{
-		apiKeyEntry->set_text(m_settings.m_googleAPIKey);
-	}
 	// New results colour
 	newResultsColorbutton->set_color(newColour);
 	// Enable terms suggestion
@@ -702,7 +697,6 @@ void prefsWindow::on_prefsOkbutton_clicked()
 	m_settings.m_newResultsColourGreen = newColour.get_green();
 	m_settings.m_newResultsColourBlue = newColour.get_blue();
 	m_settings.m_suggestQueryTerms = enableCompletionCheckbutton->get_active();
-	m_settings.m_googleAPIKey = apiKeyEntry->get_text();
 	// Any plugin editable parameter ?
 	if (m_settings.m_editablePluginValues.empty() == false)
 	{
