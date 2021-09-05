@@ -47,6 +47,9 @@
 #include "MonitorInterface.h"
 #include "MonitorHandler.h"
 #include "PinotSettings.h"
+#ifdef HAVE_DBUS
+#include "PinotDBus_proxy.h"
+#endif
 #include "EnginesTree.hh"
 #include "IndexPage.hh"
 #include "ModelColumns.hh"
@@ -102,38 +105,38 @@ protected:
 	void on_indexForwardButton_clicked(Glib::ustring indexName);
 
 	// Handlers inherited from the base class
-        virtual void on_open_activate();
-        virtual void on_openparent_activate();
-        virtual void on_addtoindex_activate();
-        virtual void on_updateindex_activate();
-        virtual void on_unindex_activate();
-        virtual void on_morelikethis_activate();
-        virtual void on_properties_activate();
-        virtual void on_quit_activate();
-        virtual void on_cut_activate();
-        virtual void on_copy_activate();
-        virtual void on_paste_activate();
-        virtual void on_delete_activate();
-        virtual void on_preferences_activate();
-        virtual void on_groupresults_activate();
-        virtual void on_showextracts_activate();
-        virtual void on_import_activate();
-        virtual void on_export_activate();
-        virtual void on_status_activate();
-        virtual void on_about_activate();
-        virtual void on_addIndexButton_clicked();
-        virtual void on_removeIndexButton_clicked();
-        virtual void on_enginesTogglebutton_toggled();
-        virtual void on_liveQueryEntry_changed();
-        virtual void on_liveQueryEntry_activate();
+	virtual void on_open_activate();
+	virtual void on_openparent_activate();
+	virtual void on_addtoindex_activate();
+	virtual void on_updateindex_activate();
+	virtual void on_unindex_activate();
+	virtual void on_morelikethis_activate();
+	virtual void on_properties_activate();
+	virtual void on_quit_activate();
+	virtual void on_cut_activate();
+	virtual void on_copy_activate();
+	virtual void on_paste_activate();
+	virtual void on_delete_activate();
+	virtual void on_preferences_activate();
+	virtual void on_groupresults_activate();
+	virtual void on_showextracts_activate();
+	virtual void on_import_activate();
+	virtual void on_export_activate();
+	virtual void on_status_activate();
+	virtual void on_about_activate();
+	virtual void on_addIndexButton_clicked();
+	virtual void on_removeIndexButton_clicked();
+	virtual void on_enginesTogglebutton_toggled();
+	virtual void on_liveQueryEntry_changed();
+	virtual void on_liveQueryEntry_activate();
 	virtual void on_liveQueryEntry_icon(Gtk::EntryIconPosition position, const GdkEventButton *ev);
-        virtual void on_findButton_clicked();
-        virtual bool on_queryTreeview_button_press_event(GdkEventButton *ev);
-        virtual void on_addQueryButton_clicked();
-        virtual void on_removeQueryButton_clicked();
-        virtual void on_queryHistoryButton_clicked();
-        virtual void on_findQueryButton_clicked();
-        virtual bool on_mainWindow_delete_event(GdkEventAny *ev);
+	virtual void on_findButton_clicked();
+	virtual bool on_queryTreeview_button_press_event(GdkEventButton *ev);
+	virtual void on_addQueryButton_clicked();
+	virtual void on_removeQueryButton_clicked();
+	virtual void on_queryHistoryButton_clicked();
+	virtual void on_findQueryButton_clicked();
+	virtual bool on_mainWindow_delete_event(GdkEventAny *ev);
 
 	// Action methods
 	void show_pagebased_menuitems(bool showItems);
@@ -232,6 +235,10 @@ private:
 			InternalState(mainWindow *pWindow);
 			virtual ~InternalState();
 
+			void on_IndexFlushed(guint32 docsCount);
+
+			// DBus proxy
+			Glib::RefPtr<com::github::fabricecolin::PinotProxy> m_refProxy;
 			// Query
 			unsigned int m_liveQueryLength;
 			// Notebook pages
