@@ -77,8 +77,6 @@ static struct option g_longOptions[] = {
 };
 static Glib::RefPtr<Glib::MainLoop> g_refMainLoop;
 static DaemonState *g_pState = NULL;
-static DBusGConnection *g_pSystemBus = NULL;
-static DBusGConnection *g_pSessionBus = NULL;
 
 static void closeAll(void)
 {
@@ -261,9 +259,9 @@ int main(int argc, char **argv)
 
 	// Make sure only one instance runs
 #ifdef HAVE_DBUS
-	UniqueApplication uniqueApp("com.github.FabriceColin.PinotDBusDaemon");
+	UniqueApplication uniqueApp("com.github.fabricecolin.PinotDBusDaemon");
 #else
-	UniqueApplication uniqueApp("com.github.FabriceColin.PinotDaemon");
+	UniqueApplication uniqueApp("com.github.fabricecolin.PinotDaemon");
 #endif
 	string confDirectory(PinotSettings::getConfigurationDirectory());
 	g_pidFileName = confDirectory + "/" + programName + ".pid";
