@@ -11,9 +11,9 @@ fi
 DELVE="delve"
 
 # Check programs we need are available
-WHICH_DELVE=`which delve`
+WHICH_DELVE=`which delve 2>/dev/null`
 if [ $? != 0 ]; then
-  WHICH_DELVE=`which xapian-delve`
+  WHICH_DELVE=`which xapian-delve 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find delve. Is the xapian-core package installed ?"
     exit 1
@@ -21,12 +21,12 @@ if [ $? != 0 ]; then
     DELVE="xapian-delve"
   fi
 fi
-WHICH_DU=`which du`
+WHICH_DU=`which du 2>/dev/null`
 if [ $? != 0 ]; then
   echo "Couldn't find du. Is the coreutils package installed ?"
   exit 1
 fi
-WHICH_DC=`which dc`
+WHICH_DC=`which dc 2>/dev/null`
 if [ $? != 0 ]; then
   echo "Couldn't find dc. Is the bc package installed ?"
   exit 1

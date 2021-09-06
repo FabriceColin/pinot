@@ -5,12 +5,12 @@ if [ $# == 0 ]; then
   exit 1
 fi
 
-WHICH_SED=`which sed`
+WHICH_SED=`which sed 2>/dev/null`
 if [ $? != 0 ]; then
   echo "Couldn't find sed. Is the sed package installed ?"
   exit 1
 fi
-WHICH_PI=`which pinot-index`
+WHICH_PI=`which pinot-index 2>/dev/null`
 if [ $? != 0 ]; then
   echo "Couldn't find pinot-index. Is the pinot package installed ?"
   exit 1

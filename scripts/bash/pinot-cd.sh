@@ -10,32 +10,32 @@ MATCHES_COUNT=0
 # Check programs we need are available
 checkprograms()
 {
-  WHICH_BN=`which basename`
+  WHICH_BN=`which basename 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find basename. Is the coreutils package installed ?"
     return
   fi
-  WHICH_CAT=`which cat`
+  WHICH_CAT=`which cat 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find cat. Is the coreutils package installed ?"
     return
   fi
-  WHICH_MKTEMP=`which mktemp`
+  WHICH_MKTEMP=`which mktemp 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find mktemp. Is the coreutils package installed ?"
     return
   fi
-  WHICH_GREP=`which grep`
+  WHICH_GREP=`which grep 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find grep. Is the grep package installed ?"
     return
   fi
-  WHICH_SED=`which sed`
+  WHICH_SED=`which sed 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find sed. Is the sed package installed ?"
     return
   fi
-  WHICH_PS=`which pinot-search`
+  WHICH_PS=`which pinot-search 2>/dev/null`
   if [ $? != 0 ]; then
     echo "Couldn't find pinot-search. Is the pinot package installed ?"
     return
