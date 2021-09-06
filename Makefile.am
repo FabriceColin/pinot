@@ -7,6 +7,7 @@ EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TOD
 	IndexSearch/Plugins/*src IndexSearch/Plugins/*.xml \
 	Core/pinot-*.1 IndexSearch/pinot-*.1 \
 	UI/GTK2/src/pinot.1 Core/pinot-dbus-daemon.xml \
+	Core/com.github.fabricecolin.Pinot.search-provider.ini \
 	Core/com.github.fabricecolin.Pinot.service \
 	UI/GTK2/xapian-powered.png UI/icons/48x48/pinot.png \
 	UI/icons/32x32/pinot.png UI/icons/24x24/pinot.png \
@@ -15,10 +16,15 @@ EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TOD
 	scripts/bash/*.sh
 
 if HAVE_DBUS
-man_MANS = Core/pinot-index.1 IndexSearch/pinot-label.1 \
-	Core/pinot-search.1 Core/pinot-dbus-daemon.1 UI/GTK2/src/pinot.1
+man_MANS = Core/pinot-index.1 \
+	IndexSearch/pinot-label.1 \
+	Core/pinot-search.1 \
+	Core/pinot-dbus-daemon.1 \
+	UI/GTK2/src/pinot.1
 else
-man_MANS = Core/pinot-index.1 Core/pinot-search.1 Core/pinot-daemon.1 \
+man_MANS = Core/pinot-index.1 \
+	Core/pinot-search.1 \
+	Core/pinot-daemon.1 \
 	UI/GTK2/src/pinot.1
 endif
 
@@ -27,6 +33,9 @@ dbus-code:
 	@mv PinotDBus_common.* Utils/
 	@mv PinotDBus_stub.* Core/
 	@mv PinotDBus_proxy.* IndexSearch/
+	@gdbus-codegen-glibmm3 --generate-cpp-code=SearchProvider /usr/share/dbus-1/interfaces/org.gnome.ShellSearchProvider2.xml
+	@mv SearchProvider_common.* SearchProvider_stub.* Core/
+	@rm -f SearchProvider_proxy.*
 
 manuals:
 	@help2man --no-info --no-discard-stderr --name "Index documents from the command-line" Core/pinot-index >Core/pinot-index.1
@@ -82,6 +91,8 @@ endif
 	@mkdir -p $(DESTDIR)${sysconfdir}/xdg/autostart
 if HAVE_DBUS
 	@desktop-file-install --vendor="" --dir=$(DESTDIR)${sysconfdir}/xdg/autostart $(srcdir)/pinot-dbus-daemon.desktop
+	@mkdir -p $(DESTDIR)$(datadir)/gnome-shell/search-providers
+	$(INSTALL_DATA) $(builddir)/Core/com.github.fabricecolin.Pinot.search-provider.ini $(DESTDIR)${datadir}/gnome-shell/search-providers/com.github.fabricecolin.Pinot.search-provider.ini
 endif
 	$(INSTALL_DATA) $(srcdir)/scripts/bash/*.sh $(DESTDIR)$(datadir)/pinot/
 
@@ -89,6 +100,7 @@ uninstall-local:
 	@rm -rf $(DESTDIR)$(sysconfdir)/pinot
 	@rm -rf $(DESTDIR)$(datadir)/pinot
 	@rm -rf $(DESTDIR)$(datadir)/dbus-1/services/com.github.fabricecolin.Pinot.service
+	@rm -rf $(DESTDIR)${datadir}/gnome-shell/search-providers/com.github.fabricecolin.Pinot.search-provider.ini
 	@rm -rf $(DESTDIR)$(libdir)/pinot
 	@rm -rf $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/pinot.png
 	@rm -rf $(DESTDIR)$(datadir)/icons/hicolor/32x32/apps/pinot.png

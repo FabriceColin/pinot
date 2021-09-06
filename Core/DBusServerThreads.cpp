@@ -33,11 +33,12 @@ using namespace std;
 DBusEngineQueryThread::DBusEngineQueryThread(const RefPtr<Gio::DBus::MethodInvocation> &refInvocation,
 	const string &engineName, const string &engineDisplayableName,
 	const string &engineOption, const QueryProperties &queryProps,
-	unsigned int startDoc, bool simpleQuery) :
+	unsigned int startDoc, bool simpleQuery, bool pinotCall) :
 	EngineQueryThread(engineName, engineDisplayableName,
 		engineOption, queryProps, startDoc),
 	m_refInvocation(refInvocation),
-	m_simpleQuery(simpleQuery)
+	m_simpleQuery(simpleQuery),
+	m_pinotCall(pinotCall)
 {
 	stringstream queryNameStr;
 
@@ -64,5 +65,10 @@ RefPtr<Gio::DBus::MethodInvocation> DBusEngineQueryThread::getInvocation(void) c
 bool DBusEngineQueryThread::isSimpleQuery(void) const
 {
 	return m_simpleQuery;
+}
+
+bool DBusEngineQueryThread::isPinotCall(void) const
+{
+	return m_pinotCall;
 }
 

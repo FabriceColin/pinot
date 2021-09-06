@@ -6,7 +6,7 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
     </method>
   </interface>
   <!--
-	WARNING: This interface WILL change before 1.0 is released !
+	WARNING: This interface is subject to change
 	-->
   <interface name="com.github.fabricecolin.Pinot">
     <signal name="IndexFlushed">

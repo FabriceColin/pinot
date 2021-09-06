@@ -872,6 +872,173 @@ void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
 
 	delete pIndex;
 }
+
+DaemonState::DBusSearchProvider::DBusSearchProvider(DaemonState *pServer) :
+	SearchProvider2Stub(),
+	m_pServer(pServer)
+{
+}
+
+DaemonState::DBusSearchProvider::~DBusSearchProvider()
+{
+}
+
+void DaemonState::DBusSearchProvider::GetInitialResultSet(const vector<ustring> &terms,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	string searchText;
+
+	for (vector<ustring>::const_iterator termIter = terms.begin();
+		termIter != terms.end(); ++termIter)
+	{
+		if (searchText.empty() == false)
+		{
+			searchText += " ";
+		}
+		searchText += termIter->c_str();
+	}
+#ifdef DEBUG
+	clog << "DaemonState::DBusSearchProvider::GetInitialResultSet: called on " << searchText << endl;
+#endif
+
+	QueryProperties queryProps("", searchText.c_str());
+
+	queryProps.setMaximumResultsCount(10);
+
+	// The caller expects the same output as that of SimpleQuery
+	m_pServer->start_thread(new DBusEngineQueryThread(invocation.getMessage(),
+		settings.m_defaultBackend, settings.m_defaultBackend,
+		settings.m_daemonIndexLocation, queryProps, 0, true, false));
+}
+
+void DaemonState::DBusSearchProvider::GetSubsearchResultSet(const vector<ustring> &previous_results,
+	const vector<ustring> &terms,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	string searchText;
+
+	for (vector<ustring>::const_iterator termIter = terms.begin();
+		termIter != terms.end(); ++termIter)
+	{
+		if (searchText.empty() == false)
+		{
+			searchText += " ";
+		}
+		searchText += termIter->c_str();
+	}
+#ifdef DEBUG
+	clog << "DaemonState::DBusSearchProvider::GetSubsearchResultSet: called on " << searchText << endl;
+#endif
+
+	QueryProperties queryProps("", searchText.c_str());
+
+	queryProps.setMaximumResultsCount(10);
+
+	// The caller expects the same output as that of SimpleQuery
+	// FIXME: is this meant to return only a subset of previous_results?
+	m_pServer->start_thread(new DBusEngineQueryThread(invocation.getMessage(),
+	settings.m_defaultBackend, settings.m_defaultBackend,
+	settings.m_daemonIndexLocation, queryProps, 0, true, false));
+}
+
+void DaemonState::DBusSearchProvider::GetResultMetas(const vector<ustring> &identifiers,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	vector<map<ustring, VariantBase>> idsToDictionary;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusSearchProvider::GetResultMetas: called on "
+		<< identifiers.size() << " IDs" << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	for (vector<ustring>::const_iterator idIter = identifiers.begin();
+		idIter != identifiers.end(); ++idIter)
+	{
+		DocumentInfo docInfo;
+		unsigned int docId = atoi(idIter->c_str());
+
+		if (pIndex->getDocumentInfo(docId, docInfo) == true)
+		{
+			map<ustring, ustring> docFields;
+			map<ustring, VariantBase> docDictionary;
+			RefPtr<Gio::Icon> typeIcon = Gio::content_type_get_icon(docInfo.getType().c_str());
+
+			docFields.insert(pair<ustring, ustring>("id", *idIter));
+			docFields.insert(pair<ustring, ustring>("name", docInfo.getTitle().c_str()));
+			docFields.insert(pair<ustring, ustring>("gicon", typeIcon->to_string()));
+			docFields.insert(pair<ustring, ustring>("description", docInfo.getExtract()));
+
+			Variant<map<ustring, ustring>> varDictionary = Variant<map<ustring, ustring>>::create(docFields);
+
+			docDictionary.insert(pair<ustring, VariantBase>(*idIter, varDictionary));
+
+			idsToDictionary.push_back(docDictionary);
+		}
+	}
+
+	invocation.ret(idsToDictionary);
+
+	delete pIndex;
+}
+
+void DaemonState::DBusSearchProvider::ActivateResult(const ustring &identifier,
+	const vector<ustring> &terms,
+	guint32 timestamp,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	DocumentInfo docInfo;
+	unsigned int docId = atoi(identifier.c_str());
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusSearchProvider::ActivateResult: called on " << identifier << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		invocation.ret();
+
+		return;
+	}
+
+	if (pIndex->getDocumentInfo(docId, docInfo) == true)
+	{
+		RefPtr<Gio::AppInfo> defaultApp = Gio::AppInfo::get_default_for_type(docInfo.getType().c_str());
+		RefPtr<Gio::AppLaunchContext> launchContext;
+		vector<string> uris;
+
+		uris.push_back(docInfo.getLocation());
+		defaultApp->launch_uris_async(uris, launchContext);
+	}
+
+	invocation.ret();
+
+	delete pIndex;
+}
+
+void DaemonState::DBusSearchProvider::LaunchSearch(const vector<ustring> &terms,
+	guint32 timestamp,
+	MethodInvocation &invocation)
+{
+#ifdef DEBUG
+	clog << "DaemonState::DBusSearchProvider::LaunchSearch: called on "
+		<< terms.size() << " terms" << endl;
+#endif
+	// FIXME: save the terms as a query, open the UI with that
+	invocation.ret();
+}
 #endif
 
 DaemonState::DaemonState() :
@@ -880,6 +1047,7 @@ DaemonState::DaemonState() :
 	m_refSessionBus(Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION)),
 	m_introspectionHandler(),
 	m_messageHandler(this),
+	m_searchProvider(this),
     m_powerProxy(Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
 		POWER_DBUS_SERVICE_NAME, POWER_DBUS_OBJECT_PATH,
 		POWER_DBUS_SERVICE_NAME, {}, {},
@@ -1135,6 +1303,8 @@ void DaemonState::register_session(void)
 				PINOT_DBUS_OBJECT_PATH);
 			guint messageId = m_messageHandler.register_object(m_refSessionBus,
 				PINOT_DBUS_OBJECT_PATH);
+			m_searchProvider.register_object(m_refSessionBus,
+				PINOT_DBUS_OBJECT_PATH);
 #ifdef DEBUG
 			clog << "DaemonState::register_object: registered on " << PINOT_DBUS_OBJECT_PATH
 				<< " with IDs " << introId << " " << messageId << endl;
@@ -1353,6 +1523,7 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 		const vector<DocumentInfo> &documentsList = pEngineQueryThread->getDocuments();
 		unsigned int documentsCount = pEngineQueryThread->getDocumentsCount();
 		bool simpleQuery = pEngineQueryThread->isSimpleQuery();
+		bool pinotCall = pEngineQueryThread->isPinotCall();
 		vector<ustring> idsList;
 		vector<vector<tuple<ustring, ustring>>> docTuples;
 
@@ -1381,15 +1552,24 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			}
 		}
 
-		com::github::fabricecolin::PinotStub::MethodInvocation pinotInvocation(refInvocation);
-
-		if (simpleQuery == false)
+		if (pinotCall == true)
 		{
-			pinotInvocation.ret(documentsCount, docTuples);
+			com::github::fabricecolin::PinotStub::MethodInvocation pinotInvocation(refInvocation);
+
+			if (simpleQuery == false)
+			{
+				pinotInvocation.ret(documentsCount, docTuples);
+			}
+			else
+			{
+				pinotInvocation.ret(idsList);
+			}
 		}
 		else
 		{
-			pinotInvocation.ret(idsList);
+			org::gnome::Shell::SearchProvider2Stub::MethodInvocation shellInvocation(refInvocation);
+
+			shellInvocation.ret(idsList);
 		}
 	}
 	else if (type == "RestoreMetaDataThread")

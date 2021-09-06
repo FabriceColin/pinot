@@ -18,7 +18,7 @@
 Summary: Personal search and metasearch tool
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPL
 Group: Applications/Internet 
 Source: %{name}-%{version}.tar.gz
@@ -131,6 +131,7 @@ fi
 %{_libdir}/pinot/filters/libtaglibfilter.so*
 %if 0%{?!_with_nodbus:1}
 %{_datadir}/dbus-1/services/com.github.fabricecolin.Pinot.service
+%{_datadir}/gnome-shell/search-providers/com.github.fabricecolin.Pinot.search-provider.ini
 %endif
 %{_datadir}/pinot/
 %{_datadir}/icons/hicolor/48x48/apps/pinot.png

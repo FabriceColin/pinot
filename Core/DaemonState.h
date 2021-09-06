@@ -39,6 +39,7 @@
 #include "MonitorHandler.h"
 #include "PinotSettings.h"
 #include "PinotDBus_stub.h"
+#include "SearchProvider_stub.h"
 #include "WorkerThreads.h"
 
 class DaemonState : public QueueManager
@@ -156,9 +157,39 @@ class DaemonState : public QueueManager
 					PinotStub::MethodInvocation &invocation);
 
 		};
+		class DBusSearchProvider : public org::gnome::Shell::SearchProvider2Stub
+		{
+			public:
+				DBusSearchProvider(DaemonState *pServer);
+				virtual ~DBusSearchProvider();
+
+			protected:
+				DaemonState *m_pServer;
+
+				virtual void GetInitialResultSet(const std::vector<Glib::ustring> &terms,
+					MethodInvocation &invocation);
+
+				virtual void GetSubsearchResultSet(const std::vector<Glib::ustring> &previous_results,
+					const std::vector<Glib::ustring> &terms,
+					MethodInvocation &invocation);
+
+				virtual void GetResultMetas(const std::vector<Glib::ustring> &identifiers,
+					MethodInvocation &invocation);
+
+				virtual void ActivateResult(const Glib::ustring &identifier,
+					const std::vector<Glib::ustring> &terms,
+					guint32 timestamp,
+					MethodInvocation &invocation);
+
+				virtual void LaunchSearch(const std::vector<Glib::ustring> &terms,
+					guint32 timestamp,
+					MethodInvocation &invocation);
+
+		};
 		Glib::RefPtr<Gio::DBus::Connection> m_refSessionBus;
 		DBusIntrospectHandler m_introspectionHandler;
 		DBusMessageHandler m_messageHandler;
+		DBusSearchProvider m_searchProvider;
 		Glib::RefPtr<Gio::DBus::Proxy> m_powerProxy;
 		guint m_connectionId;
 #endif
