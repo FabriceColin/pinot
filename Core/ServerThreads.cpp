@@ -109,6 +109,7 @@ void CrawlerThread::recordCrawled(const string &location, time_t itemDate)
 	if (updateIter != m_crawlCache.end())
 	{
 		updateIter->second.m_itemStatus = CrawlHistory::CRAWLED;
+		updateIter->second.m_itemDate = itemDate;
 	}
 	else
 	{
@@ -158,7 +159,18 @@ bool CrawlerThread::wasCrawled(const string &location, time_t &itemDate)
 		return true;
 	}
 
-	return m_crawlHistory.hasItem(location, itemStatus, itemDate);
+	if (m_crawlHistory.hasItem(location, itemStatus, itemDate) == true)
+	{
+		if (itemStatus != CrawlHistory::CRAWLED)
+		{
+			// This wasn't crawled so there's no point relying on dates
+			itemDate = 0;
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 void CrawlerThread::recordCrawling(const string &location, bool itemExists, time_t &itemDate)
@@ -170,7 +182,7 @@ void CrawlerThread::recordCrawling(const string &location, bool itemExists, time
 	}
 	else
 	{
-		// Change the status from TO_CRAWL to CRAWLING
+		// Change the status
 		m_crawlCache[location] = CrawlItem(CrawlHistory::CRAWLING, itemDate, 0);
 		if (m_crawlCache.size() > 500)
 		{
