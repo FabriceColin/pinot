@@ -280,7 +280,7 @@ https://github.com/FabriceColin/pinot
   The following document types are supported through external programs :
     * PDF (pdftotext required)
     * RTF (unrtf required)
-    * ReStructured Text (rst2html required)
+    * ReStructured Text (rst2txt required)
     * OpenDocument/StarOffice files (unzip required)
     * MS Word (antiword required)
     * PowerPoint (catppt required)
@@ -576,8 +576,8 @@ http://www.winfield.demon.nl/
 unrtf
 http://www.gnu.org/software/unrtf/unrtf.html
 
-rst2html
-http://docutils.sourceforge.net
+rst2txt
+https://github.com/stephenfin/rst2txt
 
 djvutxt							
 http://djvu.sourceforge.net/

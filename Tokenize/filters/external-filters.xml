@@ -221,9 +221,9 @@ This item is optional, and defaults to text/plain.
 <filter>
   <mimetype>text/x-rst</mimetype>
   <charset>utf-8</charset>
-  <command>rst2html</command>
+  <command>rst2txt</command>
   <arguments>-r 5 %s</arguments>
-  <output>text/html</output>
+  <output>text/plain</output>
 </filter>
 <filter>
   <mimetype>application/msword</mimetype>
