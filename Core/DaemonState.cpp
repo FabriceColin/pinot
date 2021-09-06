@@ -971,21 +971,38 @@ void DaemonState::DBusSearchProvider::GetResultMetas(const vector<ustring> &iden
 
 		if (pIndex->getDocumentInfo(docId, docInfo) == true)
 		{
-			map<ustring, ustring> docFields;
-			map<ustring, VariantBase> docDictionary;
+			Url urlObj(docInfo.getLocation());
 			RefPtr<Gio::Icon> typeIcon = Gio::content_type_get_icon(docInfo.getType().c_str());
+			map<ustring, VariantBase> docDictionary;
+			string location(docInfo.getLocation());
+			ustring name(docInfo.getTitle().c_str());
 
-			docFields.insert(pair<ustring, ustring>("id", *idIter));
-			docFields.insert(pair<ustring, ustring>("name", docInfo.getTitle().c_str()));
-			docFields.insert(pair<ustring, ustring>("gicon", typeIcon->to_string()));
-			docFields.insert(pair<ustring, ustring>("description", docInfo.getExtract()));
+			if ((urlObj.getProtocol() == "file") &&
+				(location.length() > 7))
+			{
+				location.erase(0, 7);
+			}
+			name += " - ";
+			name += location;
 
-			Variant<map<ustring, ustring>> varDictionary = Variant<map<ustring, ustring>>::create(docFields);
-
-			docDictionary.insert(pair<ustring, VariantBase>(*idIter, varDictionary));
+#ifdef DEBUG
+			clog << "DaemonState::DBusSearchProvider::GetResultMetas: " << docId
+				<< " " << docInfo.getType() << endl;
+#endif
+			docDictionary.insert(pair<ustring, VariantBase>("id",
+				Variant<ustring>::create(*idIter)));
+			docDictionary.insert(pair<ustring, VariantBase>("name",
+				Variant<ustring>::create(name)));
+			docDictionary.insert(pair<ustring, VariantBase>("gicon",
+				Variant<ustring>::create(typeIcon->to_string())));
+			docDictionary.insert(pair<ustring, VariantBase>("description",
+				Variant<ustring>::create(docInfo.getExtract())));
 
 			idsToDictionary.push_back(docDictionary);
 		}
+#ifdef DEBUG
+		else clog << "DaemonState::DBusSearchProvider::GetResultMetas: no document for " << docId << endl;
+#endif
 	}
 
 	invocation.ret(idsToDictionary);
@@ -1303,11 +1320,11 @@ void DaemonState::register_session(void)
 				PINOT_DBUS_OBJECT_PATH);
 			guint messageId = m_messageHandler.register_object(m_refSessionBus,
 				PINOT_DBUS_OBJECT_PATH);
-			m_searchProvider.register_object(m_refSessionBus,
+			guint searchId = m_searchProvider.register_object(m_refSessionBus,
 				PINOT_DBUS_OBJECT_PATH);
 #ifdef DEBUG
 			clog << "DaemonState::register_object: registered on " << PINOT_DBUS_OBJECT_PATH
-				<< " with IDs " << introId << " " << messageId << endl;
+				<< " with IDs " << introId << " " << messageId << " " << searchId << endl;
 #endif
 		},
 		[&](const RefPtr<Gio::DBus::Connection> &connection,

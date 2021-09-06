@@ -29,6 +29,7 @@ man_MANS = Core/pinot-index.1 \
 endif
 
 dbus-code:
+	@echo "Did you remove the SearchProvider2 interface?"
 	@gdbus-codegen-glibmm3 --generate-cpp-code=PinotDBus ./Core/pinot-dbus-daemon.xml
 	@mv PinotDBus_common.* Utils/
 	@mv PinotDBus_stub.* Core/
