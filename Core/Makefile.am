@@ -2,9 +2,12 @@
 
 pkginclude_HEADERS = \
 	DaemonState.h \
+	DBusServerThreads.h \
 	OnDiskHandler.h \
 	PinotDBus_stub.h \
 	PinotSettings.h \
+	SearchProvider_common.h \
+	SearchProvider_stub.h \
 	ServerThreads.h \
 	UniqueApplication.h \
 	WorkerThread.h \
@@ -103,8 +106,10 @@ pinot_dbus_daemon_LDADD = \
 
 pinot_dbus_daemon_SOURCES = \
 	DaemonState.cpp \
+	DBusServerThreads.cpp \
 	OnDiskHandler.cpp \
 	PinotDBus_stub.cpp \
+	SearchProvider_stub.cpp \
 	ServerThreads.cpp \
 	pinot-dbus-daemon.cpp
 

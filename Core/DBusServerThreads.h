@@ -30,7 +30,7 @@ class DBusEngineQueryThread : public EngineQueryThread
 		DBusEngineQueryThread(const Glib::RefPtr<Gio::DBus::MethodInvocation> &refInvocation,
 			const std::string &engineName, const std::string &engineDisplayableName,
 			const std::string &engineOption, const QueryProperties &queryProps,
-			unsigned int startDoc, bool simpleQuery);
+			unsigned int startDoc, bool simpleQuery, bool pinotCall = true);
 		virtual ~DBusEngineQueryThread();
 
 		virtual std::string getType(void) const;
@@ -39,9 +39,12 @@ class DBusEngineQueryThread : public EngineQueryThread
 
 		bool isSimpleQuery(void) const;
 
+		bool isPinotCall(void) const;
+
 	protected:
 		Glib::RefPtr<Gio::DBus::MethodInvocation> m_refInvocation;
 		bool m_simpleQuery;
+		bool m_pinotCall;
 
 	private:
 		DBusEngineQueryThread(const DBusEngineQueryThread &other);
