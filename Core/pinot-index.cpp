@@ -306,9 +306,6 @@ int main(int argc, char **argv)
 	g_refMainLoop = Glib::MainLoop::create();
 	Glib::set_application_name("Pinot Indexer");
 
-	// This should make Xapian use Chert rather than Flint
-	Glib::setenv("XAPIAN_PREFER_CHERT", "1");
-
 	// This will create the necessary directories on the first run
 	PinotSettings &settings = PinotSettings::getInstance();
 	string confDirectory(PinotSettings::getConfigurationDirectory());
