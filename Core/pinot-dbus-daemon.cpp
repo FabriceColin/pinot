@@ -215,9 +215,6 @@ int main(int argc, char **argv)
 	Glib::set_application_name("Pinot Daemon");
 #endif
 
-	// This should make Xapian use Chert rather than Flint
-	Glib::setenv("XAPIAN_PREFER_CHERT", "1");
-
 	// Make the locale follow the environment variables
 	setlocale(LC_ALL, "");
 	char *pLocale = setlocale(LC_ALL, NULL);

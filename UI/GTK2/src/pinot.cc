@@ -172,8 +172,6 @@ int main(int argc, char **argv)
 		Glib::set_application_name("Pinot Preferences");
 	}
 
-	// This should make Xapian use Chert rather than Flint
-	Glib::setenv("XAPIAN_PREFER_CHERT", "1");
 	// This will be useful for indexes served by xapian-progsrv+ssh
 	Glib::setenv("SSH_ASKPASS", prefixDir + "/libexec/openssh/ssh-askpass");
 
