@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2013 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,8 +78,8 @@ bool ViewHistory::create(const string &database)
 	// Create the table ?
 	if (createTable == true)
 	{
-		if (db.executeSimpleStatement("CREATE TABLE ViewHistory (Url VARCHAR(255) \
-			PRIMARY KEY, Status INTEGER, DATE INTEGER);") == false)
+		if (db.executeSimpleStatement("CREATE TABLE ViewHistory (Url VARCHAR(255) "
+			"PRIMARY KEY, Status INTEGER, DATE INTEGER);") == false)
 		{
 			return false;
 		}
@@ -93,8 +93,9 @@ bool ViewHistory::insertItem(const string &url)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("INSERT INTO ViewHistory \
-		VALUES('%q', '1', '%d');", Url::escapeUrl(url).c_str(), time(NULL));
+	SQLResults *results = executeStatement("INSERT INTO ViewHistory "
+		"VALUES('%q', '1', '%d');",
+		Url::escapeUrl(url).c_str(), time(NULL));
 	if (results != NULL)
 	{
 		success = true;
@@ -109,8 +110,9 @@ bool ViewHistory::hasItem(const string &url)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("SELECT Url FROM ViewHistory \
-		WHERE Url='%q';", Url::escapeUrl(url).c_str());
+	SQLResults *results = executeStatement("SELECT Url FROM ViewHistory "
+		"WHERE Url='%q';",
+		Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
 		SQLRow *row = results->nextRow();
@@ -152,8 +154,9 @@ bool ViewHistory::deleteItem(const string &url)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("DELETE FROM ViewHistory \
-		WHERE Url='%q';", Url::escapeUrl(url).c_str());
+	SQLResults *results = executeStatement("DELETE FROM ViewHistory "
+		"WHERE Url='%q';",
+		Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
 		success = true;
@@ -168,8 +171,9 @@ bool ViewHistory::expireItems(time_t expiryDate)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("DELETE FROM ViewHistory \
-		WHERE Date<'%d';", expiryDate);
+	SQLResults *results = executeStatement("DELETE FROM ViewHistory "
+		"WHERE Date<'%d';",
+		expiryDate);
 	if (results != NULL)
 	{
 		success = true;

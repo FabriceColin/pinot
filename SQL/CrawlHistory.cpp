@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -148,8 +148,8 @@ bool CrawlHistory::create(const string &database)
 	// Does CrawlSources exist ?
 	if (db.executeSimpleStatement("SELECT * FROM CrawlSources LIMIT 1;") == false)
 	{
-		if (db.executeSimpleStatement("CREATE TABLE CrawlSources (SourceID INTEGER \
-			PRIMARY KEY, Url VARCHAR(255));") == false)
+		if (db.executeSimpleStatement("CREATE TABLE CrawlSources (SourceID INTEGER "
+			"PRIMARY KEY, Url VARCHAR(255));") == false)
 		{
 			return false;
 		}
@@ -178,8 +178,8 @@ bool CrawlHistory::create(const string &database)
 
 	if (createHistoryTable == true)
 	{
-		if (db.executeSimpleStatement("CREATE TABLE CrawlHistory (Url VARCHAR(255) PRIMARY KEY, \
-			Status VARCHAR(255), SourceID INTEGER, Date INTEGER, ErrorNum INTEGER);") == false)
+		if (db.executeSimpleStatement("CREATE TABLE CrawlHistory (Url VARCHAR(255) PRIMARY KEY, "
+			"Status VARCHAR(255), SourceID INTEGER, Date INTEGER, ErrorNum INTEGER);") == false)
 		{
 			return false;
 		}
@@ -202,8 +202,8 @@ unsigned int CrawlHistory::insertSource(const string &url)
 		delete results;
 	}
 
-	results = executeStatement("INSERT INTO CrawlSources \
-		VALUES('%u', '%q');",
+	results = executeStatement("INSERT INTO CrawlSources "
+		"VALUES('%u', '%q');",
 		sourceId, Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
@@ -267,8 +267,8 @@ bool CrawlHistory::deleteSource(unsigned int sourceId)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("DELETE FROM CrawlSources \
-		WHERE SourceID='%u';", sourceId);
+	SQLResults *results = executeStatement("DELETE FROM CrawlSources "
+		"WHERE SourceID='%u';", sourceId);
 	if (results != NULL)
 	{
 		success = true;
@@ -449,7 +449,8 @@ int CrawlHistory::getErrorDetails(const string &url, time_t &date)
 {
 	int errNum = 0;
 
-	SQLResults *results = executeStatement("SELECT ErrorNum, Date FROM CrawlHistory WHERE Url='%q';",
+	SQLResults *results = executeStatement("SELECT ErrorNum, Date "
+		"FROM CrawlHistory WHERE Url='%q';",
 		Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
@@ -608,8 +609,9 @@ bool CrawlHistory::deleteItems(const string &url)
 		return false;
 	}
 
-	SQLResults *results = executeStatement("DELETE FROM CrawlHistory \
-		WHERE Url LIKE '%q%%';", Url::escapeUrl(url).c_str());
+	SQLResults *results = executeStatement("DELETE FROM CrawlHistory "
+		"WHERE Url LIKE '%q%%';",
+		Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
 		success = true;
