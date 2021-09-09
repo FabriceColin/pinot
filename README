@@ -521,7 +521,7 @@ http://www.webdav.org/neon/
 
 gdbus-codegen-glibmm (2)
 
-gtkmm							2.10
+gtkmm							3.24
 http://www.gtkmm.org/
 
 libxml++						2.12.0

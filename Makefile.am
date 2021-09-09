@@ -1,18 +1,18 @@
 
-SUBDIRS = po Utils Tokenize SQL Collect IndexSearch IndexSearch/Xapian Monitor Core UI/GTK2/src
+SUBDIRS = po Utils Tokenize SQL Collect IndexSearch IndexSearch/Xapian Monitor Core UI/GTK3/src
 
 EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TODO \
 	Tokenize/filters/external-filters.xml globalconfig.xml \
 	textcat*conf.txt pinot*.desktop pinot.spec \
 	IndexSearch/Plugins/*src IndexSearch/Plugins/*.xml \
 	Core/pinot-*.1 IndexSearch/pinot-*.1 \
-	UI/GTK2/src/pinot.1 Core/pinot-dbus-daemon.xml \
+	UI/GTK3/src/pinot.1 Core/pinot-dbus-daemon.xml \
 	Core/com.github.fabricecolin.Pinot.search-provider.ini \
 	Core/com.github.fabricecolin.Pinot.service \
-	UI/GTK2/xapian-powered.png UI/icons/48x48/pinot.png \
-	UI/icons/32x32/pinot.png UI/icons/24x24/pinot.png \
-	UI/icons/22x22/pinot.png UI/icons/16x16/pinot.png \
-	UI/GTK2/metase-gtk2.glade UI/GTK2/metase-gtk2.gladep \
+	UI/icons/48x48/pinot.png UI/icons/32x32/pinot.png \
+	UI/icons/24x24/pinot.png UI/icons/22x22/pinot.png \
+	UI/icons/16x16/pinot.png \
+	UI/GTK3/metase-gtk3.gtkbuilder \
 	scripts/bash/*.sh
 
 if HAVE_DBUS
@@ -20,12 +20,12 @@ man_MANS = Core/pinot-index.1 \
 	IndexSearch/pinot-label.1 \
 	Core/pinot-search.1 \
 	Core/pinot-dbus-daemon.1 \
-	UI/GTK2/src/pinot.1
+	UI/GTK3/src/pinot.1
 else
 man_MANS = Core/pinot-index.1 \
 	Core/pinot-search.1 \
 	Core/pinot-daemon.1 \
-	UI/GTK2/src/pinot.1
+	UI/GTK3/src/pinot.1
 endif
 
 dbus-code:
@@ -49,7 +49,7 @@ if HAVE_DBUS
 else
 	@help2man --no-info --no-discard-stderr --name "Search and index daemon" Core/pinot-daemon                     >Core/pinot-daemon.1
 endif
-	@help2man --no-info --no-discard-stderr --name "A metasearch tool for the Free Desktop" UI/GTK2/src/pinot      >UI/GTK2/src/pinot.1
+	@help2man --no-info --no-discard-stderr --name "A metasearch tool for the Free Desktop" UI/GTK3/src/pinot      >UI/GTK3/src/pinot.1
 
 install-data-local:
 	@ln -fs $(bindir)/pinot $(DESTDIR)$(bindir)/pinot-prefs
@@ -63,9 +63,7 @@ if HAVE_DBUS
 	@mkdir -p $(DESTDIR)$(datadir)/dbus-1/services
 	$(INSTALL_DATA) $(builddir)/Core/com.github.fabricecolin.Pinot.service $(DESTDIR)$(datadir)/dbus-1/services/com.github.fabricecolin.Pinot.service
 endif
-	$(INSTALL_DATA) $(srcdir)/UI/GTK2/xapian-powered.png $(DESTDIR)$(datadir)/pinot/xapian-powered.png
-	$(INSTALL_DATA) $(srcdir)/UI/GTK2/metase-gtk2.glade $(DESTDIR)$(datadir)/pinot/metase-gtk2.glade
-	$(INSTALL_DATA) $(srcdir)/UI/GTK2/metase-gtk2.gladep $(DESTDIR)$(datadir)/pinot/metase-gtk2.gladep
+	$(INSTALL_DATA) $(srcdir)/UI/GTK3/metase-gtk3.gtkbuilder $(DESTDIR)$(datadir)/pinot/metase-gtk3.gtkbuilder
 	@mkdir -p $(DESTDIR)$(datadir)/pinot/engines
 	$(INSTALL_DATA) $(srcdir)/IndexSearch/Plugins/*.src $(DESTDIR)$(datadir)/pinot/engines/
 	$(INSTALL_DATA) $(srcdir)/IndexSearch/Plugins/*.xml $(DESTDIR)$(datadir)/pinot/engines/

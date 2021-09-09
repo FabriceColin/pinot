@@ -398,17 +398,7 @@ PKG_CHECK_MODULES(GIOMM, giomm-2.4 >= 2.6 )
 AC_SUBST(GIOMM_CFLAGS)
 AC_SUBST(GIOMM_LIBS)
 dnl GTKmm
-AC_MSG_CHECKING(whether to target gtkmm 3)
-AC_ARG_ENABLE(gtkmm3,
-   [AS_HELP_STRING([--enable-gtkmm3], [target GTKmm 3 [default=no]])],
-   ,[enable_gtkmm3=no])
-if test "x$enable_gtkmm3" = "xyes"; then
-   AC_MSG_RESULT("yes")
-   PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.0 )
-else
-   AC_MSG_RESULT("no")
-   PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 >= 2.10 )
-fi
+PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.24 )
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 dnl GIO
@@ -446,5 +436,5 @@ AC_CHECK_FUNCS(vsnprintf)
 AC_OUTPUT( pinot.spec Core/com.github.fabricecolin.Pinot.service Makefile \
 	Utils/Makefile Tokenize/Makefile SQL/Makefile po/Makefile.in Collect/Makefile \
 	IndexSearch/Xapian/Makefile IndexSearch/Makefile \
-	Monitor/Makefile Core/Makefile UI/GTK2/src/Makefile )
+	Monitor/Makefile Core/Makefile UI/GTK3/src/Makefile )
 
