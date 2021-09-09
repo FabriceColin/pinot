@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,8 +79,8 @@ bool MetaDataBackup::setAttribute(const DocumentInfo &docInfo,
 	bool update = false, success = false;
 
 	// Is there already such an item for this URL ?
-	SQLResults *results = executeStatement("SELECT Url FROM MetaDataBackup \
-		WHERE Url='%q' AND Name='%q';",
+	SQLResults *results = executeStatement("SELECT Url FROM MetaDataBackup "
+		"WHERE Url='%q' AND Name='%q';",
 		Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 	if (results != NULL)
 	{
@@ -98,14 +98,14 @@ bool MetaDataBackup::setAttribute(const DocumentInfo &docInfo,
 
 	if (update == false)
 	{
-		results = executeStatement("INSERT INTO MetaDataBackup \
-			VALUES('%q', '%q', '%q');",
+		results = executeStatement("INSERT INTO MetaDataBackup "
+			"VALUES('%q', '%q', '%q');",
 			Url::escapeUrl(urlWithIPath).c_str(), name.c_str(), value.c_str());
 	}
 	else
 	{
-		results = executeStatement("UPDATE MetaDataBackup \
-			SET Value='%q' WHERE Url='%q' AND Name='%q';",
+		results = executeStatement("UPDATE MetaDataBackup "
+			"SET Value='%q' WHERE Url='%q' AND Name='%q';",
 			value.c_str(), Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 	}
 	if (results != NULL)
@@ -158,8 +158,8 @@ bool MetaDataBackup::getAttribute(const DocumentInfo &docInfo,
 	}
 #endif
 
-	SQLResults *results = executeStatement("SELECT Value FROM MetaDataBackup \
-		WHERE Url='%q' AND Name='%q';",
+	SQLResults *results = executeStatement("SELECT Value FROM MetaDataBackup "
+		"WHERE Url='%q' AND Name='%q';",
 		Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 	if (results != NULL)
 	{
@@ -237,8 +237,8 @@ bool MetaDataBackup::getAttributes(const DocumentInfo &docInfo,
 	}
 #endif
 
-	SQLResults *results = executeStatement("SELECT Value FROM MetaDataBackup \
-		WHERE Url='%q' AND Name LIKE '%q%%';",
+	SQLResults *results = executeStatement("SELECT Value FROM MetaDataBackup "
+		"WHERE Url='%q' AND Name LIKE '%q%%';",
 		Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 	if (results != NULL)
 	{
@@ -299,21 +299,21 @@ bool MetaDataBackup::removeAttribute(const DocumentInfo &docInfo,
 	{
 		if (likeName == false)
 		{
-			results = executeStatement("DELETE FROM MetaDataBackup \
-				WHERE Url='%q' AND NAME='%q';",
+			results = executeStatement("DELETE FROM MetaDataBackup "
+				"WHERE Url='%q' AND NAME='%q';",
 				Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 		}
 		else
 		{
-			results = executeStatement("DELETE FROM MetaDataBackup \
-				WHERE Url='%q' AND NAME LIKE '%q%%';",
+			results = executeStatement("DELETE FROM MetaDataBackup "
+				"WHERE Url='%q' AND NAME LIKE '%q%%';",
 				Url::escapeUrl(urlWithIPath).c_str(), name.c_str());
 		}
 	}
 	else
 	{
-		results = executeStatement("DELETE FROM MetaDataBackup \
-			WHERE NAME='%q';",
+		results = executeStatement("DELETE FROM MetaDataBackup "
+			"WHERE NAME='%q';",
 			name.c_str());
 	}
 	if (results != NULL)
@@ -345,8 +345,8 @@ bool MetaDataBackup::create(const string &database)
 		clog << "MetaDataBackup::create: MetaDataBackup doesn't exist" << endl;
 #endif
 		// Create the table
-		if (db.executeSimpleStatement("CREATE TABLE MetaDataBackup (Url VARCHAR(255), \
-			Name VARCHAR(255), Value TEXT, PRIMARY KEY(Url, Value));") == false)
+		if (db.executeSimpleStatement("CREATE TABLE MetaDataBackup (Url VARCHAR(255), "
+			"Name VARCHAR(255), Value TEXT, PRIMARY KEY(Url, Value));") == false)
 		{
 			success = false;
 		}
@@ -440,14 +440,14 @@ bool MetaDataBackup::getItems(const string &likeUrl, set<string> &urls,
 	// Even when attributes are used, an entry is always added to the table
 	if (likeUrl.empty() == true)
 	{
-		results = executeStatement("SELECT Url FROM MetaDataBackup \
-			LIMIT %u OFFSET %u;",
+		results = executeStatement("SELECT Url FROM MetaDataBackup "
+			"LIMIT %u OFFSET %u;",
 			max - min, min);
 	}
 	else
 	{
-		results = executeStatement("SELECT Url FROM MetaDataBackup \
-			WHERE Url LIKE '%q%%' LIMIT %u OFFSET %u;",
+		results = executeStatement("SELECT Url FROM MetaDataBackup "
+			"WHERE Url LIKE '%q%%' LIMIT %u OFFSET %u;",
 			likeUrl.c_str(), max - min, min);
 	}
 	if (results != NULL)

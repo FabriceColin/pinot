@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,9 +52,9 @@ bool QueryHistory::create(const string &database)
 	}
 
 	SQLiteBase db(database);
-	string tableDefinition("QueryName VARCHAR(255), EngineName VARCHAR(255), HostName VARCHAR(255), \
-		Url VARCHAR(255), Title VARCHAR(255), Extract VARCHAR(255), Score FLOAT, Date INTEGER, \
-		PRIMARY KEY(QueryName, EngineName, Url, Date)");
+	string tableDefinition("QueryName VARCHAR(255), EngineName VARCHAR(255), HostName VARCHAR(255), "
+		"Url VARCHAR(255), Title VARCHAR(255), Extract VARCHAR(255), Score FLOAT, Date INTEGER, "
+		"PRIMARY KEY(QueryName, EngineName, Url, Date)");
 
 	// Does QueryHistory exist ?
 	if (db.executeSimpleStatement("SELECT * FROM QueryHistory LIMIT 1;") == false)
@@ -90,8 +90,8 @@ bool QueryHistory::insertItem(const string &queryName, const string &engineName,
 	string hostName(urlObj.getHost());
 	bool success = false;
 
-	SQLResults *results = executeStatement("INSERT INTO QueryHistory \
-		VALUES('%q', '%q', '%q', '%q', '%q', '%q', '%f', '%d');",
+	SQLResults *results = executeStatement("INSERT INTO QueryHistory "
+		"VALUES('%q', '%q', '%q', '%q', '%q', '%q', '%f', '%d');",
 		queryName.c_str(), engineName.c_str(), hostName.c_str(),
 		Url::escapeUrl(url).c_str(), title.c_str(), extract.c_str(),
 		score, time(NULL));
@@ -110,8 +110,8 @@ float QueryHistory::hasItem(const string &queryName, const string &engineName, c
 {
 	float score = 0;
 
-	SQLResults *results = executeStatement("SELECT Score FROM QueryHistory \
-		WHERE QueryName='%q' AND EngineName='%q' AND Url='%q' ORDER BY Date DESC;",
+	SQLResults *results = executeStatement("SELECT Score FROM QueryHistory "
+		"WHERE QueryName='%q' AND EngineName='%q' AND Url='%q' ORDER BY Date DESC;",
 		queryName.c_str(), engineName.c_str(), Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
@@ -145,8 +145,8 @@ bool QueryHistory::getEngines(const string &queryName, set<string> &enginesList)
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("SELECT EngineName FROM QueryHistory \
-		WHERE QueryName='%q' GROUP BY EngineName;",
+	SQLResults *results = executeStatement("SELECT EngineName FROM QueryHistory "
+		"WHERE QueryName='%q' GROUP BY EngineName;",
 		queryName.c_str());
 	if (results != NULL)
 	{
@@ -176,9 +176,9 @@ bool QueryHistory::getItems(const string &queryName, const string &engineName,
 {
 	bool success = false;
 
-	SQLResults *results = executeStatement("SELECT Title, Url, Extract, Score, Date \
-		FROM QueryHistory WHERE QueryName='%q' AND EngineName='%q' \
-		ORDER BY Date DESC, Score DESC LIMIT %u;",
+	SQLResults *results = executeStatement("SELECT Title, Url, Extract, Score, Date "
+		"FROM QueryHistory WHERE QueryName='%q' AND EngineName='%q' "
+		"ORDER BY Date DESC, Score DESC LIMIT %u;",
 		queryName.c_str(), engineName.c_str(), max);
 	if (results != NULL)
 	{
@@ -216,8 +216,8 @@ string QueryHistory::getItemExtract(const string &queryName, const string &engin
 {
 	string extract;
 
-	SQLResults *results = executeStatement("SELECT Extract FROM QueryHistory \
-		WHERE QueryName='%q' AND EngineName='%q' AND Url='%q' ORDER BY Date DESC;",
+	SQLResults *results = executeStatement("SELECT Extract FROM QueryHistory "
+		"WHERE QueryName='%q' AND EngineName='%q' AND Url='%q' ORDER BY Date DESC;",
 		queryName.c_str(), engineName.c_str(), Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
@@ -245,8 +245,8 @@ bool QueryHistory::findUrlsLike(const string &url, unsigned int count, set<strin
 		return false; 
 	}
 
-	SQLResults *results = executeStatement("SELECT Url FROM QueryHistory \
-		WHERE Url LIKE '%q%%' ORDER BY Url LIMIT %u;",
+	SQLResults *results = executeStatement("SELECT Url FROM QueryHistory "
+		"WHERE Url LIKE '%q%%' ORDER BY Url LIMIT %u;",
 		Url::escapeUrl(url).c_str(), count);
 	if (results != NULL)
 	{
@@ -284,14 +284,14 @@ bool QueryHistory::getLatestRuns(const string &queryName, const string &engineNa
 
 	if (engineName.empty() == true)
 	{
-		results = executeStatement("SELECT Date FROM QueryHistory \
-			WHERE QueryName='%q' GROUP BY EngineName ORDER By Date DESC LIMIT %u;",
+		results = executeStatement("SELECT Date FROM QueryHistory "
+			"WHERE QueryName='%q' GROUP BY EngineName ORDER By Date DESC LIMIT %u;",
 			queryName.c_str(), runCount);
 	}
 	else
 	{
-		results = executeStatement("SELECT Date FROM QueryHistory \
-			WHERE QueryName='%q' AND EngineName='%q' GROUP BY Date ORDER By Date DESC LIMIT %u;",
+		results = executeStatement("SELECT Date FROM QueryHistory "
+			"WHERE QueryName='%q' AND EngineName='%q' GROUP BY Date ORDER By Date DESC LIMIT %u;",
 			queryName.c_str(), engineName.c_str(), runCount);
 	}
 
@@ -331,8 +331,8 @@ bool QueryHistory::deleteItems(const string &queryName, const string &engineName
 		return true;
 	}
 
-	SQLResults *results = executeStatement("DELETE FROM QueryHistory \
-		WHERE QueryName='%q' AND EngineName='%q' AND Date<'%d';",
+	SQLResults *results = executeStatement("DELETE FROM QueryHistory "
+		"WHERE QueryName='%q' AND EngineName='%q' AND Date<'%d';",
 		queryName.c_str(), engineName.c_str(), cutOffDate);
 	if (results != NULL)
 	{
@@ -351,13 +351,15 @@ bool QueryHistory::deleteItems(const string &name, bool isQueryName)
 
 	if (isQueryName == true)
 	{
-		results = executeStatement("DELETE FROM QueryHistory \
-			WHERE QueryName='%q';", name.c_str());
+		results = executeStatement("DELETE FROM QueryHistory "
+			"WHERE QueryName='%q';",
+			name.c_str());
 	}
 	else
 	{
-		results = executeStatement("DELETE FROM QueryHistory \
-			WHERE EngineName='%q';", name.c_str());
+		results = executeStatement("DELETE FROM QueryHistory "
+			"WHERE EngineName='%q';",
+			name.c_str());
 	}
 
 	if (results != NULL)
@@ -379,8 +381,9 @@ bool QueryHistory::expireItems(time_t expiryDate)
 		return true;
 	}
 
-	SQLResults *results = executeStatement("DELETE FROM QueryHistory \
-		WHERE Date<'%d';", expiryDate);
+	SQLResults *results = executeStatement("DELETE FROM QueryHistory "
+		"WHERE Date<'%d';",
+		expiryDate);
 	if (results != NULL)
 	{
 		delete results;

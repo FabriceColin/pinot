@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2013 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -111,9 +111,9 @@ bool ActionQueue::create(const string &database)
 		clog << "ActionQueue::create: ActionQueue doesn't exist" << endl;
 #endif
 		// Create the table
-		if (db.executeSimpleStatement("CREATE TABLE ActionQueue (QueueId VARCHAR(255), \
-			Url VARCHAR(255), Type VARCHAR(255), Date INTEGER, Info TEXT, \
-			PRIMARY KEY(QueueId, Url));") == false)
+		if (db.executeSimpleStatement("CREATE TABLE ActionQueue (QueueId VARCHAR(255), "
+			"Url VARCHAR(255), Type VARCHAR(255), Date INTEGER, Info TEXT, "
+			"PRIMARY KEY(QueueId, Url));") == false)
 		{
 			success = false;
 		}
@@ -250,8 +250,8 @@ unsigned int ActionQueue::getItemsCount(ActionType type)
 {
 	unsigned int count = 0;
 
-	SQLResults *results = executeStatement("SELECT COUNT(*) FROM ActionQueue \
-		WHERE Type='%q';",
+	SQLResults *results = executeStatement("SELECT COUNT(*) FROM ActionQueue "
+		"WHERE Type='%q';",
 		typeToText(type).c_str());
 	if (results != NULL)
 	{
@@ -273,8 +273,9 @@ bool ActionQueue::deleteItems(const string &url)
 		return false;
 	}
 
-	SQLResults *results = executeStatement("DELETE FROM ActionQueue \
-		WHERE Url LIKE '%q%%';", Url::escapeUrl(url).c_str());
+	SQLResults *results = executeStatement("DELETE FROM ActionQueue "
+		"WHERE Url LIKE '%q%%';",
+		Url::escapeUrl(url).c_str());
 	if (results != NULL)
 	{
 		success = true;
