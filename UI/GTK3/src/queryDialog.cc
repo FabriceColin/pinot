@@ -146,25 +146,6 @@ void queryDialog::populate_comboboxes()
 
 	// All supported filters
 	filterCombobox->set_row_separator_func(sigc::mem_fun(*this, &queryDialog::is_separator));
-#if GTK_VERSION_LT(3, 0)
-	filterCombobox->append_text(_("Host name"));
-	filterCombobox->append_text(_("File name"));
-	filterCombobox->append_text(_("File extension"));
-	filterCombobox->append_text(_("Title"));
-	filterCombobox->append_text(_("URL"));
-	filterCombobox->append_text(_("Directory"));
-	filterCombobox->append_text(_("In URL"));
-	filterCombobox->append_text(_("Path"));
-	filterCombobox->append_text(_("Language code"));
-	filterCombobox->append_text(_("MIME type"));
-	filterCombobox->append_text(_("MIME class"));
-	filterCombobox->append_text(_("Label"));
-	// And separate numerical ranges
-	filterCombobox->append_text("===");
-	filterCombobox->append_text(_("Date"));
-	filterCombobox->append_text(_("Time"));
-	filterCombobox->append_text(_("Size"));
-#else
 	filterCombobox->append(_("Host name"));
 	filterCombobox->append(_("File name"));
 	filterCombobox->append(_("File extension"));
@@ -182,17 +163,11 @@ void queryDialog::populate_comboboxes()
 	filterCombobox->append(_("Date"));
 	filterCombobox->append(_("Time"));
 	filterCombobox->append(_("Size"));
-#endif
 	filterCombobox->set_active(0);
 
 	// Sort order
-#if GTK_VERSION_LT(3, 0)
-	sortOrderCombobox->append_text(_("By relevance"));
-	sortOrderCombobox->append_text(_("By date"));
-#else
 	sortOrderCombobox->append(_("By relevance"));
 	sortOrderCombobox->append(_("By date"));
-#endif
 	if (m_properties.getSortOrder() == QueryProperties::DATE_DESC)
 	{
 		sortOrderCombobox->set_active(1);
@@ -203,22 +178,14 @@ void queryDialog::populate_comboboxes()
 	}
 
 	// Stemming language
-#if GTK_VERSION_LT(3, 0)
-	stemmingCombobox->append_text(_("None"));
-#else
 	stemmingCombobox->append(_("None"));
-#endif
 	stemmingCombobox->set_active(0);
 	string language(m_properties.getStemmingLanguage());
 	for (unsigned int languageNum = 1; languageNum < Languages::m_count; ++languageNum)
 	{
 		ustring languageName(Languages::getIntlName(languageNum));
 
-#if GTK_VERSION_LT(3, 0)
-		stemmingCombobox->append_text(languageName);
-#else
 		stemmingCombobox->append(languageName);
-#endif
 		// Is this the language we are looking for ?
 		if (language == languageName)
 		{
@@ -227,11 +194,7 @@ void queryDialog::populate_comboboxes()
 	}
 
 	// Labels
-#if GTK_VERSION_LT(3, 0)
-	labelNameCombobox->append_text(_("None"));
-#else
 	labelNameCombobox->append(_("None"));
-#endif
 	labelNameCombobox->set_active(0);
 	// Add all labels to the label combo and select the one defined for the query
 	set<string> &labels = PinotSettings::getInstance().m_labels;
@@ -239,11 +202,7 @@ void queryDialog::populate_comboboxes()
 	{
 		string labelName(*labelIter);
 
-#if GTK_VERSION_LT(3, 0)
-		labelNameCombobox->append_text(to_utf8(labelName));
-#else
 		labelNameCombobox->append(to_utf8(labelName));
-#endif
 		if (labelName == m_properties.getLabelName())
 		{
 			labelNameCombobox->set_active(labelNum);

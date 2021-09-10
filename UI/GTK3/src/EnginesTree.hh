@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2011 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,11 +47,7 @@ class EnginesTree : public Gtk::TreeView
 		virtual ~EnginesTree();
 
 		/// Gets a list of selected items.
-#if GTK_VERSION_LT(2, 90)
-		std::list<Gtk::TreeModel::Path> getSelection(void);
-#else
 		std::vector<Gtk::TreeModel::Path> getSelection(void);
-#endif
 
 		/// Gets an iterator.
 		Gtk::TreeModel::iterator getIter(Gtk::TreeModel::Path enginePath);
@@ -88,11 +84,7 @@ class EnginesTree : public Gtk::TreeView
 			const Gtk::TreeModel::Path& node_path, bool path_currently_selected);
 
 		/// Handles GTK style changes.
-#if GTK_VERSION_LT(2, 90)
-		void onStyleChanged(const Glib::RefPtr<Gtk::Style> &previous_style);
-#else
 		void onStyleChanged(void);
-#endif
 
 	private:
 		EnginesTree(const EnginesTree &other);

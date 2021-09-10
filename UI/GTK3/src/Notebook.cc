@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2011 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,9 +18,6 @@
 
 #include <iostream>
 #include <gtkmm.h>
-#if GTK_VERSION_LT(3, 0)
-#include <gtkmm/rc.h>
-#endif
 
 #include "config.h"
 #include "NLS.h"
@@ -98,25 +95,6 @@ ResultsPage::ResultsPage(const ustring &queryName, ResultsTree *pTree,
 		m_pCloseButton->set_tooltip_text(_("Close"));
 		m_pCloseButton->set_alignment(0, 0);
 		m_pCloseButton->add(*m_pCloseImage);
-#if GTK_CHECK_VERSION(3, 0, 0)
-#if GTK_VERSION_LT(3, 14)
-		RefPtr<CssProvider> cssProvider = CssProvider::create();
-		RefPtr<StyleContext> styleContext = StyleContext::create();
-
-		// This was lifted from gnome-terminal's terminal-close-button.c
-		cssProvider->load_from_data("* {\n"
-			"-GtkButton-default-border : 0;\n"
-			"-GtkButton-default-outside-border : 0;\n"
-			"-GtkButton-inner-border: 0;\n"
-			"-GtkWidget-focus-line-width : 0;\n"
-			"-GtkWidget-focus-padding : 0;\n"
-			"padding: 0;\n"
-			"}");
-
-		styleContext->add_provider(cssProvider, 0);
-		styleContext->set_path(m_pCloseButton->get_path());
-#endif
-#endif
 		m_pHBox = manage(new HBox(false, 0));
 		m_pHBox->pack_start(*m_pLabel, Gtk::PACK_SHRINK, 4);
 		m_pHBox->pack_start(*m_pCombobox, Gtk::PACK_EXPAND_WIDGET, 4);
@@ -128,11 +106,7 @@ ResultsPage::ResultsPage(const ustring &queryName, ResultsTree *pTree,
 		m_pVBox->pack_start(*pTree->getResultsScrolledWindow());
 
 		m_pVPaned = manage(new VPaned());
-#if GTK_VERSION_LT(3, 0)
-		m_pVPaned->set_flags(Gtk::CAN_FOCUS);
-#else
 		m_pVPaned->set_can_focus();
-#endif
 		m_pVPaned->set_position(105);
 		m_pVPaned->pack1(*m_pVBox, Gtk::EXPAND|Gtk::SHRINK);
 		m_pVPaned->pack2(*pTree->getExtractScrolledWindow(), Gtk::SHRINK);
@@ -202,11 +176,7 @@ bool ResultsPage::appendSuggestion(const ustring &text)
 		clog << "ResultsPage::appendSuggestion: suggesting " << text << endl;
 #endif
 		m_suggestions.insert(text);
-#if GTK_VERSION_LT(3, 0)
-		m_pCombobox->prepend_text(text);
-#else
 		m_pCombobox->prepend(text);
-#endif
 		if (activeText.empty() == true)
 		{
 			m_pCombobox->set_active(0);
@@ -242,18 +212,6 @@ NotebookTabBox::NotebookTabBox(const Glib::ustring &title, NotebookPageBox::Page
 	if (m_initialized == false)
 	{
 		m_initialized = true;
-
-#if GTK_VERSION_LT(3, 0)
-		// This was lifted from gnome-terminal's terminal-window.c
-		RC::parse_string("style \"pinot-tab-close-button-style\"\n"
-			"{\n"
-			"GtkWidget::focus-padding = 0\n"
-			"GtkWidget::focus-line-width = 0\n"
-			"xthickness = 0\n"
-			"ythickness = 0\n"
-			"}\n"
-			"widget \"*.pinot-tab-close-button\" style \"pinot-tab-close-button-style\"");
-#endif
 	}
 
 	m_pTabLabel = manage(new Label(title));
@@ -274,25 +232,6 @@ NotebookTabBox::NotebookTabBox(const Glib::ustring &title, NotebookPageBox::Page
 	m_pTabButton->set_tooltip_text(_("Close"));
 	m_pTabButton->set_alignment(0, 0);
 	m_pTabButton->add(*m_pTabImage);
-#if GTK_CHECK_VERSION(3, 0, 0)
-#if GTK_VERSION_LT(3, 14)
-	RefPtr<CssProvider> cssProvider = CssProvider::create();
-	RefPtr<StyleContext> styleContext = StyleContext::create();
-
-	// This was lifted from gnome-terminal's terminal-close-button.c
-	cssProvider->load_from_data("* {\n"
-		"-GtkButton-default-border : 0;\n"
-		"-GtkButton-default-outside-border : 0;\n"
-		"-GtkButton-inner-border: 0;\n"
-		"-GtkWidget-focus-line-width : 0;\n"
-		"-GtkWidget-focus-padding : 0;\n"
-		"padding: 0;\n"
-		"}");
-
-	styleContext->add_provider(cssProvider, 0);
-	styleContext->set_path(m_pTabButton->get_path());
-#endif
-#endif
 	pack_start(*m_pTabLabel);
 	pack_start(*m_pTabButton, PACK_SHRINK);
 	set_spacing(0);

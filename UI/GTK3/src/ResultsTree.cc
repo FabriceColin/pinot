@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,22 +63,14 @@ ResultsTree::ResultsTree(const ustring &queryName, Menu *pPopupMenu,
 
 	// This is the actual results tree
 	set_events(Gdk::BUTTON_PRESS_MASK);
-#if GTK_VERSION_LT(3, 0)
-	set_flags(CAN_FOCUS);
-#else
 	set_can_focus();
-#endif
 	set_headers_clickable(true);
 	set_headers_visible(true);
 	set_rules_hint(true);
 	set_reorderable(false);
 	set_enable_search(true);
 	get_selection()->set_mode(SELECTION_MULTIPLE);
-#if GTK_VERSION_LT(3, 0)
-	m_pResultsScrolledwindow->set_flags(CAN_FOCUS);
-#else
 	m_pResultsScrolledwindow->set_can_focus();
-#endif
 	m_pResultsScrolledwindow->set_border_width(4);
 	m_pResultsScrolledwindow->set_shadow_type(SHADOW_NONE);
 	m_pResultsScrolledwindow->set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC);
@@ -86,11 +78,7 @@ ResultsTree::ResultsTree(const ustring &queryName, Menu *pPopupMenu,
 	m_pResultsScrolledwindow->add(*this);
 
 	// That's for the extract view
-#if GTK_VERSION_LT(3, 0)
-	m_extractTextView->set_flags(CAN_FOCUS);
-#else
 	m_extractTextView->set_can_focus();
-#endif
 	m_extractTextView->set_editable(false);
 	m_extractTextView->set_cursor_visible(false);
 	m_extractTextView->set_pixels_above_lines(0);
@@ -108,11 +96,7 @@ ResultsTree::ResultsTree(const ustring &queryName, Menu *pPopupMenu,
 	{
 		refBuffer->get_tag_table()->add(refBoldTag); 
 	}
-#if GTK_VERSION_LT(3, 0)
-	m_pExtractScrolledwindow->set_flags(CAN_FOCUS);
-#else
 	m_pExtractScrolledwindow->set_can_focus();
-#endif
 	m_pExtractScrolledwindow->set_border_width(4);
 	m_pExtractScrolledwindow->set_shadow_type(SHADOW_NONE);
 	m_pExtractScrolledwindow->set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC);
@@ -190,24 +174,13 @@ ResultsTree::ResultsTree(const ustring &queryName, Menu *pPopupMenu,
 	// Control which rows can be selected
 	get_selection()->set_select_function(sigc::mem_fun(*this, &ResultsTree::onSelectionSelect));
 	// Listen for style changes
-#if GTK_VERSION_LT(3, 0)
-	signal_style_changed().connect_notify(sigc::mem_fun(*this, &ResultsTree::onStyleChanged));
-#else
 	signal_style_updated().connect_notify(sigc::mem_fun(*this, &ResultsTree::onStyleChanged));
-#endif
 
 	// Render the icons
-#if GTK_VERSION_LT(3, 0)
-	m_indexedIconPixbuf = render_icon(Stock::INDEX, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_viewededIconPixbuf = render_icon(Stock::YES, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_upIconPixbuf = render_icon(Stock::GO_UP, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_downIconPixbuf = render_icon(Stock::GO_DOWN, ICON_SIZE_MENU, "MetaSE-pinot");
-#else
 	m_indexedIconPixbuf = render_icon_pixbuf(Stock::INDEX, ICON_SIZE_MENU);
 	m_viewededIconPixbuf = render_icon_pixbuf(Stock::YES, ICON_SIZE_MENU);
 	m_upIconPixbuf = render_icon_pixbuf(Stock::GO_UP, ICON_SIZE_MENU);
 	m_downIconPixbuf = render_icon_pixbuf(Stock::GO_DOWN, ICON_SIZE_MENU);
-#endif
 
 	// Show all
 	show();
@@ -433,27 +406,16 @@ bool ResultsTree::onSelectionSelect(const RefPtr<TreeModel>& model,
 	return true;
 }
 
-#if GTK_VERSION_LT(3, 0)
-void ResultsTree::onStyleChanged(const RefPtr<Style> &previous_style)
-#else
 void ResultsTree::onStyleChanged(void)
-#endif
 {
 #ifdef DEBUG
 	clog << "ResultsTree::onStyleChanged: called" << endl;
 #endif
 	// FIXME: find better icons :-)
-#if GTK_VERSION_LT(3, 0)
-	m_indexedIconPixbuf = render_icon(Stock::INDEX, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_viewededIconPixbuf = render_icon(Stock::YES, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_upIconPixbuf = render_icon(Stock::GO_UP, ICON_SIZE_MENU, "MetaSE-pinot");
-	m_downIconPixbuf = render_icon(Stock::GO_DOWN, ICON_SIZE_MENU, "MetaSE-pinot");
-#else
 	m_indexedIconPixbuf = render_icon_pixbuf(Stock::INDEX, ICON_SIZE_MENU);
 	m_viewededIconPixbuf = render_icon_pixbuf(Stock::YES, ICON_SIZE_MENU);
 	m_upIconPixbuf = render_icon_pixbuf(Stock::GO_UP, ICON_SIZE_MENU);
 	m_downIconPixbuf = render_icon_pixbuf(Stock::GO_DOWN, ICON_SIZE_MENU);
-#endif
 }
 
 //
@@ -944,21 +906,14 @@ void ResultsTree::setGroupMode(GroupByMode groupMode)
 //
 ustring ResultsTree::getFirstSelectionURL(void)
 {
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#else
 	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#endif
+
 	if (selectedItems.empty() == true)
 	{
 		return "";
 	}
 
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-#else
 	vector<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-#endif
 	TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 	TreeModel::Row row = *iter;
 
@@ -970,24 +925,16 @@ ustring ResultsTree::getFirstSelectionURL(void)
 //
 bool ResultsTree::getSelection(vector<DocumentInfo> &resultsList, bool skipIndexed)
 {
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#else
 	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#endif
+
 	if (selectedItems.empty() == true)
 	{
 		return false;
 	}
 
 	// Go through selected items
-#if GTK_VERSION_LT(3, 0)
-	for (list<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-		itemPath != selectedItems.end(); ++itemPath)
-#else
 	for (vector<TreeModel::Path>::iterator itemPath = selectedItems.begin();
 		itemPath != selectedItems.end(); ++itemPath)
-#endif
 	{
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 		TreeModel::Row row = *iter;
@@ -1043,24 +990,16 @@ bool ResultsTree::getSelection(vector<DocumentInfo> &resultsList, bool skipIndex
 //
 void ResultsTree::setSelectionState(bool viewed)
 {
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#else
 	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-#endif
+
 	if (selectedItems.empty() == true)
 	{
 		return;
 	}
 
 	// Go through selected items
-#if GTK_VERSION_LT(3, 0)
-	for (list<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-		itemPath != selectedItems.end(); ++itemPath)
-#else
 	for (vector<TreeModel::Path>::iterator itemPath = selectedItems.begin();
 		itemPath != selectedItems.end(); ++itemPath)
-#endif
 	{
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 		TreeModel::Row row = *iter;
@@ -1123,13 +1062,9 @@ bool ResultsTree::deleteSelection(void)
 	bool empty = false;
 
 	// Go through selected items
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
-	list<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-#else
 	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
 	vector<TreeModel::Path>::iterator itemPath = selectedItems.begin();
-#endif
+
 	while (itemPath != selectedItems.end())
 	{
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);

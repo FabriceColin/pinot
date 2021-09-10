@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2011 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,21 +46,13 @@ EnginesTree::EnginesTree(VBox *enginesVbox, PinotSettings &settings) :
 
 	// This is the actual engines tree
 	set_events(Gdk::BUTTON_PRESS_MASK);
-#if GTK_VERSION_LT(3, 0)
-	set_flags(CAN_FOCUS);
-#else
 	set_can_focus();
-#endif
 	set_headers_clickable(true);
 	set_headers_visible(true);
 	set_reorderable(false);
 	set_enable_search(false);
 	get_selection()->set_mode(SELECTION_MULTIPLE);
-#if GTK_VERSION_LT(3, 0)
-	enginesScrolledwindow->set_flags(CAN_FOCUS);
-#else
 	enginesScrolledwindow->set_can_focus();
-#endif
 	enginesScrolledwindow->set_shadow_type(SHADOW_NONE);
 	enginesScrolledwindow->set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC);
 	enginesScrolledwindow->property_window_placement().set_value(CORNER_TOP_LEFT);
@@ -87,18 +79,10 @@ EnginesTree::EnginesTree(VBox *enginesVbox, PinotSettings &settings) :
 	// Control which rows can be selected
 	get_selection()->set_select_function(sigc::mem_fun(*this, &EnginesTree::onSelectionSelect));
 	// Listen for style changes
-#if GTK_VERSION_LT(3, 0)
-	signal_style_changed().connect_notify(sigc::mem_fun(*this, &EnginesTree::onStyleChanged));
-#else
 	signal_style_updated().connect_notify(sigc::mem_fun(*this, &EnginesTree::onStyleChanged));
-#endif
 
 	// Render the icons
-#if GTK_VERSION_LT(3, 0)
-	m_engineFolderIconPixbuf = render_icon(Stock::DIRECTORY, ICON_SIZE_MENU, "MetaSE-pinot");
-#else
 	m_engineFolderIconPixbuf = render_icon_pixbuf(Stock::DIRECTORY, ICON_SIZE_MENU);
-#endif
 
 	// Populate
 	populate();
@@ -167,22 +151,16 @@ void EnginesTree::renderEngineIcon(Gtk::CellRenderer *renderer, const Gtk::TreeM
 //
 void EnginesTree::onButtonPressEvent(GdkEventButton *ev)
 {
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path> selectedEngines = get_selection()->get_selected_rows();
-#else
 	vector<TreeModel::Path> selectedEngines = get_selection()->get_selected_rows();
-#endif
+
 	// If there are more than one row selected, don't bother
 	if (selectedEngines.size() != 1)
 	{
 		return;
 	}
 
-#if GTK_VERSION_LT(3, 0)
-	list<TreeModel::Path>::iterator enginePath = selectedEngines.begin();
-#else
 	vector<TreeModel::Path>::iterator enginePath = selectedEngines.begin();
-#endif
+
 	if (enginePath == selectedEngines.end())
 	{
 		return;
@@ -236,31 +214,19 @@ bool EnginesTree::onSelectionSelect(const RefPtr<TreeModel>& model,
 //
 // Handles GTK style changes.
 //
-#if GTK_VERSION_LT(3, 0)
-void EnginesTree::onStyleChanged(const RefPtr<Style> &previous_style)
-#else
 void EnginesTree::onStyleChanged(void)
-#endif
 {
 #ifdef DEBUG
 	clog << "EnginesTree::onStyleChanged: called" << endl;
 #endif
 	// FIXME: find better icons :-)
-#if GTK_VERSION_LT(3, 0)
-	m_engineFolderIconPixbuf = render_icon(Stock::DIRECTORY, ICON_SIZE_MENU, "MetaSE-pinot");
-#else
 	m_engineFolderIconPixbuf = render_icon_pixbuf(Stock::DIRECTORY, ICON_SIZE_MENU);
-#endif
 }
 
 //
 // Gets a list of selected items.
 //
-#if GTK_VERSION_LT(3, 0)
-list<TreeModel::Path> EnginesTree::getSelection(void)
-#else
 vector<TreeModel::Path> EnginesTree::getSelection(void)
-#endif
 {
 	return get_selection()->get_selected_rows();
 }

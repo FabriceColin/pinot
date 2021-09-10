@@ -201,11 +201,7 @@ void propertiesDialog::populate_languageCombobox(const string &language)
 
 	if (m_notALanguageName == true)
 	{
-#if GTK_VERSION_LT(3, 0)
-		languageCombobox->append_text(language);
-#else
 		languageCombobox->append(language);
-#endif
 		languageCombobox->set_active(0);
 		unknownLanguagePos = 1;
 	}
@@ -215,11 +211,8 @@ void propertiesDialog::populate_languageCombobox(const string &language)
 	{
 		string languageName(Languages::getIntlName(languageNum));
 
-#if GTK_VERSION_LT(3, 0)
-		languageCombobox->append_text(languageName);
-#else
 		languageCombobox->append(languageName);
-#endif
+
 		// Is this the language we are looking for ?
 		if ((m_notALanguageName == false) &&
 			(language.empty() == false) &&
