@@ -38,6 +38,8 @@ public:
 	statisticsDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
 	virtual ~statisticsDialog();
 
+	sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int>& getStatsSignal(void);
+
 protected:
 	Gtk::Button *closeStatisticsButton;
 	Gtk::TreeView *statisticsTreeview;
@@ -53,39 +55,22 @@ protected:
 	Gtk::TreeModel::iterator m_diskSpaceIter;
 	Gtk::TreeModel::iterator m_batteryIter;
 	Gtk::TreeModel::iterator m_crawlIter;
-	Gtk::TreeModel::iterator m_errorsTopIter;
-	std::map<int, Gtk::TreeModel::iterator> m_errorsIters;
-	std::map<unsigned int, time_t> m_latestErrorDates;
-	bool m_hasErrors;
+	sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int> m_signalStats;
+	std::string m_daemonDBusStatus;
 	bool m_hasDiskSpace;
 	bool m_hasBattery;
 	bool m_hasCrawl;
-	sigc::connection m_idleConnection;
-	class InternalState : public ThreadsManager
-	{
-	public:
-		InternalState(statisticsDialog *pWindow);
-		~InternalState();
-
-		bool m_getStats;
-		bool m_gettingStats;
-		bool m_lowDiskSpace;
-		bool m_onBattery;
-		bool m_crawling;
-
-	} m_state;
 
 	void populate(void);
 
 	void populate_history(void);
 
-	bool on_activity_timeout(void);
-
-	void on_thread_end(WorkerThread *pThread);
-
 	// Handlers defined in the XML file
 	virtual void on_closeStatisticsButton_clicked();
 	virtual bool on_statisticsDialog_delete_event(GdkEventAny *ev);
+
+	virtual void on_stats_changed(unsigned int crawledCOunt, unsigned int docsCount,
+		bool lowDiskSpace, bool onBattery, bool crawling);
 
 };
 
