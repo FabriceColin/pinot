@@ -473,11 +473,13 @@ bool PinotSettings::load(LoadWhat what)
 		QueryProperties queryProps(_("Latest First"), "dir:/");
 		queryProps.setSortOrder(QueryProperties::DATE_DESC);
 		addQuery(queryProps);
+		queryProps = QueryProperties(_("10kb And Smaller"), "0..10240b");
+		queryProps.setSortOrder(QueryProperties::SIZE_DESC);
+		addQuery(queryProps);
 		addQuery(QueryProperties(_("Home Stuff"), string("dir:") + getHomeDirectory()));
 		addQuery(QueryProperties(_("With Label New"), "label:New"));
 		addQuery(QueryProperties(_("Have CJKV"), "tokens:CJKV"));
 		addQuery(QueryProperties(_("In English"), "lang:en"));
-		addQuery(QueryProperties(_("10kb And Smaller"), "0..10240b"));
 		addQuery(QueryProperties("Pinot search", "pinot search"));
 	}
 
@@ -920,6 +922,10 @@ bool PinotSettings::loadQueries(const Element *pElem)
 			else if (nodeContent == "DATE_ASC")
 			{
 				queryProps.setSortOrder(QueryProperties::DATE_ASC);
+			}
+			else if (nodeContent == "SIZE_DESC")
+			{
+				queryProps.setSortOrder(QueryProperties::SIZE_DESC);
 			}
 			else
 			{
@@ -1555,6 +1561,10 @@ bool PinotSettings::save(SaveWhat what)
 				else if (queryIter->second.getSortOrder() == QueryProperties::DATE_ASC)
 				{
 					sortOrder = "DATE_ASC";
+				}
+				else if (queryIter->second.getSortOrder() == QueryProperties::SIZE_DESC)
+				{
+					sortOrder = "SIZE_DESC";
 				}
 				addChildElement(pElem, "name", queryIter->first);
 				addChildElement(pElem, "sortorder", sortOrder);

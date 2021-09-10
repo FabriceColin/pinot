@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2019 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -766,7 +766,7 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 
 	// Size with a "b" suffix, ie 1024..10240b
 #if XAPIAN_NUM_VERSION >= 1003006
-	Xapian::NumberRangeProcessor sizeProcessor(2, "b", false);
+	Xapian::NumberRangeProcessor sizeProcessor(2, "b", Xapian::RP_SUFFIX);
 	parser.add_rangeprocessor(&sizeProcessor);
 #elif XAPIAN_NUM_VERSION >= 1001000
 	Xapian::NumberValueRangeProcessor sizeProcessor(2, "b", false);
@@ -955,6 +955,19 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 #endif
 #ifdef DEBUG
 			clog << "XapianEngine::queryDatabase: sorting by date and time asc" << endl;
+#endif
+		}
+		else if (queryProps.getSortOrder() == QueryProperties::SIZE_DESC)
+		{
+			// By date, and then by relevance
+			enquire.set_docid_order(Xapian::Enquire::DONT_CARE);
+#if XAPIAN_NUM_VERSION >= 1001000
+			enquire.set_sort_by_value_then_relevance(2, true);
+#else
+			enquire.set_sort_by_value_then_relevance(2);
+#endif
+#ifdef DEBUG
+			clog << "XapianEngine::queryDatabase: sorting by size asc" << endl;
 #endif
 		}
 

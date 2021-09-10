@@ -168,9 +168,14 @@ void QueryDialog::populate_comboboxes()
 	// Sort order
 	sortOrderCombobox->append(_("By relevance"));
 	sortOrderCombobox->append(_("By date"));
+	sortOrderCombobox->append(_("By size"));
 	if (m_properties.getSortOrder() == QueryProperties::DATE_DESC)
 	{
 		sortOrderCombobox->set_active(1);
+	}
+	else if (m_properties.getSortOrder() == QueryProperties::SIZE_DESC)
+	{
+		sortOrderCombobox->set_active(2);
 	}
 	else
 	{
@@ -269,6 +274,10 @@ void QueryDialog::on_queryOkButton_clicked()
 	if (sortOrderCombobox->get_active_row_number() == 1)
 	{
 		m_properties.setSortOrder(QueryProperties::DATE_DESC);
+	}
+	else if (sortOrderCombobox->get_active_row_number() == 2)
+	{
+		m_properties.setSortOrder(QueryProperties::SIZE_DESC);
 	}
 	else
 	{
