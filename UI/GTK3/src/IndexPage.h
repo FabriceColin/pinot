@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 #include "QueryProperties.h"
 #include "PinotSettings.h"
-#include "ResultsTree.hh"
-#include "Notebook.hh"
+#include "ResultsTree.h"
+#include "Notebook.h"
 
 class IndexPage : public NotebookPageBox
 {

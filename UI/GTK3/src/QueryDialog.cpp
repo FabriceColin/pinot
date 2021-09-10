@@ -25,14 +25,14 @@
 #include "NLS.h"
 #include "Languages.h"
 #include "TimeConverter.h"
-#include "PinotUtils.hh"
-#include "queryDialog.hh"
+#include "PinotUtils.h"
+#include "QueryDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-queryDialog::queryDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+QueryDialog::QueryDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	queryCancelButton(NULL),
 	queryOkButton(NULL),
@@ -62,23 +62,23 @@ queryDialog::queryDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	refBuilder->get_widget("stemmingCombobox", stemmingCombobox);
 	refBuilder->get_widget("indexNewCheckbutton", indexNewCheckbutton);
 
-	queryCancelButton->signal_clicked().connect(sigc::mem_fun(*this, &queryDialog::on_queryCancelButton_clicked), false);
-	queryOkButton->signal_clicked().connect(sigc::mem_fun(*this, &queryDialog::on_queryOkButton_clicked), false);
-	nameEntry->signal_changed().connect(sigc::mem_fun(*this, &queryDialog::on_nameEntry_changed), false);
-	addFilterButton->signal_clicked().connect(sigc::mem_fun(*this, &queryDialog::on_addFilterButton_clicked), false);
-	indexCheckbutton->signal_toggled().connect(sigc::mem_fun(*this, &queryDialog::on_indexCheckbutton_toggled), false);
+	queryCancelButton->signal_clicked().connect(sigc::mem_fun(*this, &QueryDialog::on_queryCancelButton_clicked), false);
+	queryOkButton->signal_clicked().connect(sigc::mem_fun(*this, &QueryDialog::on_queryOkButton_clicked), false);
+	nameEntry->signal_changed().connect(sigc::mem_fun(*this, &QueryDialog::on_nameEntry_changed), false);
+	addFilterButton->signal_clicked().connect(sigc::mem_fun(*this, &QueryDialog::on_addFilterButton_clicked), false);
+	indexCheckbutton->signal_toggled().connect(sigc::mem_fun(*this, &QueryDialog::on_indexCheckbutton_toggled), false);
 }
 
-queryDialog::~queryDialog()
+QueryDialog::~QueryDialog()
 {
 }
 
-void queryDialog::setQueryProperties(const QueryProperties &properties)
+void QueryDialog::setQueryProperties(const QueryProperties &properties)
 {
 	m_name = properties.getName();
 	m_properties = properties;
 #ifdef DEBUG
-    clog << "queryDialog::setQueryProperties: editing " << m_properties.getName() << endl;
+    clog << "QueryDialog::setQueryProperties: editing " << m_properties.getName() << endl;
 #endif
 
 	// Name
@@ -121,7 +121,7 @@ void queryDialog::setQueryProperties(const QueryProperties &properties)
 	populate_comboboxes();
 }
 
-bool queryDialog::is_separator(const RefPtr<TreeModel>& model, const TreeModel::iterator& iter)
+bool QueryDialog::is_separator(const RefPtr<TreeModel>& model, const TreeModel::iterator& iter)
 {
 	if (iter)
 	{
@@ -140,12 +140,12 @@ bool queryDialog::is_separator(const RefPtr<TreeModel>& model, const TreeModel::
 	return false;
 }
 
-void queryDialog::populate_comboboxes()
+void QueryDialog::populate_comboboxes()
 {
 	unsigned int labelNum = 1;
 
 	// All supported filters
-	filterCombobox->set_row_separator_func(sigc::mem_fun(*this, &queryDialog::is_separator));
+	filterCombobox->set_row_separator_func(sigc::mem_fun(*this, &QueryDialog::is_separator));
 	filterCombobox->append(_("Host name"));
 	filterCombobox->append(_("File name"));
 	filterCombobox->append(_("File extension"));
@@ -212,29 +212,29 @@ void queryDialog::populate_comboboxes()
 	}
 }
 
-const QueryProperties &queryDialog::getQueryProperties(void) const
+const QueryProperties &QueryDialog::getQueryProperties(void) const
 {
 	return m_properties;
 }
 
-bool queryDialog::badName(void) const
+bool QueryDialog::badName(void) const
 {
 	return m_badName;
 }
 
-void queryDialog::on_queryCancelButton_clicked()
+void QueryDialog::on_queryCancelButton_clicked()
 {
 #ifdef DEBUG
-	clog << "queryDialog::on_queryCancelButton_clicked: called" << endl;
+	clog << "QueryDialog::on_queryCancelButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-void queryDialog::on_queryOkButton_clicked()
+void QueryDialog::on_queryOkButton_clicked()
 {
 	ustring newName(nameEntry->get_text());
 #ifdef DEBUG
-	clog << "queryDialog::on_queryOkButton_clicked: called" << endl;
+	clog << "QueryDialog::on_queryOkButton_clicked: called" << endl;
 #endif
 
 	// Name
@@ -252,7 +252,7 @@ void queryDialog::on_queryOkButton_clicked()
 			// Yes, it is
 			m_badName = true;
 #ifdef DEBUG
-			clog << "queryDialog::on_queryOkButton_clicked: name in use" << endl;
+			clog << "QueryDialog::on_queryOkButton_clicked: name in use" << endl;
 #endif
 		}
 	}
@@ -311,7 +311,7 @@ void queryDialog::on_queryOkButton_clicked()
 	close();
 }
 
-void queryDialog::on_nameEntry_changed()
+void QueryDialog::on_nameEntry_changed()
 {
 	ustring name = nameEntry->get_text();
 	if (name.empty() == false)
@@ -324,7 +324,7 @@ void queryDialog::on_nameEntry_changed()
 	}
 }
 
-void queryDialog::on_addFilterButton_clicked()
+void QueryDialog::on_addFilterButton_clicked()
 {
 	ustring filter;
 	time_t timeT = time(NULL);
@@ -399,7 +399,7 @@ void queryDialog::on_addFilterButton_clicked()
 	}
 }
 
-void queryDialog::on_indexCheckbutton_toggled()
+void QueryDialog::on_indexCheckbutton_toggled()
 {
 	if (indexCheckbutton->get_active() == false)
 	{

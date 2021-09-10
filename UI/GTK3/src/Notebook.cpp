@@ -21,8 +21,8 @@
 
 #include "config.h"
 #include "NLS.h"
-#include "PinotUtils.hh"
-#include "Notebook.hh"
+#include "PinotUtils.h"
+#include "Notebook.h"
 
 using namespace std;
 using namespace Glib;

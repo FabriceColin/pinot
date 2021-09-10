@@ -28,14 +28,14 @@
 #include "StringManip.h"
 #include "NLS.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "propertiesDialog.hh"
+#include "PinotUtils.h"
+#include "PropertiesDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-propertiesDialog::propertiesDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+PropertiesDialog::PropertiesDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	cancelPropertiesButton(NULL),
 	applyPropertiesButton(NULL),
@@ -75,9 +75,9 @@ propertiesDialog::propertiesDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBui
 	refBuilder->get_widget("saveTermsButton", saveTermsButton);
 	refBuilder->get_widget("propLabelsTreeview", labelsTreeview);
 
-	cancelPropertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &propertiesDialog::on_cancelPropertiesButton_clicked), false);
-	applyPropertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &propertiesDialog::on_applyPropertiesButton_clicked), false);
-	saveTermsButton->signal_clicked().connect(sigc::mem_fun(*this, &propertiesDialog::on_saveTermsButton_clicked), false);
+	cancelPropertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &PropertiesDialog::on_cancelPropertiesButton_clicked), false);
+	applyPropertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &PropertiesDialog::on_applyPropertiesButton_clicked), false);
+	saveTermsButton->signal_clicked().connect(sigc::mem_fun(*this, &PropertiesDialog::on_saveTermsButton_clicked), false);
 
 	// Associate the columns model to the labels tree
 	m_refLabelsTree = ListStore::create(m_labelsColumns);
@@ -88,11 +88,11 @@ propertiesDialog::propertiesDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBui
 	labelsTreeview->get_selection()->set_mode(SELECTION_SINGLE);
 }
 
-propertiesDialog::~propertiesDialog()
+PropertiesDialog::~PropertiesDialog()
 {
 }
 
-void propertiesDialog::setDocuments(const string &indexLocation,
+void PropertiesDialog::setDocuments(const string &indexLocation,
 	const vector<DocumentInfo> &documentsList)
 {
 	set<string> docLabels;
@@ -112,7 +112,7 @@ void propertiesDialog::setDocuments(const string &indexLocation,
 		// Get the document ID
 		m_docId = docInfo.getIsIndexed(indexId);
 #ifdef DEBUG
-		clog << "propertiesDialog::propertiesDialog: document " << m_docId << " in index " << indexId << endl;
+		clog << "PropertiesDialog::PropertiesDialog: document " << m_docId << " in index " << indexId << endl;
 #endif
 		if (m_docId > 0)
 		{
@@ -155,7 +155,7 @@ void propertiesDialog::setDocuments(const string &indexLocation,
 			docIter != m_documentsList.end(); ++docIter)
 		{
 #ifdef DEBUG
-			clog << "propertiesDialog::propertiesDialog: language " << language << endl;
+			clog << "PropertiesDialog::PropertiesDialog: language " << language << endl;
 #endif
 			if (firstDoc == true)
 			{
@@ -194,7 +194,7 @@ void propertiesDialog::setDocuments(const string &indexLocation,
 	populate_labelsTreeview(docLabels);
 }
 
-void propertiesDialog::populate_languageCombobox(const string &language)
+void PropertiesDialog::populate_languageCombobox(const string &language)
 {
 	int unknownLanguagePos = 0;
 	bool foundLanguage = false;
@@ -233,7 +233,7 @@ void propertiesDialog::populate_languageCombobox(const string &language)
 	}
 }
 
-void propertiesDialog::populate_labelsTreeview(const set<string> &docLabels)
+void PropertiesDialog::populate_labelsTreeview(const set<string> &docLabels)
 {
 	string labelsString;
 
@@ -264,7 +264,7 @@ void propertiesDialog::populate_labelsTreeview(const set<string> &docLabels)
 		}
 	}
 #ifdef DEBUG
-	clog << "propertiesDialog::populate_labelsTreeview: showing " << docLabels.size()
+	clog << "PropertiesDialog::populate_labelsTreeview: showing " << docLabels.size()
 		<< "/" << sysLabels.size() << " labels" << endl;
 #endif
 
@@ -272,12 +272,12 @@ void propertiesDialog::populate_labelsTreeview(const set<string> &docLabels)
 	m_labelsHash = StringManip::hashString(labelsString);
 }
 
-const vector<DocumentInfo> &propertiesDialog::getDocuments(void) const
+const vector<DocumentInfo> &PropertiesDialog::getDocuments(void) const
 {
 	return m_documentsList;
 }
 
-void propertiesDialog::setHeight(int maxHeight)
+void PropertiesDialog::setHeight(int maxHeight)
 {
 	// FIXME: there must be a better way to determine how high the tree should be
 	// for all rows to be visible !
@@ -296,35 +296,35 @@ void propertiesDialog::setHeight(int maxHeight)
 	}
 }
 
-const set<string> &propertiesDialog::getLabels(void) const
+const set<string> &PropertiesDialog::getLabels(void) const
 {
 	return m_labels;
 }
 
-bool propertiesDialog::changedInfo(void) const
+bool PropertiesDialog::changedInfo(void) const
 {
 	return m_changedInfo;
 }
 
-bool propertiesDialog::changedLabels(void) const
+bool PropertiesDialog::changedLabels(void) const
 {
 	return m_changedLabels;
 }
 
-void propertiesDialog::on_cancelPropertiesButton_clicked()
+void PropertiesDialog::on_cancelPropertiesButton_clicked()
 {
 #ifdef DEBUG
-	clog << "propertiesDialog::on_cancelPropertiesButton_clicked: called" << endl;
+	clog << "PropertiesDialog::on_cancelPropertiesButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-void propertiesDialog::on_applyPropertiesButton_clicked()
+void PropertiesDialog::on_applyPropertiesButton_clicked()
 {
 	string title, languageName(from_utf8(languageCombobox->get_active_text())), labelsString;
 	int unknownLanguagePos = 0;
 #ifdef DEBUG
-	clog << "propertiesDialog::on_applyPropertiesButton_clicked: called" << endl;
+	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: called" << endl;
 #endif
 
 	// If only one document was edited, set its title
@@ -337,7 +337,7 @@ void propertiesDialog::on_applyPropertiesButton_clicked()
 		// FIXME: find out if changes were actually made 
 	}
 #ifdef DEBUG
-	clog << "propertiesDialog::on_applyPropertiesButton_clicked: chosen title " << title << endl;
+	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: chosen title " << title << endl;
 #endif
 
 	// Did we add an extra string to the languages list ?
@@ -351,12 +351,12 @@ void propertiesDialog::on_applyPropertiesButton_clicked()
 		languageName.clear();
 	}
 #ifdef DEBUG
-	clog << "propertiesDialog::on_applyPropertiesButton_clicked: chosen language " << languageName << endl;
+	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: chosen language " << languageName << endl;
 #endif
 	if (m_infoHash != StringManip::hashString(title + languageName))
 	{
 #ifdef DEBUG
-		clog << "propertiesDialog::on_applyPropertiesButton_clicked: properties changed" << endl;
+		clog << "PropertiesDialog::on_applyPropertiesButton_clicked: properties changed" << endl;
 #endif
 		m_changedInfo = true;
 	}
@@ -380,12 +380,12 @@ void propertiesDialog::on_applyPropertiesButton_clicked()
 		}
 	}
 #ifdef DEBUG
-	clog << "propertiesDialog::on_applyPropertiesButton_clicked: chosen " << m_labels.size() << " labels" << endl;
+	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: chosen " << m_labels.size() << " labels" << endl;
 #endif
 	if (m_labelsHash != StringManip::hashString(labelsString))
 	{
 #ifdef DEBUG
-		clog << "propertiesDialog::on_applyPropertiesButton_clicked: labels changed" << endl;
+		clog << "PropertiesDialog::on_applyPropertiesButton_clicked: labels changed" << endl;
 #endif
 		m_changedLabels = true;
 	}
@@ -406,13 +406,13 @@ void propertiesDialog::on_applyPropertiesButton_clicked()
 	close();
 }
 
-void propertiesDialog::on_saveTermsButton_clicked()
+void PropertiesDialog::on_saveTermsButton_clicked()
 {
 	ustring location(PinotSettings::getInstance().getHomeDirectory());
 
 	location += "/terms.txt";
 #ifdef DEBUG
-	clog << "propertiesDialog::on_saveTermsButton_clicked: " << location << endl;
+	clog << "PropertiesDialog::on_saveTermsButton_clicked: " << location << endl;
 #endif
 
 	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(m_indexLocation);

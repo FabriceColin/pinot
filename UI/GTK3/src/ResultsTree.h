@@ -37,7 +37,7 @@
 
 #include "ResultsExporter.h"
 #include "PinotSettings.h"
-#include "ModelColumns.hh"
+#include "ModelColumns.h"
 
 class ResultsTree : public Gtk::TreeView
 {

@@ -36,8 +36,8 @@
 #include "DBusIndex.h"
 #endif
 #include "ModuleFactory.h"
-#include "PinotUtils.hh"
-#include "prefsWindow.hh"
+#include "PinotUtils.h"
+#include "PrefsWindow.h"
 
 using namespace std;
 using namespace Glib;
@@ -79,18 +79,18 @@ class StartDaemonThread : public WorkerThread
 };
 #endif
 
-prefsWindow::InternalState::InternalState(prefsWindow *pWindow) :
+PrefsWindow::InternalState::InternalState(PrefsWindow *pWindow) :
 	QueueManager(PinotSettings::getInstance().m_docsIndexLocation),
 	m_savedPrefs(false)
 {
-	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &prefsWindow::on_thread_end));
+	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &PrefsWindow::on_thread_end));
 }
 
-prefsWindow::InternalState::~InternalState()
+PrefsWindow::InternalState::~InternalState()
 {
 }
 
-prefsWindow::prefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder) :
+PrefsWindow::PrefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder) :
 	Window(pParent),
 	m_settings(PinotSettings::getInstance()),
 	m_state(this)
@@ -122,18 +122,18 @@ prefsWindow::prefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBu
 	refBuilder->get_widget("generalTable", generalTable);
 	refBuilder->get_widget("prefsNotebook", prefsNotebook);
 
-	prefsCancelbutton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_prefsCancelbutton_clicked), false);
-	prefsOkbutton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_prefsOkbutton_clicked), false);
-	addDirectoryButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_addDirectoryButton_clicked), false);
-	removeDirectoryButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_removeDirectoryButton_clicked), false);
-	patternsCombobox->signal_changed().connect(sigc::mem_fun(*this, &prefsWindow::on_patternsCombobox_changed), false);
-	addPatternButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_addPatternButton_clicked), false);
-	removePatternButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_removePatternButton_clicked), false);
-	resetPatternsButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_resetPatternsButton_clicked), false);
-	addLabelButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_addLabelButton_clicked), false);
-	removeLabelButton->signal_clicked().connect(sigc::mem_fun(*this, &prefsWindow::on_removeLabelButton_clicked), false);
-	directConnectionRadiobutton->signal_toggled().connect(sigc::mem_fun(*this, &prefsWindow::on_directConnectionRadiobutton_toggled), false);
-	signal_delete_event().connect(sigc::mem_fun(*this, &prefsWindow::on_prefsWindow_delete_event), false);
+	prefsCancelbutton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_prefsCancelbutton_clicked), false);
+	prefsOkbutton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_prefsOkbutton_clicked), false);
+	addDirectoryButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_addDirectoryButton_clicked), false);
+	removeDirectoryButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_removeDirectoryButton_clicked), false);
+	patternsCombobox->signal_changed().connect(sigc::mem_fun(*this, &PrefsWindow::on_patternsCombobox_changed), false);
+	addPatternButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_addPatternButton_clicked), false);
+	removePatternButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_removePatternButton_clicked), false);
+	resetPatternsButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_resetPatternsButton_clicked), false);
+	addLabelButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_addLabelButton_clicked), false);
+	removeLabelButton->signal_clicked().connect(sigc::mem_fun(*this, &PrefsWindow::on_removeLabelButton_clicked), false);
+	directConnectionRadiobutton->signal_toggled().connect(sigc::mem_fun(*this, &PrefsWindow::on_directConnectionRadiobutton_toggled), false);
+	signal_delete_event().connect(sigc::mem_fun(*this, &PrefsWindow::on_prefsWindow_delete_event), false);
 
 	Color newColour;
 	ustring desktopName(_("File Indexing and Search"));
@@ -159,7 +159,7 @@ prefsWindow::prefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBu
 		guint rowsCount = rowsProp.get_value();
 
 #ifdef DEBUG
-		clog << "prefsWindow: adding " << m_settings.m_editablePluginValues.size() << " more rows" << endl;
+		clog << "PrefsWindow: adding " << m_settings.m_editablePluginValues.size() << " more rows" << endl;
 #endif
 		generalTable->resize(rowsCount + m_settings.m_editablePluginValues.size(), columnsProp.get_value());
 
@@ -224,11 +224,11 @@ prefsWindow::prefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBu
 	m_state.connect();
 }
 
-prefsWindow::~prefsWindow()
+PrefsWindow::~PrefsWindow()
 {
 }
 
-void prefsWindow::updateLabelRow(const ustring &path_string, const ustring &text)
+void PrefsWindow::updateLabelRow(const ustring &path_string, const ustring &text)
 {
 	Gtk::TreePath path(path_string);
 
@@ -239,14 +239,14 @@ void prefsWindow::updateLabelRow(const ustring &path_string, const ustring &text
 		TreeRow row = *iter;
 
 #ifdef DEBUG
-		clog << "prefsWindow::updateLabelRow: set label to " << text << endl;
+		clog << "PrefsWindow::updateLabelRow: set label to " << text << endl;
 #endif
 		// Set the value of the name column
 		row.set_value(m_labelsColumns.m_name, (ustring)text);
 	}
 }
 
-void prefsWindow::renderLabelNameColumn(CellRenderer *pRenderer, const TreeModel::iterator &iter)
+void PrefsWindow::renderLabelNameColumn(CellRenderer *pRenderer, const TreeModel::iterator &iter)
 {
 	TreeModel::Row row = *iter;
 
@@ -275,7 +275,7 @@ void prefsWindow::renderLabelNameColumn(CellRenderer *pRenderer, const TreeModel
 	}
 }
 
-void prefsWindow::on_thread_end(WorkerThread *pThread)
+void PrefsWindow::on_thread_end(WorkerThread *pThread)
 {
 	bool canQuit = false;
 
@@ -294,7 +294,7 @@ void prefsWindow::on_thread_end(WorkerThread *pThread)
 	if (status.empty() == false)
 	{
 #ifdef DEBUG
-		clog << "prefsWindow::on_thread_end: " << status << endl;
+		clog << "PrefsWindow::on_thread_end: " << status << endl;
 #endif
 		// FIXME: tell the user the thread failed
 	}
@@ -327,13 +327,13 @@ void prefsWindow::on_thread_end(WorkerThread *pThread)
 	else
 	{
 #ifdef DEBUG
-		clog << "prefsWindow::on_thread_end: quitting" << endl;
+		clog << "PrefsWindow::on_thread_end: quitting" << endl;
 #endif
 		on_prefsWindow_delete_event(NULL);
 	}
 }
 
-void prefsWindow::attach_value_widgets(const string &name, const string &value, guint rowNumber)
+void PrefsWindow::attach_value_widgets(const string &name, const string &value, guint rowNumber)
 {
 	Label *valueLabel = manage(new Label(name + ":"));
 	Entry *valueEntry = manage(new Entry());
@@ -368,14 +368,14 @@ void prefsWindow::attach_value_widgets(const string &name, const string &value, 
 	valueEntry->show();
 }
 
-void prefsWindow::populate_proxyTypeCombobox()
+void PrefsWindow::populate_proxyTypeCombobox()
 {
 	proxyTypeCombobox->append("HTTP");
 	proxyTypeCombobox->append("SOCKS v4");
 	proxyTypeCombobox->append("SOCKS v5");
 }
 
-void prefsWindow::populate_labelsTreeview()
+void PrefsWindow::populate_labelsTreeview()
 {
 	set<string> &labels = m_settings.m_labels;
 
@@ -406,7 +406,7 @@ void prefsWindow::populate_labelsTreeview()
 	removeLabelButton->set_sensitive(true);
 }
 
-void prefsWindow::save_labelsTreeview()
+void PrefsWindow::save_labelsTreeview()
 {
 	set<string> &labels = m_settings.m_labels;
 
@@ -435,7 +435,7 @@ void prefsWindow::save_labelsTreeview()
 			}
 
 #ifdef DEBUG
-			clog << "prefsWindow::save_labelsTreeview: " << labelName << endl;
+			clog << "PrefsWindow::save_labelsTreeview: " << labelName << endl;
 #endif
 			// Add this new label to the settings
 			labels.insert(labelName);
@@ -443,7 +443,7 @@ void prefsWindow::save_labelsTreeview()
 	}
 }
 
-void prefsWindow::populate_directoriesTreeview()
+void PrefsWindow::populate_directoriesTreeview()
 {
 	ustring dirsString;
 
@@ -471,7 +471,7 @@ void prefsWindow::populate_directoriesTreeview()
 	removeDirectoryButton->set_sensitive(true);
 }
 
-bool prefsWindow::save_directoriesTreeview()
+bool PrefsWindow::save_directoriesTreeview()
 {
 	string dirsString;
 
@@ -503,7 +503,7 @@ bool prefsWindow::save_directoriesTreeview()
 			}
 
 #ifdef DEBUG
-			clog << "prefsWindow::save_directoriesTreeview: " << indexableLocation.m_name << endl;
+			clog << "PrefsWindow::save_directoriesTreeview: " << indexableLocation.m_name << endl;
 #endif
 			m_settings.m_indexableLocations.insert(indexableLocation);
 			dirsString += indexableLocation.m_name + (indexableLocation.m_monitor == true ? "1" : "0") + "|";
@@ -513,7 +513,7 @@ bool prefsWindow::save_directoriesTreeview()
 	if (m_directoriesHash != StringManip::hashString(dirsString))
 	{
 #ifdef DEBUG
-		clog << "prefsWindow::save_directoriesTreeview: directories changed" << endl;
+		clog << "PrefsWindow::save_directoriesTreeview: directories changed" << endl;
 #endif
 		return true;
 	}
@@ -521,13 +521,13 @@ bool prefsWindow::save_directoriesTreeview()
 	return false;
 }
 
-void prefsWindow::populate_patternsCombobox()
+void PrefsWindow::populate_patternsCombobox()
 {
 	patternsCombobox->append(_("Exclude these patterns from indexing"));
 	patternsCombobox->append(_("Only index these patterns"));
 }
 
-void prefsWindow::populate_patternsTreeview(const set<ustring> &patternsList, bool isBlackList)
+void PrefsWindow::populate_patternsTreeview(const set<ustring> &patternsList, bool isBlackList)
 {
 	ustring patternsString;
 
@@ -570,7 +570,7 @@ void prefsWindow::populate_patternsTreeview(const set<ustring> &patternsList, bo
 	m_patternsHash = StringManip::hashString(patternsString);
 }
 
-bool prefsWindow::save_patternsTreeview()
+bool PrefsWindow::save_patternsTreeview()
 {
 	ustring patternsString;
 
@@ -608,7 +608,7 @@ bool prefsWindow::save_patternsTreeview()
 	if (m_patternsHash != StringManip::hashString(patternsString))
 	{
 #ifdef DEBUG
-		clog << "prefsWindow::save_patternsTreeview: patterns changed" << endl;
+		clog << "PrefsWindow::save_patternsTreeview: patterns changed" << endl;
 #endif
 		return true;
 	}
@@ -616,12 +616,12 @@ bool prefsWindow::save_patternsTreeview()
 	return false;
 }
 
-void prefsWindow::on_prefsCancelbutton_clicked()
+void PrefsWindow::on_prefsCancelbutton_clicked()
 {
 	on_prefsWindow_delete_event(NULL);
 }
 
-void prefsWindow::on_prefsOkbutton_clicked()
+void PrefsWindow::on_prefsOkbutton_clicked()
 {
 	bool startedThread = false;
 
@@ -713,7 +713,7 @@ void prefsWindow::on_prefsOkbutton_clicked()
 	// FIXME: else, disable all buttons or provide some visual feedback, until threads are done
 }
 
-void prefsWindow::on_addDirectoryButton_clicked()
+void PrefsWindow::on_addDirectoryButton_clicked()
 {
 	ustring dirName;
 
@@ -723,7 +723,7 @@ void prefsWindow::on_addDirectoryButton_clicked()
 	if (select_file_name(_("Directory to index"), dirName, true, true) == true)
 	{
 #ifdef DEBUG
-		clog << "prefsWindow::on_addDirectoryButton_clicked: "
+		clog << "PrefsWindow::on_addDirectoryButton_clicked: "
 			<< dirName << endl;
 #endif
 		// Create a new entry in the directories list
@@ -741,7 +741,7 @@ void prefsWindow::on_addDirectoryButton_clicked()
 	}
 }
 
-void prefsWindow::on_removeDirectoryButton_clicked()
+void PrefsWindow::on_removeDirectoryButton_clicked()
 {
 	// Get the selected directory in the list
 	TreeModel::iterator iter = directoriesTreeview->get_selection()->get_selected();
@@ -771,7 +771,7 @@ void prefsWindow::on_removeDirectoryButton_clicked()
 	}
 }
 
-void prefsWindow::on_patternsCombobox_changed()
+void PrefsWindow::on_patternsCombobox_changed()
 {
 	int activeRow = patternsCombobox->get_active_row_number();
 
@@ -788,7 +788,7 @@ void prefsWindow::on_patternsCombobox_changed()
 	m_refPatternsTree->clear();
 }
 
-void prefsWindow::on_addPatternButton_clicked()
+void PrefsWindow::on_addPatternButton_clicked()
 {
 	TreeModel::Children children = m_refPatternsTree->children();
 	bool wasEmpty = children.empty();
@@ -815,7 +815,7 @@ void prefsWindow::on_addPatternButton_clicked()
 	}
 }
 
-void prefsWindow::on_removePatternButton_clicked()
+void PrefsWindow::on_removePatternButton_clicked()
 {
 	// Get the selected file pattern in the list
 	TreeModel::iterator iter = patternsTreeview->get_selection()->get_selected();
@@ -841,7 +841,7 @@ void prefsWindow::on_removePatternButton_clicked()
 	}
 }
 
-void prefsWindow::on_resetPatternsButton_clicked()
+void PrefsWindow::on_resetPatternsButton_clicked()
 {
 	set<ustring> defaultPatterns;
 	bool isBlackList = m_settings.getDefaultPatterns(defaultPatterns);
@@ -855,7 +855,7 @@ void prefsWindow::on_resetPatternsButton_clicked()
 	populate_patternsTreeview(defaultPatterns, isBlackList);
 }
 
-void prefsWindow::on_addLabelButton_clicked()
+void PrefsWindow::on_addLabelButton_clicked()
 {
 	// Now create a new entry in the labels list
 	TreeModel::iterator iter = m_refLabelsTree->append();
@@ -868,7 +868,7 @@ void prefsWindow::on_addLabelButton_clicked()
 	removeLabelButton->set_sensitive(true);
 }
 
-void prefsWindow::on_removeLabelButton_clicked()
+void PrefsWindow::on_removeLabelButton_clicked()
 {
 	// Get the selected label in the list
 	TreeModel::iterator iter = labelsTreeview->get_selection()->get_selected();
@@ -894,7 +894,7 @@ void prefsWindow::on_removeLabelButton_clicked()
 	}
 }
 
-void prefsWindow::on_directConnectionRadiobutton_toggled()
+void PrefsWindow::on_directConnectionRadiobutton_toggled()
 {
 	bool enabled = proxyRadiobutton->get_active();
 
@@ -903,7 +903,7 @@ void prefsWindow::on_directConnectionRadiobutton_toggled()
 	proxyTypeCombobox->set_sensitive(enabled);
 }
 
-bool prefsWindow::on_prefsWindow_delete_event(GdkEventAny *ev)
+bool PrefsWindow::on_prefsWindow_delete_event(GdkEventAny *ev)
 {
 	// Any thread still running ?
 	if (m_state.get_threads_count() > 0)

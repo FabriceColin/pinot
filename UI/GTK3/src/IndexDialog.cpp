@@ -22,14 +22,14 @@
 #include "NLS.h"
 #include "Url.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "indexDialog.hh"
+#include "PinotUtils.h"
+#include "IndexDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-indexDialog::indexDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+IndexDialog::IndexDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	indexCancelButton(NULL),
 	indexOkButton(NULL),
@@ -51,23 +51,23 @@ indexDialog::indexDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	refBuilder->get_widget("typeCombobox", typeCombobox);
 	refBuilder->get_widget("hostEntry", hostEntry);
 
-	indexCancelButton->signal_clicked().connect(sigc::mem_fun(*this, &indexDialog::on_indexCancelButton_clicked), false);
-	indexOkButton->signal_clicked().connect(sigc::mem_fun(*this, &indexDialog::on_indexOkButton_clicked), false);
-	locationEntry->signal_changed().connect(sigc::mem_fun(*this, &indexDialog::on_locationEntry_changed), false);
-	locationButton->signal_clicked().connect(sigc::mem_fun(*this, &indexDialog::on_locationButton_clicked), false);
-	nameEntry->signal_changed().connect(sigc::mem_fun(*this, &indexDialog::on_nameEntry_changed), false);
-	typeCombobox->signal_changed().connect(sigc::mem_fun(*this, &indexDialog::on_typeCombobox_changed), false);
-	hostEntry->signal_changed().connect(sigc::mem_fun(*this, &indexDialog::on_nameEntry_changed), false);
+	indexCancelButton->signal_clicked().connect(sigc::mem_fun(*this, &IndexDialog::on_indexCancelButton_clicked), false);
+	indexOkButton->signal_clicked().connect(sigc::mem_fun(*this, &IndexDialog::on_indexOkButton_clicked), false);
+	locationEntry->signal_changed().connect(sigc::mem_fun(*this, &IndexDialog::on_locationEntry_changed), false);
+	locationButton->signal_clicked().connect(sigc::mem_fun(*this, &IndexDialog::on_locationButton_clicked), false);
+	nameEntry->signal_changed().connect(sigc::mem_fun(*this, &IndexDialog::on_nameEntry_changed), false);
+	typeCombobox->signal_changed().connect(sigc::mem_fun(*this, &IndexDialog::on_typeCombobox_changed), false);
+	hostEntry->signal_changed().connect(sigc::mem_fun(*this, &IndexDialog::on_nameEntry_changed), false);
 
 	// Populate the type combo
 	populate_typeCombobox();
 }
 
-indexDialog::~indexDialog()
+IndexDialog::~IndexDialog()
 {
 }
 
-void indexDialog::populate_typeCombobox(void)
+void IndexDialog::populate_typeCombobox(void)
 {
 	ustring servedBy(_("Served by"));
 
@@ -78,7 +78,7 @@ void indexDialog::populate_typeCombobox(void)
 #endif
 }
 
-void indexDialog::checkFields(void)
+void IndexDialog::checkFields(void)
 {
 	bool needsLocation = false, needsHost = false, enableOkButton = true;
 
@@ -141,7 +141,7 @@ void indexDialog::checkFields(void)
 	indexOkButton->set_sensitive(enableOkButton);
 }
 
-void indexDialog::setNameAndLocation(const ustring &name,
+void IndexDialog::setNameAndLocation(const ustring &name,
 	const ustring &location)
 {
 	// Name
@@ -216,36 +216,36 @@ void indexDialog::setNameAndLocation(const ustring &name,
 	m_editIndex = true;
 }
 
-bool indexDialog::badName(void) const
+bool IndexDialog::badName(void) const
 {
 	return m_badName;
 }
 
-ustring indexDialog::getName(void) const
+ustring IndexDialog::getName(void) const
 {
 	return m_name;
 }
 
-ustring indexDialog::getLocation(void) const
+ustring IndexDialog::getLocation(void) const
 {
 	return m_location;
 }
 
-void indexDialog::on_indexCancelButton_clicked()
+void IndexDialog::on_indexCancelButton_clicked()
 {
 #ifdef DEBUG
-	clog << "indexDialog::on_indexCancelButton_clicked: called" << endl;
+	clog << "IndexDialog::on_indexCancelButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-void indexDialog::on_indexOkButton_clicked()
+void IndexDialog::on_indexOkButton_clicked()
 {
 	PinotSettings &settings = PinotSettings::getInstance();
 	// The changed() methods ensure name and location are set
 	ustring location, name = nameEntry->get_text();
 #ifdef DEBUG
-	clog << "indexDialog::on_indexOkButton_clicked: called" << endl;
+	clog << "IndexDialog::on_indexOkButton_clicked: called" << endl;
 #endif
 
 	m_badName = false;
@@ -282,7 +282,7 @@ void indexDialog::on_indexOkButton_clicked()
 #endif
 	}
 #ifdef DEBUG
-	clog << "indexDialog::on_indexOkButton_clicked: " << name << ", " << location << endl;
+	clog << "IndexDialog::on_indexOkButton_clicked: " << name << ", " << location << endl;
 #endif
 
 	// Look up that index name in the map
@@ -295,7 +295,7 @@ void indexDialog::on_indexOkButton_clicked()
 			// This name is in use
 			m_badName = true;
 #ifdef DEBUG
-			clog << "indexDialog::on_indexOkButton_clicked: name in use" << endl;
+			clog << "IndexDialog::on_indexOkButton_clicked: name in use" << endl;
 #endif
 			break;
 		}
@@ -307,7 +307,7 @@ void indexDialog::on_indexOkButton_clicked()
 		// ... but that's okay, because it's the original name
 		m_badName = false;
 #ifdef DEBUG
-		clog << "indexDialog::on_indexOkButton_clicked: old name" << endl;
+		clog << "IndexDialog::on_indexOkButton_clicked: old name" << endl;
 #endif
 	}
 
@@ -317,12 +317,12 @@ void indexDialog::on_indexOkButton_clicked()
 	close();
 }
 
-void indexDialog::on_locationEntry_changed()
+void IndexDialog::on_locationEntry_changed()
 {
 	checkFields();
 }
 
-void indexDialog::on_locationButton_clicked()
+void IndexDialog::on_locationButton_clicked()
 {
 	ustring dirName = locationEntry->get_text();
 	if (select_file_name(_("Index location"), dirName, true, true) == true)
@@ -331,13 +331,13 @@ void indexDialog::on_locationButton_clicked()
 	}
 }
 
-void indexDialog::on_typeCombobox_changed()
+void IndexDialog::on_typeCombobox_changed()
 {
 	checkFields();
 
 }
 
-void indexDialog::on_nameEntry_changed()
+void IndexDialog::on_nameEntry_changed()
 {
 	checkFields();
 }

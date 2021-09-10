@@ -34,11 +34,11 @@
 #include "QueryProperties.h"
 #include "PinotSettings.h"
 
-class queryDialog : public Gtk::Dialog
+class QueryDialog : public Gtk::Dialog
 {
 public:
-	queryDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~queryDialog();
+	QueryDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~QueryDialog();
 
 	void setQueryProperties(const QueryProperties &properties);
 

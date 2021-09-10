@@ -32,14 +32,14 @@
 #include "ViewHistory.h"
 #include "ModuleFactory.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "statisticsDialog.hh"
+#include "PinotUtils.h"
+#include "StatisticsDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-statisticsDialog::statisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+StatisticsDialog::StatisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	closeStatisticsButton(NULL),
 	statisticsTreeview(NULL),
@@ -50,10 +50,10 @@ statisticsDialog::statisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuil
 	refBuilder->get_widget("closeStatisticsButton", closeStatisticsButton);
 	refBuilder->get_widget("statisticsTreeview", statisticsTreeview);
 
-	closeStatisticsButton->signal_clicked().connect(sigc::mem_fun(*this, &statisticsDialog::on_closeStatisticsButton_clicked), false);
-	signal_delete_event().connect(sigc::mem_fun(*this, &statisticsDialog::on_statisticsDialog_delete_event), false);
+	closeStatisticsButton->signal_clicked().connect(sigc::mem_fun(*this, &StatisticsDialog::on_closeStatisticsButton_clicked), false);
+	signal_delete_event().connect(sigc::mem_fun(*this, &StatisticsDialog::on_statisticsDialog_delete_event), false);
 
-	m_signalStats.connect(sigc::mem_fun(*this, &statisticsDialog::on_stats_changed));
+	m_signalStats.connect(sigc::mem_fun(*this, &StatisticsDialog::on_stats_changed));
 
 	// Associate the columns model to the engines tree
 	m_refStore = TreeStore::create(m_statsColumns);
@@ -72,16 +72,16 @@ statisticsDialog::statisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuil
 	populate();
 }
 
-statisticsDialog::~statisticsDialog()
+StatisticsDialog::~StatisticsDialog()
 {
 }
 
-sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int>& statisticsDialog::getStatsSignal(void)
+sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int>& StatisticsDialog::getStatsSignal(void)
 {
 	return m_signalStats;
 }
 
-void statisticsDialog::populate(void)
+void StatisticsDialog::populate(void)
 {
 	TreeModel::iterator folderIter = m_refStore->append();
 	TreeModel::Row row = *folderIter;
@@ -169,7 +169,7 @@ void statisticsDialog::populate(void)
 	statisticsTreeview->collapse_row(enginesPath);
 }
 
-void statisticsDialog::populate_history(void)
+void StatisticsDialog::populate_history(void)
 {
 	CrawlHistory crawlHistory(PinotSettings::getInstance().getHistoryDatabaseName(true));
 	ViewHistory viewHistory(PinotSettings::getInstance().getHistoryDatabaseName());
@@ -190,23 +190,23 @@ void statisticsDialog::populate_history(void)
 	row[m_statsColumns.m_name] = ustring(_("Crawled")) + " " + countStr.str() + " " + _("files");
 }
 
-void statisticsDialog::on_closeStatisticsButton_clicked()
+void StatisticsDialog::on_closeStatisticsButton_clicked()
 {
 #ifdef DEBUG
-	clog << "statisticsDialog::on_closeStatisticsButton_clicked: called" << endl;
+	clog << "StatisticsDialog::on_closeStatisticsButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-bool statisticsDialog::on_statisticsDialog_delete_event(GdkEventAny *ev)
+bool StatisticsDialog::on_statisticsDialog_delete_event(GdkEventAny *ev)
 {
 #ifdef DEBUG
-	clog << "statisticsDialog::on_statisticsDialog_delete_event: called" << endl;
+	clog << "StatisticsDialog::on_statisticsDialog_delete_event: called" << endl;
 #endif
 	return false;
 }
 
-void statisticsDialog::on_stats_changed(unsigned int crawledCOunt, unsigned int docsCount,
+void StatisticsDialog::on_stats_changed(unsigned int crawledCOunt, unsigned int docsCount,
 	bool lowDiskSpace, bool onBattery, bool crawling)
 {
 	TreeModel::Row row;
@@ -217,7 +217,7 @@ void statisticsDialog::on_stats_changed(unsigned int crawledCOunt, unsigned int 
 	string programName("pinot-daemon");
 #endif
 #ifdef DEBUG
-	clog << "statisticsDialog::on_stats_changed: called" << endl;
+	clog << "StatisticsDialog::on_stats_changed: called" << endl;
 #endif
 
 	// Is the daemon still running ?

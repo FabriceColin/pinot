@@ -28,13 +28,13 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/spinbutton.h>
 
-#include "ModelColumns.hh"
+#include "ModelColumns.h"
 
-class indexDialog : public Gtk::Dialog
+class IndexDialog : public Gtk::Dialog
 {  
 public:
-	indexDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~indexDialog();
+	IndexDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~IndexDialog();
 
 	void setNameAndLocation(const Glib::ustring &name = Glib::ustring(""),
 		const Glib::ustring &location= Glib::ustring(""));

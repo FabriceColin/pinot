@@ -37,14 +37,14 @@
 #include <gtkmm/window.h>
 
 #include "PinotSettings.h"
-#include "ModelColumns.hh"
-#include "UIThreads.hh"
+#include "ModelColumns.h"
+#include "UIThreads.h"
 
-class prefsWindow : public Gtk::Window
+class PrefsWindow : public Gtk::Window
 {  
 public:
-	prefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~prefsWindow();
+	PrefsWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~PrefsWindow();
 
 protected:
 	Gtk::Button *prefsCancelbutton;
@@ -92,7 +92,7 @@ protected:
 	class InternalState : public QueueManager
 	{
 	public:
-		InternalState(prefsWindow *pWindow);
+		InternalState(PrefsWindow *pWindow);
 		~InternalState();
 
 		bool m_savedPrefs;

@@ -29,11 +29,11 @@
 
 #include "MIMEScanner.h"
 
-class launcherDialog : public Gtk::Dialog
+class LauncherDialog : public Gtk::Dialog
 {
 public:
-	launcherDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~launcherDialog();
+	LauncherDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~LauncherDialog();
 
 	void setUrl(const std::string &url);
 

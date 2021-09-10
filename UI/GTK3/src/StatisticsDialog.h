@@ -29,14 +29,14 @@
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
 
-#include "ModelColumns.hh"
-#include "UIThreads.hh"
+#include "ModelColumns.h"
+#include "UIThreads.h"
 
-class statisticsDialog : public Gtk::Dialog
+class StatisticsDialog : public Gtk::Dialog
 {
 public:
-	statisticsDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~statisticsDialog();
+	StatisticsDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~StatisticsDialog();
 
 	sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int>& getStatsSignal(void);
 
