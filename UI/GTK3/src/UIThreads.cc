@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Fabrice Colin
+ *  Copyright 2009-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@
 #include "config.h"
 #include "NLS.h"
 #include "QueryHistory.h"
+#ifdef HAVE_DBUS
+#include "DBusIndex.h"
+#endif
 #include "ModuleFactory.h"
 #include "PinotSettings.h"
 #include "UIThreads.hh"
@@ -394,4 +397,41 @@ void UpdateDocumentThread::doWork(void)
 		delete pIndex;
 	}
 }
+
+#ifdef HAVE_DBUS
+DaemonStatusThread::DaemonStatusThread() :
+	WorkerThread(),
+	m_gotStats(false),
+	m_lowDiskSpace(false),
+	m_onBattery(false),
+	m_crawling(false),
+	m_crawledCount(0),
+	m_docsCount(0)
+{
+}
+
+DaemonStatusThread::~DaemonStatusThread()
+{
+}
+
+string DaemonStatusThread::getType(void) const
+{
+	return "DaemonStatusThread";
+}
+
+void DaemonStatusThread::doWork(void)
+{
+	// We need a pure DBusIndex object
+	DBusIndex index(NULL);
+
+	if (index.getStatistics(m_crawledCount, m_docsCount,
+		m_lowDiskSpace, m_onBattery, m_crawling) == true)
+	{
+		m_gotStats = true;
+	}
+#ifdef DEBUG
+	else clog << "DaemonStatusThread::doWork: failed to get statistics" << endl;
+#endif
+}
+#endif
 

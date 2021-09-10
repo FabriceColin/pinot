@@ -2373,6 +2373,26 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			}
 		}
 	}
+#ifdef HAVE_DBUS
+	else if (type == "DaemonStatusThread")
+	{
+		DaemonStatusThread *pStatusThread = dynamic_cast<DaemonStatusThread*>(pThread);
+		if (pStatusThread == NULL)
+		{
+			delete pThread;
+			return;
+		}
+
+		statisticsDialog *pStatisticsBox = NULL;
+		m_refBuilder->get_widget_derived<statisticsDialog>("statisticsDialog", pStatisticsBox);
+
+		if (pStatisticsBox != NULL)
+		{
+			pStatisticsBox->getStatsSignal()(pStatusThread->m_crawledCount, pStatusThread->m_docsCount,
+				pStatusThread->m_lowDiskSpace, pStatusThread->m_onBattery, pStatusThread->m_crawling);
+		}
+	}
+#endif
 
 	// Delete the thread
 	delete pThread;
@@ -2529,8 +2549,6 @@ void mainWindow::on_indexForwardButton_clicked(ustring indexName)
 
 void mainWindow::on_status_activate()
 {
-	m_state.disconnect();
-
 	statisticsDialog *pStatisticsBox = NULL;
 	m_refBuilder->get_widget_derived<statisticsDialog>("statisticsDialog", pStatisticsBox);
 
@@ -2539,11 +2557,13 @@ void mainWindow::on_status_activate()
 		return;
 	}
 
+#ifdef HAVE_DBUS
+	start_thread(new DaemonStatusThread());
+#endif
+
 	pStatisticsBox->resize(250, 350);
 	pStatisticsBox->show();
 	pStatisticsBox->run();
-
-	m_state.connect();
 }
 
 void mainWindow::on_preferences_activate()

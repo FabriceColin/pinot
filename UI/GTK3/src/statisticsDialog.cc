@@ -21,6 +21,7 @@
 #include <map>
 #include <set>
 #include <iostream>
+#include <sstream>
 #include <glibmm/convert.h>
 #include <gtkmm/stock.h>
 
@@ -29,9 +30,6 @@
 #include "Url.h"
 #include "CrawlHistory.h"
 #include "ViewHistory.h"
-#ifdef HAVE_DBUS
-#include "DBusIndex.h"
-#endif
 #include "ModuleFactory.h"
 #include "PinotSettings.h"
 #include "PinotUtils.hh"
@@ -41,89 +39,21 @@ using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-#ifdef HAVE_DBUS
-class DaemonStatusThread : public WorkerThread
-{
-	public:
-		DaemonStatusThread() :
-			WorkerThread(),
-			m_gotStats(false),
-			m_lowDiskSpace(false),
-			m_onBattery(false),
-			m_crawling(false),
-			m_crawledCount(0),
-			m_docsCount(0)
-		{
-		}
-                virtual ~DaemonStatusThread()
-		{
-		}
-
-                virtual std::string getType(void) const
-		{
-			return "DaemonStatusThread";
-		}
-
-		bool m_gotStats;
-		bool m_lowDiskSpace;
-		bool m_onBattery;
-		bool m_crawling;
-		unsigned int m_crawledCount;
-		unsigned int m_docsCount;
-
-        protected:
-                virtual void doWork(void)
-		{
-			// We need a pure DBusIndex object
-			DBusIndex index(NULL);
-
-			if (index.getStatistics(m_crawledCount, m_docsCount,
-				m_lowDiskSpace, m_onBattery, m_crawling) == true)
-			{
-				m_gotStats = true;
-			}
-#ifdef DEBUG
-			else clog << "DaemonStatusThread::doWork: failed to get statistics" << endl;
-#endif
-		}
-
-        private:
-                DaemonStatusThread(const DaemonStatusThread &other);
-                DaemonStatusThread &operator=(const DaemonStatusThread &other);
-
-};
-#endif
-
-statisticsDialog::InternalState::InternalState(statisticsDialog *pWindow) :
-	ThreadsManager(PinotSettings::getInstance().m_docsIndexLocation),
-	m_getStats(true),
-	m_gettingStats(false),
-	m_lowDiskSpace(false),
-	m_onBattery(false),
-	m_crawling(false)
-{
-	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &statisticsDialog::on_thread_end));
-}
-
-statisticsDialog::InternalState::~InternalState()
-{
-}
-
 statisticsDialog::statisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	closeStatisticsButton(NULL),
 	statisticsTreeview(NULL),
-	m_hasErrors(false),
 	m_hasDiskSpace(false),
 	m_hasBattery(false),
-	m_hasCrawl(false),
-	m_state(this)
+	m_hasCrawl(false)
 {
 	refBuilder->get_widget("closeStatisticsButton", closeStatisticsButton);
 	refBuilder->get_widget("statisticsTreeview", statisticsTreeview);
 
 	closeStatisticsButton->signal_clicked().connect(sigc::mem_fun(*this, &statisticsDialog::on_closeStatisticsButton_clicked), false);
 	signal_delete_event().connect(sigc::mem_fun(*this, &statisticsDialog::on_statisticsDialog_delete_event), false);
+
+	m_signalStats.connect(sigc::mem_fun(*this, &statisticsDialog::on_stats_changed));
 
 	// Associate the columns model to the engines tree
 	m_refStore = TreeStore::create(m_statsColumns);
@@ -140,17 +70,15 @@ statisticsDialog::statisticsDialog(GtkDialog *&pParent, RefPtr<Builder>& refBuil
 
 	// Populate
 	populate();
-	// ...and update regularly
-	m_idleConnection = Glib::signal_timeout().connect(sigc::mem_fun(*this,
-		&statisticsDialog::on_activity_timeout), 10000);
-
-	// FIXME: replace this with a signal mainWindow can invoke when stats are available
-	// Connect to threads' finished signal
-	m_state.connect();
 }
 
 statisticsDialog::~statisticsDialog()
 {
+}
+
+sigc::signal5<void, bool, bool, bool, unsigned int, unsigned int>& statisticsDialog::getStatsSignal(void)
+{
+	return m_signalStats;
 }
 
 void statisticsDialog::populate(void)
@@ -158,6 +86,7 @@ void statisticsDialog::populate(void)
 	TreeModel::iterator folderIter = m_refStore->append();
 	TreeModel::Row row = *folderIter;
 	std::map<ModuleProperties, bool> engines;
+	stringstream countStr;
 
 	// Indexes
 	statisticsTreeview->get_selection()->select(folderIter);
@@ -167,13 +96,41 @@ void statisticsDialog::populate(void)
 	row[m_statsColumns.m_name] = _("My Web Pages");
 	m_myWebPagesIter = m_refStore->append(statIter->children());
 	row = *m_myWebPagesIter;
-	row[m_statsColumns.m_name] = ustring(_("Checking"));
+	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_docsIndexLocation);
+	if (pIndex != NULL)
+	{
+		unsigned int docsCount = pIndex->getDocumentsCount();
+
+		countStr << docsCount;
+		row[m_statsColumns.m_name] = ustring(countStr.str()) + " " + _("documents");
+
+		delete pIndex;
+	}
+	else
+	{
+		row[m_statsColumns.m_name] = _("Unknown error");
+	}
 	statIter = m_refStore->append(folderIter->children());
 	row = *statIter;
 	row[m_statsColumns.m_name] = _("My Documents");
 	m_myDocumentsIter = m_refStore->append(statIter->children());
 	row = *m_myDocumentsIter;
-	row[m_statsColumns.m_name] = ustring(_("Checking"));
+	pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
+	if (pIndex != NULL)
+	{
+		unsigned int docsCount = pIndex->getDocumentsCount();
+
+		countStr << docsCount;
+		row[m_statsColumns.m_name] = ustring(countStr.str()) + " " + _("documents");
+
+		m_daemonDBusStatus = pIndex->getMetadata("dbus-status");
+
+		delete pIndex;
+	}
+	else
+	{
+		row[m_statsColumns.m_name] = _("Unknown error");
+	}
 
 	// Search engines
 	TreeModel::iterator enginesIter = m_refStore->append();
@@ -217,68 +174,51 @@ void statisticsDialog::populate_history(void)
 	CrawlHistory crawlHistory(PinotSettings::getInstance().getHistoryDatabaseName(true));
 	ViewHistory viewHistory(PinotSettings::getInstance().getHistoryDatabaseName());
 	TreeModel::Row row;
-	char countStr[64];
+	stringstream countStr;
 
 	// Show view statistics
 	unsigned int viewCount = viewHistory.getItemsCount();
-	snprintf(countStr, 64, "%u", viewCount);
+	countStr << viewCount;
 	row = *m_viewStatIter;
-	row[m_statsColumns.m_name] = ustring(_("Viewed")) + " " + countStr + " " + _("results");
+	row[m_statsColumns.m_name] = ustring(_("Viewed")) + " " + countStr.str() + " " + _("results");
+	countStr.clear();
 
 	// Show crawler statistics
 	unsigned int crawledFilesCount = crawlHistory.getItemsCount(CrawlHistory::CRAWLED);
-	snprintf(countStr, 64, "%u", crawledFilesCount);
+	countStr << crawledFilesCount;
 	row = *m_crawledStatIter;
-	row[m_statsColumns.m_name] = ustring(_("Crawled")) + " " + countStr + " " + _("files");
+	row[m_statsColumns.m_name] = ustring(_("Crawled")) + " " + countStr.str() + " " + _("files");
 }
 
-bool statisticsDialog::on_activity_timeout(void)
+void statisticsDialog::on_closeStatisticsButton_clicked()
+{
+#ifdef DEBUG
+	clog << "statisticsDialog::on_closeStatisticsButton_clicked: called" << endl;
+#endif
+	close();
+}
+
+bool statisticsDialog::on_statisticsDialog_delete_event(GdkEventAny *ev)
+{
+#ifdef DEBUG
+	clog << "statisticsDialog::on_statisticsDialog_delete_event: called" << endl;
+#endif
+	return false;
+}
+
+void statisticsDialog::on_stats_changed(unsigned int crawledCOunt, unsigned int docsCount,
+	bool lowDiskSpace, bool onBattery, bool crawling)
 {
 	TreeModel::Row row;
-	std::map<unsigned int, string> sources;
-	string daemonDBusStatus;
+	stringstream countStr;
 #ifdef HAVE_DBUS
 	string programName("pinot-dbus-daemon");
 #else
 	string programName("pinot-daemon");
 #endif
-	char countStr[64];
-
-	row = *m_myWebPagesIter;
-	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_docsIndexLocation);
-	if (pIndex != NULL)
-	{
-		unsigned int docsCount = pIndex->getDocumentsCount();
-
-		snprintf(countStr, 64, "%u", docsCount);
-		row[m_statsColumns.m_name] = ustring(countStr) + " " + _("documents");
-
-		delete pIndex;
-	}
-	else
-	{
-		row[m_statsColumns.m_name] = _("Unknown error");
-	}
-
-	row = *m_myDocumentsIter;
-	pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
-	if (pIndex != NULL)
-	{
-		unsigned int docsCount = pIndex->getDocumentsCount();
-
-		snprintf(countStr, 64, "%u", docsCount);
-		row[m_statsColumns.m_name] = ustring(countStr) + " " + _("documents");
-
-		daemonDBusStatus = pIndex->getMetadata("dbus-status");
-
-		delete pIndex;
-	}
-	else
-	{
-		row[m_statsColumns.m_name] = _("Unknown error");
-	}
-
-	populate_history();
+#ifdef DEBUG
+	clog << "statisticsDialog::on_stats_changed: called" << endl;
+#endif
 
 	// Is the daemon still running ?
 	string pidFileName(PinotSettings::getInstance().getConfigurationDirectory() + "/" + programName + ".pid");
@@ -290,48 +230,29 @@ bool statisticsDialog::on_activity_timeout(void)
 		pidFile >> daemonPID;
 		pidFile.close();
 	}
-	snprintf(countStr, 64, "%u", daemonPID);
+	countStr << daemonPID;
 
 	row = *m_daemonProcIter;
 	if (daemonPID > 0)
 	{
 		// FIXME: check whether it's actually running !
-		row[m_statsColumns.m_name] = ustring(_("Running under PID")) + " " + countStr;
-
-#ifdef HAVE_DBUS
-		if ((m_state.m_getStats == true) &&
-			(m_state.m_gettingStats == false))
-		{
-			m_state.m_gettingStats = true;
-
-			DaemonStatusThread *pThread = new DaemonStatusThread();
-
-			if (m_state.start_thread(pThread, false) == false)
-			{
-				delete pThread;
-				m_state.m_getStats = m_state.m_gettingStats = false;
-			}
-		}
-#endif
+		row[m_statsColumns.m_name] = ustring(_("Running under PID")) + " " + countStr.str();
+	}
+	else if (m_daemonDBusStatus == "Disconnected")
+	{
+		row[m_statsColumns.m_name] = _("Disconnected from D-Bus");
+	}
+	else if (m_daemonDBusStatus == "Stopped")
+	{
+		row[m_statsColumns.m_name] = _("Stopped");
 	}
 	else
 	{
-		if (daemonDBusStatus == "Disconnected")
-		{
-			row[m_statsColumns.m_name] = _("Disconnected from D-Bus");
-		}
-		else if (daemonDBusStatus == "Stopped")
-		{
-			row[m_statsColumns.m_name] = _("Stopped");
-		}
-		else
-		{
-			row[m_statsColumns.m_name] = _("Currently not running");
-		}
+		row[m_statsColumns.m_name] = _("Currently not running");
 	}
 
 	// Show status
-	if (m_state.m_lowDiskSpace == true)
+	if (lowDiskSpace == true)
 	{
 		if (m_hasDiskSpace == false)
 		{
@@ -348,7 +269,7 @@ bool statisticsDialog::on_activity_timeout(void)
 
 		m_hasDiskSpace = false;
 	}
-	if (m_state.m_onBattery == true)
+	if (onBattery == true)
 	{
 		if (m_hasBattery == false)
 		{
@@ -365,7 +286,7 @@ bool statisticsDialog::on_activity_timeout(void)
 
 		m_hasBattery = false;
 	}
-	if (m_state.m_crawling == true)
+	if (crawling == true)
 	{
 		if (m_hasCrawl == false)
 		{
@@ -383,168 +304,5 @@ bool statisticsDialog::on_activity_timeout(void)
 
 		m_hasCrawl = false;
 	}
-
-	CrawlHistory crawlHistory(PinotSettings::getInstance().getHistoryDatabaseName(true));
-
-	// Show errors
-	crawlHistory.getSources(sources);
-	for (std::map<unsigned int, string>::iterator sourceIter = sources.begin();
-		sourceIter != sources.end(); ++sourceIter)
-	{
-		unsigned int sourceNum(sourceIter->first);
-		set<string> errors;
-		time_t latestErrorDate = 0;
-		unsigned int currentOffset = 0;
-
-		std::map<unsigned int, time_t>::const_iterator dateIter = m_latestErrorDates.find(sourceNum);
-		if (dateIter != m_latestErrorDates.end())
-		{
-			latestErrorDate = dateIter->second;
-		}
-
-		// Did any error occur on this source ?
-		unsigned int errorCount = crawlHistory.getSourceItems(sourceNum,
-			CrawlHistory::CRAWL_ERROR, errors, currentOffset, currentOffset + 100,
-			latestErrorDate);
-		while ((errorCount > 0) &&
-			(errors.empty() == false))
-		{
-			// Add an errors row
-			if (m_hasErrors == false)
-			{
-				m_errorsTopIter = m_refStore->append(m_daemonIter->children());
-				row = *m_errorsTopIter;
-				row[m_statsColumns.m_name] = _("Errors");
-
-				m_hasErrors = true;
-			}
-
-			// List them
-			for (set<string>::const_iterator errorIter = errors.begin();
-				errorIter != errors.end(); ++errorIter)
-			{
-				string locationWithError(*errorIter);
-				TreeModel::iterator errIter;
-				time_t errorDate;
-				int errorNum = crawlHistory.getErrorDetails(locationWithError, errorDate);
-
-				if (errorDate > latestErrorDate)
-				{
-					latestErrorDate = errorDate;
-				}
-
-				// Find or create the iterator for this particular kind of error
-				std::map<int, TreeModel::iterator>::const_iterator errorTreeIter = m_errorsIters.find(errorNum);
-				if (errorTreeIter == m_errorsIters.end())
-				{
-					string errorText(WorkerThread::errorToString(errorNum));
-
-					errIter = m_refStore->append(m_errorsTopIter->children());
-					row = *errIter;
-					row[m_statsColumns.m_name] = errorText;
-
-					m_errorsIters.insert(pair<int, TreeModel::iterator>(errorNum, errIter));
-				}
-				else
-				{
-					errIter = errorTreeIter->second;
-				}
-
-				// Display the location itself
-				TreeModel::iterator locIter = m_refStore->append(errIter->children());
-				row = *locIter;
-				row[m_statsColumns.m_name] = locationWithError;
-			}
-
-			// Expand errors
-			TreeModel::Path errPath = m_refStore->get_path(m_errorsTopIter);
-			statisticsTreeview->expand_to_path(errPath);
-
-			// Next
-			if (errors.size() < 100)
-			{
-				break;
-			}
-			currentOffset += 100;
-			errorCount = crawlHistory.getSourceItems(sourceNum,
-				CrawlHistory::CRAWL_ERROR, errors, currentOffset, 100, // currentOffset + 100,
-				latestErrorDate);
-		}
-
-		// The next check will ignore errors older than this
-		m_latestErrorDates[sourceNum] = latestErrorDate;
-	}
-
-	return true;
-}
-
-void statisticsDialog::on_thread_end(WorkerThread *pThread)
-{
-	ustring status;
-	bool success = true;
-
-	if (pThread == NULL)
-	{
-		return;
-	}
-
-	// Did the thread fail ?
-	status = pThread->getStatus();
-	if (status.empty() == false)
-	{
-#ifdef DEBUG
-		clog << "statisticsDialog::on_thread_end: " << status << endl;
-#endif
-		success = false;
-	}
-
-	// What type of thread was it ?
-	string type = pThread->getType();
-#ifdef HAVE_DBUS
-	if (type == "DaemonStatusThread")
-	{
-		m_state.m_gettingStats = false;
-
-		// Did it succeed ?
-		if (success == true)
-		{
-			DaemonStatusThread *pStatusThread = dynamic_cast<DaemonStatusThread*>(pThread);
-			if (pStatusThread != NULL)
-			{
-				// Yes, it did
-				m_state.m_getStats = pStatusThread->m_gotStats;
-				m_state.m_lowDiskSpace = pStatusThread->m_lowDiskSpace;
-				m_state.m_onBattery = pStatusThread->m_onBattery;
-				m_state.m_crawling = pStatusThread->m_crawling;
-#ifdef DEBUG
-				clog << "statisticsDialog::on_thread_end: refreshed stats" << endl;
-#endif
-			}
-		}
-	}
-#endif
-
-	// Delete the thread
-	delete pThread;
-}
-
-void statisticsDialog::on_closeStatisticsButton_clicked()
-{
-#ifdef DEBUG
-	clog << "statisticsDialog::on_closeStatisticsButton_clicked: called" << endl;
-#endif
-	close();
-}
-
-bool statisticsDialog::on_statisticsDialog_delete_event(GdkEventAny *ev)
-{
-#ifdef DEBUG
-	clog << "statisticsDialog::on_statisticsDialog_delete_event: called" << endl;
-#endif
-	m_idleConnection.disconnect();
-	m_state.disconnect();
-	m_state.mustQuit(true);
-
-	return false;
 }
 

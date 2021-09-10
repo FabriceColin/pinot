@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Fabrice Colin
+ *  Copyright 2009-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -154,5 +154,31 @@ class UpdateDocumentThread : public WorkerThread
 		UpdateDocumentThread &operator=(const UpdateDocumentThread &other);
 
 };
+
+#ifdef HAVE_DBUS
+class DaemonStatusThread : public WorkerThread
+{
+	public:
+		DaemonStatusThread();
+		virtual ~DaemonStatusThread();
+
+		virtual std::string getType(void) const;
+
+		bool m_gotStats;
+		bool m_lowDiskSpace;
+		bool m_onBattery;
+		bool m_crawling;
+		unsigned int m_crawledCount;
+		unsigned int m_docsCount;
+
+	protected:
+		virtual void doWork(void);
+
+	private:
+		DaemonStatusThread(const DaemonStatusThread &other);
+		DaemonStatusThread &operator=(const DaemonStatusThread &other);
+
+};
+#endif
 
 #endif // _UITHREADS_HH
