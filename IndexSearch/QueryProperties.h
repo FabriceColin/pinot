@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2015 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class PINOT_EXPORT QueryProperties
 {
 	public:
 		typedef enum { XAPIAN_QP = 0 } QueryType;
-		typedef enum { RELEVANCE = 0, DATE_DESC, DATE_ASC } SortOrder;
+		typedef enum { RELEVANCE = 0, DATE_DESC, DATE_ASC, SIZE_DESC } SortOrder;
 		typedef enum { NOTHING = 0, ALL_RESULTS, NEW_RESULTS } IndexWhat;
 
 		QueryProperties();
