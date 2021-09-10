@@ -377,7 +377,7 @@ int main(int argc, char **argv)
 		if (prefsMode == false)
 		{
 			MainWindow *pMainBox = NULL;
-			refBuilder->get_widget_derived<MainWindow>("MainWindow", pMainBox, statusText);
+			refBuilder->get_widget_derived<MainWindow>("mainWindow", pMainBox, statusText);
 
 			if (pMainBox != NULL)
 			{
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
 		else
 		{
 			PrefsWindow *pPrefsBox = NULL;
-			refBuilder->get_widget_derived<PrefsWindow>("PrefsWindow", pPrefsBox);
+			refBuilder->get_widget_derived<PrefsWindow>("prefsWindow", pPrefsBox);
 
 			if (pPrefsBox != NULL)
 			{

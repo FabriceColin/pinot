@@ -2195,7 +2195,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		}
 
 		StatisticsDialog *pStatisticsBox = NULL;
-		m_refBuilder->get_widget_derived<StatisticsDialog>("StatisticsDialog", pStatisticsBox);
+		m_refBuilder->get_widget_derived<StatisticsDialog>("statisticsDialog", pStatisticsBox);
 
 		if (pStatisticsBox != NULL)
 		{
@@ -2232,7 +2232,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 void MainWindow::on_editindex(ustring indexName, ustring location)
 {
 	IndexDialog *pIndexBox = NULL;
-	m_refBuilder->get_widget_derived<IndexDialog>("IndexDialog", pIndexBox);
+	m_refBuilder->get_widget_derived<IndexDialog>("indexDialog", pIndexBox);
 #ifdef DEBUG
 	clog << "MainWindow::on_editindex: called" << endl;
 #endif
@@ -2361,7 +2361,7 @@ void MainWindow::on_indexForwardButton_clicked(ustring indexName)
 void MainWindow::on_status_activate()
 {
 	StatisticsDialog *pStatisticsBox = NULL;
-	m_refBuilder->get_widget_derived<StatisticsDialog>("StatisticsDialog", pStatisticsBox);
+	m_refBuilder->get_widget_derived<StatisticsDialog>("statisticsDialog", pStatisticsBox);
 
 	if (pStatisticsBox == NULL)
 	{
@@ -2714,7 +2714,7 @@ void MainWindow::on_addtoindex_activate()
 void MainWindow::on_import_activate()
 {
 	ImportDialog *pImportBox = NULL;
-	m_refBuilder->get_widget_derived<ImportDialog>("ImportDialog", pImportBox);
+	m_refBuilder->get_widget_derived<ImportDialog>("importDialog", pImportBox);
 
 	if (pImportBox == NULL)
 	{
@@ -2925,7 +2925,7 @@ void MainWindow::on_properties_activate()
 	get_size(width, height);
 
 	PropertiesDialog *pPropertiesBox = NULL;
-	m_refBuilder->get_widget_derived<PropertiesDialog>("PropertiesDialog", pPropertiesBox);
+	m_refBuilder->get_widget_derived<PropertiesDialog>("propertiesDialog", pPropertiesBox);
 
 	if (pPropertiesBox == NULL)
 	{
@@ -3082,7 +3082,7 @@ bool MainWindow::on_activity_timeout()
 void MainWindow::on_addIndexButton_clicked()
 {
 	IndexDialog *pIndexBox = NULL;
-	m_refBuilder->get_widget_derived<IndexDialog>("IndexDialog", pIndexBox);
+	m_refBuilder->get_widget_derived<IndexDialog>("indexDialog", pIndexBox);
 
 	if (pIndexBox == NULL)
 	{
@@ -3665,7 +3665,7 @@ void MainWindow::edit_query(QueryProperties &queryProps, bool newQuery)
 #endif
 
 	QueryDialog *pQueryBox = NULL;
-	m_refBuilder->get_widget_derived<QueryDialog>("QueryDialog", pQueryBox);
+	m_refBuilder->get_widget_derived<QueryDialog>("queryDialog", pQueryBox);
 
 	if (pQueryBox == NULL)
 	{
@@ -4060,7 +4060,7 @@ void MainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 				if (foundAction == false)
 				{
 					LauncherDialog *pLauncherBox = NULL;
-					m_refBuilder->get_widget_derived<LauncherDialog>("LauncherDialog", pLauncherBox);
+					m_refBuilder->get_widget_derived<LauncherDialog>("launcherDialog", pLauncherBox);
 
 					if (pLauncherBox != NULL)
 					{
