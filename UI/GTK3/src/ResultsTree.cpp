@@ -35,8 +35,8 @@
 #include "QueryHistory.h"
 #include "ViewHistory.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "ResultsTree.hh"
+#include "PinotUtils.h"
+#include "ResultsTree.h"
 
 using namespace std;
 using namespace Glib;

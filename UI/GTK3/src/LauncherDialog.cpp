@@ -24,14 +24,14 @@
 #include "NLS.h"
 #include "Url.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "launcherDialog.hh"
+#include "PinotUtils.h"
+#include "LauncherDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gtk;
 
-launcherDialog::launcherDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+LauncherDialog::LauncherDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	cancelLaunchButton(NULL),
 	openLaunchButton(NULL),
@@ -43,22 +43,22 @@ launcherDialog::launcherDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder
 	refBuilder->get_widget("launcherEntry", launcherEntry);;
 	refBuilder->get_widget("rememberCheckbutton", rememberCheckbutton);
 
-	cancelLaunchButton->signal_clicked().connect(sigc::mem_fun(*this, &launcherDialog::on_cancelLaunchButton_clicked), false);
-	openLaunchButton->signal_clicked().connect(sigc::mem_fun(*this, &launcherDialog::on_openLaunchButton_clicked), false);
+	cancelLaunchButton->signal_clicked().connect(sigc::mem_fun(*this, &LauncherDialog::on_cancelLaunchButton_clicked), false);
+	openLaunchButton->signal_clicked().connect(sigc::mem_fun(*this, &LauncherDialog::on_openLaunchButton_clicked), false);
 
 	launcherEntry->set_text("xdg-open");
 }
 
-launcherDialog::~launcherDialog()
+LauncherDialog::~LauncherDialog()
 {
 }
 
-void launcherDialog::setUrl(const string &url)
+void LauncherDialog::setUrl(const string &url)
 {
 	set_title(Url::prettifyUrl(url, 40));
 }
 
-bool launcherDialog::getInput(MIMEAction &action, bool &remember)
+bool LauncherDialog::getInput(MIMEAction &action, bool &remember)
 {
 	ustring cmdLine(launcherEntry->get_text());
 
@@ -75,18 +75,18 @@ bool launcherDialog::getInput(MIMEAction &action, bool &remember)
 	return false;
 }
 
-void launcherDialog::on_cancelLaunchButton_clicked()
+void LauncherDialog::on_cancelLaunchButton_clicked()
 {
 #ifdef DEBUG
-	clog << "launcherDialog::on_cancelLaunchButton_clicked: called" << endl;
+	clog << "LauncherDialog::on_cancelLaunchButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-void launcherDialog::on_openLaunchButton_clicked()
+void LauncherDialog::on_openLaunchButton_clicked()
 {
 #ifdef DEBUG
-	clog << "launcherDialog::on_openLaunchButton_clicked: called" << endl;
+	clog << "LauncherDialog::on_openLaunchButton_clicked: called" << endl;
 #endif
 	close();
 }

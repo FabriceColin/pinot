@@ -57,14 +57,14 @@
 #ifdef HAVE_DBUS
 #include "DBusIndex.h"
 #endif
-#include "PinotUtils.hh"
-#include "mainWindow.hh"
-#include "importDialog.hh"
-#include "indexDialog.hh"
-#include "launcherDialog.hh"
-#include "propertiesDialog.hh"
-#include "queryDialog.hh"
-#include "statisticsDialog.hh"
+#include "PinotUtils.h"
+#include "MainWindow.h"
+#include "ImportDialog.h"
+#include "IndexDialog.h"
+#include "LauncherDialog.h"
+#include "PropertiesDialog.h"
+#include "QueryDialog.h"
+#include "StatisticsDialog.h"
 
 using namespace std;
 using namespace Glib;
@@ -110,17 +110,17 @@ class ReloadHandler : public MonitorHandler
 };
 
 // FIXME: this ought to be configurable
-unsigned int mainWindow::m_maxDocsCount = 100;
+unsigned int MainWindow::m_maxDocsCount = 100;
 
-mainWindow::ExpandSet::ExpandSet()
+MainWindow::ExpandSet::ExpandSet()
 {
 }
 
-mainWindow::ExpandSet::~ExpandSet()
+MainWindow::ExpandSet::~ExpandSet()
 {
 }
 
-mainWindow::InternalState::InternalState(mainWindow *pWindow) :
+MainWindow::InternalState::InternalState(MainWindow *pWindow) :
 	QueueManager(PinotSettings::getInstance().m_docsIndexLocation, 60, true),
 	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
 		Gio::DBus::BUS_TYPE_SESSION,
@@ -130,20 +130,20 @@ mainWindow::InternalState::InternalState(mainWindow *pWindow) :
 	m_currentPage(0),
 	m_browsingIndex(false)
 {
-	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &mainWindow::on_thread_end));
-	m_refProxy->IndexFlushed_signal.connect(sigc::mem_fun(*this, &mainWindow::InternalState::on_IndexFlushed));
+	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &MainWindow::on_thread_end));
+	m_refProxy->IndexFlushed_signal.connect(sigc::mem_fun(*this, &MainWindow::InternalState::on_IndexFlushed));
 }
 
-mainWindow::InternalState::~InternalState()
+MainWindow::InternalState::~InternalState()
 {
 }
 
-void mainWindow::InternalState::on_IndexFlushed(guint32 docsCount)
+void MainWindow::InternalState::on_IndexFlushed(guint32 docsCount)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
 
 #ifdef DEBUG
-	clog << "mainWindow::InternalState::on_IndexFlushed: called with " << docsCount << endl;
+	clog << "MainWindow::InternalState::on_IndexFlushed: called with " << docsCount << endl;
 #endif
 	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
 	if (pIndex != NULL)
@@ -157,7 +157,7 @@ void mainWindow::InternalState::on_IndexFlushed(guint32 docsCount)
 //
 // Constructor
 //
-mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
+MainWindow::MainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	const Glib::ustring &statusText) :
 	Window(pParent),
 	m_refBuilder(refBuilder),
@@ -249,18 +249,18 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	mainVbox->remove(*mainHpaned);
 	mainVbox->remove(*mainHbox);
 
-	addIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_addIndexButton_clicked), false);
-	removeIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_removeIndexButton_clicked), false);
-	enginesTogglebutton->signal_toggled().connect(sigc::mem_fun(*this, &mainWindow::on_enginesTogglebutton_toggled), false);
-	liveQueryEntry->signal_changed().connect(sigc::mem_fun(*this, &mainWindow::on_liveQueryEntry_changed), false);
-	liveQueryEntry->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_liveQueryEntry_activate), false);
-	findButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_findButton_clicked), false);
-	queryTreeview->signal_button_press_event().connect(sigc::mem_fun(*this, &mainWindow::on_queryTreeview_button_press_event), false);
-	addQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_addQueryButton_clicked), false);
-	removeQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_removeQueryButton_clicked), false);
-	queryHistoryButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_queryHistoryButton_clicked), false);
-	findQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &mainWindow::on_findQueryButton_clicked), false);
-	signal_delete_event().connect(sigc::mem_fun(*this, &mainWindow::on_mainWindow_delete_event), false);
+	addIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_addIndexButton_clicked), false);
+	removeIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_removeIndexButton_clicked), false);
+	enginesTogglebutton->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_enginesTogglebutton_toggled), false);
+	liveQueryEntry->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_changed), false);
+	liveQueryEntry->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_activate), false);
+	findButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_findButton_clicked), false);
+	queryTreeview->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_queryTreeview_button_press_event), false);
+	addQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_addQueryButton_clicked), false);
+	removeQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_removeQueryButton_clicked), false);
+	queryHistoryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_queryHistoryButton_clicked), false);
+	findQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_findQueryButton_clicked), false);
+	signal_delete_event().connect(sigc::mem_fun(*this, &MainWindow::on_mainWindow_delete_event), false);
 
 	// Populate menu items
 	populate_menuItems();
@@ -295,7 +295,7 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 		mainHpaned->set_position(m_settings.m_panePos);
 	}
 #ifdef DEBUG
-	clog << "mainWindow::mainWindow: expanded ?" << m_settings.m_expandQueries << endl;
+	clog << "MainWindow::MainWindow: expanded ?" << m_settings.m_expandQueries << endl;
 #endif
 	queryExpander->set_expanded(m_settings.m_expandQueries);
 	enginesTogglebutton->set_active(m_settings.m_showEngines);
@@ -308,10 +308,10 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	m_pEnginesTree = manage(new EnginesTree(enginesVbox, m_settings));
 	// Connect to the "changed" signal
 	m_pEnginesTree->get_selection()->signal_changed().connect(
-		sigc::mem_fun(*this, &mainWindow::on_enginesTreeviewSelection_changed));
+		sigc::mem_fun(*this, &MainWindow::on_enginesTreeviewSelection_changed));
 	// Connect to the edit index signal
 	m_pEnginesTree->getDoubleClickSignal().connect(
-		sigc::mem_fun(*this, &mainWindow::on_editindex));
+		sigc::mem_fun(*this, &MainWindow::on_editindex));
 
 	// Enable completion on the live query field
 	m_refLiveQueryList = ListStore::create(m_liveQueryColumns);
@@ -324,7 +324,7 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 
 	// Enable the find icon
 	liveQueryEntry->set_icon_from_stock(Stock::FIND, ENTRY_ICON_SECONDARY);
-	liveQueryEntry->signal_icon_press().connect(sigc::mem_fun(*this, &mainWindow::on_liveQueryEntry_icon), false);
+	liveQueryEntry->signal_icon_press().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_icon), false);
 	liveQueryEntry->set_icon_sensitive(ENTRY_ICON_SECONDARY, false);
 
 	// Associate the columns model to the query tree
@@ -345,7 +345,7 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	queryTreeview->get_selection()->set_mode(SELECTION_SINGLE);
 	// Connect to the "changed" signal
 	queryTreeview->get_selection()->signal_changed().connect(
-		sigc::mem_fun(*this, &mainWindow::on_queryTreeviewSelection_changed));
+		sigc::mem_fun(*this, &MainWindow::on_queryTreeviewSelection_changed));
 
 	// Specify drop targets
 	queryTreeview->drag_dest_set(Gtk::DEST_DEFAULT_ALL, DragAction(GDK_ACTION_COPY|GDK_ACTION_MOVE));
@@ -357,7 +357,7 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	targetList->add("text/plain", TargetFlags(0), 0);
 	// Connect to the drag data received signal
 	queryTreeview->signal_drag_data_received().connect(
-		sigc::mem_fun(*this, &mainWindow::on_data_received));
+		sigc::mem_fun(*this, &MainWindow::on_data_received));
 
 	// Populate
 	populate_queryTreeview("");
@@ -371,7 +371,7 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	m_pNotebook->set_scrollable(true);
 	rightVbox->pack_start(*m_pNotebook, Gtk::PACK_EXPAND_WIDGET, 4);
 	m_pageSwitchConnection = m_pNotebook->signal_switch_page().connect(
-		sigc::mem_fun(*this, &mainWindow::on_switch_page), false);
+		sigc::mem_fun(*this, &MainWindow::on_switch_page), false);
 
 	// Gray out menu items
 	show_pagebased_menuitems(false);
@@ -460,19 +460,19 @@ mainWindow::mainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 //
 // Destructor
 //
-mainWindow::~mainWindow()
+MainWindow::~MainWindow()
 {
 #ifdef DEBUG
-	clog << "mainWindow::~mainWindow: called" << endl;
+	clog << "MainWindow::~MainWindow: called" << endl;
 #endif
 	// Don't delete m_pSettingsMonitor and m_pSettingsHandler, threads may need them
-	// Since mainWindow is destroyed when the program exits, it's a leak we can live with
+	// Since MainWindow is destroyed when the program exits, it's a leak we can live with
 }
 
 //
 // Load user-defined queries
 //
-void mainWindow::populate_queryTreeview(const string &selectedQueryName)
+void MainWindow::populate_queryTreeview(const string &selectedQueryName)
 {
 	QueryHistory queryHistory(m_settings.getHistoryDatabaseName());
 	const std::map<string, QueryProperties> &queries = m_settings.getQueries();
@@ -531,7 +531,7 @@ void mainWindow::populate_queryTreeview(const string &selectedQueryName)
 //
 // Store defined queries into the settings object
 //
-void mainWindow::save_queryTreeview()
+void MainWindow::save_queryTreeview()
 {
 	// Clear the current queries
 	m_settings.clearQueries();
@@ -549,14 +549,14 @@ void mainWindow::save_queryTreeview()
 			string name = from_utf8(row[m_queryColumns.m_name]);
 			QueryProperties queryProps = row[m_queryColumns.m_properties];
 #ifdef DEBUG
-			clog << "mainWindow::save_queryTreeview: " << name << endl;
+			clog << "MainWindow::save_queryTreeview: " << name << endl;
 #endif
 			m_settings.addQuery(queryProps);
 		}
 	}
 }
 
-void mainWindow::populate_menuItems()
+void MainWindow::populate_menuItems()
 {
 	Gtk::MenuItem *separator7 = NULL;
 	Gtk::Image *image1007 = Gtk::manage(new class Gtk::Image(Gtk::StockID("gtk-go-up"), Gtk::IconSize(1)));
@@ -761,31 +761,31 @@ void mainWindow::populate_menuItems()
 	about1->show();
 	helpMenuitem->show();
 
-	open1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_open_activate), false);
-	openparent1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_openparent_activate), false);
-	addtoindex1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_addtoindex_activate), false);
-	updateindex1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_updateindex_activate), false);
-	unindex1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_unindex_activate), false);
-	morelikethis1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_morelikethis_activate), false);
-	properties1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_properties_activate), false);
-	quit1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_quit_activate), false);
-	cut1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_cut_activate), false);
-	copy1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_copy_activate), false);
-	paste1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_paste_activate), false);
-	delete1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_delete_activate), false);
-	preferences1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_preferences_activate), false);
-	searchenginegroup1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_groupresults_activate), false);
-	showextracts1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_showextracts_activate), false);
-	import1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_import_activate), false);
-	export1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_export_activate), false);
-	status1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_status_activate), false);
-	about1->signal_activate().connect(sigc::mem_fun(*this, &mainWindow::on_about_activate), false);
+	open1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_open_activate), false);
+	openparent1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_openparent_activate), false);
+	addtoindex1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_addtoindex_activate), false);
+	updateindex1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_updateindex_activate), false);
+	unindex1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_unindex_activate), false);
+	morelikethis1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_morelikethis_activate), false);
+	properties1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_properties_activate), false);
+	quit1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_quit_activate), false);
+	cut1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_cut_activate), false);
+	copy1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_copy_activate), false);
+	paste1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_paste_activate), false);
+	delete1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_delete_activate), false);
+	preferences1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences_activate), false);
+	searchenginegroup1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_groupresults_activate), false);
+	showextracts1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_showextracts_activate), false);
+	import1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_import_activate), false);
+	export1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_export_activate), false);
+	status1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_status_activate), false);
+	about1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about_activate), false);
 }
 
 //
 // Populate the cache menu
 //
-void mainWindow::populate_cacheMenu()
+void MainWindow::populate_cacheMenu()
 {
 	bool setMenu = false;
 
@@ -800,7 +800,7 @@ void mainWindow::populate_cacheMenu()
 		// FIXME: m_pCacheMenu->unset_submenu(); ?
 	}
 
-	sigc::slot1<void, PinotSettings::CacheProvider> cacheSlot = sigc::mem_fun(*this, &mainWindow::on_cache_changed);
+	sigc::slot1<void, PinotSettings::CacheProvider> cacheSlot = sigc::mem_fun(*this, &MainWindow::on_cache_changed);
 
 	if (m_settings.m_cacheProviders.empty() == true)
 	{
@@ -822,7 +822,7 @@ void mainWindow::populate_cacheMenu()
 			m_pCacheMenu->append(*pCacheMenuItem);
 #endif
 #ifdef DEBUG
-			clog << "mainWindow::populate_cacheMenu: appended menuitem " << cacheIter->m_name << endl;
+			clog << "MainWindow::populate_cacheMenu: appended menuitem " << cacheIter->m_name << endl;
 #endif
 		}
 	}
@@ -835,7 +835,7 @@ void mainWindow::populate_cacheMenu()
 		opencache1->set_submenu(*m_pCacheMenu);
 		opencache1->show_all_children();
 #ifdef DEBUG
-		clog << "mainWindow::populate_cacheMenu: set submenu" << endl;
+		clog << "MainWindow::populate_cacheMenu: set submenu" << endl;
 #endif
 	}
 }
@@ -843,7 +843,7 @@ void mainWindow::populate_cacheMenu()
 //
 // Populate the index menu
 //
-void mainWindow::populate_indexMenu()
+void MainWindow::populate_indexMenu()
 {
 	bool setMenu = false;
 
@@ -858,7 +858,7 @@ void mainWindow::populate_indexMenu()
 		// FIXME: m_pIndexMenu->unset_submenu();
 	}
 
-	sigc::slot1<void, ustring> indexSlot = sigc::mem_fun(*this, &mainWindow::on_index_changed);
+	sigc::slot1<void, ustring> indexSlot = sigc::mem_fun(*this, &MainWindow::on_index_changed);
 
 	set<PinotSettings::IndexProperties> indexes = m_settings.getIndexes();
 	for (set<PinotSettings::IndexProperties>::const_iterator indexIter = indexes.begin();
@@ -874,7 +874,7 @@ void mainWindow::populate_indexMenu()
 		m_pIndexMenu->append(*pIndexMenuItem);
 #endif
 #ifdef DEBUG
-		clog << "mainWindow::populate_indexMenu: appended menuitem " << indexIter->m_name << endl;
+		clog << "MainWindow::populate_indexMenu: appended menuitem " << indexIter->m_name << endl;
 #endif
 	}
 
@@ -886,7 +886,7 @@ void mainWindow::populate_indexMenu()
 		listcontents1->set_submenu(*m_pIndexMenu);
 		listcontents1->show_all_children();
 #ifdef DEBUG
-		clog << "mainWindow::populate_indexMenu: set submenu" << endl;
+		clog << "MainWindow::populate_indexMenu: set submenu" << endl;
 #endif
 	}
 }
@@ -894,7 +894,7 @@ void mainWindow::populate_indexMenu()
 //
 // Populate the find menu
 //
-void mainWindow::populate_findMenu()
+void MainWindow::populate_findMenu()
 {
 	bool setMenu = false;
 
@@ -909,7 +909,7 @@ void mainWindow::populate_findMenu()
 		// FIXME: m_pFindMenu->unset_submenu();
 	}
 
-	sigc::slot1<void, ustring> findSlot = sigc::mem_fun(*this, &mainWindow::on_searchthis_changed);
+	sigc::slot1<void, ustring> findSlot = sigc::mem_fun(*this, &MainWindow::on_searchthis_changed);
 
 	TreeModel::Children children = m_refQueryTree->children();
 	for (TreeModel::Children::iterator iter = children.begin();
@@ -926,7 +926,7 @@ void mainWindow::populate_findMenu()
 		m_pFindMenu->append(*pFindMenuItem);
 #endif
 #ifdef DEBUG
-		clog << "mainWindow::populate_findMenu: appended menuitem " << queryName << endl;
+		clog << "MainWindow::populate_findMenu: appended menuitem " << queryName << endl;
 #endif
 	}
 
@@ -938,7 +938,7 @@ void mainWindow::populate_findMenu()
 		searchthisfor1->set_submenu(*m_pFindMenu);
 		searchthisfor1->show_all_children();
 #ifdef DEBUG
-		clog << "mainWindow::populate_findMenu: set submenu" << endl;
+		clog << "MainWindow::populate_findMenu: set submenu" << endl;
 #endif
 	}
 }
@@ -946,7 +946,7 @@ void mainWindow::populate_findMenu()
 //
 // Add a query
 //
-void mainWindow::add_query(QueryProperties &queryProps, bool mergeQueries)
+void MainWindow::add_query(QueryProperties &queryProps, bool mergeQueries)
 {
 	ustring queryName(queryProps.getName());
 
@@ -992,7 +992,7 @@ void mainWindow::add_query(QueryProperties &queryProps, bool mergeQueries)
 //
 // Get selected results in the current results tab
 //
-bool mainWindow::get_results_page_details(const ustring &queryName,
+bool MainWindow::get_results_page_details(const ustring &queryName,
 	QueryProperties &queryProps, set<string> &locations,
 	set<string> &locationsToIndex)
 {
@@ -1093,14 +1093,14 @@ bool mainWindow::get_results_page_details(const ustring &queryName,
 //
 // Drag and drop
 //
-void mainWindow::on_data_received(const RefPtr<DragContext> &context,
+void MainWindow::on_data_received(const RefPtr<DragContext> &context,
 	int x, int y, const SelectionData &data, guint info, guint dataTime)
 {
 	vector<ustring> droppedUris = data.get_uris();
 	ustring droppedText(data.get_text());
 	bool goodDrop = false;
 
-	clog << "mainWindow::on_data_received: data type "
+	clog << "MainWindow::on_data_received: data type "
 		<< data.get_data_type() << " in format " << data.get_format() << endl;
 
 	if (droppedUris.empty() == false)
@@ -1117,7 +1117,7 @@ void mainWindow::on_data_received(const RefPtr<DragContext> &context,
 		{
 			string uri(*uriIter);
 
-			clog << "mainWindow::on_data_received: received " << uri << endl; 
+			clog << "MainWindow::on_data_received: received " << uri << endl; 
 
 			// Query the merged index
 			if (pIndex != NULL)
@@ -1178,7 +1178,7 @@ void mainWindow::on_data_received(const RefPtr<DragContext> &context,
 		QueryProperties queryProps("", from_utf8(droppedText));
 		edit_query(queryProps, true);
 
-		clog << "mainWindow::on_data_received: received text \""
+		clog << "MainWindow::on_data_received: received text \""
 			<< droppedText << "\"" << endl;
 
 		goodDrop = true;
@@ -1190,7 +1190,7 @@ void mainWindow::on_data_received(const RefPtr<DragContext> &context,
 //
 // Engines tree selection changed
 //
-void mainWindow::on_enginesTreeviewSelection_changed()
+void MainWindow::on_enginesTreeviewSelection_changed()
 {
 	vector<TreeModel::Path> selectedEngines = m_pEnginesTree->getSelection();
 
@@ -1230,7 +1230,7 @@ void mainWindow::on_enginesTreeviewSelection_changed()
 //
 // Query list selection changed
 //
-void mainWindow::on_queryTreeviewSelection_changed()
+void MainWindow::on_queryTreeviewSelection_changed()
 {
 	bool enableButtons = false;
 
@@ -1247,7 +1247,7 @@ void mainWindow::on_queryTreeviewSelection_changed()
 	findQueryButton->set_sensitive(enableButtons);
 }
 
-void mainWindow::on_resultsTreeviewSelection_changed(ustring queryName)
+void MainWindow::on_resultsTreeviewSelection_changed(ustring queryName)
 {
 	vector<DocumentInfo> resultsList;
 	bool hasSelection = false;
@@ -1265,7 +1265,7 @@ void mainWindow::on_resultsTreeviewSelection_changed(ustring queryName)
 	on_document_changed(resultsList, false, false, true);
 }
 
-void mainWindow::on_indexTreeviewSelection_changed(ustring indexName)
+void MainWindow::on_indexTreeviewSelection_changed(ustring indexName)
 {
 	vector<DocumentInfo> resultsList;
 	bool hasSelection = false;
@@ -1290,7 +1290,7 @@ void mainWindow::on_indexTreeviewSelection_changed(ustring indexName)
 	on_document_changed(resultsList, isDocumentsIndex, true, false);
 }
 
-void mainWindow::on_document_changed(vector<DocumentInfo> &resultsList,
+void MainWindow::on_document_changed(vector<DocumentInfo> &resultsList,
 	bool isDocumentsIndex, bool editDocuments, bool areResults)
 {
 	if (resultsList.empty() == false)
@@ -1305,7 +1305,7 @@ void mainWindow::on_document_changed(vector<DocumentInfo> &resultsList,
 			string protocol(urlObj.getProtocol());
 
 #ifdef DEBUG
-			clog << "mainWindow::on_document_changed: " << url << endl;
+			clog << "MainWindow::on_document_changed: " << url << endl;
 #endif
 			if (firstResult == true)
 			{
@@ -1370,14 +1370,14 @@ void mainWindow::on_document_changed(vector<DocumentInfo> &resultsList,
 	}
 }
 
-void mainWindow::on_index_changed(ustring indexName)
+void MainWindow::on_index_changed(ustring indexName)
 {
 	ResultsTree *pResultsTree = NULL;
 	ustring queryName;
 	bool foundPage = false;
 
 #ifdef DEBUG
-	clog << "mainWindow::on_index_changed: current index now " << indexName << endl;
+	clog << "MainWindow::on_index_changed: current index now " << indexName << endl;
 #endif
 
 	// Is there already a page for this index ?
@@ -1399,7 +1399,7 @@ void mainWindow::on_index_changed(ustring indexName)
 		NotebookTabBox *pTab = manage(new NotebookTabBox(indexName,
 			NotebookPageBox::INDEX_PAGE));
 		pTab->getCloseSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_close_page));
+			sigc::mem_fun(*this, &MainWindow::on_close_page));
 
 		// Position the index tree
 		pResultsTree = manage(new ResultsTree(indexName, fileMenuitem->get_submenu(),
@@ -1407,18 +1407,18 @@ void mainWindow::on_index_changed(ustring indexName)
 		pIndexPage = manage(new IndexPage(indexName, pResultsTree, m_settings));
 		// Connect to the "changed" signal
 		pResultsTree->getSelectionChangedSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_indexTreeviewSelection_changed));
+			sigc::mem_fun(*this, &MainWindow::on_indexTreeviewSelection_changed));
 		// Connect to the edit document signal
 		pResultsTree->getDoubleClickSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_properties_activate));
+			sigc::mem_fun(*this, &MainWindow::on_properties_activate));
 		// Connect to the query changed signal
 		pIndexPage->getQueryChangedSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_query_changed));
+			sigc::mem_fun(*this, &MainWindow::on_query_changed));
 		// ...and to the buttons clicked signals
 		pIndexPage->getBackClickedSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_indexBackButton_clicked));
+			sigc::mem_fun(*this, &MainWindow::on_indexBackButton_clicked));
 		pIndexPage->getForwardClickedSignal().connect(
-			sigc::mem_fun(*this, &mainWindow::on_indexForwardButton_clicked));
+			sigc::mem_fun(*this, &MainWindow::on_indexForwardButton_clicked));
 
 		// Append the page
 		if (m_state.write_lock_lists() == true)
@@ -1444,7 +1444,7 @@ void mainWindow::on_index_changed(ustring indexName)
 //
 // Results > View Cache menu selected
 //
-void mainWindow::on_cache_changed(PinotSettings::CacheProvider cacheProvider)
+void MainWindow::on_cache_changed(PinotSettings::CacheProvider cacheProvider)
 {
 	if (cacheProvider.m_name.empty() == true)
 	{
@@ -1500,7 +1500,7 @@ void mainWindow::on_cache_changed(PinotSettings::CacheProvider cacheProvider)
 
 					resultIter->setLocation(location);
 #ifdef DEBUG
-					clog << "mainWindow::on_cache_changed: rewritten "
+					clog << "MainWindow::on_cache_changed: rewritten "
 						<< url << " to " << location << endl;
 #endif
 				}
@@ -1517,7 +1517,7 @@ void mainWindow::on_cache_changed(PinotSettings::CacheProvider cacheProvider)
 //
 // Results > Search This For menu selected
 //
-void mainWindow::on_searchthis_changed(ustring queryName)
+void MainWindow::on_searchthis_changed(ustring queryName)
 {
 	QueryProperties queryProps;
 	QueryProperties currentQueryProps;
@@ -1558,7 +1558,7 @@ void mainWindow::on_searchthis_changed(ustring queryName)
 //
 // Index queries combo selection changed
 //
-void mainWindow::on_query_changed(ustring indexName, ustring queryName)
+void MainWindow::on_query_changed(ustring indexName, ustring queryName)
 {
 	NotebookPageBox *pNotebookPage = get_page(indexName, NotebookPageBox::INDEX_PAGE);
 	if (pNotebookPage == NULL)
@@ -1572,7 +1572,7 @@ void mainWindow::on_query_changed(ustring indexName, ustring queryName)
 //
 // Notebook page switch
 //
-void mainWindow::on_switch_page(Widget *pPage, guint pageNum)
+void MainWindow::on_switch_page(Widget *pPage, guint pageNum)
 {
 	NotebookPageBox *pNotebookPage = dynamic_cast<NotebookPageBox*>(m_pNotebook->get_nth_page(pageNum));
 	if (pNotebookPage != NULL)
@@ -1597,7 +1597,7 @@ void mainWindow::on_switch_page(Widget *pPage, guint pageNum)
 			}
 		}
 #ifdef DEBUG
-		clog << "mainWindow::on_switch_page: page " << pageNum << " has type " << type << endl;
+		clog << "MainWindow::on_switch_page: page " << pageNum << " has type " << type << endl;
 #endif
 	}
 
@@ -1614,12 +1614,12 @@ void mainWindow::on_switch_page(Widget *pPage, guint pageNum)
 //
 // Notebook page closed
 //
-void mainWindow::on_close_page(ustring title, NotebookPageBox::PageType type)
+void MainWindow::on_close_page(ustring title, NotebookPageBox::PageType type)
 {
 	int pageDecrement = 0;
 
 #ifdef DEBUG
-	clog << "mainWindow::on_close_page: called for tab " << title << endl;
+	clog << "MainWindow::on_close_page: called for tab " << title << endl;
 #endif
 	int pageNum = get_page_number(title, type);
 	if (pageNum >= 0)
@@ -1646,7 +1646,7 @@ void mainWindow::on_close_page(ustring title, NotebookPageBox::PageType type)
 //
 // End of worker thread
 //
-void mainWindow::on_thread_end(WorkerThread *pThread)
+void MainWindow::on_thread_end(WorkerThread *pThread)
 {
 	ustring status;
 	string indexedUrl;
@@ -1659,7 +1659,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 	string type(pThread->getType());
 	string threadStatus(pThread->getStatus());
 #ifdef DEBUG
-	clog << "mainWindow::on_thread_end: end of thread " << pThread->getId() << endl;
+	clog << "MainWindow::on_thread_end: end of thread " << pThread->getId() << endl;
 #endif
 
 	// Did the thread fail for some reason ?
@@ -1792,7 +1792,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 				if (queryHistory.hasItem(queryName, engineName, resultIter->getLocation(true), oldestScore) <= 0)
 				{
 #ifdef DEBUG
-					clog << "mainWindow::on_thread_end: new result " << resultIter->getLocation(true) << endl;
+					clog << "MainWindow::on_thread_end: new result " << resultIter->getLocation(true) << endl;
 #endif
 					isNewResult = true;
 				}
@@ -1844,7 +1844,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			NotebookTabBox *pTab = manage(new NotebookTabBox(queryName,
 				NotebookPageBox::RESULTS_PAGE));
 			pTab->getCloseSignal().connect(
-				sigc::mem_fun(*this, &mainWindow::on_close_page));
+				sigc::mem_fun(*this, &MainWindow::on_close_page));
 
 			ResultsTree::GroupByMode groupMode = ResultsTree::BY_ENGINE;
 			if (searchenginegroup1->get_active() == false)
@@ -1860,10 +1860,10 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			pResultsTree->showExtract(showextracts1->get_active());
 			// Connect to the "changed" signal
 			pResultsTree->getSelectionChangedSignal().connect(
-				sigc::mem_fun(*this, &mainWindow::on_resultsTreeviewSelection_changed));
+				sigc::mem_fun(*this, &MainWindow::on_resultsTreeviewSelection_changed));
 			// Connect to the view results signal
 			pResultsTree->getDoubleClickSignal().connect(
-				sigc::mem_fun(*this, &mainWindow::on_open_activate));
+				sigc::mem_fun(*this, &MainWindow::on_open_activate));
 
 			// Append the page
 			if (m_state.write_lock_lists() == true)
@@ -1895,7 +1895,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			(wasCorrected == true) &&
 			(pResultsPage->appendSuggestion(queryProps.getFreeQuery()) == true))
 		{
-			pResultsPage->getSuggestSignal().connect(sigc::mem_fun(*this, &mainWindow::on_suggestQueryButton_clicked));
+			pResultsPage->getSuggestSignal().connect(sigc::mem_fun(*this, &MainWindow::on_suggestQueryButton_clicked));
 		}
 
 		// Now that results are displayed, go ahead and index documents
@@ -1907,7 +1907,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			// Set/reset labels
 			docInfo.setLabels(labels);
 #ifdef DEBUG
-			clog << "mainWindow::on_thread_end: indexing results with label " << labelName << endl;
+			clog << "MainWindow::on_thread_end: indexing results with label " << labelName << endl;
 #endif
 			m_state.queue_index(docInfo);
 		}
@@ -1974,7 +1974,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			{
 				browse_index(_("My Web Pages"), pIndexPage->getQueryName(), 0, false);
 #ifdef DEBUG
-				clog << "mainWindow::on_thread_end: refreshed My Web Pages" << endl;
+				clog << "MainWindow::on_thread_end: refreshed My Web Pages" << endl;
 #endif
 			}
 		}
@@ -1985,7 +1985,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			{
 				browse_index(_("My Documents"), pIndexPage->getQueryName(), 0, false);
 #ifdef DEBUG
-				clog << "mainWindow::on_thread_end: refreshed My Documents" << endl;
+				clog << "MainWindow::on_thread_end: refreshed My Documents" << endl;
 #endif
 			}
 		}
@@ -2113,7 +2113,7 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 					browse_index(_("My Web Pages"), pIndexPage->getQueryName(),
 						pIndexPage->getFirstDocument(), false);
 #ifdef DEBUG
-					clog << "mainWindow::on_thread_end: refreshed My Web Pages" << endl;
+					clog << "MainWindow::on_thread_end: refreshed My Web Pages" << endl;
 #endif
 				}
 				pIndexPage->updateButtonsState(m_maxDocsCount);
@@ -2194,8 +2194,8 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 			return;
 		}
 
-		statisticsDialog *pStatisticsBox = NULL;
-		m_refBuilder->get_widget_derived<statisticsDialog>("statisticsDialog", pStatisticsBox);
+		StatisticsDialog *pStatisticsBox = NULL;
+		m_refBuilder->get_widget_derived<StatisticsDialog>("StatisticsDialog", pStatisticsBox);
 
 		if (pStatisticsBox != NULL)
 		{
@@ -2229,12 +2229,12 @@ void mainWindow::on_thread_end(WorkerThread *pThread)
 //
 // Message reception by EnginesTree
 //
-void mainWindow::on_editindex(ustring indexName, ustring location)
+void MainWindow::on_editindex(ustring indexName, ustring location)
 {
-	indexDialog *pIndexBox = NULL;
-	m_refBuilder->get_widget_derived<indexDialog>("indexDialog", pIndexBox);
+	IndexDialog *pIndexBox = NULL;
+	m_refBuilder->get_widget_derived<IndexDialog>("IndexDialog", pIndexBox);
 #ifdef DEBUG
-	clog << "mainWindow::on_editindex: called" << endl;
+	clog << "MainWindow::on_editindex: called" << endl;
 #endif
 
 	if (pIndexBox == NULL)
@@ -2295,7 +2295,7 @@ void mainWindow::on_editindex(ustring indexName, ustring location)
 //
 // Suggest query button click
 //
-void mainWindow::on_suggestQueryButton_clicked(ustring queryName, ustring queryText)
+void MainWindow::on_suggestQueryButton_clicked(ustring queryName, ustring queryText)
 {
 	QueryProperties queryProps;
 
@@ -2317,7 +2317,7 @@ void mainWindow::on_suggestQueryButton_clicked(ustring queryName, ustring queryT
 //
 // Index back button click
 //
-void mainWindow::on_indexBackButton_clicked(ustring indexName)
+void MainWindow::on_indexBackButton_clicked(ustring indexName)
 {
 	IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_page(indexName, NotebookPageBox::INDEX_PAGE));
 	if (pIndexPage != NULL)
@@ -2332,7 +2332,7 @@ void mainWindow::on_indexBackButton_clicked(ustring indexName)
 //
 // Index forward button click
 //
-void mainWindow::on_indexForwardButton_clicked(ustring indexName)
+void MainWindow::on_indexForwardButton_clicked(ustring indexName)
 {
 	IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_page(indexName, NotebookPageBox::INDEX_PAGE));
 	if (pIndexPage != NULL)
@@ -2340,28 +2340,28 @@ void mainWindow::on_indexForwardButton_clicked(ustring indexName)
 		if (pIndexPage->getDocumentsCount() == 0)
 		{
 #ifdef DEBUG
-			clog << "mainWindow::on_indexForwardButton_clicked: first" << endl;
+			clog << "MainWindow::on_indexForwardButton_clicked: first" << endl;
 #endif
 			browse_index(indexName, pIndexPage->getQueryName(), 0);
 		}
 		else if (pIndexPage->getDocumentsCount() >= pIndexPage->getFirstDocument() + m_maxDocsCount)
 		{
 #ifdef DEBUG
-			clog << "mainWindow::on_indexForwardButton_clicked: next" << endl;
+			clog << "MainWindow::on_indexForwardButton_clicked: next" << endl;
 #endif
 			browse_index(indexName, pIndexPage->getQueryName(), pIndexPage->getFirstDocument() + m_maxDocsCount);
 		}
 #ifdef DEBUG
-		clog << "mainWindow::on_indexForwardButton_clicked: counts "
+		clog << "MainWindow::on_indexForwardButton_clicked: counts "
 			<< pIndexPage->getFirstDocument() << " " << pIndexPage->getDocumentsCount() << endl;
 #endif
 	}
 }
 
-void mainWindow::on_status_activate()
+void MainWindow::on_status_activate()
 {
-	statisticsDialog *pStatisticsBox = NULL;
-	m_refBuilder->get_widget_derived<statisticsDialog>("statisticsDialog", pStatisticsBox);
+	StatisticsDialog *pStatisticsBox = NULL;
+	m_refBuilder->get_widget_derived<StatisticsDialog>("StatisticsDialog", pStatisticsBox);
 
 	if (pStatisticsBox == NULL)
 	{
@@ -2377,7 +2377,7 @@ void mainWindow::on_status_activate()
 	pStatisticsBox->run();
 }
 
-void mainWindow::on_preferences_activate()
+void MainWindow::on_preferences_activate()
 {
 	MIMEAction prefsAction("pinot-prefs", "pinot-prefs");
 	vector<string> arguments;
@@ -2385,18 +2385,18 @@ void mainWindow::on_preferences_activate()
 	// Save the settings first as any change in preferences will make the daemon reload the whole thing
 	m_settings.save(PinotSettings::SAVE_CONFIG);
 #ifdef DEBUG
-	clog << "mainWindow::on_preferences_activate: saved config" << endl;
+	clog << "MainWindow::on_preferences_activate: saved config" << endl;
 #endif
 
 	CommandLine::runAsync(prefsAction, arguments);
 }
 
-void mainWindow::on_quit_activate()
+void MainWindow::on_quit_activate()
 {
 	on_mainWindow_delete_event(NULL);
 }
 
-void mainWindow::on_cut_activate()
+void MainWindow::on_cut_activate()
 {
 	// Copy
 	on_copy_activate();
@@ -2404,7 +2404,7 @@ void mainWindow::on_cut_activate()
 	on_delete_activate();
 }
 
-void mainWindow::on_copy_activate()
+void MainWindow::on_copy_activate()
 {
 	ustring text;
 
@@ -2416,7 +2416,7 @@ void mainWindow::on_copy_activate()
 	else if (queryTreeview->is_focus() == true)
 	{
 #ifdef DEBUG
-		clog << "mainWindow::on_copy_activate: query tree" << endl;
+		clog << "MainWindow::on_copy_activate: query tree" << endl;
 #endif
 		TreeModel::iterator iter = queryTreeview->get_selection()->get_selected();
 		TreeModel::Row row = *iter;
@@ -2470,7 +2470,7 @@ void mainWindow::on_copy_activate()
 		{
 			// Only rows from the query, results and index trees can be copied
 #ifdef DEBUG
-			clog << "mainWindow::on_copy_activate: other" << endl;
+			clog << "MainWindow::on_copy_activate: other" << endl;
 #endif
 			return;
 		}
@@ -2483,7 +2483,7 @@ void mainWindow::on_copy_activate()
 	}
 }
 
-void mainWindow::on_paste_activate()
+void MainWindow::on_paste_activate()
 {
 	RefPtr<Clipboard> refClipboard = Clipboard::get();
 
@@ -2508,7 +2508,7 @@ void mainWindow::on_paste_activate()
 	else if (queryTreeview->is_focus() == true)
 	{
 #ifdef DEBUG
-		clog << "mainWindow::on_paste_activate: query tree" << endl;
+		clog << "MainWindow::on_paste_activate: query tree" << endl;
 #endif
 		// Use whatever text is in the clipboard as query name
 		QueryProperties queryProps("", from_utf8(clipText));
@@ -2518,13 +2518,13 @@ void mainWindow::on_paste_activate()
 	{
 		// Only the query tree can be pasted into, others are read-only
 #ifdef DEBUG
-		clog << "mainWindow::on_paste_activate: other" << endl;
+		clog << "MainWindow::on_paste_activate: other" << endl;
 #endif
 		return;
 	}
 }
 
-void mainWindow::on_delete_activate()
+void MainWindow::on_delete_activate()
 {
 	if (liveQueryEntry->is_focus() == true)
 	{
@@ -2539,7 +2539,7 @@ void mainWindow::on_delete_activate()
 			if (pResultsPage != NULL)
 			{
 #ifdef DEBUG
-				clog << "mainWindow::on_delete_activate: results tree" << endl;
+				clog << "MainWindow::on_delete_activate: results tree" << endl;
 #endif
 				ResultsTree *pResultsTree = pResultsPage->getTree();
 				if (pResultsTree != NULL)
@@ -2552,7 +2552,7 @@ void mainWindow::on_delete_activate()
 	// Nothing else can be deleted
 }
 
-void mainWindow::on_showextracts_activate()
+void MainWindow::on_showextracts_activate()
 {
 	NotebookPageBox *pNotebookPage = get_current_page();
 	if (pNotebookPage != NULL)
@@ -2569,7 +2569,7 @@ void mainWindow::on_showextracts_activate()
 	}
 }
 
-void mainWindow::on_groupresults_activate()
+void MainWindow::on_groupresults_activate()
 {
 	// What's the new grouping criteria ?
 	NotebookPageBox *pNotebookPage = get_current_page();
@@ -2594,7 +2594,7 @@ void mainWindow::on_groupresults_activate()
 	}
 }
 
-void mainWindow::on_export_activate()
+void MainWindow::on_export_activate()
 {
 	NotebookPageBox *pNotebookPage = get_current_page();
 	if (pNotebookPage != NULL)
@@ -2647,7 +2647,7 @@ void mainWindow::on_export_activate()
 	}
 }
 
-void mainWindow::on_morelikethis_activate()
+void MainWindow::on_morelikethis_activate()
 {
 	set<string> locationsToIndex;
 	ExpandSet expandSet;
@@ -2678,7 +2678,7 @@ void mainWindow::on_morelikethis_activate()
 	// Else, do it when indexing is completed
 }
 
-void mainWindow::on_addtoindex_activate()
+void MainWindow::on_addtoindex_activate()
 {
 	vector<DocumentInfo> resultsList;
 
@@ -2698,7 +2698,7 @@ void mainWindow::on_addtoindex_activate()
 					resultIter != resultsList.end(); ++resultIter)
 				{
 #ifdef DEBUG
-					clog << "mainWindow::on_addtoindex_activate: URL is " << resultIter->getLocation() << endl;
+					clog << "MainWindow::on_addtoindex_activate: URL is " << resultIter->getLocation() << endl;
 #endif
 					ustring status = m_state.queue_index(*resultIter);
 					if (status.empty() == false)
@@ -2711,10 +2711,10 @@ void mainWindow::on_addtoindex_activate()
 	}
 }
 
-void mainWindow::on_import_activate()
+void MainWindow::on_import_activate()
 {
-	importDialog *pImportBox = NULL;
-	m_refBuilder->get_widget_derived<importDialog>("importDialog", pImportBox);
+	ImportDialog *pImportBox = NULL;
+	m_refBuilder->get_widget_derived<ImportDialog>("ImportDialog", pImportBox);
 
 	if (pImportBox == NULL)
 	{
@@ -2732,7 +2732,7 @@ void mainWindow::on_import_activate()
 	if (docInfo.getLocation().empty() == false)
 	{
 #ifdef DEBUG
-		clog << "mainWindow::on_import_activate: URL is " << docInfo.getLocation() << endl;
+		clog << "MainWindow::on_import_activate: URL is " << docInfo.getLocation() << endl;
 #endif
 		ustring status = m_state.queue_index(docInfo);
 		if (status.empty() == false)
@@ -2742,7 +2742,7 @@ void mainWindow::on_import_activate()
 	}
 }
 
-void mainWindow::on_open_activate()
+void MainWindow::on_open_activate()
 {
 	NotebookPageBox *pNotebookPage = get_current_page();
 	if (pNotebookPage != NULL)
@@ -2774,7 +2774,7 @@ void mainWindow::on_open_activate()
 	}
 }
 
-void mainWindow::on_openparent_activate()
+void MainWindow::on_openparent_activate()
 {
 	NotebookPageBox *pNotebookPage = get_current_page();
 	if (pNotebookPage != NULL)
@@ -2798,7 +2798,7 @@ void mainWindow::on_openparent_activate()
 					{
 						location.erase(slashPos);
 #ifdef DEBUG
-						clog << "mainWindow::on_openparent_activate: " << location << endl;
+						clog << "MainWindow::on_openparent_activate: " << location << endl;
 #endif
 						resultIter->setLocation(location);
 						resultIter->setType("x-directory/normal");
@@ -2824,7 +2824,7 @@ void mainWindow::on_openparent_activate()
 	}
 }
 
-void mainWindow::on_updateindex_activate()
+void MainWindow::on_updateindex_activate()
 {
 	vector<DocumentInfo> documentsList;
 
@@ -2856,7 +2856,7 @@ void mainWindow::on_updateindex_activate()
 			continue;
 		}
 #ifdef DEBUG
-		clog << "mainWindow::on_updateindex_activate: URL is " << docIter->getLocation() << endl;
+		clog << "MainWindow::on_updateindex_activate: URL is " << docIter->getLocation() << endl;
 #endif
 
 		// Add this action to the queue
@@ -2868,7 +2868,7 @@ void mainWindow::on_updateindex_activate()
 	}
 }
 
-void mainWindow::on_properties_activate()
+void MainWindow::on_properties_activate()
 {
 	vector<DocumentInfo> documentsList;
 	set<unsigned int> docIds;
@@ -2877,7 +2877,7 @@ void mainWindow::on_properties_activate()
 	bool docsIndex = false, daemonIndex = false, readOnlyProps = false;
 
 #ifdef DEBUG
-	clog << "mainWindow::on_properties_activate: called" << endl;
+	clog << "MainWindow::on_properties_activate: called" << endl;
 #endif
 	ResultsTree *pResultsTree = NULL;
 	IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_current_page());
@@ -2924,8 +2924,8 @@ void mainWindow::on_properties_activate()
 
 	get_size(width, height);
 
-	propertiesDialog *pPropertiesBox = NULL;
-	m_refBuilder->get_widget_derived<propertiesDialog>("propertiesDialog", pPropertiesBox);
+	PropertiesDialog *pPropertiesBox = NULL;
+	m_refBuilder->get_widget_derived<PropertiesDialog>("PropertiesDialog", pPropertiesBox);
 
 	if (pPropertiesBox == NULL)
 	{
@@ -2983,7 +2983,7 @@ void mainWindow::on_properties_activate()
 	}
 }
 
-void mainWindow::on_unindex_activate()
+void MainWindow::on_unindex_activate()
 {
 	vector<DocumentInfo> documentsList;
 	ustring boxMsg(_("Remove this document from the index ?"));
@@ -3039,13 +3039,13 @@ void mainWindow::on_unindex_activate()
 	{
 		// Queue this action
 #ifdef DEBUG
-		clog << "mainWindow::on_unindex_activate: " << docIdList.size() << " documents to unindex" << endl;
+		clog << "MainWindow::on_unindex_activate: " << docIdList.size() << " documents to unindex" << endl;
 #endif
 		start_thread(new UnindexingThread(docIdList));
 	}
 }
 
-void mainWindow::on_about_activate()
+void MainWindow::on_about_activate()
 {
 	AboutDialog aboutBox;
 
@@ -3063,14 +3063,14 @@ void mainWindow::on_about_activate()
 //
 // Activity timeout elapsed
 //
-bool mainWindow::on_activity_timeout()
+bool MainWindow::on_activity_timeout()
 {
 	if (m_timeoutConnection.blocked() == false)
 	{
 		mainProgressbar->pulse();
 	}
 #ifdef DEBUG
-	else clog << "mainWindow::on_activity_timeout: blocked" << endl;
+	else clog << "MainWindow::on_activity_timeout: blocked" << endl;
 #endif
 
 	return true;
@@ -3079,10 +3079,10 @@ bool mainWindow::on_activity_timeout()
 //
 // Add index button click
 //
-void mainWindow::on_addIndexButton_clicked()
+void MainWindow::on_addIndexButton_clicked()
 {
-	indexDialog *pIndexBox = NULL;
-	m_refBuilder->get_widget_derived<indexDialog>("indexDialog", pIndexBox);
+	IndexDialog *pIndexBox = NULL;
+	m_refBuilder->get_widget_derived<IndexDialog>("IndexDialog", pIndexBox);
 
 	if (pIndexBox == NULL)
 	{
@@ -3138,7 +3138,7 @@ void mainWindow::on_addIndexButton_clicked()
 //
 // Remove index button click
 //
-void mainWindow::on_removeIndexButton_clicked()
+void MainWindow::on_removeIndexButton_clicked()
 {
 	vector<TreeModel::Path> selectedEngines = m_pEnginesTree->getSelection();
 
@@ -3190,7 +3190,7 @@ void mainWindow::on_removeIndexButton_clicked()
 //
 // Show or hide the engines list
 //
-void mainWindow::on_enginesTogglebutton_toggled()
+void MainWindow::on_enginesTogglebutton_toggled()
 {
 	if (enginesTogglebutton->get_active() == true)
 	{
@@ -3205,7 +3205,7 @@ void mainWindow::on_enginesTogglebutton_toggled()
 //
 // Live query entry change
 //
-void mainWindow::on_liveQueryEntry_changed()
+void MainWindow::on_liveQueryEntry_changed()
 {
 	ustring term(liveQueryEntry->get_text());
 	bool enableFindButton = true;
@@ -3276,7 +3276,7 @@ void mainWindow::on_liveQueryEntry_changed()
 			++termIndex;
 		}
 #ifdef DEBUG
-		clog << "mainWindow::on_liveQueryEntry_changed: " << termIndex << " suggestions" << endl;
+		clog << "MainWindow::on_liveQueryEntry_changed: " << termIndex << " suggestions" << endl;
 #endif
 
 		delete pIndex;
@@ -3286,7 +3286,7 @@ void mainWindow::on_liveQueryEntry_changed()
 //
 // Live query entry activate
 //
-void mainWindow::on_liveQueryEntry_activate()
+void MainWindow::on_liveQueryEntry_activate()
 {
 	on_findButton_clicked();
 }
@@ -3294,7 +3294,7 @@ void mainWindow::on_liveQueryEntry_activate()
 //
 // Live query entry icon press
 //
-void mainWindow::on_liveQueryEntry_icon(EntryIconPosition position, const GdkEventButton *ev)
+void MainWindow::on_liveQueryEntry_icon(EntryIconPosition position, const GdkEventButton *ev)
 {
 	on_findButton_clicked();
 }
@@ -3302,7 +3302,7 @@ void mainWindow::on_liveQueryEntry_icon(EntryIconPosition position, const GdkEve
 //
 // Find button click
 //
-void mainWindow::on_findButton_clicked()
+void MainWindow::on_findButton_clicked()
 {
 	QueryProperties queryProps(_("Live query"), liveQueryEntry->get_text());
 
@@ -3314,7 +3314,7 @@ void mainWindow::on_findButton_clicked()
 //
 // Add query button click
 //
-void mainWindow::on_addQueryButton_clicked()
+void MainWindow::on_addQueryButton_clicked()
 {
 	// Even though live queries terms are now ANDed together,
 	// use them as OR terms when creating a new stored query
@@ -3326,7 +3326,7 @@ void mainWindow::on_addQueryButton_clicked()
 //
 // Remove query button click
 //
-void mainWindow::on_removeQueryButton_clicked()
+void MainWindow::on_removeQueryButton_clicked()
 {
 	TreeModel::iterator iter = queryTreeview->get_selection()->get_selected();
 	// Anything selected ?
@@ -3380,7 +3380,7 @@ void mainWindow::on_removeQueryButton_clicked()
 //
 // Previous Results button click
 //
-void mainWindow::on_queryHistoryButton_clicked()
+void MainWindow::on_queryHistoryButton_clicked()
 {
 	TreeModel::iterator queryIter = queryTreeview->get_selection()->get_selected();
 	// Any query selected ?
@@ -3415,7 +3415,7 @@ void mainWindow::on_queryHistoryButton_clicked()
 //
 // Find query button click
 //
-void mainWindow::on_findQueryButton_clicked()
+void MainWindow::on_findQueryButton_clicked()
 {
 	TreeModel::iterator queryIter = queryTreeview->get_selection()->get_selected();
 	// Any query selected ?
@@ -3436,7 +3436,7 @@ void mainWindow::on_findQueryButton_clicked()
 //
 // Query list mouse click
 //
-bool mainWindow::on_queryTreeview_button_press_event(GdkEventButton *ev)
+bool MainWindow::on_queryTreeview_button_press_event(GdkEventButton *ev)
 {
 	// Check for double clicks
 	if (ev->type == GDK_2BUTTON_PRESS)
@@ -3447,7 +3447,7 @@ bool mainWindow::on_queryTreeview_button_press_event(GdkEventButton *ev)
 		{
 			TreeModel::Row row = *iter;
 #ifdef DEBUG
-			clog << "mainWindow::on_queryTreeview_button_press_event: selected " << row[m_queryColumns.m_name] << endl;
+			clog << "MainWindow::on_queryTreeview_button_press_event: selected " << row[m_queryColumns.m_name] << endl;
 #endif
 
 			// Edit this query's properties
@@ -3462,7 +3462,7 @@ bool mainWindow::on_queryTreeview_button_press_event(GdkEventButton *ev)
 //
 // Main window deleted
 //
-bool mainWindow::on_mainWindow_delete_event(GdkEventAny *ev)
+bool MainWindow::on_mainWindow_delete_event(GdkEventAny *ev)
 {
 	// Any thread still running ?
 	if (m_state.get_threads_count() > 0)
@@ -3491,11 +3491,11 @@ bool mainWindow::on_mainWindow_delete_event(GdkEventAny *ev)
 	m_settings.m_panePos = mainHpaned->get_position();
 	m_settings.m_expandQueries = queryExpander->get_expanded();
 #ifdef DEBUG
-	clog << "mainWindow::on_mainWindow_delete_event: expanded ?" << m_settings.m_expandQueries << endl;
+	clog << "MainWindow::on_mainWindow_delete_event: expanded ?" << m_settings.m_expandQueries << endl;
 #endif
 	m_settings.m_showEngines = enginesTogglebutton->get_active();
 #ifdef DEBUG
-	clog << "mainWindow::on_mainWindow_delete_event: quitting" << endl;
+	clog << "MainWindow::on_mainWindow_delete_event: quitting" << endl;
 #endif
 
 	// Save engines
@@ -3507,7 +3507,7 @@ bool mainWindow::on_mainWindow_delete_event(GdkEventAny *ev)
 	// Save the settings
 	m_settings.save(PinotSettings::SAVE_CONFIG);
 #ifdef DEBUG
-	clog << "mainWindow::on_mainWindow_delete_event: saved config" << endl;
+	clog << "MainWindow::on_mainWindow_delete_event: saved config" << endl;
 #endif
 
 	// Delete temporary files created for viewing documents
@@ -3521,7 +3521,7 @@ bool mainWindow::on_mainWindow_delete_event(GdkEventAny *ev)
 //
 // Show or hide menuitems.
 //
-void mainWindow::show_pagebased_menuitems(bool showItems)
+void MainWindow::show_pagebased_menuitems(bool showItems)
 {
 	// Results menuitems that depend on the page
 	export1->set_sensitive(showItems);
@@ -3530,7 +3530,7 @@ void mainWindow::show_pagebased_menuitems(bool showItems)
 //
 // Show or hide menuitems.
 //
-void mainWindow::show_selectionbased_menuitems(bool showItems)
+void MainWindow::show_selectionbased_menuitems(bool showItems)
 {
 	// Menuitems that depend on selection
 	open1->set_sensitive(showItems);
@@ -3547,7 +3547,7 @@ void mainWindow::show_selectionbased_menuitems(bool showItems)
 //
 // Returns the current page.
 //
-NotebookPageBox *mainWindow::get_current_page(void)
+NotebookPageBox *MainWindow::get_current_page(void)
 {
 	NotebookPageBox *pNotebookPage = NULL;
 
@@ -3568,12 +3568,12 @@ NotebookPageBox *mainWindow::get_current_page(void)
 //
 // Returns the page with the given title.
 //
-NotebookPageBox *mainWindow::get_page(const ustring &title, NotebookPageBox::PageType type)
+NotebookPageBox *MainWindow::get_page(const ustring &title, NotebookPageBox::PageType type)
 {
 	NotebookPageBox *pNotebookPage = NULL;
 
 #ifdef DEBUG
-	clog << "mainWindow::get_page: looking for " << title << " " << type << endl;
+	clog << "MainWindow::get_page: looking for " << title << " " << type << endl;
 #endif
 	if (m_state.read_lock_lists() == true)
 	{
@@ -3586,7 +3586,7 @@ NotebookPageBox *mainWindow::get_page(const ustring &title, NotebookPageBox::Pag
 				if (pNotebookPage != NULL)
 				{
 #ifdef DEBUG
-					clog << "mainWindow::get_page: " << pNotebookPage->getTitle()
+					clog << "MainWindow::get_page: " << pNotebookPage->getTitle()
 						<< " " << pNotebookPage->getType() << endl;
 #endif
 					if ((title == pNotebookPage->getTitle()) &&
@@ -3609,7 +3609,7 @@ NotebookPageBox *mainWindow::get_page(const ustring &title, NotebookPageBox::Pag
 //
 // Returns the number of the page with the given title.
 //
-int mainWindow::get_page_number(const ustring &title, NotebookPageBox::PageType type)
+int MainWindow::get_page_number(const ustring &title, NotebookPageBox::PageType type)
 {
 	int pageNumber = -1;
 
@@ -3624,7 +3624,7 @@ int mainWindow::get_page_number(const ustring &title, NotebookPageBox::PageType 
 				if (pNotebookPage != NULL)
 				{
 #ifdef DEBUG
-					clog << "mainWindow::get_page_number: " << pNotebookPage->getTitle() << endl;
+					clog << "MainWindow::get_page_number: " << pNotebookPage->getTitle() << endl;
 #endif
 					if ((title == pNotebookPage->getTitle()) &&
 						(type == pNotebookPage->getType()))
@@ -3646,7 +3646,7 @@ int mainWindow::get_page_number(const ustring &title, NotebookPageBox::PageType 
 //
 // Edits a query
 //
-void mainWindow::edit_query(QueryProperties &queryProps, bool newQuery)
+void MainWindow::edit_query(QueryProperties &queryProps, bool newQuery)
 {
 	ustring queryName;
 
@@ -3661,11 +3661,11 @@ void mainWindow::edit_query(QueryProperties &queryProps, bool newQuery)
 		queryProps.setMaximumResultsCount(m_maxResultsCount);
 	}
 #ifdef DEBUG
-	clog << "mainWindow::edit_query: editing " << queryProps.getName() << endl;
+	clog << "MainWindow::edit_query: editing " << queryProps.getName() << endl;
 #endif
 
-	queryDialog *pQueryBox = NULL;
-	m_refBuilder->get_widget_derived<queryDialog>("queryDialog", pQueryBox);
+	QueryDialog *pQueryBox = NULL;
+	m_refBuilder->get_widget_derived<QueryDialog>("QueryDialog", pQueryBox);
 
 	if (pQueryBox == NULL)
 	{
@@ -3768,7 +3768,7 @@ void mainWindow::edit_query(QueryProperties &queryProps, bool newQuery)
 //
 // Runs a search
 //
-void mainWindow::run_search(const QueryProperties &queryProps)
+void MainWindow::run_search(const QueryProperties &queryProps)
 {
 	if (queryProps.isEmpty() == true)
 	{
@@ -3776,7 +3776,7 @@ void mainWindow::run_search(const QueryProperties &queryProps)
 		return;
 	}
 #ifdef DEBUG
-	clog << "mainWindow::run_search: query name is " << queryProps.getName() << endl;
+	clog << "MainWindow::run_search: query name is " << queryProps.getName() << endl;
 #endif
 
 	// Check a search engine has been selected
@@ -3835,7 +3835,7 @@ void mainWindow::run_search(const QueryProperties &queryProps)
 		}
 	}
 #ifdef DEBUG
-	clog << "mainWindow::run_search: selected " << engineIters.size()
+	clog << "MainWindow::run_search: selected " << engineIters.size()
 		<< " engines" << endl;
 #endif
 
@@ -3860,7 +3860,7 @@ void mainWindow::run_search(const QueryProperties &queryProps)
 		ustring engineOption = engineRow[engineColumns.m_option];
 		EnginesModelColumns::EngineType engineType = engineRow[engineColumns.m_type];
 #ifdef DEBUG
-		clog << "mainWindow::run_search: engine " << engineDisplayableName << endl;
+		clog << "MainWindow::run_search: engine " << engineDisplayableName << endl;
 #endif
 
 		ustring status = _("Running query");
@@ -3881,11 +3881,11 @@ void mainWindow::run_search(const QueryProperties &queryProps)
 //
 // Browse an index
 //
-void mainWindow::browse_index(const ustring &indexName, const ustring &queryName,
+void MainWindow::browse_index(const ustring &indexName, const ustring &queryName,
 	unsigned int startDoc, bool changePage)
 {
 #ifdef DEBUG
-	clog << "mainWindow::browse_index: called on " << indexName << ", " << queryName << endl;
+	clog << "MainWindow::browse_index: called on " << indexName << ", " << queryName << endl;
 #endif
 	// Rudimentary lock
 	if (m_state.m_browsingIndex == true)
@@ -3916,7 +3916,7 @@ void mainWindow::browse_index(const ustring &indexName, const ustring &queryName
 	if (indexProps.m_location.empty() == true)
 	{
 #ifdef DEBUG
-		clog << "mainWindow::browse_index: couldn't find index " << indexName << endl;
+		clog << "MainWindow::browse_index: couldn't find index " << indexName << endl;
 #endif
 		return;
 	}
@@ -3942,7 +3942,7 @@ void mainWindow::browse_index(const ustring &indexName, const ustring &queryName
 			start_thread(new EngineQueryThread(indexProps, queryProps, startDoc, true));
 		}
 #ifdef DEBUG
-		else clog << "mainWindow::browse_index: couldn't find query " << queryName << endl;
+		else clog << "MainWindow::browse_index: couldn't find query " << queryName << endl;
 #endif
 	}
 }
@@ -3950,7 +3950,7 @@ void mainWindow::browse_index(const ustring &indexName, const ustring &queryName
 //
 // View documents
 //
-void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
+void MainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 {
 	ViewHistory viewHistory(m_settings.getHistoryDatabaseName());
 	RefPtr<RecentManager> recentManager = RecentManager::get_default();
@@ -3963,7 +3963,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 		string mimeType(docIter->getType());
 
 #ifdef DEBUG
-		clog << "mainWindow::view_documents: " << url << "?" << docIter->getInternalPath() << endl;
+		clog << "MainWindow::view_documents: " << url << "?" << docIter->getInternalPath() << endl;
 #endif
 		if (url.empty() == true)
 		{
@@ -3994,7 +3994,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 		}
 
 #ifdef DEBUG
-		clog << "mainWindow::view_documents: " << url << " has type " << mimeType << endl;
+		clog << "MainWindow::view_documents: " << url << " has type " << mimeType << endl;
 #endif
 		locationsByType.insert(pair<string, string>(mimeType, url));
 	}
@@ -4023,7 +4023,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 				if (CommandLine::runAsync(action, arguments) == false)
 				{
 #ifdef DEBUG
-					clog << "mainWindow::view_documents: couldn't view type "
+					clog << "MainWindow::view_documents: couldn't view type "
 						<< currentType << endl;
 #endif
 				}
@@ -4039,7 +4039,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 				// Chances are the web browser will be able to open this
 				type = "text/html";
 #ifdef DEBUG
-				clog << "mainWindow::view_documents: defaulting to text/html" << endl;
+				clog << "MainWindow::view_documents: defaulting to text/html" << endl;
 #endif
 			}
 			bool foundAction = MIMEScanner::getDefaultActions(type, urlObj.isLocal(), actionsList);
@@ -4053,14 +4053,14 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 					type = "text/plain";
 					foundAction = MIMEScanner::getDefaultActions(type, urlObj.isLocal(), actionsList);
 #ifdef DEBUG
-					clog << "mainWindow::view_documents: defaulting to text/plain" << endl;
+					clog << "MainWindow::view_documents: defaulting to text/plain" << endl;
 #endif
 				}
 
 				if (foundAction == false)
 				{
-					launcherDialog *pLauncherBox = NULL;
-					m_refBuilder->get_widget_derived<launcherDialog>("launcherDialog", pLauncherBox);
+					LauncherDialog *pLauncherBox = NULL;
+					m_refBuilder->get_widget_derived<LauncherDialog>("LauncherDialog", pLauncherBox);
 
 					if (pLauncherBox != NULL)
 					{
@@ -4085,7 +4085,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 						{
 							// Add this to MIMESCanner's list
 #ifdef DEBUG
-							clog << "mainWindow::view_documents: adding user-defined action for type " << type << endl;
+							clog << "MainWindow::view_documents: adding user-defined action for type " << type << endl;
 #endif
 							MIMEScanner::addDefaultAction(type, action);
 							// FIXME: save this in the settings ?
@@ -4132,7 +4132,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 		(CommandLine::runAsync(action, arguments) == false))
 	{
 #ifdef DEBUG
-		clog << "mainWindow::view_documents: couldn't view type "
+		clog << "MainWindow::view_documents: couldn't view type "
 			<< currentType << endl;
 #endif
 	}
@@ -4141,7 +4141,7 @@ void mainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 //
 // Start of worker thread
 //
-bool mainWindow::start_thread(WorkerThread *pNewThread, bool inBackground)
+bool MainWindow::start_thread(WorkerThread *pNewThread, bool inBackground)
 {
 	if (m_state.start_thread(pNewThread, inBackground) == false)
 	{
@@ -4150,7 +4150,7 @@ bool mainWindow::start_thread(WorkerThread *pNewThread, bool inBackground)
 		return false;
 	}
 #ifdef DEBUG
-	clog << "mainWindow::start_thread: started thread " << pNewThread->getId() << endl;
+	clog << "MainWindow::start_thread: started thread " << pNewThread->getId() << endl;
 #endif
 
 	if (inBackground == false)
@@ -4159,14 +4159,14 @@ bool mainWindow::start_thread(WorkerThread *pNewThread, bool inBackground)
 		m_timeoutConnection.block();
 		m_timeoutConnection.disconnect();
 		m_timeoutConnection = Glib::signal_timeout().connect(sigc::mem_fun(*this,
-			&mainWindow::on_activity_timeout), 1000);
+			&MainWindow::on_activity_timeout), 1000);
 		m_timeoutConnection.unblock();
 	}
 
 	return true;
 }
 
-bool mainWindow::expand_locations(void)
+bool MainWindow::expand_locations(void)
 {
 	ExpandQueryThread *pExpandQueryThread = NULL;
 
@@ -4176,7 +4176,7 @@ bool mainWindow::expand_locations(void)
 	{
 		pExpandQueryThread = new ExpandQueryThread(expandIter->m_queryProps, expandIter->m_locations);
 #ifdef DEBUG
-		clog << "mainWindow::expand_locations: " << expandIter->m_locations.size() << " locations in set" << endl;
+		clog << "MainWindow::expand_locations: " << expandIter->m_locations.size() << " locations in set" << endl;
 #endif
 
 		m_expandSets.erase(expandIter);
@@ -4194,7 +4194,7 @@ bool mainWindow::expand_locations(void)
 //
 // Sets the status bar text.
 //
-void mainWindow::set_status(const ustring &text, bool canBeSkipped)
+void MainWindow::set_status(const ustring &text, bool canBeSkipped)
 {
 	static time_t lastTime = time(NULL);
 

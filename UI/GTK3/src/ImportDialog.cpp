@@ -32,15 +32,15 @@
 #include "Url.h"
 #include "QueryHistory.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "importDialog.hh"
+#include "PinotUtils.h"
+#include "ImportDialog.h"
 
 using namespace std;
 using namespace Glib;
 using namespace Gdk;
 using namespace Gtk;
 
-importDialog::importDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
+ImportDialog::ImportDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	Dialog(pParent),
 	cancelButton(NULL),
 	importButton(NULL),
@@ -59,9 +59,9 @@ importDialog::importDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	refBuilder->get_widget("docLocationEntry", locationEntry);
 	refBuilder->get_widget("docTable", docTable);
 
-	cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &importDialog::on_cancelButton_clicked), false);
-	importButton->signal_clicked().connect(sigc::mem_fun(*this, &importDialog::on_importButton_clicked), false);
-	locationEntry->signal_changed().connect(sigc::mem_fun(*this, &importDialog::on_locationEntry_changed), false);
+	cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &ImportDialog::on_cancelButton_clicked), false);
+	importButton->signal_clicked().connect(sigc::mem_fun(*this, &ImportDialog::on_importButton_clicked), false);
+	locationEntry->signal_changed().connect(sigc::mem_fun(*this, &ImportDialog::on_locationEntry_changed), false);
 
 	// Enable completion on the location field
 	m_refLocationList = ListStore::create(m_locationColumns);
@@ -77,7 +77,7 @@ importDialog::importDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	locationEntry->drag_dest_add_uri_targets();
 	// Connect to the drag data received signal
 	locationEntry->signal_drag_data_received().connect(
-		sigc::mem_fun(*this, &importDialog::on_data_received));
+		sigc::mem_fun(*this, &ImportDialog::on_data_received));
 
 	// Populate
 	populate_comboboxes();
@@ -87,22 +87,22 @@ importDialog::importDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBuilder) :
 	importButton->set_sensitive(false);
 }
 
-importDialog::~importDialog()
+ImportDialog::~ImportDialog()
 {
 }
 
-const DocumentInfo &importDialog::getDocumentInfo(void) const
+const DocumentInfo &ImportDialog::getDocumentInfo(void) const
 {
 	return m_docInfo;
 }
 
-void importDialog::on_data_received(const RefPtr<DragContext> &context,
+void ImportDialog::on_data_received(const RefPtr<DragContext> &context,
 	int x, int y, const SelectionData &data, guint info, guint time)
 {
 	vector<ustring> droppedUris = data.get_uris();
 	bool goodDrop = false;
 
-	clog << "importDialog::on_data_received: data type "
+	clog << "ImportDialog::on_data_received: data type "
 		<< data.get_data_type() << " in format " << data.get_format() << endl;
 
 	if (droppedUris.empty() == false)
@@ -115,7 +115,7 @@ void importDialog::on_data_received(const RefPtr<DragContext> &context,
 	context->drag_finish(goodDrop, false, time);
 }
 
-void importDialog::populate_comboboxes(void)
+void ImportDialog::populate_comboboxes(void)
 {
 	labelNameCombobox->append(_("None"));
 	labelNameCombobox->set_active(0);
@@ -129,21 +129,21 @@ void importDialog::populate_comboboxes(void)
 	}
 }
 
-void importDialog::on_cancelButton_clicked()
+void ImportDialog::on_cancelButton_clicked()
 {
 #ifdef DEBUG
-	clog << "importDialog::on_cancelButton_clicked: called" << endl;
+	clog << "ImportDialog::on_cancelButton_clicked: called" << endl;
 #endif
 	close();
 }
 
-void importDialog::on_importButton_clicked()
+void ImportDialog::on_importButton_clicked()
 {
 	string title(from_utf8(titleEntry->get_text()));
 	string location(from_utf8(locationEntry->get_text()));
 	string labelName;
 #ifdef DEBUG
-	clog << "importDialog::on_importButton_clicked: called" << endl;
+	clog << "ImportDialog::on_importButton_clicked: called" << endl;
 #endif
 
 	// Label
@@ -168,7 +168,7 @@ void importDialog::on_importButton_clicked()
 	close();
 }
 
-void importDialog::on_locationEntry_changed()
+void ImportDialog::on_locationEntry_changed()
 {
 	ustring fileName = from_utf8(locationEntry->get_text());
 	bool enableImport = true;

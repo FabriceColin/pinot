@@ -35,13 +35,13 @@
 #include <gtkmm/table.h>
 
 #include "DocumentInfo.h"
-#include "ModelColumns.hh"
+#include "ModelColumns.h"
 
-class importDialog : public Gtk::Dialog
+class ImportDialog : public Gtk::Dialog
 {  
 public:
-	importDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~importDialog();
+	ImportDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~ImportDialog();
 
 	const DocumentInfo &getDocumentInfo(void) const;
 

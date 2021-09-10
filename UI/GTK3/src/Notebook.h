@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include <gtkmm/textview.h>
 
 #include "PinotSettings.h"
-#include "ResultsTree.hh"
+#include "ResultsTree.h"
 
 class NotebookPageBox : public Gtk::VBox
 {

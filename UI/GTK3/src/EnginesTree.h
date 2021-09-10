@@ -38,7 +38,7 @@
 
 #include "QueryProperties.h"
 #include "PinotSettings.h"
-#include "ModelColumns.hh"
+#include "ModelColumns.h"
 
 class EnginesTree : public Gtk::TreeView
 {

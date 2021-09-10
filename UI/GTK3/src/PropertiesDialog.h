@@ -33,13 +33,13 @@
 #include <gtkmm/treeview.h>
 
 #include "DocumentInfo.h"
-#include "ModelColumns.hh"
+#include "ModelColumns.h"
 
-class propertiesDialog : public Gtk::Dialog
+class PropertiesDialog : public Gtk::Dialog
 {  
 public:
-	propertiesDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
-	virtual ~propertiesDialog();
+	PropertiesDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
+	virtual ~PropertiesDialog();
 
 	void setDocuments(const std::string &indexLocation,
 		const std::vector<DocumentInfo> &documentsList);

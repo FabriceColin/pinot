@@ -33,7 +33,7 @@
 #endif
 #include "ModuleFactory.h"
 #include "PinotSettings.h"
-#include "UIThreads.hh"
+#include "UIThreads.h"
 
 using namespace Glib;
 using namespace std;

@@ -50,19 +50,19 @@
 #ifdef HAVE_DBUS
 #include "PinotDBus_proxy.h"
 #endif
-#include "EnginesTree.hh"
-#include "IndexPage.hh"
-#include "ModelColumns.hh"
-#include "Notebook.hh"
-#include "ResultsTree.hh"
-#include "UIThreads.hh"
+#include "EnginesTree.h"
+#include "IndexPage.h"
+#include "ModelColumns.h"
+#include "Notebook.h"
+#include "ResultsTree.h"
+#include "UIThreads.h"
 
-class mainWindow : public Gtk::Window
+class MainWindow : public Gtk::Window
 {
 public:
-	mainWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder,
+	MainWindow(_GtkWindow *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder,
 		const Glib::ustring &statusText = Glib::ustring(""));
-	virtual ~mainWindow();
+	virtual ~MainWindow();
 
 	void set_status(const Glib::ustring &text, bool canBeSkipped = false);
 
@@ -246,7 +246,7 @@ private:
 	class InternalState : public QueueManager
 	{
 		public:
-			InternalState(mainWindow *pWindow);
+			InternalState(MainWindow *pWindow);
 			virtual ~InternalState();
 
 			void on_IndexFlushed(guint32 docsCount);

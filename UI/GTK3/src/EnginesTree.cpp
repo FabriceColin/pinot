@@ -25,13 +25,13 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textbuffer.h>
 
-#include "Url.h"
 #include "config.h"
 #include "NLS.h"
+#include "Url.h"
 #include "ModuleFactory.h"
 #include "PinotSettings.h"
-#include "PinotUtils.hh"
-#include "EnginesTree.hh"
+#include "PinotUtils.h"
+#include "EnginesTree.h"
 
 using namespace std;
 using namespace Glib;

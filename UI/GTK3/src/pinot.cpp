@@ -45,8 +45,8 @@
 #include "DBusIndex.h"
 #endif
 #include "PinotSettings.h"
-#include "mainWindow.hh"
-#include "prefsWindow.hh"
+#include "MainWindow.h"
+#include "PrefsWindow.h"
 
 #define EXPIRY_PERIOD	(3600 * 24 * 30 * 6)
 
@@ -376,8 +376,8 @@ int main(int argc, char **argv)
 		// Create and open the window
 		if (prefsMode == false)
 		{
-			mainWindow *pMainBox = NULL;
-			refBuilder->get_widget_derived<mainWindow>("mainWindow", pMainBox, statusText);
+			MainWindow *pMainBox = NULL;
+			refBuilder->get_widget_derived<MainWindow>("MainWindow", pMainBox, statusText);
 
 			if (pMainBox != NULL)
 			{
@@ -386,8 +386,8 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			prefsWindow *pPrefsBox = NULL;
-			refBuilder->get_widget_derived<prefsWindow>("prefsWindow", pPrefsBox);
+			PrefsWindow *pPrefsBox = NULL;
+			refBuilder->get_widget_derived<PrefsWindow>("PrefsWindow", pPrefsBox);
 
 			if (pPrefsBox != NULL)
 			{
