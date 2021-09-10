@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2011 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,13 +71,8 @@ IndexPage::IndexPage(const ustring &indexName, ResultsTree *pTree,
 	hbox45->pack_start(*image521, Gtk::PACK_SHRINK, 0);
 	hbox45->pack_start(*label52, Gtk::PACK_SHRINK, 0);
 	alignment31->add(*hbox45);
-#if GTK_VERSION_LT(3, 0)
-	m_pBackButton->set_flags(Gtk::CAN_FOCUS);
-	m_pBackButton->set_flags(Gtk::CAN_DEFAULT);
-#else
 	m_pBackButton->set_can_focus();
 	m_pBackButton->set_can_default();
-#endif
 	m_pBackButton->set_relief(Gtk::RELIEF_NORMAL);
 	m_pBackButton->add(*alignment31);
 	image522->set_alignment(0.5,0.5);
@@ -91,13 +86,8 @@ IndexPage::IndexPage(const ustring &indexName, ResultsTree *pTree,
 	hbox46->pack_start(*image522, Gtk::PACK_SHRINK, 0);
 	hbox46->pack_start(*label53, Gtk::PACK_SHRINK, 0);
 	alignment32->add(*hbox46);
-#if GTK_VERSION_LT(3, 0)
-	m_pForwardButton->set_flags(Gtk::CAN_FOCUS);
-	m_pForwardButton->set_flags(Gtk::CAN_DEFAULT);
-#else
 	m_pForwardButton->set_can_focus();
 	m_pForwardButton->set_can_default();
-#endif
 	m_pForwardButton->set_relief(Gtk::RELIEF_NORMAL);
 	m_pForwardButton->add(*alignment32);
 
@@ -185,25 +175,15 @@ void IndexPage::populateQueryCombobox(const string &queryName)
 		m_queryChangedConnection.disconnect();
 	}
 
-#if GTK_VERSION_LT(3, 0)
-	m_pQueryCombobox->clear_items();
-
-	m_pQueryCombobox->append_text(_("All"));
-#else
 	m_pQueryCombobox->remove_all();
 
 	m_pQueryCombobox->append(_("All"));
-#endif
 
 	const std::map<string, QueryProperties> &queries = m_settings.getQueries();
 	for (std::map<string, QueryProperties>::const_iterator queryIter = queries.begin();
 		queryIter != queries.end(); ++queryIter)
 	{
-#if GTK_VERSION_LT(3, 0)
-		m_pQueryCombobox->append_text(to_utf8(queryIter->first));
-#else
 		m_pQueryCombobox->append(to_utf8(queryIter->first));
-#endif
 	}
 
 	// Reconnect the signal
