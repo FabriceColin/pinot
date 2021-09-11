@@ -60,18 +60,6 @@ using std::pair;
 
 extern FieldMapperInterface *g_pMapper;
 
-static string removeCharsetFromType(const string &type)
-{
-	// Remove the charset, if any
-	string::size_type semiColonPos = type.find(";");
-	if (semiColonPos != string::npos)
-	{
-		return type.substr(0, semiColonPos);
-	}
-
-	return type;
-}
-
 class TokensIndexer : public Dijon::CJKVTokenizer::TokensHandler
 {
 	public:
@@ -622,7 +610,7 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 {
 	string title(docInfo.getTitle());
 	string location(docInfo.getLocation());
-	string type(removeCharsetFromType(docInfo.getType()));
+	string type(docInfo.getType(false));
 	Url urlObj(location);
 
 	// Add a magic term :-)
@@ -734,10 +722,7 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 		{
 			extension = StringManip::toLowerCase(fileName.substr(extPos + 1));
 		}
-		if (extension.empty() == false)
-		{
-			doc.add_term(string("XEXT:") + XapianDatabase::limitTermLength(extension));
-		}
+		doc.add_term(string("E") + XapianDatabase::limitTermLength(extension));
 	}
 	// Add the language code with prefix L
 	doc.add_term(string("L") + Languages::toCode(m_stemLanguage));
@@ -875,15 +860,12 @@ void XapianIndex::removeCommonTerms(Xapian::Document &doc, const Xapian::Writabl
 		{
 			extension = StringManip::toLowerCase(fileName.substr(extPos + 1));
 		}
-		if (extension.empty() == false)
-		{
-			commonTerms.insert(string("XEXT:") + XapianDatabase::limitTermLength(extension));
-		}
+		commonTerms.insert(string("E") + XapianDatabase::limitTermLength(extension));
 	}
 	// Language code
 	commonTerms.insert(string("L") + Languages::toCode(language));
 	// MIME type
-	string type(removeCharsetFromType(docInfo.getType()));
+	string type(docInfo.getType(false));
 	commonTerms.insert(string("T") + type);
 	string::size_type slashPos = type.find('/');
 	if (slashPos != string::npos)
