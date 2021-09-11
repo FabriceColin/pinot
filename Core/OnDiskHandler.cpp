@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -269,44 +269,46 @@ void OnDiskHandler::initialize(void)
 	}
 
 	// Unindex documents that belong to sources that no longer exist
-	if (m_history.getSources(m_fileSources) > 0)
+	if (m_history.getSources(m_fileSources) == 0)
 	{
-		for(map<unsigned int, string>::const_iterator sourceIter = m_fileSources.begin();
-			sourceIter != m_fileSources.end(); ++sourceIter)
+		return;
+	}
+
+	for(map<unsigned int, string>::const_iterator sourceIter = m_fileSources.begin();
+		sourceIter != m_fileSources.end(); ++sourceIter)
+	{
+		unsigned int sourceId = sourceIter->first;
+
+		if (sourceIter->second.substr(0, 7) != "file://")
 		{
-			unsigned int sourceId = sourceIter->first;
-
-			if (sourceIter->second.substr(0, 7) != "file://")
-			{
-				// Skip
-				continue;
-			}
-
-			// Is this an indexable location ?
-			if (directories.find(sourceIter->second.substr(7)) == directories.end())
-			{
-				stringstream labelStream;
-
-				labelStream << "X-SOURCE" << sourceId;
-
-#ifdef DEBUG
-				clog << "OnDiskHandler::initialize: " << sourceIter->second
-					<< ", source " << sourceId << " was removed" << endl;
-#endif
-				// All documents with this label will be unindexed
-				if ((m_pIndex != NULL) &&
-					(m_pIndex->unindexDocuments(labelStream.str(), IndexInterface::BY_LABEL) == true))
-				{
-					// Delete the source itself and all its items
-					m_history.deleteSource(sourceId);
-					m_history.deleteItems(sourceId);
-				}
-			}
-#ifdef DEBUG
-			else clog << "OnDiskHandler::initialize: " << sourceIter->second
-				<< " is still configured" << endl;
-#endif
+			// Skip
+			continue;
 		}
+
+		// Is this an indexable location ?
+		if (directories.find(sourceIter->second.substr(7)) == directories.end())
+		{
+			stringstream labelStream;
+
+			labelStream << "X-SOURCE" << sourceId;
+
+#ifdef DEBUG
+			clog << "OnDiskHandler::initialize: " << sourceIter->second
+				<< ", source " << sourceId << " was removed" << endl;
+#endif
+			// All documents with this label will be unindexed
+			if ((m_pIndex != NULL) &&
+				(m_pIndex->unindexDocuments(labelStream.str(), IndexInterface::BY_LABEL) == true))
+			{
+				// Delete the source itself and all its items
+				m_history.deleteSource(sourceId);
+				m_history.deleteItems(sourceId);
+			}
+		}
+#ifdef DEBUG
+		else clog << "OnDiskHandler::initialize: " << sourceIter->second
+			<< " is still configured" << endl;
+#endif
 	}
 }
 
