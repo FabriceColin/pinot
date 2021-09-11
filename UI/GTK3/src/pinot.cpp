@@ -373,6 +373,8 @@ int main(int argc, char **argv)
 		// Get a builder
 		Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create_from_file(prefixDir + "/share/pinot/metase-gtk3.gtkbuilder");
 
+		refBuilder->set_translation_domain(GETTEXT_PACKAGE);
+
 		// Create and open the window
 		if (prefsMode == false)
 		{
