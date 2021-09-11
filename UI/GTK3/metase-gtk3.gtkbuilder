@@ -1654,7 +1654,6 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="launcherDialog">
-    <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="title" translatable="yes">Helper application</property>
     <property name="type-hint">dialog</property>
@@ -1664,17 +1663,15 @@
         <property name="can-focus">False</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="launcherDialogActionArea">
-            <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="layout-style">end</property>
             <child>
-              <object class="GtkButton" id="cancelbutton3">
+              <object class="GtkButton" id="cancelLaunchButton">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="can-default">True</property>
                 <property name="receives-default">False</property>
                 <property name="use-stock">True</property>
+                <signal name="clicked" handler="on_cancelLaunchButton_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -1683,13 +1680,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="okbutton1">
+              <object class="GtkButton" id="openLaunchButton">
                 <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
                 <property name="use-stock">True</property>
+                <signal name="clicked" handler="on_openLaunchButton_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -1767,12 +1765,11 @@ Please enter the command to open this document.</property>
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">cancelbutton3</action-widget>
-      <action-widget response="-5">okbutton1</action-widget>
+      <action-widget response="-6">cancelLaunchButton</action-widget>
+      <action-widget response="-5">openLaunchButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkWindow" id="prefsWindow">
-    <property name="visible">True</property>
     <property name="title" translatable="yes">Pinot Preferences</property>
     <property name="type">GTK_WINDOW_TOPLEVEL</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
