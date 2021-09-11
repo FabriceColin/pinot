@@ -91,19 +91,11 @@ static void checkFilter(const string &freeQuery, string::size_type filterValueSt
 	}
 }
 
-#if XAPIAN_NUM_VERSION >= 1003006
 class TimeValueRangeProcessor : public Xapian::RangeProcessor
-#else
-class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
-#endif
 {
 	public:
 		TimeValueRangeProcessor(Xapian::valueno valueNumber) :
-#if XAPIAN_NUM_VERSION >= 1003006
 			Xapian::RangeProcessor(),
-#else
-			Xapian::ValueRangeProcessor(),
-#endif
 			m_valueNumber(valueNumber)
 		{
 		}
@@ -111,11 +103,7 @@ class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
 		{
 		}
 
-#if XAPIAN_NUM_VERSION >= 1003006
 		virtual Xapian::Query operator()(const std::string &begin, const std::string &end)
-#else
-		virtual Xapian::valueno operator()(string &begin, string &end)
-#endif
 		{
 			if ((begin.size() == 6) &&
 				(end.size() == 6))
@@ -125,13 +113,9 @@ class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
 				clog << "TimeValueRangeProcessor::operator: accepting " << begin << ".." << end << endl;
 #endif
 
-#if XAPIAN_NUM_VERSION >= 1003006
 				return Xapian::Query(Xapian::Query::OP_VALUE_RANGE,
 					m_valueNumber,
 					begin,end);
-#else
-				return m_valueNumber;
-#endif
 			}
 			if ((begin.size() == 8) && (end.size() == 8) &&
 				(begin[2] == begin[5]) && (end[2] == end[5]) && (begin[2] == end[2]) &&
@@ -148,26 +132,15 @@ class TimeValueRangeProcessor : public Xapian::ValueRangeProcessor
 				clog << "TimeValueRangeProcessor::operator: accepting " << lower << ".." << upper << endl;
 #endif
 
-#if XAPIAN_NUM_VERSION >= 1003006
 				return Xapian::Query(Xapian::Query::OP_VALUE_RANGE,
 					m_valueNumber,
 					lower, upper);
-#else
-				begin = lower;
-				end = upper;
-
-				return m_valueNumber;
-#endif
 			}
 #ifdef DEBUG
 			clog << "TimeValueRangeProcessor::operator: rejecting " << begin << ".." << end << endl;
 #endif
 
-#if XAPIAN_NUM_VERSION >= 1003006
 			return Xapian::Query(Xapian::Query::OP_INVALID);
-#else
-			return Xapian::BAD_VALUENO;
-#endif
 		}
 
 	protected:
@@ -723,11 +696,9 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	{
 		parser.set_default_op(Xapian::Query::OP_OR);
 	}
-#if XAPIAN_NUM_VERSION >= 1000004
 	// Search across text body and title
 	parser.add_prefix("", "");
 	parser.add_prefix("", "S");
-#endif
 	// X prefixes should always include a colon
 	parser.add_boolean_prefix("site", "H");
 	parser.add_boolean_prefix("file", "P");
@@ -756,34 +727,16 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	}
 
 	// Date range
-#if XAPIAN_NUM_VERSION >= 1003006
 	Xapian::DateRangeProcessor dateProcessor(0);
 	parser.add_rangeprocessor(&dateProcessor);
-#else
-	Xapian::DateValueRangeProcessor dateProcessor(0);
-	parser.add_valuerangeprocessor(&dateProcessor);
-#endif
 
 	// Size with a "b" suffix, ie 1024..10240b
-#if XAPIAN_NUM_VERSION >= 1003006
 	Xapian::NumberRangeProcessor sizeProcessor(2, "b", Xapian::RP_SUFFIX);
 	parser.add_rangeprocessor(&sizeProcessor);
-#elif XAPIAN_NUM_VERSION >= 1001000
-	Xapian::NumberValueRangeProcessor sizeProcessor(2, "b", false);
-	parser.add_valuerangeprocessor(&sizeProcessor);
-#elif XAPIAN_NUM_VERSION >= 1000002
-	// Xapian 1.02 is the bare minimum
-	Xapian::v102::NumberValueRangeProcessor sizeProcessor(2, "b", false);
-	parser.add_valuerangeprocessor(&sizeProcessor);
-#endif
 
 	// Time range
 	TimeValueRangeProcessor timeProcessor(3);
-#if XAPIAN_NUM_VERSION >= 1003006
 	parser.add_rangeprocessor(&timeProcessor);
-#else
-	parser.add_valuerangeprocessor(&timeProcessor);
-#endif
 
 	// What type of query is this ?
 	QueryProperties::QueryType type = queryProps.getType();
@@ -922,11 +875,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 		if (queryProps.getSortOrder() == QueryProperties::RELEVANCE)
 		{
 			// By relevance, then date
-#if XAPIAN_NUM_VERSION >= 1001000
 			enquire.set_sort_by_relevance_then_value(4, true);
-#else
-			enquire.set_sort_by_relevance_then_value(4);
-#endif
 #ifdef DEBUG
 			clog << "XapianEngine::queryDatabase: sorting by relevance first" << endl;
 #endif
@@ -935,11 +884,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 		{
 			// By date, and then by relevance
 			enquire.set_docid_order(Xapian::Enquire::DONT_CARE);
-#if XAPIAN_NUM_VERSION >= 1001000
 			enquire.set_sort_by_value_then_relevance(4, true);
-#else
-			enquire.set_sort_by_value_then_relevance(4);
-#endif
 #ifdef DEBUG
 			clog << "XapianEngine::queryDatabase: sorting by date and time desc" << endl;
 #endif
@@ -948,11 +893,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 		{
 			// By date, and then by relevance
 			enquire.set_docid_order(Xapian::Enquire::DONT_CARE);
-#if XAPIAN_NUM_VERSION >= 1001000
 			enquire.set_sort_by_value_then_relevance(5, true);
-#else
-			enquire.set_sort_by_value_then_relevance(5);
-#endif
 #ifdef DEBUG
 			clog << "XapianEngine::queryDatabase: sorting by date and time asc" << endl;
 #endif
@@ -961,11 +902,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 		{
 			// By date, and then by relevance
 			enquire.set_docid_order(Xapian::Enquire::DONT_CARE);
-#if XAPIAN_NUM_VERSION >= 1001000
 			enquire.set_sort_by_value_then_relevance(2, true);
-#else
-			enquire.set_sort_by_value_then_relevance(2);
-#endif
 #ifdef DEBUG
 			clog << "XapianEngine::queryDatabase: sorting by size asc" << endl;
 #endif

@@ -195,12 +195,12 @@ XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
 XAPIAN_NUM_VERSION=`$XAPIAN_CONFIG --version | sed -e "s/xapian-config - xapian-core //g" | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 AC_DEFINE_UNQUOTED(XAPIAN_NUM_VERSION,$XAPIAN_NUM_VERSION,
     [Xapian version number])
-AC_MSG_CHECKING(for Xapian >= 1.0.4)
-if test $XAPIAN_NUM_VERSION -gt 1000002; then
+AC_MSG_CHECKING(for Xapian >= 1.4.10)
+if test $XAPIAN_NUM_VERSION -gt 1004010; then
    AC_MSG_RESULT(yes)
 else
    AC_MSG_RESULT(no)
-   AC_MSG_ERROR([You need at least Xapian 1.0.4])
+   AC_MSG_ERROR([You need at least Xapian 1.4.10])
    exit 1
 fi
 
