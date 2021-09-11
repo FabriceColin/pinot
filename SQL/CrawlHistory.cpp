@@ -213,7 +213,7 @@ unsigned int CrawlHistory::insertSource(const string &url)
 	return sourceId;
 }
 
-/// Checks if the source exists.
+/// Checks if a source exists.
 bool CrawlHistory::hasSource(const string &url, unsigned int &sourceId)
 {
 	vector<string> values;
@@ -224,8 +224,14 @@ bool CrawlHistory::hasSource(const string &url, unsigned int &sourceId)
 	SQLResults *results = executePreparedStatement("has-source", values);
 	if (results != NULL)
 	{
-		sourceId = (unsigned int)results->getIntCount();
-		success = true;
+		SQLRow *row = results->nextRow();
+		if (row != NULL)
+		{
+			sourceId = atoi(row->getColumn(0).c_str());
+			success = true;
+
+			delete row;
+		}
 
 		delete results;
 	}

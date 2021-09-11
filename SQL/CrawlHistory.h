@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class CrawlHistory : public SQLiteBase
 		/// Inserts a source.
 		unsigned int insertSource(const std::string &url);
 
-		/// Checks if the source exists.
+		/// Checks if a source exists.
 		bool hasSource(const std::string &url, unsigned int &sourceId);
 
 		/// Returns sources.
