@@ -72,6 +72,9 @@ class PINOT_EXPORT DocumentInfo
 		/// Returns the type of the document.
 		virtual std::string getType(bool withCharset = true) const;
 
+		/// Returns whether the document is a directory.
+		virtual bool getIsDirectory(void) const;
+
 		/// Sets the language of the document.
 		virtual void setLanguage(const std::string &language);
 

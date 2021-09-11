@@ -281,6 +281,19 @@ string DocumentInfo::getType(bool withCharset) const
 	return type;
 }
 
+/// Returns whether the document is a directory.
+bool DocumentInfo::getIsDirectory(void) const
+{
+	string type(getField("type"));
+
+	if (type.find("x-directory") == string::npos)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 /// Sets the language of the document.
 void DocumentInfo::setLanguage(const string &language)
 {
