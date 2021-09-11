@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2016 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -876,7 +876,14 @@ void IndexingThread::doWork(void)
 		reliableType = true;
 	}
 
-	if (FilterUtils::isSupportedType(m_docInfo.getType()) == false)
+	if (m_docInfo.getIsDirectory() == true)
+	{
+		doDownload = false;
+#ifdef DEBUG
+		clog << "IndexingThread::doWork: skipping download of directory " << m_docInfo.getLocation() << endl;
+#endif
+	}
+	else if (FilterUtils::isSupportedType(m_docInfo.getType()) == false)
 	{
 		// Skip unsupported types ?
 		if (m_allowAllMIMETypes == false)
@@ -1350,6 +1357,11 @@ bool DirectoryScannerThread::monitorEntry(const string &entryName)
 	return true;
 }
 
+void DirectoryScannerThread::unmonitorEntry(const string &entryName)
+{
+	// Nothing to do by default
+}
+
 void DirectoryScannerThread::foundFile(const DocumentInfo &docInfo)
 {
 	if ((docInfo.getLocation().empty() == true) ||
@@ -1373,6 +1385,7 @@ void DirectoryScannerThread::foundFile(const DocumentInfo &docInfo)
 	else
 	{
 		// Delegate indexing
+		// Report everything as file to avoid triggering another crawl
 		m_signalFileFound(docInfo, false);
 	}
 }
@@ -1389,9 +1402,6 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 
 	if (entryName.empty() == true)
 	{
-#ifdef DEBUG
-		clog << "DirectoryScannerThread::scanEntry: no name" << endl;
-#endif
 		return false;
 	}
 
@@ -1562,9 +1572,6 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 			DIR *pDir = opendir(entryName.c_str());
 			if (pDir != NULL)
 			{
-#ifdef DEBUG
-				clog << "DirectoryScannerThread::scanEntry: entering " << entryName << endl;
-#endif
 				// Monitor first so that we don't miss events
 				// If monitoring is not possible, record the first case
 				if ((monitorEntry(entryName) == false) &&
@@ -1572,6 +1579,9 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 				{
 					entryStatus = MONITORING_FAILED;
 				}
+#ifdef DEBUG
+				clog << "DirectoryScannerThread::scanEntry: entering " << entryName << endl;
+#endif
 
 				// Iterate through this directory's entries
 				struct dirent *pDirEntry = readdir(pDir);

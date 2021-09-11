@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -306,6 +306,7 @@ class DirectoryScannerThread : public IndexingThread
 		virtual void recordError(const std::string &location, int errorCode);
 		virtual void recordSymlink(const std::string &location, time_t itemDate);
 		virtual bool monitorEntry(const std::string &entryName);
+		virtual void unmonitorEntry(const std::string &entryName);
 		virtual void foundFile(const DocumentInfo &docInfo);
 
 		bool scanEntry(const std::string &entryName,
