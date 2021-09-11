@@ -133,7 +133,7 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 			set_title(get_title() + " (ID " + numStr + ")");
 
 			titleEntry->set_text(to_utf8(title));
-			typeEntry->set_text(to_utf8(MIMEScanner::getDescription(docInfo.getType())));
+			typeEntry->set_text(to_utf8(MIMEScanner::getDescription(docInfo.getType(false))));
 
 			unsigned int size = docInfo.getSize();
 			snprintf(numStr, 128, "%u", size);

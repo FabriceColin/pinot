@@ -702,7 +702,7 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	// X prefixes should always include a colon
 	parser.add_boolean_prefix("site", "H");
 	parser.add_boolean_prefix("file", "P");
-	parser.add_boolean_prefix("ext", "XEXT:");
+	parser.add_boolean_prefix("ext", "E");
 	parser.add_prefix("title", "S");
 	parser.add_boolean_prefix("url", "U");
 	parser.add_boolean_prefix("dir", "XDIR:");

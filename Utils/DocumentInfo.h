@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ class PINOT_EXPORT DocumentInfo
 		virtual void setType(const std::string &type);
 
 		/// Returns the type of the document.
-		virtual std::string getType(void) const;
+		virtual std::string getType(bool withCharset = true) const;
 
 		/// Sets the language of the document.
 		virtual void setLanguage(const std::string &language);

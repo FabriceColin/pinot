@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -263,9 +263,22 @@ void DocumentInfo::setType(const string &type)
 }
 
 /// Returns the type of the document.
-string DocumentInfo::getType(void) const
+string DocumentInfo::getType(bool withCharset) const
 {
-	return getField("type");
+	string type(getField("type"));
+
+	if (withCharset == false)
+	{
+		// Drop the charset, if any
+		string::size_type semiColonPos = type.find(";");
+
+		if (semiColonPos != string::npos)
+		{
+			 type.erase(semiColonPos);
+		}
+	}
+
+	return type;
 }
 
 /// Sets the language of the document.
