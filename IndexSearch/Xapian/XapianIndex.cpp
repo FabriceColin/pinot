@@ -649,10 +649,14 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 		tree = urlObj.getLocation();
 		fileName = urlObj.getFile();
 	}
+#ifdef DEBUG
+	clog << "XapianIndex::addCommonTerms: called for " << docInfo.getLocation(false)
+		<< " (" << docInfo.getInternalPath() << ")" << endl;
+#endif
 
 	// Index the full URL with prefix U
 	doc.add_term(string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(docInfo.getLocation(true)), true));
-	// ...the base file with XFILE:
+	// And for containers, the base file with XFILE:
 	if ((urlObj.isLocal() == true) &&
 		(docInfo.getInternalPath().empty() == false))
 	{
@@ -730,7 +734,10 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 		{
 			extension = StringManip::toLowerCase(fileName.substr(extPos + 1));
 		}
-		doc.add_term(string("XEXT:") + XapianDatabase::limitTermLength(extension));
+		if (extension.empty() == false)
+		{
+			doc.add_term(string("XEXT:") + XapianDatabase::limitTermLength(extension));
+		}
 	}
 	// Add the language code with prefix L
 	doc.add_term(string("L") + Languages::toCode(m_stemLanguage));
@@ -787,7 +794,7 @@ void XapianIndex::removeCommonTerms(Xapian::Document &doc, const Xapian::Writabl
 	// Location 
 	string location(docInfo.getLocation());
 	commonTerms.insert(string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(docInfo.getLocation(true)), true));
-	// Base file
+	// Containers' base file
 	if ((urlObj.isLocal() == true) &&
 		(docInfo.getInternalPath().empty() == false))
 	{
@@ -868,7 +875,10 @@ void XapianIndex::removeCommonTerms(Xapian::Document &doc, const Xapian::Writabl
 		{
 			extension = StringManip::toLowerCase(fileName.substr(extPos + 1));
 		}
-		commonTerms.insert(string("XEXT:") + XapianDatabase::limitTermLength(extension));
+		if (extension.empty() == false)
+		{
+			commonTerms.insert(string("XEXT:") + XapianDatabase::limitTermLength(extension));
+		}
 	}
 	// Language code
 	commonTerms.insert(string("L") + Languages::toCode(language));
@@ -1827,7 +1837,7 @@ bool XapianIndex::listDocuments(const string &name, set<unsigned int> &docIds,
 	}
 	else if (type == BY_FILE)
 	{
-		term = string("XFILE:") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
+		term = string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
 	}
 
 	return listDocumentsWithTerm(term, docIds, maxDocsCount, startDoc);
@@ -2098,7 +2108,7 @@ bool XapianIndex::unindexDocuments(const string &name, NameType type)
 	}
 	else if (type == BY_FILE)
 	{
-		term = string("XFILE:") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
+		term = string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
 	}
 
 	return deleteDocuments(term);
