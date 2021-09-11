@@ -638,7 +638,7 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 		fileName = urlObj.getFile();
 	}
 #ifdef DEBUG
-	clog << "XapianIndex::addCommonTerms: called for " << docInfo.getLocation(false)
+	clog << "XapianIndex::addCommonTerms: called for " << docInfo.getLocation()
 		<< " (" << docInfo.getInternalPath() << ")" << endl;
 #endif
 
@@ -677,15 +677,32 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 	// ...the location (as is) and all directories with prefix XDIR:
 	if (tree.empty() == false)
 	{
+		if ((urlObj.isLocal() == true) &&
+			(docInfo.getIsDirectory() == true))
+		{
+			doc.add_term(string("XDIR:") + XapianDatabase::limitTermLength(Url::escapeUrl(docInfo.getLocation().substr(7)), true));
+#ifdef DEBUG
+			clog << "XapianIndex::addCommonTerms: full XDIR" << docInfo.getLocation().substr(7) << endl;
+#endif
+		}
 		doc.add_term(string("XDIR:") + XapianDatabase::limitTermLength(Url::escapeUrl(tree), true));
+#ifdef DEBUG
+		clog << "XapianIndex::addCommonTerms: first XDIR" << tree << endl;
+#endif
 		if (tree[0] == '/')
 		{
 			doc.add_term("XDIR:/");
+#ifdef DEBUG
+			clog << "XapianIndex::addCommonTerms: top-level XDIR" << endl;
+#endif
 		}
 		string::size_type slashPos = tree.find('/', 1);
 		while (slashPos != string::npos)
 		{
 			doc.add_term(string("XDIR:") + XapianDatabase::limitTermLength(Url::escapeUrl(tree.substr(0, slashPos)), true));
+#ifdef DEBUG
+			clog << "XapianIndex::addCommonTerms: component XDIR" << tree.substr(0, slashPos) << endl;
+#endif
 
 			// Next
 			slashPos = tree.find('/', slashPos + 1);
@@ -699,6 +716,9 @@ void XapianIndex::addCommonTerms(const DocumentInfo &docInfo, Xapian::Document &
 	else
 	{
 		doc.add_term("XDIR:/");
+#ifdef DEBUG
+		clog << "XapianIndex::addCommonTerms: single top-level XDIR" << endl;
+#endif
 	}
 	// ...and the file name with prefix P
 	if (fileName.empty() == false)
@@ -815,6 +835,11 @@ void XapianIndex::removeCommonTerms(Xapian::Document &doc, const Xapian::Writabl
 	string tree(urlObj.getLocation());
 	if (tree.empty() == false)
 	{
+		if ((urlObj.isLocal() == true) &&
+			(docInfo.getIsDirectory() == true))
+		{
+			commonTerms.insert(string("XDIR:") + XapianDatabase::limitTermLength(Url::escapeUrl(docInfo.getLocation().substr(7)), true));
+		}
 		commonTerms.insert(string("XDIR:") + XapianDatabase::limitTermLength(Url::escapeUrl(tree), true));
 		if (tree[0] == '/')
 		{
