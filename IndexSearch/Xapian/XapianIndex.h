@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2008 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,15 +27,6 @@
 #include "CJKVTokenizer.h"
 #include "XapianDatabase.h"
 #include "IndexInterface.h"
-
-#if !ENABLE_XAPIAN_DB_METADATA
-// Database metadata is only available in Xapian > 1.0.2
-#if XAPIAN_NUM_VERSION > 1000002
-#define ENABLE_XAPIAN_DB_METADATA 1
-#else
-#define ENABLE_XAPIAN_DB_METADATA 0
-#endif
-#endif
 
 /// A Xapian-based index.
 class XapianIndex : public IndexInterface

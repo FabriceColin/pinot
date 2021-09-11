@@ -109,13 +109,6 @@ https://github.com/FabriceColin/pinot
   words that are used as keywords to identify and categorize this search
   content".
 
-  If the version of Pinot you are using was built with support for the Google
-  SOAP API, a "Google API" engine will appear in the group The Web (<= v0.87)
-  or Current User (> v0.87). To query this engine, you will need to enter
-  your Google API in the corresponding field in the General tab of the
-  Preferences box. Note that Google no longer issues API keys. Building this
-  engine is not recommended.
-
 
 4. Indexes
 
@@ -233,9 +226,6 @@ https://github.com/FabriceColin/pinot
       "YYYYMMDD..YYYYMMDD" for date ranges, eg "20070801..20070831"
       "HHMMSS..HHMMSS" for time ranges, eg "090000..180000"
       "size0..size1b" for size in bytes, eg "0..10240b"
-
-  Support for the Xesam desktop search specifications was introduced in v0.87
-  and dropped in v0.96.
 
   See the manual page for pinot-search(1) for examples.
 
@@ -507,7 +497,7 @@ Libraries and tools					Version
 SQLite							3.3.1
 http://www.sqlite.org/
 
-xapian-core						1.0.4
+xapian-core						1.4.10
 http://www.xapian.org/
 
  zlib							1.2.0

@@ -1068,7 +1068,6 @@ bool XapianIndex::isGood(void) const
 /// Gets metadata.
 string XapianIndex::getMetadata(const string &name) const
 {
-#if ENABLE_XAPIAN_DB_METADATA>0
 	string metadataValue;
 
 	XapianDatabase *pDatabase = XapianDatabaseFactory::getDatabase(m_databaseName);
@@ -1099,15 +1098,11 @@ string XapianIndex::getMetadata(const string &name) const
 	pDatabase->unlock();
 
 	return metadataValue;
-#else
-	return "";
-#endif
 }
 
 /// Sets metadata.
 bool XapianIndex::setMetadata(const string &name, const string &value) const
 {
-#if ENABLE_XAPIAN_DB_METADATA>0
 	bool setMetadata = false;
 
 	XapianDatabase *pDatabase = XapianDatabaseFactory::getDatabase(m_databaseName, false);
@@ -1141,9 +1136,6 @@ bool XapianIndex::setMetadata(const string &name, const string &value) const
 	pDatabase->unlock();
 
 	return setMetadata;
-#else
-	return false;
-#endif
 }
 
 /// Gets the index location.
@@ -2136,11 +2128,7 @@ bool XapianIndex::flush(void)
 		Xapian::WritableDatabase *pIndex = pDatabase->writeLock();
 		if (pIndex != NULL)
 		{
-#if XAPIAN_NUM_VERSION >= 1001000
 			pIndex->commit();
-#else
-			pIndex->flush();
-#endif
 			flushed = true;
 		}
 	}
