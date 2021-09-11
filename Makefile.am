@@ -38,6 +38,9 @@ dbus-code:
 	@mv SearchProvider_common.* SearchProvider_stub.* Core/
 	@rm -f SearchProvider_proxy.*
 
+builder-translations:
+	@scripts/bash/extract-gtk-builder-translations.sh >UI/GTK3/src/BuilderTranslations.h
+
 manuals:
 	@help2man --no-info --no-discard-stderr --name "Index documents from the command-line" Core/pinot-index >Core/pinot-index.1
 if HAVE_DBUS
