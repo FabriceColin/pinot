@@ -437,31 +437,29 @@ int main(int argc, char **argv)
 		DocumentInfo docInfo("", urlParam, MIMEScanner::scanUrl(thisUrl), "");
 		unsigned int docId = 0;
 
-		if (checkDocument == true)
+		if ((checkDocument == true) &&
+			(pIndex->isGood() == true))
 		{
-			if (pIndex->isGood() == true)
+			set<unsigned int> docIds;
+
+			docId = pIndex->hasDocument(urlParam);
+			if (docId > 0)
 			{
-				set<unsigned int> docIds;
+				clog << urlParam << ": document ID " << docId << endl;
+				success = true;
+			}
+			else if ((pIndex->listDocuments(urlParam, docIds, IndexInterface::BY_FILE, 100, 0) == true) &&
+				(docIds.empty() == false))
+			{
+				docId = *(docIds.begin());
 
-				docId = pIndex->hasDocument(urlParam);
-				if (docId > 0)
-				{
-					clog << urlParam << ": document ID " << docId << endl;
-					success = true;
-				}
-				else if ((pIndex->listDocuments(urlParam, docIds, IndexInterface::BY_FILE, 100, 0) == true) &&
-					(docIds.empty() == false))
-				{
-					docId = *(docIds.begin());
-
-					clog << urlParam << ": document ID " << docId
-						<< " and at least " << docIds.size() - 1 << " others" << endl;
-					success = true;
-				}
-				else
-				{
-					clog << urlParam << ": not found" << endl;
-				}
+				clog << urlParam << ": document ID " << docId
+					<< " and at least " << docIds.size() - 1 << " others" << endl;
+				success = true;
+			}
+			else
+			{
+				clog << urlParam << ": not found" << endl;
 			}
 		}
 		if (indexDocument == true)
