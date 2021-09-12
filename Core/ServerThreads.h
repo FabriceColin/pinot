@@ -56,6 +56,7 @@ class CrawlerThread : public DirectoryScannerThread
 		virtual void recordError(const std::string &location, int errorCode);
 		virtual void recordSymlink(const std::string &location, time_t itemDate);
 		virtual bool monitorEntry(const std::string &entryName);
+		virtual void unmonitorEntry(const std::string &entryName);
 		virtual void foundFile(const DocumentInfo &docInfo);
 
 		void flushUpdates(void);
