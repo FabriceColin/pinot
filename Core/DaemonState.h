@@ -58,8 +58,6 @@ class DaemonState : public QueueManager
 
 		void start(bool isReindex);
 
-		void reload(void);
-
 		bool start_crawling(void);
 
 		void stop_crawling(void);
@@ -194,7 +192,8 @@ class DaemonState : public QueueManager
 		guint m_connectionId;
 #endif
 		bool m_isReindex;
-		bool m_reload;
+		bool m_tryReload;
+		bool m_readyToReload;
 		bool m_flush;
 		fd_set m_flagsSet;
 		CrawlHistory m_crawlHistory;

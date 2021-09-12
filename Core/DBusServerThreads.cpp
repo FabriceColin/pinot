@@ -72,3 +72,21 @@ bool DBusEngineQueryThread::isPinotCall(void) const
 	return m_pinotCall;
 }
 
+DBusReloadThread::DBusReloadThread()
+{
+}
+
+DBusReloadThread::~DBusReloadThread()
+{
+}
+
+string DBusReloadThread::getType(void) const
+{
+	return "DBusReloadThread";
+}
+
+void DBusReloadThread::doWork(void)
+{
+	// Nothing to do here, we just want to inform the daemon
+}
+
