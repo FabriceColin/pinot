@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ class MonitorInterface
 
 		/// Removes the watch for the specified location.
 		virtual bool removeLocation(const std::string &location) = 0;
+
+		/// Removes watches for the specified location and all underneath.
+		virtual bool removeLocations(const std::string &location) = 0;
 
 		/// Retrieves pending events.
 		virtual bool retrievePendingEvents(std::queue<MonitorEvent> &events) = 0;
