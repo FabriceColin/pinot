@@ -497,16 +497,17 @@ int main(int argc, char **argv)
 		{
 			set<string> labels;
 
-			clog << "Index version       : " << pIndex->getMetadata("version") << endl;
+			clog << "Index version: " << pIndex->getMetadata("version") << endl;
 
 			if (pIndex->getDocumentInfo(docId, docInfo) == true)
 			{
-				clog << "Location : '" << docInfo.getLocation(true) << "'" << endl;
-				clog << "Title    : " << docInfo.getTitle() << endl;
-				clog << "Type     : " << docInfo.getType() << endl;
-				clog << "Language : " << docInfo.getLanguage() << endl;
-				clog << "Date     : " << docInfo.getTimestamp() << endl;
-				clog << "Size     : " << docInfo.getSize() << endl;
+				clog << "Document ID  : " << docId << endl;
+				clog << "Location     : '" << docInfo.getLocation(true) << "'" << endl;
+				clog << "Title        : " << docInfo.getTitle() << endl;
+				clog << "Type         : " << docInfo.getType() << endl;
+				clog << "Language     : " << docInfo.getLanguage() << endl;
+				clog << "Date         : " << docInfo.getTimestamp() << endl;
+				clog << "Size         : " << docInfo.getSize() << endl;
 			}
 			if (pIndex->getDocumentLabels(docId, labels) == true)
 			{
