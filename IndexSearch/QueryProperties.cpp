@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2010 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@
 
 class FilterRemover : public Dijon::CJKVTokenizer::TokensHandler
 {
-        public:
-                FilterRemover(const string &freeQuery) :
+	public:
+		FilterRemover(const string &freeQuery) :
 			Dijon::CJKVTokenizer::TokensHandler(),
 			m_freeQuery(freeQuery)
 		{
