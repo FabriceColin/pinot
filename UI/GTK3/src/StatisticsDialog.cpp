@@ -86,7 +86,6 @@ void StatisticsDialog::populate(void)
 	TreeModel::iterator folderIter = m_refStore->append();
 	TreeModel::Row row = *folderIter;
 	std::map<ModuleProperties, bool> engines;
-	stringstream countStr;
 
 	// Indexes
 	statisticsTreeview->get_selection()->select(folderIter);
@@ -99,10 +98,24 @@ void StatisticsDialog::populate(void)
 	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_docsIndexLocation);
 	if (pIndex != NULL)
 	{
+		stringstream countStr;
 		unsigned int docsCount = pIndex->getDocumentsCount();
 
 		countStr << docsCount;
-		row[m_statsColumns.m_name] = ustring(countStr.str()) + " " + _("documents");
+
+		ustring countText(countStr.str());
+
+		if (docsCount == 1)
+		{
+			countText += " ";
+			countText += _("document");
+		}
+		else
+		{
+			countText += " ";
+			countText += _("documents");
+		}
+		row[m_statsColumns.m_name] = countText;
 
 		delete pIndex;
 	}
@@ -118,10 +131,24 @@ void StatisticsDialog::populate(void)
 	pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
 	if (pIndex != NULL)
 	{
+		stringstream countStr;
 		unsigned int docsCount = pIndex->getDocumentsCount();
 
 		countStr << docsCount;
-		row[m_statsColumns.m_name] = ustring(countStr.str()) + " " + _("documents");
+
+		ustring countText(countStr.str());
+
+		if (docsCount == 1)
+		{
+			countText += " ";
+			countText += _("document");
+		}
+		else
+		{
+			countText += " ";
+			countText += _("documents");
+		}
+		row[m_statsColumns.m_name] = countText;
 
 		m_daemonDBusStatus = pIndex->getMetadata("dbus-status");
 
@@ -146,20 +173,19 @@ void StatisticsDialog::populate(void)
 	}
 
 	// History
-	folderIter = m_refStore->append();
-	row = *folderIter;
+	TreeModel::iterator historyIter = m_refStore->append();
+	row = *historyIter;
 	row[m_statsColumns.m_name] = _("History");
-	m_viewStatIter = m_refStore->append(folderIter->children());
+	m_viewStatIter = m_refStore->append(historyIter->children());
 	row = *m_viewStatIter;
-	m_crawledStatIter = m_refStore->append(folderIter->children());
-	row = *m_crawledStatIter;
-	populate_history();
 
 	// Daemon
-	m_daemonIter = m_refStore->append();
-	row = *m_daemonIter;
+	TreeModel::iterator daemonIter = m_refStore->append();
+	row = *daemonIter;
 	row[m_statsColumns.m_name] = _("Daemon");
-	m_daemonProcIter = m_refStore->append(m_daemonIter->children());
+	m_crawledStatIter = m_refStore->append(daemonIter->children());
+	row = *m_crawledStatIter;
+	m_daemonProcIter = m_refStore->append(daemonIter->children());
 	row = *m_daemonProcIter;
 	row[m_statsColumns.m_name] = ustring(_("Checking"));
 
@@ -167,6 +193,8 @@ void StatisticsDialog::populate(void)
 	statisticsTreeview->expand_all();
 	TreeModel::Path enginesPath = m_refStore->get_path(enginesIter);
 	statisticsTreeview->collapse_row(enginesPath);
+
+	populate_history();
 }
 
 void StatisticsDialog::populate_history(void)
