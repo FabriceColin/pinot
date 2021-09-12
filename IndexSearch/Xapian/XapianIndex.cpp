@@ -1846,6 +1846,10 @@ bool XapianIndex::listDocuments(const string &name, set<unsigned int> &docIds,
 	{
 		term = string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
 	}
+	else if (type == BY_CONTAINER_FILE)
+	{
+		term = string("XFILE:") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
+	}
 
 	return listDocumentsWithTerm(term, docIds, maxDocsCount, startDoc);
 }
@@ -1938,6 +1942,7 @@ bool XapianIndex::updateDocument(unsigned int docId, const Document &document)
 
 	// Cache the document's properties
 	DocumentInfo docInfo(document);
+	set<string> labels(document.getLabels());
 	docInfo.setLocation(Url::canonicalizeUrl(document.getLocation()));
 
 	off_t dataLength = 0;
@@ -1956,11 +1961,6 @@ bool XapianIndex::updateDocument(unsigned int docId, const Document &document)
 
 	try
 	{
-		set<string> labels;
-
-		// Get the document's labels
-		getDocumentLabels(docId, labels);
-
 		pIndex = pDatabase->writeLock();
 		if (pIndex != NULL)
 		{
@@ -2116,6 +2116,10 @@ bool XapianIndex::unindexDocuments(const string &name, NameType type)
 	else if (type == BY_FILE)
 	{
 		term = string("U") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
+	}
+	else if (type == BY_CONTAINER_FILE)
+	{
+		term = string("XFILE:") + XapianDatabase::limitTermLength(Url::escapeUrl(name), true);
 	}
 
 	return deleteDocuments(term);
