@@ -50,7 +50,6 @@ protected:
 	Gtk::TreeModel::iterator m_myDocumentsIter;
 	Gtk::TreeModel::iterator m_viewStatIter;
 	Gtk::TreeModel::iterator m_crawledStatIter;
-	Gtk::TreeModel::iterator m_daemonIter;
 	Gtk::TreeModel::iterator m_daemonProcIter;
 	Gtk::TreeModel::iterator m_diskSpaceIter;
 	Gtk::TreeModel::iterator m_batteryIter;
