@@ -254,6 +254,7 @@ void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
 
 void DaemonState::DBusMessageHandler::flushIndexAndSignal(IndexInterface *pIndex)
 {
+	// FIXME: get rid of frequent flushes, the client should read through DBus too
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::flushIndexAndSignal: called" << endl;
 #endif
@@ -318,7 +319,8 @@ void DaemonState::DBusMessageHandler::Reload(PinotStub::MethodInvocation &invoca
 #ifdef DEBUG
 	clog << "DaemonState::DBusMessageHandler::Reload: called" << endl;
 #endif
-	m_pServer->reload();
+	// Since reload takes place on threads end, fire this up
+	m_pServer->start_thread(new DBusReloadThread());
 
 	invocation.ret(true);
 }
@@ -1072,7 +1074,8 @@ DaemonState::DaemonState() :
 	m_connectionId(0),
 #endif
 	m_isReindex(false),
-	m_reload(false),
+	m_tryReload(false),
+	m_readyToReload(false),
 	m_flush(false),
 	m_crawlHistory(PinotSettings::getInstance().getHistoryDatabaseName()),
 	m_pDiskMonitor(MonitorFactory::getMonitor()),
@@ -1240,9 +1243,6 @@ void DaemonState::check_battery_state(void)
 bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &location)
 {
 	CrawlerThread *pCrawlerThread = NULL;
-	string locationToCrawl(location.m_name);
-	bool doMonitoring = location.m_monitor;
-	bool isSource = location.m_isSource;
 	bool inlineIndexing = false;
 
 	// Can we go ahead and crawl ?
@@ -1255,7 +1255,7 @@ bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &locatio
 		return false;
 	}
 
-	if (locationToCrawl.empty() == true)
+	if (location.m_name.empty() == true)
 	{
 		return false;
 	}
@@ -1265,16 +1265,16 @@ bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &locatio
 		inlineIndexing = true;
 	}
 
-	if (doMonitoring == false)
+	if (location.m_monitor == false)
 	{
 		// Monitoring is not necessary, but we still have to pass the handler
 		// so that we can act on documents that have been deleted
-		pCrawlerThread = new CrawlerThread(locationToCrawl, isSource,
+		pCrawlerThread = new CrawlerThread(location.m_name, location.m_isSource,
 			NULL, m_pDiskHandler, inlineIndexing);
 	}
 	else
 	{
-		pCrawlerThread = new CrawlerThread(locationToCrawl, isSource,
+		pCrawlerThread = new CrawlerThread(location.m_name, location.m_isSource,
 			m_pDiskMonitor, m_pDiskHandler, inlineIndexing);
 	}
 	pCrawlerThread->getFileFoundSignal().connect(sigc::mem_fun(*this, &DaemonState::on_message_filefound));
@@ -1386,12 +1386,6 @@ void DaemonState::start(bool isReindex)
 	start_crawling();
 }
 
-void DaemonState::reload(void)
-{
-	// Reload whenever possible
-	m_reload = true;
-}
-
 bool DaemonState::start_crawling(void)
 {
 	bool startedCrawler = false;
@@ -1427,6 +1421,9 @@ bool DaemonState::start_crawling(void)
 					for(set<string>::const_iterator fileIter = deletedFiles.begin();
 						fileIter != deletedFiles.end(); ++fileIter)
 					{
+#ifdef DEBUG
+						clog << "DaemonState::start_crawling: " << *fileIter << " was not found" << endl;
+#endif
 						// Inform the MonitorHandler
 						m_pDiskHandler->fileDeleted(fileIter->substr(7));
 
@@ -1525,7 +1522,35 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 	}
 	else if (type == "MonitorThread")
 	{
-		// FIXME: do something about this
+		if (m_readyToReload == true)
+		{
+			PinotSettings &settings = PinotSettings::getInstance();
+
+			m_readyToReload = false;
+
+			// Stop monitoring all locations
+			if (m_pDiskMonitor != NULL)
+			{
+				for (set<PinotSettings::IndexableLocation>::const_iterator locationIter = settings.m_indexableLocations.begin();
+					locationIter != settings.m_indexableLocations.end(); ++locationIter)
+				{
+					if (locationIter->m_monitor == true)
+					{
+#ifdef DEBUG
+						clog << "DaemonState::on_thread_end: unmonitoring all under " << locationIter->m_name << endl;
+#endif
+						m_pDiskMonitor->removeLocations(locationIter->m_name);
+					}
+				}
+			}
+
+			// Reload settings
+			settings.clear();
+			settings.load(PinotSettings::LOAD_ALL);
+
+			// ...and restart everything
+			start(false);
+		}
 	}
 	else if (type == "DBusEngineQueryThread")
 	{
@@ -1589,6 +1614,13 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			shellInvocation.ret(idsList);
 		}
 	}
+	else if (type == "DBusReloadThread")
+	{
+		m_tryReload = true;
+#ifdef DEBUG
+		clog << "DaemonState::on_thread_end: will try to reload" << endl;
+#endif
+	}
 	else if (type == "RestoreMetaDataThread")
 	{
 		// Do the actual flush here
@@ -1600,52 +1632,48 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 
 	// Wait until there are no threads running (except background ones)
 	// to reload the configuration
-	if ((m_reload == true) &&
+	if ((m_tryReload == true) &&
 		(get_threads_count() == 0))
 	{
 #ifdef DEBUG
 		clog << "DaemonState::on_thread_end: stopping all threads" << endl;
 #endif
+		// Reload when MonitorThread stops
+		m_tryReload = false;
+		m_readyToReload = true;
+
 		// Stop background threads
 		stop_threads();
 		// ...clear the queues
 		clear_queues();
-
-		// Reload
-		PinotSettings &settings = PinotSettings::getInstance();
-		settings.clear();
-		settings.load(PinotSettings::LOAD_ALL);
-		m_reload = false;
-
-		// ...and restart everything 
-		start(false);
 	}
-
-	// Try to run a queued action unless threads were stopped
-	if (isStopped == false)
+	else
 	{
-		emptyQueue = pop_queue(indexedUrl);
-	}
-
-	// Wait until there are no threads running (except background ones)
-	// and the queue is empty to flush the index
-	if ((m_flush == true) &&
-		(emptyQueue == true) &&
-		(get_threads_count() == 0))
-	{
-		m_flush = false;
-
-		if ((m_isReindex == true) &&
-			(m_crawlQueue.empty() == true))
+		// Try to run a queued action unless threads were stopped
+		if (isStopped == false)
 		{
-			// Restore metadata on documents and flush when the tread returns
-			RestoreMetaDataThread *pRestoreThread = new RestoreMetaDataThread();
-			start_thread(pRestoreThread);
+			emptyQueue = pop_queue(indexedUrl);
 		}
-		else
+
+		// Wait until there are no threads running (except background ones)
+		// and the queue is empty to flush the index
+		if ((m_flush == true) &&
+			(emptyQueue == true) &&
+			(get_threads_count() == 0))
 		{
-			// Flush now
-			flush_and_reclaim();
+			m_flush = false;
+
+			if ((m_isReindex == true) &&
+				(m_crawlQueue.empty() == true))
+			{
+				// Restore metadata on documents and flush when the tread returns
+				start_thread(new RestoreMetaDataThread());
+			}
+			else
+			{
+				// Flush now
+				flush_and_reclaim();
+			}
 		}
 	}
 }

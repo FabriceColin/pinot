@@ -19,6 +19,7 @@
 #ifndef _DBUSSERVERTHREADS_HH
 #define _DBUSSERVERTHREADS_HH
 
+#include <string>
 #include <glibmm/refptr.h>
 #include <giomm/dbusmethodinvocation.h>
 
@@ -49,6 +50,23 @@ class DBusEngineQueryThread : public EngineQueryThread
 	private:
 		DBusEngineQueryThread(const DBusEngineQueryThread &other);
 		DBusEngineQueryThread &operator=(const DBusEngineQueryThread &other);
+
+};
+
+class DBusReloadThread : public WorkerThread
+{
+	public:
+		DBusReloadThread();
+		virtual ~DBusReloadThread();
+
+		virtual std::string getType(void) const;
+
+	protected:
+		virtual void doWork(void);
+
+	private:
+		DBusReloadThread(const DBusReloadThread &other);
+		DBusReloadThread &operator=(const DBusReloadThread &other);
 
 };
 
