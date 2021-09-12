@@ -75,3 +75,11 @@
     $(kde-config --prefix)/share/autostart (for all users) or ~/.kde/Autostart
     (current user only).
 
+  * If you suspect search failed to find a particular document, you may take
+    a closer look with
+     pinot-index --check --showinfo --backend xapian --db ~/.pinot/daemon/ /path/to/file
+    This will output metadata about the document for the given file, including
+    a document ID. Xapian's delve utility will let you take a peek at the list
+    of terms this document holds with
+     xapian-delve -r DOCUMENT_ID ~/.pinot/daemon/
+
