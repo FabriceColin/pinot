@@ -67,6 +67,9 @@ CrawlerThread::CrawlerThread(const string &dirName, bool isSource,
 				// Create it
 				m_sourceId = m_crawlHistory.insertSource("file://" + m_dirName);
 			}
+#ifdef DEBUG
+			clog << "CrawlerThread: source " << m_sourceId << endl;
+#endif
 		}
 		else
 		{
@@ -89,6 +92,9 @@ CrawlerThread::CrawlerThread(const string &dirName, bool isSource,
 					break;
 				}
 			}
+#ifdef DEBUG
+			clog << "CrawlerThread: under source " << m_sourceId << endl;
+#endif
 		}
 	}
 }
@@ -110,9 +116,15 @@ void CrawlerThread::recordCrawled(const string &location, time_t itemDate)
 	{
 		updateIter->second.m_itemStatus = CrawlHistory::CRAWLED;
 		updateIter->second.m_itemDate = itemDate;
+#ifdef DEBUG
+		clog << "CrawlerThread::recordCrawled: updated " << location << endl;
+#endif
 	}
 	else
 	{
+#ifdef DEBUG
+		clog << "CrawlerThread::recordCrawled: cached " << location << endl;
+#endif
 		m_crawlCache[location] = CrawlItem(CrawlHistory::CRAWLED, itemDate, 0);
 		if (m_crawlCache.size() > 500)
 		{
@@ -161,12 +173,6 @@ bool CrawlerThread::wasCrawled(const string &location, time_t &itemDate)
 
 	if (m_crawlHistory.hasItem(location, itemStatus, itemDate) == true)
 	{
-		if (itemStatus != CrawlHistory::CRAWLED)
-		{
-			// This wasn't crawled so there's no point relying on dates
-			itemDate = 0;
-		}
-
 		return true;
 	}
 
@@ -179,9 +185,15 @@ void CrawlerThread::recordCrawling(const string &location, bool itemExists, time
 	{
 		// Record it
 		m_crawlHistory.insertItem(location, CrawlHistory::CRAWLING, m_sourceId, itemDate);
+#ifdef DEBUG
+		clog << "CrawlerThread::recordCrawling: inserted " << location << " " << (itemExists ? "exists" : "is new") << endl;
+#endif
 	}
 	else
 	{
+#ifdef DEBUG
+		clog << "CrawlerThread::recordCrawling: cached " << location << " " << (itemExists ? "exists" : "is new") << endl;
+#endif
 		// Change the status
 		m_crawlCache[location] = CrawlItem(CrawlHistory::CRAWLING, itemDate, 0);
 		if (m_crawlCache.size() > 500)
@@ -224,6 +236,14 @@ bool CrawlerThread::monitorEntry(const string &entryName)
 	}
 
 	return true;
+}
+
+void CrawlerThread::unmonitorEntry(const string &entryName)
+{
+	if (m_pMonitor != NULL)
+	{
+		m_pMonitor->removeLocation(entryName);
+	}
 }
 
 void CrawlerThread::foundFile(const DocumentInfo &docInfo)
@@ -307,6 +327,9 @@ void CrawlerThread::doWork(void)
 		for (set<string>::const_iterator urlIter = urls.begin();
 			urlIter != urls.end(); ++urlIter)
 		{
+#ifdef DEBUG
+			clog << "CrawlerThread::doWork: didn't find " << *urlIter << endl;
+#endif
 			// Inform the MonitorHandler
 			m_pHandler->fileDeleted(urlIter->substr(7));
 
