@@ -78,36 +78,6 @@ bool SQLResults::rewind(void)
 	return true;
 }
 
-int SQLResults::getIntCount(void)
-{
-	SQLRow *row = nextRow();
-	int totalCount = 0;
-
-	if (row != NULL)
-	{
-		totalCount = atoi(row->getColumn(0).c_str());
-
-		delete row;
-	}
-
-	return totalCount;
-}
-
-off_t SQLResults::getOffsetCount(void)
-{
-	SQLRow *row = nextRow();
-	off_t totalCount = 0;
-
-	if (row != NULL)
-	{
-		totalCount = (off_t)atoll(row->getColumn(0).c_str());
-
-		delete row;
-	}
-
-	return totalCount;
-}
-
 SQLDB::SQLDB(const string &databaseName,
 	bool readOnly) :
 	m_databaseName(databaseName),

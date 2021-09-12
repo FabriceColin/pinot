@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2016 Fabrice Colin
+ *  Copyright 2008-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -59,10 +59,6 @@ class SQLResults
 		virtual SQLRow *nextRow(void) = 0;
 
 		virtual bool rewind(void);
-
-		virtual int getIntCount(void);
-
-		virtual off_t getOffsetCount(void);
 
 	protected:
 		unsigned long m_nRows;
