@@ -181,11 +181,16 @@ void StatisticsDialog::populate_history(void)
 	countStr << viewCount;
 	row = *m_viewStatIter;
 	row[m_statsColumns.m_name] = ustring(_("Viewed")) + " " + countStr.str() + " " + _("results");
-	countStr.clear();
+	countStr = stringstream();
 
 	// Show crawler statistics
 	unsigned int crawledFilesCount = crawlHistory.getItemsCount(CrawlHistory::CRAWLED);
+	crawledFilesCount += crawlHistory.getItemsCount(CrawlHistory::CRAWLING);
+	crawledFilesCount += crawlHistory.getItemsCount(CrawlHistory::TO_CRAWL);
 	countStr << crawledFilesCount;
+#ifdef DEBUG
+	clog << "StatisticsDialog::populate_history: crawled " << crawledFilesCount << endl;
+#endif
 	row = *m_crawledStatIter;
 	row[m_statsColumns.m_name] = ustring(_("Crawled")) + " " + countStr.str() + " " + _("files");
 }
