@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -203,6 +203,46 @@ bool INotifyMonitor::removeLocation(const string &location)
 	pthread_mutex_unlock(&m_mutex);
 
 	return removedLocation;
+}
+
+/// Removes watches for the specified location and all underneath.
+bool INotifyMonitor::removeLocations(const string &location)
+{
+	if ((location.empty() == true) ||
+		(m_monitorFd < 0))
+	{
+		return false;
+	}
+
+	if (pthread_mutex_lock(&m_mutex) != 0)
+	{
+		return false;
+	}
+
+	map<string, int>::iterator locationIter = m_locations.begin();
+
+	while (locationIter != m_locations.end())
+	{
+		if ((locationIter->first.length() >= location.length()) &&
+			(locationIter->first.find(location) == 0))
+		{
+			inotify_rm_watch(m_monitorFd, locationIter->second);
+			--m_watchesCount;
+
+			map<int, string>::iterator watchIter = m_watches.find(locationIter->second);
+			if (watchIter != m_watches.end())
+			{
+				m_watches.erase(watchIter);
+			}
+			locationIter = m_locations.erase(locationIter);
+		}
+		else
+		{
+			++locationIter;
+		}
+	}
+
+	return true;
 }
 
 /// Retrieves pending events.
