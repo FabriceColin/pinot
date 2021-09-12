@@ -41,8 +41,6 @@ ViewHistory::~ViewHistory()
 /// Creates the ViewHistory table in the database.
 bool ViewHistory::create(const string &database)
 {
-	bool createTable = false;
-
 	// The specified path must be a file
 	if (SQLiteBase::check(database) == false)
 	{
@@ -57,27 +55,7 @@ bool ViewHistory::create(const string &database)
 #ifdef DEBUG
 		clog << "ViewHistory::create: ViewHistory doesn't exist" << endl;
 #endif
-		createTable = true;
-	}
-	else
-	{
-		// Previous versions didn't include a Date field, so check for it
-		if (db.executeSimpleStatement("SELECT Date FROM ViewHistory LIMIT 1;") == false)
-		{
-#ifdef DEBUG
-			clog << "ViewHistory::create: ViewHistory needs updating" << endl;
-#endif
-			// Ideally, we would use ALTER TABLE but it's not supported by SQLite
-			if (db.executeSimpleStatement("DROP TABLE ViewHistory; VACUUM;") == true)
-			{
-				createTable = true;
-			}
-		}
-	}
-
-	// Create the table ?
-	if (createTable == true)
-	{
+		// Create the table
 		if (db.executeSimpleStatement("CREATE TABLE ViewHistory (Url VARCHAR(255) "
 			"PRIMARY KEY, Status INTEGER, DATE INTEGER);") == false)
 		{
@@ -141,7 +119,13 @@ unsigned int ViewHistory::getItemsCount(void)
 	SQLResults *results = executeStatement("SELECT COUNT(*) FROM ViewHistory;");
 	if (results != NULL)
 	{
-		count = (unsigned int)results->getIntCount();
+		SQLRow *row = results->nextRow();
+		if (row != NULL)
+		{
+			count = atoi(row->getColumn(0).c_str());
+
+			delete row;
+		}
 
 		delete results;
 	}

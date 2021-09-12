@@ -52,30 +52,17 @@ bool QueryHistory::create(const string &database)
 	}
 
 	SQLiteBase db(database);
-	string tableDefinition("QueryName VARCHAR(255), EngineName VARCHAR(255), HostName VARCHAR(255), "
-		"Url VARCHAR(255), Title VARCHAR(255), Extract VARCHAR(255), Score FLOAT, Date INTEGER, "
-		"PRIMARY KEY(QueryName, EngineName, Url, Date)");
 
 	// Does QueryHistory exist ?
 	if (db.executeSimpleStatement("SELECT * FROM QueryHistory LIMIT 1;") == false)
 	{
 		// Create the table
-		if (db.executeSimpleStatement("CREATE TABLE QueryHistory (" + tableDefinition + ");") == false)
+		if (db.executeSimpleStatement("CREATE TABLE QueryHistory (QueryName VARCHAR(255), "
+			"EngineName VARCHAR(255), HostName VARCHAR(255), Url VARCHAR(255), "
+			"Title VARCHAR(255), Extract VARCHAR(255), Score FLOAT, Date INTEGER, "
+			"PRIMARY KEY(QueryName, EngineName, Url, Date));") == false)
 		{
 			return false;
-		}
-	}
-	else
-	{
-		// Previous versions had PrevScore and Language columns, so check for one of them
-		if (db.executeSimpleStatement("SELECT Language FROM QueryHistory LIMIT 1;") == true)
-		{
-#ifdef DEBUG
-			clog << "QueryHistory::create: QueryHistory needs updating" << endl;
-#endif
-			db.alterTable("QueryHistory",
-				"QueryName, EngineName, HostName, Url, Title, Extract, Score, Date",
-				tableDefinition);
 		}
 	}
 

@@ -135,8 +135,6 @@ CrawlHistory::CrawlStatus CrawlHistory::textToStatus(const string &text)
 /// Creates the CrawlHistory table in the database.
 bool CrawlHistory::create(const string &database)
 {
-	bool createHistoryTable = false;
-
 	// The specified path must be a file
 	if (SQLiteBase::check(database) == false)
 	{
@@ -158,26 +156,6 @@ bool CrawlHistory::create(const string &database)
 	// Does CrawlHistory exist ?
 	if (db.executeSimpleStatement("SELECT * FROM CrawlHistory LIMIT 1;") == false)
 	{
-		createHistoryTable = true;
-	}
-	else
-	{
-		// Previous versions didn't include a ErrorNum field, so check for it
-		if (db.executeSimpleStatement("SELECT ErrorNum FROM CrawlHistory LIMIT 1;") == false)
-		{
-#ifdef DEBUG
-			clog << "CrawlHistory::create: CrawlHistory needs updating" << endl;
-#endif
-			// Ideally, we would use ALTER TABLE but it's not supported by SQLite
-			if (db.executeSimpleStatement("DROP TABLE CrawlHistory; VACUUM;") == true)
-			{
-				createHistoryTable = true;
-			}
-		}
-	}
-
-	if (createHistoryTable == true)
-	{
 		if (db.executeSimpleStatement("CREATE TABLE CrawlHistory (Url VARCHAR(255) PRIMARY KEY, "
 			"Status VARCHAR(255), SourceID INTEGER, Date INTEGER, ErrorNum INTEGER);") == false)
 		{
@@ -196,7 +174,14 @@ unsigned int CrawlHistory::insertSource(const string &url)
 	SQLResults *results = executeStatement("SELECT MAX(SourceID) FROM CrawlSources;");
 	if (results != NULL)
 	{
-		sourceId = (unsigned int)results->getIntCount();
+		SQLRow *row = results->nextRow();
+		if (row != NULL)
+		{
+			sourceId = atoi(row->getColumn(0).c_str());
+
+			delete row;
+		}
+
 		++sourceId;
 
 		delete results;
@@ -301,10 +286,10 @@ bool CrawlHistory::insertItem(const string &url, CrawlStatus status, unsigned in
 	values.push_back(statusToText(status));
 	numStr << sourceId;
 	values.push_back(numStr.str());
-	numStr.clear();
+	numStr = stringstream();
 	numStr << date;
 	values.push_back(numStr.str());
-	numStr.clear();
+	numStr = stringstream();
 	numStr << errNum;
 	values.push_back(numStr.str());
 
@@ -360,7 +345,7 @@ bool CrawlHistory::updateItem(const string &url, CrawlStatus status, time_t date
 	values.push_back(statusToText(status));
 	numStr << date;
 	values.push_back(numStr.str());
-	numStr.clear();
+	numStr = stringstream();
 	numStr << errNum;
 	values.push_back(numStr.str());
 	values.push_back(Url::escapeUrl(url));
@@ -521,13 +506,13 @@ unsigned int CrawlHistory::getSourceItems(unsigned int sourceId, CrawlStatus sta
 	values.push_back(statusToText(status));
 	if (minDate > 0)
 	{
-		numStr.clear();
+		numStr = stringstream();
 		numStr << minDate;
 		values.push_back(numStr.str());
-		numStr.clear();
+		numStr = stringstream();
 		numStr << max - min;
 		values.push_back(numStr.str());
-		numStr.clear();
+		numStr = stringstream();
 		numStr << min;
 		values.push_back(numStr.str());
 
@@ -535,10 +520,10 @@ unsigned int CrawlHistory::getSourceItems(unsigned int sourceId, CrawlStatus sta
 	}
 	else
 	{
-		numStr.clear();
+		numStr = stringstream();
 		numStr << max - min;
 		values.push_back(numStr.str());
-		numStr.clear();
+		numStr = stringstream();
 		numStr << min;
 		values.push_back(numStr.str());
 
@@ -579,7 +564,13 @@ unsigned int CrawlHistory::getItemsCount(CrawlStatus status)
 	SQLResults *results = executePreparedStatement("get-items-count", values);
 	if (results != NULL)
 	{
-		count = (unsigned int)results->getIntCount();
+		SQLRow *row = results->nextRow();
+		if (row != NULL)
+		{
+			count = atoi(row->getColumn(0).c_str());
+
+			delete row;
+		}
 
 		delete results;
 	}

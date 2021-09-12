@@ -255,7 +255,13 @@ unsigned int ActionQueue::getItemsCount(ActionType type)
 		typeToText(type).c_str());
 	if (results != NULL)
 	{
-		count = (unsigned int)results->getIntCount();
+		SQLRow *row = results->nextRow();
+		if (row != NULL)
+		{
+			count = atoi(row->getColumn(0).c_str());
+
+			delete row;
+		}
 
 		delete results;
 	}
