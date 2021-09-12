@@ -33,7 +33,7 @@ class PINOT_EXPORT IndexInterface
 		IndexInterface(const IndexInterface &other) {};
 		virtual ~IndexInterface() {};
 
-		typedef enum { BY_LABEL = 0, BY_DIRECTORY, BY_FILE } NameType;
+		typedef enum { BY_LABEL = 0, BY_DIRECTORY, BY_FILE, BY_CONTAINER_FILE } NameType;
 
 		/// Returns false if the index couldn't be opened.
 		virtual bool isGood(void) const = 0;

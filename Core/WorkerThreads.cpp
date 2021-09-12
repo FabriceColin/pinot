@@ -1036,6 +1036,12 @@ void IndexingThread::doWork(void)
 			// Update an existing document or add to the index ?
 			if (m_update == true)
 			{
+				set<string> labels;
+
+				// Make sure labels are preserved
+				m_pIndex->getDocumentLabels(m_docId, labels);
+				m_pDoc->setLabels(labels);
+
 				// Update the document
 				if (wrapFilter.updateDocument(*m_pDoc, m_docId) == true)
 				{
@@ -1648,7 +1654,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 	{
 		// No, it wasn't
 #ifdef DEBUG
-		clog << "DirectoryScannerThread::scanEntry: not reporting " << location << endl;
+		clog << "DirectoryScannerThread::scanEntry: no change to " << location << endl;
 #endif
 		reportFile = false;
 	}

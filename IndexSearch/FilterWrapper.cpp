@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2012 Fabrice Colin
+ *  Copyright 2007-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ bool IndexAction::unindexNestedDocuments(const string &url)
 	}
 
 	// Unindex all documents that stem from this file
-	return m_pIndex->unindexDocuments(url, IndexInterface::BY_FILE);
+	return m_pIndex->unindexDocuments(url, IndexInterface::BY_CONTAINER_FILE);
 }
 
 bool IndexAction::unindexDocument(const string &location)
