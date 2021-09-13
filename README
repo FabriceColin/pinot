@@ -6,21 +6,21 @@ https://github.com/FabriceColin/pinot
 
 
 1. What is Pinot
-2. Upgrading from previous versions
-3. Available engines
-4. Indexes
-5. Indexing and monitoring
-6. Searching
-7. Viewing cached results
-8. File formats
-9. File patterns
-10. Digging deeper
-11. Saving results
-12. D-Bus service
-13. CJKV support
-14. Environment variables and aliases
-15. How to reset indexes
-16. Dependencies
+2. Building Pinot
+2. Available engines
+3. Indexes
+4. Indexing and monitoring
+5. Searching
+6. Viewing cached results
+7. File formats
+8. File patterns
+9. Digging deeper
+10. Saving results
+11. D-Bus service
+12. CJKV support
+13. Environment variables and aliases
+14. How to reset indexes
+15. Compiling Pinot
 
 
 1. What is Pinot
@@ -38,35 +38,13 @@ https://github.com/FabriceColin/pinot
   systems.
 
 
-2. Upgrading from previous versions
-
-
-  * from 0.50 or older to 0.60 or newer
-  The My Documents index was renamed My Web Pages. A new index, appropriately
-  named My Documents ;-), includes all local files and is populated by the new
-  D-Bus service.
-  If you used the Import facility to index specific directories on your system,
-  it is recommended you manually unindex the corresponding documents from the
-  My Web Pages index, and configure these directories to be automatically
-  indexed by the D-Bus service, See section "5. Indexing and monitoring".
-  The My EMail index was dropped. Email messages will now appear in your
-  My Documents index.
-
-
-  * to 0.71 or newer
-  V0.71 and newer will detect what version the My Documents index was built
-  with and automatically upgrade it by reindexing all documents, if necessary.
-  As for My Web Pages, the UI will indicate when upgrading is necessary.
-  Updating documents with the Index, Update menu is recommended.
-
-
-3. Available engines 
+2. Available engines
 
 
   One of the main functionalities of Pinot is metasearch. This lets you query
   a variety of sources, including Web-based search engines. By default, the
   list of available engines is hidden and defaults to internal indexes (see
-  section "4. Indexes"). To show the list of engines, click on the Show All
+  section "3. Indexes"). To show the list of engines, click on the Show All
   Search Engines button, next to the Query field immediately below the menu
   bar. Click on the same button again to hide the list.
 
@@ -74,10 +52,10 @@ https://github.com/FabriceColin/pinot
   Multi-selection is done like in any other application. All queries are always
   run against the list of currently selected engines.
 
-  Starting with v0.42, Pinot supports both Sherlock and OpenSearch Description
-  plugins. They are installed in $PREFIX/share/pinot/engines/, where PREFIX
-  is usually /usr. Additional engines can be installed in that directory or
-  in ~/.pinot/engines. Note this directory is not created automatically.
+  Pinot supports both Sherlock and OpenSearch Description plugins. They are
+  installed in $PREFIX/share/pinot/engines/, where PREFIX is usually /usr.
+  Additional engines can be installed in that directory or in ~/.pinot/engines.
+  Note this directory is not created automatically.
 
   Sherlock is what Firefox and the Mozilla suite use. Chances are that somebody
   wrote a plugin for the engine you are interested in. MyCroft at
@@ -110,7 +88,7 @@ https://github.com/FabriceColin/pinot
   content".
 
 
-4. Indexes
+3. Indexes
 
 
   Pinot has two internal indexes. My Documents is populated by the D-Bus
@@ -119,7 +97,7 @@ https://github.com/FabriceColin/pinot
     * import an external document, using the Index, Import URL menu
     * index results returned by Web engines, using the Results, Index menu
       or through a Stored Query
-  Both index may have any of the file types listed in section "8. File formats".
+  Both index may have any of the file types listed in section "7. File formats".
 
   Indexes built by any other Xapian-based tools can be added to Pinot. To add
   an external index, click the + button at the bottom of the engines list.
@@ -131,7 +109,7 @@ https://github.com/FabriceColin/pinot
   engines list.
 
 
-5. Indexing and monitoring
+4. Indexing and monitoring
 
 
   Pinot can index any directory configured under the Indexing tab of the
@@ -139,14 +117,14 @@ https://github.com/FabriceColin/pinot
   directories whose contents seldom change, eg $PREFIX/share/doc.
   Indexing and monitoring of directories is handled by the D-Bus service.
 
-  In 0.90 and newer, the daemon will skip symlinks that refer to locations
-  that have already been crawled, or locations it knows it will have to crawl.
-  When skipped, symlinks are not followed but are still indexed, with the MIME
-  type "inode/symlink".
+  The daemon will skip symlinks that refer to locations that have already
+  been crawled, or locations it knows it will have to crawl.
+  When skipped, symlinks are not followed but are still indexed, with the
+  MIME type "inode/symlink".
 
   While Pinot is not currently able to get to and index application-specific
   data held in dot-directories, it can index common file formats as listed
-  in section "8. File formats".
+  in section "7. File formats".
 
   All files and directories with a name that starts with a dot, eg
   ".thunderbird", are skipped and their content is not indexed. If you wish
@@ -156,17 +134,13 @@ https://github.com/FabriceColin/pinot
   "~/Documents/TMail". For this to work, the dot-directory must not be in a
   directory configured for indexing.
 
-  Pinot 0.74 and older required mbox files to be configured separately. Newer
-  versions are able to fully index (and monitor, if necessary) all mbox files
-  found during a directory crawl, just like any other file type.
-
   If you want to exclude any specific files or directories from indexing, use
-  patterns as described in section "9. File patterns".
+  patterns as described in section "8. File patterns".
 
-  Since 0.89, Pinot supports stopwords removal. While no such list is provided
-  by default, they can be easily found on the Internet. Each language has its
-  own stopword list, for instance a stopwords list for English should be
-  copied to $PREFIX/share/pinot/stopwords/stopwords.en
+  Pinot supports stopwords removal. While no such list is provided by default,
+  they can be easily found on the Internet. Each language has its own stopword
+  list, for instance a stopwords list for English should be copied to
+  $PREFIX/share/pinot/stopwords/stopwords.en
 
   Language detection is done with libexttextcat. Ensure that the paths listed
   in /etc/pinot/textcat_conf.txt are correct.
@@ -177,7 +151,7 @@ https://github.com/FabriceColin/pinot
   for pinot-index(1).
 
 
-6. Searching
+5. Searching
 
 
   Searches are run differently based on the type of engine being queried.
@@ -230,7 +204,7 @@ https://github.com/FabriceColin/pinot
   See the manual page for pinot-search(1) for examples.
 
 
-7. Viewing cached results
+6. Viewing cached results
 
 
   Results returned by search engines can be viewed "live" by selecting the View
@@ -254,7 +228,7 @@ https://github.com/FabriceColin/pinot
       pinot.berlios.de/download.html
 
 
-8. File formats
+7. File formats
 
 
   The following document types are supported internally :
@@ -285,12 +259,12 @@ https://github.com/FabriceColin/pinot
   external-filters.xml, located in /etc/pinot/.
 
 
-9. File patterns
+8. File patterns
 
 
-  Starting with version 0.62, it is possible to skip indexing of files with
-  glob(3) patterns. These patterns are configured in the Indexing tab of the
-  Preferences box, and can be used as a blacklist or a whitelist (as of 0.75).
+  It is possible to skip indexing of files that match glob(3) patterns.
+  These patterns are configured in the Indexing tab of the Preferences box,
+  and can be used as a blacklist or a whitelist.
 
   Patterns apply to files and directories. For instance, blacklisting
   "*/Desktop*" will skip "~/Desktop" and not crawl nor monitor this directory's
@@ -302,7 +276,7 @@ https://github.com/FabriceColin/pinot
   some picture, video and archive file types such as GIF, MPG and RAR.
 
 
-10. Digging deeper
+9. Digging deeper
 
 
   Pinot offers two ways you can dig deeper in your documents : More Like This
@@ -324,12 +298,12 @@ https://github.com/FabriceColin/pinot
   "Corrected" will be created.
 
 
-11. Saving results
+10. Saving results
 
 
-  Starting with version 0.72, lists of results can be saved to disk by
-  selecting the Save As menuitem under Results. Two output formats are
-  available to choose from in the file selector opened by Save As :
+  Lists of results can be saved to disk by selecting the Save As menuitem
+  under Results. Two output formats are available to choose from in the file
+  selector opened by Save As :
     * CSV, a text format
       The semi-colon character (';') is used to delimit fields.
     * OpenSearch response, a XML/RSS format
@@ -337,7 +311,7 @@ https://github.com/FabriceColin/pinot
       for details.
 
 
-12. D-Bus service
+11. D-Bus service
 
 
   D-Bus activation makes sure the service is running whenever one of its
@@ -346,23 +320,17 @@ https://github.com/FabriceColin/pinot
   ensuring the service is running. This also causes the service to reload
   the configuration file.
 
-  Starting with 0.63, the service is auto-started. The file that enables
-  this is located at /etc/xdg/autostart/pinot-dbus-daemon.desktop.
-  For older versions, if you want the service to be started with your X
-  session, add pinot-dbus-daemon to your desktop environment's startup
-  programs list.
+  The service is auto-started through the desktop file installed at
+  /etc/xdg/autostart/pinot-dbus-daemon.desktop.
 
   A few things to keep in mind :
-    * in version 0.75 and older, the service didn't reload its configuration
-      while running, so any change (for instance, adding or removing an
-      indexable directory) only took effect when the service was restarted.
     * when starting, the service will first crawl all configured locations
-      and (re)index new and modified files. Starting with 0.64, the daemon's
-      scheduling priority is set very low (15, can be adjusted with --priority)
-      so that you can do stuff while it is indexing !
-    * when finished crawling, the service will monitor these locations
-      for changes and should consume little resources, unless a huge
-      quantity of files needs its attention.
+      and (re)index new and modified files. The daemon's scheduling priority
+      is set very low (15, can be adjusted with --priority) so that it
+      hopefully doesn't prevent other activities!
+    * when finished crawling, the service will monitor some locations for
+      changes (as per preferences) and should consume little resources, unless
+      a huge quantity of files needs its attention.
     * any change detected by the monitor is immediately queued and acted upon
       as soon as possible, eg reindex a file that was modified. This and low
       priority should make the daemon not very intrusive.
@@ -373,17 +341,15 @@ https://github.com/FabriceColin/pinot
       UI may report that the operation failed, even though it was queued for
       processing and will be acted upon by the daemon as soon as possible.
 
-  See section "14. Environment variables and aliases" for some tips on how to
+  See section "13. Environment variables and aliases" for some tips on how to
   query the D-Bus interface. A list of available D-Bus methods can be found
   in the file pinot-dbus-daemon.xml.
 
 
-13. CJKV support
+12. CJKV support
 
 
-  Starting with v0.83, Pinot supports indexing and searching CJKV text.
-  If you would like to try this out, you will have to reset the My Documents
-  index, as described in section "16. How to reset indexes".
+  Pinot supports indexing and searching CJKV text.
 
   At search time, queries that include CJKV characters are processed in a manner
   compatible with the CJKV indexing scheme. There is no need to format the query
@@ -393,8 +359,6 @@ https://github.com/FabriceColin/pinot
   will be modified internally to :
       Fabrice  (你 你好 好) title:身 title:身体 title:体 title:体好 title:好 title:好吗 title:吗
 
-  Prior to v0.85, this processing only applied to pure CJKV queries.
-
   It is recommended that filters (eg "title") be used at the end of the query
   for it to be processed as expected.
 
@@ -402,7 +366,7 @@ https://github.com/FabriceColin/pinot
   by the indexer with the special filter "tokens:CJKV".
 
 
-14. Environment variables and aliases
+13. Environment variables and aliases
 
 
   Pinot tries to provide reasonable defaults for most systems, but there may be
@@ -440,9 +404,9 @@ https://github.com/FabriceColin/pinot
   changes to the index. Note that pinot-dbus-daemon explicitely flushes the
   index once it has crawled each directory configured in Preferences.
 
-  Pinot v0.90 and newer provide a "tagged cd" script that enables to change
-  a shell's current directory to the directory that matches the path elements
-  passed as parameter. For instance, after setting :
+  Pinot provides a "tagged cd" script that enables to change a shell's
+  current directory to the directory that matches the path elements passed
+  as parameter. For instance, after setting :
   $ alias pcd='. $PREFIX/share/pinot/pinot-cd.sh'
   if ~/Documents is configured for indexing in Preferences, the following
   command would change the current directory to ~/Documents/Web/Stats :
@@ -460,7 +424,7 @@ https://github.com/FabriceColin/pinot
   the second alias will stop it by calling the Stop method.
 
 
-15. How to reset indexes
+14. How to reset indexes
 
 
   You may wish to reset one of the index and start from scratch. There
@@ -488,11 +452,26 @@ https://github.com/FabriceColin/pinot
   $ pinot-dbus-daemon --reindex
 
 
-16. Dependencies
+15. Compiling Pinot
 
 
-  The version numbers indicate the minimum version Pinot has been tested
-  with; older versions may or may not work.
+  Pinot's configure understands the following optional switches.
+
+  --enable-debug enable debug [default=no]
+  --enable-dbus enable DBus support [default=yes]
+  --enable-libnotify enable libnotify support [default=no]
+  --enable-mempool enable memory pool [default=no]
+  --enable-libarchive [enable the libarchive filter [default=no]
+  --enable-chmlib [enable the chmlib filter [default=no]
+
+  It is highly recommended to enable libnotify support when building
+  on Linux systems. Enable support for libarchive and chmlib if the
+  necessary libraries are available. Other switches should most likely
+  stay unchanged.
+
+  See the list below for dependencies. The version numbers indicate
+  the minimum version Pinot has been tested with; older versions may
+  or may not work.
 
 ---------------------------------------------------------------
 Libraries and tools					Version
