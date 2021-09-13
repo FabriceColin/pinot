@@ -68,6 +68,7 @@
 #include <glibmm/thread.h>
 #include <glibmm/random.h>
 
+#include "CommandLine.h"
 #include "Memory.h"
 #include "Url.h"
 #include "MonitorFactory.h"
@@ -1055,7 +1056,32 @@ void DaemonState::DBusSearchProvider::LaunchSearch(const vector<ustring> &terms,
 	clog << "DaemonState::DBusSearchProvider::LaunchSearch: called on "
 		<< terms.size() << " terms" << endl;
 #endif
-	// FIXME: save the terms as a query, open the UI with that
+	string queryTerms;
+
+	for (vector<ustring>::const_iterator termIter = terms.begin();
+		termIter != terms.end(); ++termIter)
+	{
+		if (queryTerms.empty() == false)
+		{
+			queryTerms += " ";
+		}
+		queryTerms += termIter->c_str();
+	}
+
+	// Open the UI with those query terms
+	if (queryTerms.empty() == false)
+	{
+		MIMEAction queryAction("pinot",
+			string("pinot -q ") + CommandLine::quote(queryTerms));
+		vector<string> arguments;
+
+#ifdef DEBUG
+		clog << "DaemonState::DBusSearchProvider::LaunchSearch: running "
+				<< queryAction.m_exec << endl;
+#endif
+	    CommandLine::runAsync(queryAction, arguments);
+	}
+
 	invocation.ret();
 }
 #endif

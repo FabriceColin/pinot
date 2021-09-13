@@ -64,7 +64,7 @@ public:
 		const Glib::ustring &statusText = Glib::ustring(""));
 	virtual ~MainWindow();
 
-	void set_status(const Glib::ustring &text, bool canBeSkipped = false);
+	void setQueryTerms(const Glib::ustring &queryTerms);
 
 protected:
 	// Utility methods
@@ -149,6 +149,7 @@ protected:
 	void view_documents(const std::vector<DocumentInfo> &documentsList);
 	bool start_thread(WorkerThread *pNewThread, bool inBackground = false);
 	bool expand_locations(void);
+	void set_status(const Glib::ustring &text, bool canBeSkipped = false);
 
 	// Status methods
 	bool on_activity_timeout(void);

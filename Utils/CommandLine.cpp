@@ -257,9 +257,6 @@ bool CommandLine::runSync(const string &commandLine, ssize_t maxSize,
 /// Runs a command asynchronously.
 bool CommandLine::runAsync(const MIMEAction &action, const vector<string> &arguments)
 {
-#ifdef DEBUG
-	clog << "CommandLine::runAsync: called" << endl;
-#endif
 	if (action.m_pAppInfo == NULL)
 	{
 		return false;
@@ -282,7 +279,7 @@ bool CommandLine::runAsync(const MIMEAction &action, const vector<string> &argum
 			pFilesList = g_list_prepend(pFilesList, g_file_new_for_uri((*firstArg).c_str()));
 		}
 #ifdef DEBUG
-		else clog << "CommandLine::runAsync: can't open URL " << *firstArg << endl;
+		else clog << "CommandLine::runAsync: can't open " << *firstArg << endl;
 #endif
 
 		// Next
@@ -313,6 +310,9 @@ bool CommandLine::runAsync(const MIMEAction &action, const vector<string> &argum
 
 	if (launched == FALSE)
 	{
+#ifdef DEBUG
+		clog << "CommandLine::runAsync: launch failed" << endl;
+#endif
 		return false;
 	}
 

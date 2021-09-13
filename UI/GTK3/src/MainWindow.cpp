@@ -469,6 +469,16 @@ MainWindow::~MainWindow()
 	// Since MainWindow is destroyed when the program exits, it's a leak we can live with
 }
 
+void MainWindow::setQueryTerms(const ustring &queryTerms)
+{
+	QueryProperties queryProps(_("Live query"), queryTerms);
+
+	liveQueryEntry->set_text(queryTerms);
+	queryProps.setMaximumResultsCount(m_maxResultsCount);
+
+	run_search(queryProps);
+}
+
 //
 // Load user-defined queries
 //
@@ -3214,11 +3224,7 @@ void MainWindow::on_liveQueryEntry_changed()
 	{
 		enableFindButton = false;
 	}
-#if GTKMM_MAJOR_VERSION>=2 && GTKMM_MINOR_VERSION>=16
 	liveQueryEntry->set_icon_sensitive(ENTRY_ICON_SECONDARY, enableFindButton);
-#else
-	findButton->set_sensitive(enableFindButton);
-#endif
 
 	if (m_settings.m_suggestQueryTerms == false)
 	{
@@ -4226,3 +4232,4 @@ void MainWindow::set_status(const ustring &text, bool canBeSkipped)
 	// Push
 	mainStatusbar->push(text);
 }
+
