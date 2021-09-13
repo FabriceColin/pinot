@@ -59,6 +59,7 @@ static streambuf *g_clogBuf = NULL;
 static struct option g_longOptions[] = {
 	{"help", 0, 0, 'h'},
 	{"preferences", 0, 0, 'p'},
+	{"query", 0, 0, 'q'},
 	{"version", 0, 0, 'v'},
 	{0, 0, 0, 0}
 };
@@ -98,13 +99,13 @@ static void quitAll(int sigNum)
 
 int main(int argc, char **argv)
 {
-	string prefixDir(PREFIX);
+	string prefixDir(PREFIX), queryTerms;
 	Glib::ustring statusText;
 	int longOptionIndex = 0;
 	bool warnAboutVersion = false, prefsMode = false;
 
 	// Look at the options
-	int optionChar = getopt_long(argc, argv, "hpv", g_longOptions, &longOptionIndex);
+	int optionChar = getopt_long(argc, argv, "hpq:v", g_longOptions, &longOptionIndex);
 	while (optionChar != -1)
 	{
 		switch (optionChar)
@@ -115,12 +116,19 @@ int main(int argc, char **argv)
 					<< "Usage: pinot [OPTIONS]\n\n"
 					<< "Options:\n"
 					<< "  -h, --help		display this help and exit\n"
-					<< "  -p, --preferences		show preferences and exit\n"
+					<< "  -p, --preferences		show preferences\n"
+					<< "  -q, --query		open with query terms\n"
 					<< "  -v, --version		output version information and exit\n"
 					<< "\nReport bugs to " << PACKAGE_BUGREPORT << endl;
 				return EXIT_SUCCESS;
 			case 'p':
 				prefsMode = true;
+				break;
+			case 'q':
+				if (optarg != NULL)
+				{
+					queryTerms = optarg;
+				}
 				break;
 			case 'v':
 				clog << "pinot - " << PACKAGE_STRING << "\n\n" 
@@ -133,7 +141,7 @@ int main(int argc, char **argv)
 		}
 
 		// Next option
-		optionChar = getopt_long(argc, argv, "hpv", g_longOptions, &longOptionIndex);
+		optionChar = getopt_long(argc, argv, "hpq:v", g_longOptions, &longOptionIndex);
 	}
 
 	string programName(argv[0]);
@@ -383,6 +391,8 @@ int main(int argc, char **argv)
 
 			if (pMainBox != NULL)
 			{
+				pMainBox->setQueryTerms(queryTerms);
+
 				m.run(*pMainBox);
 			}
 		}
