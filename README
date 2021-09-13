@@ -373,7 +373,7 @@ https://github.com/FabriceColin/pinot
       UI may report that the operation failed, even though it was queued for
       processing and will be acted upon by the daemon as soon as possible.
 
-  See section "15. Environment variables and aliases" for some tips on how to
+  See section "14. Environment variables and aliases" for some tips on how to
   query the D-Bus interface. A list of available D-Bus methods can be found
   in the file pinot-dbus-daemon.xml.
 
@@ -469,16 +469,19 @@ https://github.com/FabriceColin/pinot
   If you want to reset My Web Pages, you can either :
     * use Pinot to unindex every single document by selecting them all
       and choosing Unindex in the Index menu
-    * or delete ~/.pinot/index/* while Pinot isn't running
+    * or stop Pinot and delete ~/.pinot/index recursively
 
   If you want to reset My Documents, special considerations apply because
   of the historical data maintained by the daemon. There are two ways to
   proceed, and both require that the daemon be stopped.
 
   The manual way is to delete the index with
-  $ rm ~/.pinot/daemon/*
+  $ rm -rf ~/.pinot/daemon
   and remove historical data with
   $ sqlite3 ~/.pinot/history-daemon "delete from CrawlHistory; delete from CrawlSources; delete from ActionQueue;"
+  If you want to start from scratch and drop metadata (eg labels) that may
+  exist on some documents, remove the history file altogether with
+  $ rm -f ~/.pinot/history-daemon
 
   The automated way is to tell the daemon to reindex everything by launching
   it with the "--reindex" option, ie
