@@ -464,10 +464,9 @@ https://github.com/FabriceColin/pinot
   --enable-libarchive [enable the libarchive filter [default=no]
   --enable-chmlib [enable the chmlib filter [default=no]
 
-  It is highly recommended to enable libnotify support when building
-  on Linux systems. Enable support for libarchive and chmlib if the
-  necessary libraries are available. Other switches should most likely
-  stay unchanged.
+  Enable support for libarchive and chmlib if the necessary
+  libraries are available. Enable libnotify support when building
+  on BSD systems. Other switches should most likely stay unchanged.
 
   See the list below for dependencies. The version numbers indicate
   the minimum version Pinot has been tested with; older versions may
