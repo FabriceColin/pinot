@@ -252,9 +252,13 @@ MainWindow::MainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	addIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_addIndexButton_clicked), false);
 	removeIndexButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_removeIndexButton_clicked), false);
 	enginesTogglebutton->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_enginesTogglebutton_toggled), false);
+	liveQueryEntry->signal_focus_in_event().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_focus), false);
+	liveQueryEntry->signal_focus_out_event().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_focus), false);
 	liveQueryEntry->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_changed), false);
 	liveQueryEntry->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_liveQueryEntry_activate), false);
 	findButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_findButton_clicked), false);
+	queryTreeview->signal_focus_in_event().connect(sigc::mem_fun(*this, &MainWindow::on_queryTreeview_focus), false);
+	queryTreeview->signal_focus_out_event().connect(sigc::mem_fun(*this, &MainWindow::on_queryTreeview_focus), false);
 	queryTreeview->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_queryTreeview_button_press_event), false);
 	addQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_addQueryButton_clicked), false);
 	removeQueryButton->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_removeQueryButton_clicked), false);
@@ -790,6 +794,11 @@ void MainWindow::populate_menuItems()
 	export1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_export_activate), false);
 	status1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_status_activate), false);
 	about1->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about_activate), false);
+
+	cut1->set_sensitive(false);
+	copy1->set_sensitive(false);
+	paste1->set_sensitive(false);
+	delete1->set_sensitive(false);
 }
 
 //
@@ -1414,6 +1423,8 @@ void MainWindow::on_index_changed(ustring indexName)
 		// Position the index tree
 		pResultsTree = manage(new ResultsTree(indexName, fileMenuitem->get_submenu(),
 			ResultsTree::FLAT, m_settings));
+		// Connect to the "focus" signals
+		pResultsTree->connectFocusSignals(sigc::mem_fun(*this, &MainWindow::on_focus_page));
 		pIndexPage = manage(new IndexPage(indexName, pResultsTree, m_settings));
 		// Connect to the "changed" signal
 		pResultsTree->getSelectionChangedSignal().connect(
@@ -1577,6 +1588,27 @@ void MainWindow::on_query_changed(ustring indexName, ustring queryName)
 	}
 
 	browse_index(indexName, queryName, 0);
+}
+
+//
+// Notebook page focus
+//
+bool MainWindow::on_focus_page(GdkEventFocus *ev)
+{
+	if (ev != NULL)
+	{
+		bool enableItems = (ev->in ? true : false);
+
+#ifdef DEBUG
+		clog << "MainWindow::on_focus_page: called with " << ev->in << endl;
+#endif
+		cut1->set_sensitive(false);
+		copy1->set_sensitive(enableItems);
+		paste1->set_sensitive(false);
+		delete1->set_sensitive(false);
+	}
+
+	return false;
 }
 
 //
@@ -1864,6 +1896,8 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 			// Position the results tree
 			pResultsTree = manage(new ResultsTree(queryName, fileMenuitem->get_submenu(),
 				groupMode, m_settings));
+			// Connect to the "focus" signals
+			pResultsTree->connectFocusSignals(sigc::mem_fun(*this, &MainWindow::on_focus_page));
 			pResultsPage = manage(new ResultsPage(queryName, pResultsTree,
 				m_pNotebook->get_height(), m_settings));
 			// Sync the results tree with the menuitems
@@ -2430,8 +2464,8 @@ void MainWindow::on_copy_activate()
 #endif
 		TreeModel::iterator iter = queryTreeview->get_selection()->get_selected();
 		TreeModel::Row row = *iter;
-		// Copy only the query name, not the summary
-		text = row[m_queryColumns.m_name];
+		// Copy the query
+		text = row[m_queryColumns.m_summary];
 	}
 	else
 	{
@@ -2520,18 +2554,11 @@ void MainWindow::on_paste_activate()
 #ifdef DEBUG
 		clog << "MainWindow::on_paste_activate: query tree" << endl;
 #endif
-		// Use whatever text is in the clipboard as query name
+		// Use whatever text is in the clipboard as free query
 		QueryProperties queryProps("", from_utf8(clipText));
 		edit_query(queryProps, true);
 	}
-	else
-	{
-		// Only the query tree can be pasted into, others are read-only
-#ifdef DEBUG
-		clog << "MainWindow::on_paste_activate: other" << endl;
-#endif
-		return;
-	}
+	// Only the query tree can be pasted into, others are read-only
 }
 
 void MainWindow::on_delete_activate()
@@ -2539,25 +2566,6 @@ void MainWindow::on_delete_activate()
 	if (liveQueryEntry->is_focus() == true)
 	{
 		liveQueryEntry->delete_selection();
-	}
-	else
-	{
-		NotebookPageBox *pNotebookPage = get_current_page();
-		if (pNotebookPage != NULL)
-		{
-			ResultsPage *pResultsPage = dynamic_cast<ResultsPage*>(pNotebookPage);
-			if (pResultsPage != NULL)
-			{
-#ifdef DEBUG
-				clog << "MainWindow::on_delete_activate: results tree" << endl;
-#endif
-				ResultsTree *pResultsTree = pResultsPage->getTree();
-				if (pResultsTree != NULL)
-				{
-					pResultsTree->deleteSelection();
-				}
-			}
-		}
 	}
 	// Nothing else can be deleted
 }
@@ -3213,6 +3221,27 @@ void MainWindow::on_enginesTogglebutton_toggled()
 }
 
 //
+// Live query entry focus
+//
+bool MainWindow::on_liveQueryEntry_focus(GdkEventFocus *ev)
+{
+	if (ev != NULL)
+	{
+		bool enableItems = (ev->in ? true : false);
+
+#ifdef DEBUG
+		clog << "MainWindow::on_liveQueryEntry_focus: called with " << ev->in << endl;
+#endif
+		cut1->set_sensitive(enableItems);
+		copy1->set_sensitive(enableItems);
+		paste1->set_sensitive(enableItems);
+		delete1->set_sensitive(enableItems);
+	}
+
+	return false;
+}
+
+//
 // Live query entry change
 //
 void MainWindow::on_liveQueryEntry_changed()
@@ -3437,6 +3466,27 @@ void MainWindow::on_findQueryButton_clicked()
 		queryRow[m_queryColumns.m_lastRun] = to_utf8(TimeConverter::toTimestamp(lastRunTime));
 		queryRow[m_queryColumns.m_lastRunTime] = lastRunTime;
 	}
+}
+
+//
+// Query list focus
+//
+bool MainWindow::on_queryTreeview_focus(GdkEventFocus *ev)
+{
+	if (ev != NULL)
+	{
+		bool enableItems = (ev->in ? true : false);
+
+#ifdef DEBUG
+		clog << "MainWindow::on_queryTreeview_focus: called with " << ev->in << endl;
+#endif
+		cut1->set_sensitive(false);
+		copy1->set_sensitive(enableItems);
+		paste1->set_sensitive(enableItems);
+		delete1->set_sensitive(false);
+	}
+
+	return false;
 }
 
 //

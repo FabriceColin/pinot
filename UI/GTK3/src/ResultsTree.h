@@ -54,6 +54,9 @@ class ResultsTree : public Gtk::TreeView
 		/// Returns the extract scrolled window.
 		Gtk::ScrolledWindow *getExtractScrolledWindow(void) const;
 
+		/// Connects the focus signals.
+		void connectFocusSignals(sigc::slot1<bool, GdkEventFocus*> focusSlot);
+
 		/// Returns whether the extract text view has the focus.
 		bool focusOnExtract(void) const;
 

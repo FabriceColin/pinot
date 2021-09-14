@@ -434,6 +434,15 @@ ScrolledWindow *ResultsTree::getExtractScrolledWindow(void) const
 	return m_pExtractScrolledwindow;
 }
 
+// Connects the focus signals.
+void ResultsTree::connectFocusSignals(sigc::slot1<bool, GdkEventFocus*> focusSlot)
+{
+	signal_focus_in_event().connect(focusSlot);
+	signal_focus_out_event().connect(focusSlot);
+	m_extractTextView->signal_focus_in_event().connect(focusSlot);
+	m_extractTextView->signal_focus_out_event().connect(focusSlot);
+}
+
 //
 // Returns the extract tree.
 //
