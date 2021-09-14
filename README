@@ -171,11 +171,11 @@ https://github.com/FabriceColin/pinot
   treated as a regular term.
 
   Pinot supports these query filters :
-      "site" for host name, eg "site:pinot.berlios.de"
+      "site" for host name, eg "site:github.com"
       "file" for file name, eg "file:index.html"
       "ext" for file extension, eg "ext:html"
       "title" for title, eg "title:pinot"
-      "url" for URL, eg "url:http://pinot.berlios.de/"
+      "url" for URL, eg "url:https://github.com/"
       "dir" for directory, eg "dir:/home/fabrice"
       "inurl" for documents embedded in a URL, eg "inurl:file:///home/fabrice/Documents/backup.tar.gz"
       "lang" for ISO language code, eg "lang:en"
@@ -223,9 +223,9 @@ https://github.com/FabriceColin/pinot
   "Google" that handles both http and https. The location field supports
   two parameters that are substituted to obtain the URL to open : 
     * %url is the result's URL as displayed by the UI, eg
-      http://pinot.berlios.de/download.html
+      https://github.com/FabriceColin/pinot
     * %url0 is the result's URL without the protocol, eg
-      pinot.berlios.de/download.html
+      github.com/FabriceColin/pinot
 
 
 7. File formats
