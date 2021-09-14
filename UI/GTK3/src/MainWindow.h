@@ -102,10 +102,12 @@ protected:
 	virtual void on_addIndexButton_clicked();
 	virtual void on_removeIndexButton_clicked();
 	virtual void on_enginesTogglebutton_toggled();
+	virtual bool on_liveQueryEntry_focus(GdkEventFocus *ev);
 	virtual void on_liveQueryEntry_changed();
 	virtual void on_liveQueryEntry_activate();
 	virtual void on_liveQueryEntry_icon(Gtk::EntryIconPosition position, const GdkEventButton *ev);
 	virtual void on_findButton_clicked();
+	virtual bool on_queryTreeview_focus(GdkEventFocus *ev);
 	virtual bool on_queryTreeview_button_press_event(GdkEventButton *ev);
 	virtual void on_addQueryButton_clicked();
 	virtual void on_removeQueryButton_clicked();
@@ -126,6 +128,7 @@ protected:
 	void on_cache_changed(PinotSettings::CacheProvider cacheProvider);
 	void on_searchthis_changed(Glib::ustring queryName);
 	void on_query_changed(Glib::ustring indexName, Glib::ustring queryName);
+	bool on_focus_page(GdkEventFocus *ev);
 	void on_switch_page(Gtk::Widget *pPage, guint pageNum);
 	void on_close_page(Glib::ustring title, NotebookPageBox::PageType type);
 	void on_thread_end(WorkerThread *pThread);
