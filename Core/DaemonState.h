@@ -101,15 +101,19 @@ class DaemonState : public QueueManager
 				DaemonState *m_pServer;
 				bool m_mustQuit;
 
-				void flushIndexAndSignal(IndexInterface *pIndex);
-
 			    virtual void GetStatistics(PinotStub::MethodInvocation &invocation);
 
 			    virtual void Reload(PinotStub::MethodInvocation &invocation);
 
 			    virtual void Stop(PinotStub::MethodInvocation &invocation);
 
-			    virtual void HasDocument(const Glib::ustring &url,
+			    virtual void GetDocumentInfo(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void GetDocumentTermsCount(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void GetDocumentTerms(guint32 docId,
 					PinotStub::MethodInvocation &invocation);
 
 			    virtual void GetLabels(PinotStub::MethodInvocation &invocation);
@@ -118,6 +122,10 @@ class DaemonState : public QueueManager
 					PinotStub::MethodInvocation &invocation);
 
 			    virtual void DeleteLabel(const Glib::ustring &label,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void HasLabel(guint32 docId,
+					const Glib::ustring &label,
 					PinotStub::MethodInvocation &invocation);
 
 			    virtual void GetDocumentLabels(guint32 docId,
@@ -133,17 +141,24 @@ class DaemonState : public QueueManager
 					bool resetLabels,
 					PinotStub::MethodInvocation &invocation);
 
-			    virtual void GetDocumentInfo(guint32 docId,
+			    virtual void HasDocument(const Glib::ustring &url,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void GetCloseTerms(const Glib::ustring &term,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void GetDocumentsCount(const Glib::ustring &label,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void ListDocuments(const Glib::ustring &term,
+					guint32 termType, guint32 maxCount, guint32 startOffset,
+					PinotStub::MethodInvocation &invocation);
+
+			    virtual void UpdateDocument(guint32 docId,
 					PinotStub::MethodInvocation &invocation);
 
 			    virtual void SetDocumentInfo(guint32 docId,
 					const std::vector<std::tuple<Glib::ustring,Glib::ustring>> &fields,
-					PinotStub::MethodInvocation &invocation);
-
-				virtual void GetDocumentTermsCount(guint32 docId,
-					PinotStub::MethodInvocation &invocation);
-
-				virtual void GetDocumentTerms(guint32 docId,
 					PinotStub::MethodInvocation &invocation);
 
 			    virtual void Query(const Glib::ustring &engineType,
@@ -155,9 +170,6 @@ class DaemonState : public QueueManager
 
 			    virtual void SimpleQuery(const Glib::ustring &searchText,
 					guint32 maxHits,
-					PinotStub::MethodInvocation &invocation);
-
-			    virtual void UpdateDocument(guint32 docId,
 					PinotStub::MethodInvocation &invocation);
 
 		};

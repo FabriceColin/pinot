@@ -134,8 +134,14 @@ protected:
         MethodInvocation &invocation) = 0;
     virtual void Stop(
         MethodInvocation &invocation) = 0;
-    virtual void HasDocument(
-        const Glib::ustring & url,
+    virtual void GetDocumentInfo(
+        guint32 docId,
+        MethodInvocation &invocation) = 0;
+    virtual void GetDocumentTermsCount(
+        guint32 docId,
+        MethodInvocation &invocation) = 0;
+    virtual void GetDocumentTerms(
+        guint32 docId,
         MethodInvocation &invocation) = 0;
     virtual void GetLabels(
         MethodInvocation &invocation) = 0;
@@ -143,6 +149,10 @@ protected:
         const Glib::ustring & label,
         MethodInvocation &invocation) = 0;
     virtual void DeleteLabel(
+        const Glib::ustring & label,
+        MethodInvocation &invocation) = 0;
+    virtual void HasLabel(
+        guint32 docId,
         const Glib::ustring & label,
         MethodInvocation &invocation) = 0;
     virtual void GetDocumentLabels(
@@ -158,18 +168,27 @@ protected:
         const std::vector<Glib::ustring> & labels,
         bool resetLabels,
         MethodInvocation &invocation) = 0;
-    virtual void GetDocumentInfo(
+    virtual void HasDocument(
+        const Glib::ustring & url,
+        MethodInvocation &invocation) = 0;
+    virtual void GetCloseTerms(
+        const Glib::ustring & term,
+        MethodInvocation &invocation) = 0;
+    virtual void GetDocumentsCount(
+        const Glib::ustring & label,
+        MethodInvocation &invocation) = 0;
+    virtual void ListDocuments(
+        const Glib::ustring & term,
+        guint32 termType,
+        guint32 maxCount,
+        guint32 startOffset,
+        MethodInvocation &invocation) = 0;
+    virtual void UpdateDocument(
         guint32 docId,
         MethodInvocation &invocation) = 0;
     virtual void SetDocumentInfo(
         guint32 docId,
         const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & fields,
-        MethodInvocation &invocation) = 0;
-    virtual void GetDocumentTermsCount(
-        guint32 docId,
-        MethodInvocation &invocation) = 0;
-    virtual void GetDocumentTerms(
-        guint32 docId,
         MethodInvocation &invocation) = 0;
     virtual void Query(
         const Glib::ustring & engineType,
@@ -181,9 +200,6 @@ protected:
     virtual void SimpleQuery(
         const Glib::ustring & searchText,
         guint32 maxHits,
-        MethodInvocation &invocation) = 0;
-    virtual void UpdateDocument(
-        guint32 docId,
         MethodInvocation &invocation) = 0;
 
     void IndexFlushed_emitter(const std::vector<Glib::ustring> &destination_bus_names, guint32);
@@ -283,6 +299,15 @@ public:
         m_message->return_value(Glib::Variant<Glib::VariantBase>::create_tuple(vlist));
     }
 
+    void ret(const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & p0) {
+        std::vector<Glib::VariantBase> vlist;
+        Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> var0 =
+            Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>>::create(p0);
+        vlist.push_back(var0);
+
+        m_message->return_value(Glib::Variant<Glib::VariantBase>::create_tuple(vlist));
+    }
+
     void ret(guint32 p0) {
         std::vector<Glib::VariantBase> vlist;
         Glib::Variant<guint32> var0 =
@@ -305,15 +330,6 @@ public:
         std::vector<Glib::VariantBase> vlist;
         Glib::Variant<Glib::ustring> var0 =
             Glib::Variant<Glib::ustring>::create(p0);
-        vlist.push_back(var0);
-
-        m_message->return_value(Glib::Variant<Glib::VariantBase>::create_tuple(vlist));
-    }
-
-    void ret(const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & p0) {
-        std::vector<Glib::VariantBase> vlist;
-        Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> var0 =
-            Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>>::create(p0);
         vlist.push_back(var0);
 
         m_message->return_value(Glib::Variant<Glib::VariantBase>::create_tuple(vlist));

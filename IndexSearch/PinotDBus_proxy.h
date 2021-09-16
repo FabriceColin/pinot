@@ -136,19 +136,49 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
 const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
-    void HasDocument(
-        const Glib::ustring & url,
+    void GetDocumentInfo(
+        guint32 docId,
         const Gio::SlotAsyncReady &slot,
         const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
-    void HasDocument_finish (
-        guint32 &docId,
+    void GetDocumentInfo_finish (
+        std::vector<std::tuple<Glib::ustring,Glib::ustring>> &fields,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    std::vector<std::tuple<Glib::ustring,Glib::ustring>>
+    GetDocumentInfo_sync(
+        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTermsCount(
+        guint32 docId,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTermsCount_finish (
+        guint32 &count,
         const Glib::RefPtr<Gio::AsyncResult> &res);
 
     guint32
-    HasDocument_sync(
-        const Glib::ustring & url,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+    GetDocumentTermsCount_sync(
+        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTerms(
+        guint32 docId,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTerms_finish (
+        std::vector<Glib::ustring> &terms,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    std::vector<Glib::ustring>
+    GetDocumentTerms_sync(
+        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
     void GetLabels(
@@ -193,6 +223,22 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
     Glib::ustring
     DeleteLabel_sync(
         const Glib::ustring & label,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void HasLabel(
+        guint32 docId,
+        const Glib::ustring & label,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void HasLabel_finish (
+        guint32 &docId,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    guint32
+    HasLabel_sync(
+        guint32 docId,        const Glib::ustring & label,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
     void GetDocumentLabels(
@@ -244,18 +290,81 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         const std::vector<Glib::ustring> & docIds,        const std::vector<Glib::ustring> & labels,        bool resetLabels,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
-    void GetDocumentInfo(
+    void HasDocument(
+        const Glib::ustring & url,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void HasDocument_finish (
+        guint32 &docId,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    guint32
+    HasDocument_sync(
+        const Glib::ustring & url,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetCloseTerms(
+        const Glib::ustring & term,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetCloseTerms_finish (
+        std::vector<Glib::ustring> &terms,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    std::vector<Glib::ustring>
+    GetCloseTerms_sync(
+        const Glib::ustring & term,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentsCount(
+        const Glib::ustring & label,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentsCount_finish (
+        guint32 &count,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    guint32
+    GetDocumentsCount_sync(
+        const Glib::ustring & label,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void ListDocuments(
+        const Glib::ustring & term,
+        guint32 termType,
+        guint32 maxCount,
+        guint32 startOffset,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void ListDocuments_finish (
+        std::vector<Glib::ustring> &docIds,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    std::vector<Glib::ustring>
+    ListDocuments_sync(
+        const Glib::ustring & term,        guint32 termType,        guint32 maxCount,        guint32 startOffset,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void UpdateDocument(
         guint32 docId,
         const Gio::SlotAsyncReady &slot,
         const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
-    void GetDocumentInfo_finish (
-        std::vector<std::tuple<Glib::ustring,Glib::ustring>> &fields,
+    void UpdateDocument_finish (
+        guint32 &docId,
         const Glib::RefPtr<Gio::AsyncResult> &res);
 
-    std::vector<std::tuple<Glib::ustring,Glib::ustring>>
-    GetDocumentInfo_sync(
+    guint32
+    UpdateDocument_sync(
         guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
@@ -273,36 +382,6 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
     guint32
     SetDocumentInfo_sync(
         guint32 docId,        const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & fields,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void GetDocumentTermsCount(
-        guint32 docId,
-        const Gio::SlotAsyncReady &slot,
-        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void GetDocumentTermsCount_finish (
-        guint32 &count,
-        const Glib::RefPtr<Gio::AsyncResult> &res);
-
-    guint32
-    GetDocumentTermsCount_sync(
-        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void GetDocumentTerms(
-        guint32 docId,
-        const Gio::SlotAsyncReady &slot,
-        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void GetDocumentTerms_finish (
-        std::vector<Glib::ustring> &terms,
-        const Glib::RefPtr<Gio::AsyncResult> &res);
-
-    std::vector<Glib::ustring>
-    GetDocumentTerms_sync(
-        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
     void Query(
@@ -339,21 +418,6 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
     std::vector<Glib::ustring>
     SimpleQuery_sync(
         const Glib::ustring & searchText,        guint32 maxHits,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void UpdateDocument(
-        guint32 docId,
-        const Gio::SlotAsyncReady &slot,
-        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
-        int timeout_msec = -1);
-
-    void UpdateDocument_finish (
-        guint32 &docId,
-        const Glib::RefPtr<Gio::AsyncResult> &res);
-
-    guint32
-    UpdateDocument_sync(
-        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
     sigc::signal<void, guint32 > IndexFlushed_signal;

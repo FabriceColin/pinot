@@ -75,11 +75,27 @@ public:
         return newStrv;
     }
 
-    static Glib::VariantContainerBase HasDocument_pack(
-        const Glib::ustring & arg_url) {
+    static Glib::VariantContainerBase GetDocumentInfo_pack(
+        guint32 arg_docId) {
         Glib::VariantContainerBase base;
-        Glib::Variant<Glib::ustring> params =
-            Glib::Variant<Glib::ustring>::create(arg_url);
+        Glib::Variant<guint32> params =
+            Glib::Variant<guint32>::create(arg_docId);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase GetDocumentTermsCount_pack(
+        guint32 arg_docId) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<guint32> params =
+            Glib::Variant<guint32>::create(arg_docId);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase GetDocumentTerms_pack(
+        guint32 arg_docId) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<guint32> params =
+            Glib::Variant<guint32>::create(arg_docId);
         return Glib::VariantContainerBase::create_tuple(params);
     }
 
@@ -96,6 +112,22 @@ public:
         Glib::VariantContainerBase base;
         Glib::Variant<Glib::ustring> params =
             Glib::Variant<Glib::ustring>::create(arg_label);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase HasLabel_pack(
+        guint32 arg_docId,
+        const Glib::ustring & arg_label) {
+        Glib::VariantContainerBase base;
+        std::vector<Glib::VariantBase> params;
+
+        Glib::Variant<guint32> docId_param =
+            Glib::Variant<guint32>::create(arg_docId);
+        params.push_back(docId_param);
+
+        Glib::Variant<Glib::ustring> label_param =
+            Glib::Variant<Glib::ustring>::create(arg_label);
+        params.push_back(label_param);
         return Glib::VariantContainerBase::create_tuple(params);
     }
 
@@ -149,7 +181,57 @@ public:
         return Glib::VariantContainerBase::create_tuple(params);
     }
 
-    static Glib::VariantContainerBase GetDocumentInfo_pack(
+    static Glib::VariantContainerBase HasDocument_pack(
+        const Glib::ustring & arg_url) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<Glib::ustring> params =
+            Glib::Variant<Glib::ustring>::create(arg_url);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase GetCloseTerms_pack(
+        const Glib::ustring & arg_term) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<Glib::ustring> params =
+            Glib::Variant<Glib::ustring>::create(arg_term);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase GetDocumentsCount_pack(
+        const Glib::ustring & arg_label) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<Glib::ustring> params =
+            Glib::Variant<Glib::ustring>::create(arg_label);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase ListDocuments_pack(
+        const Glib::ustring & arg_term,
+        guint32 arg_termType,
+        guint32 arg_maxCount,
+        guint32 arg_startOffset) {
+        Glib::VariantContainerBase base;
+        std::vector<Glib::VariantBase> params;
+
+        Glib::Variant<Glib::ustring> term_param =
+            Glib::Variant<Glib::ustring>::create(arg_term);
+        params.push_back(term_param);
+
+        Glib::Variant<guint32> termType_param =
+            Glib::Variant<guint32>::create(arg_termType);
+        params.push_back(termType_param);
+
+        Glib::Variant<guint32> maxCount_param =
+            Glib::Variant<guint32>::create(arg_maxCount);
+        params.push_back(maxCount_param);
+
+        Glib::Variant<guint32> startOffset_param =
+            Glib::Variant<guint32>::create(arg_startOffset);
+        params.push_back(startOffset_param);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase UpdateDocument_pack(
         guint32 arg_docId) {
         Glib::VariantContainerBase base;
         Glib::Variant<guint32> params =
@@ -170,22 +252,6 @@ public:
         Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> fields_param =
             Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>>::create(arg_fields);
         params.push_back(fields_param);
-        return Glib::VariantContainerBase::create_tuple(params);
-    }
-
-    static Glib::VariantContainerBase GetDocumentTermsCount_pack(
-        guint32 arg_docId) {
-        Glib::VariantContainerBase base;
-        Glib::Variant<guint32> params =
-            Glib::Variant<guint32>::create(arg_docId);
-        return Glib::VariantContainerBase::create_tuple(params);
-    }
-
-    static Glib::VariantContainerBase GetDocumentTerms_pack(
-        guint32 arg_docId) {
-        Glib::VariantContainerBase base;
-        Glib::Variant<guint32> params =
-            Glib::Variant<guint32>::create(arg_docId);
         return Glib::VariantContainerBase::create_tuple(params);
     }
 
@@ -233,14 +299,6 @@ public:
         Glib::Variant<guint32> maxHits_param =
             Glib::Variant<guint32>::create(arg_maxHits);
         params.push_back(maxHits_param);
-        return Glib::VariantContainerBase::create_tuple(params);
-    }
-
-    static Glib::VariantContainerBase UpdateDocument_pack(
-        guint32 arg_docId) {
-        Glib::VariantContainerBase base;
-        Glib::Variant<guint32> params =
-            Glib::Variant<guint32>::create(arg_docId);
         return Glib::VariantContainerBase::create_tuple(params);
     }
 };

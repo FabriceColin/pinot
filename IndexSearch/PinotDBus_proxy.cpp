@@ -315,52 +315,154 @@ com::github::fabricecolin::PinotProxy::Stop_sync(
 }
 
 /**
- * Checks if a URL is indexed.
+ * Returns a document's properties.
  *  docId: the document's ID
+ *  fields: array of (s name, s value) structures with name one of
+ *  "caption", "url", "type", "language", "modtime", "size", "extract"
  */
-void com::github::fabricecolin::PinotProxy::HasDocument(
-    const Glib::ustring & arg_url,
+void com::github::fabricecolin::PinotProxy::GetDocumentInfo(
+    guint32 arg_docId,
     const Gio::SlotAsyncReady &callback,
     const Glib::RefPtr<Gio::Cancellable> &cancellable,
     int timeout_msec)
 {
     Glib::VariantContainerBase base;
-    base = PinotTypeWrap::HasDocument_pack(
-        arg_url);
+    base = PinotTypeWrap::GetDocumentInfo_pack(
+        arg_docId);
 
-    m_proxy->call("HasDocument", callback, cancellable, base, timeout_msec);
+    m_proxy->call("GetDocumentInfo", callback, cancellable, base, timeout_msec);
 }
 
-void com::github::fabricecolin::PinotProxy::HasDocument_finish(
-    guint32 &out_docId,
+void com::github::fabricecolin::PinotProxy::GetDocumentInfo_finish(
+    std::vector<std::tuple<Glib::ustring,Glib::ustring>> &out_fields,
     const Glib::RefPtr<Gio::AsyncResult> &result)
 {
     Glib::VariantContainerBase wrapped;
     wrapped = m_proxy->call_finish(result);
 
-    Glib::Variant<guint32> out_docId_v;
-    wrapped.get_child(out_docId_v, 0);
-    out_docId = out_docId_v.get();
+    Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> out_fields_v;
+    wrapped.get_child(out_fields_v, 0);
+    out_fields = out_fields_v.get();
 }
 
-guint32
-com::github::fabricecolin::PinotProxy::HasDocument_sync(
-    const Glib::ustring & arg_url,
+std::vector<std::tuple<Glib::ustring,Glib::ustring>>
+com::github::fabricecolin::PinotProxy::GetDocumentInfo_sync(
+    guint32 arg_docId,
     const Glib::RefPtr<Gio::Cancellable> &cancellable,
     int timeout_msec)
 {
     Glib::VariantContainerBase base;
-    base = PinotTypeWrap::HasDocument_pack(
-        arg_url);
+    base = PinotTypeWrap::GetDocumentInfo_pack(
+        arg_docId);
 
     Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_sync("HasDocument", cancellable, base, timeout_msec);
+    wrapped = m_proxy->call_sync("GetDocumentInfo", cancellable, base, timeout_msec);
 
-    guint32 out_docId;
-    Glib::Variant<guint32> out_docId_v;
-    wrapped.get_child(out_docId_v, 0);
-    out_docId = out_docId_v.get();
-    return out_docId;
+    std::vector<std::tuple<Glib::ustring,Glib::ustring>> out_fields;
+    Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> out_fields_v;
+    wrapped.get_child(out_fields_v, 0);
+    out_fields = out_fields_v.get();
+    return out_fields;
+}
+
+/**
+ * Returns a document's terms count.
+ *  docId: the document's ID
+ *  count: the terms count
+ */
+void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount(
+    guint32 arg_docId,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTermsCount_pack(
+        arg_docId);
+
+    m_proxy->call("GetDocumentTermsCount", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_finish(
+    guint32 &out_count,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+}
+
+guint32
+com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_sync(
+    guint32 arg_docId,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTermsCount_pack(
+        arg_docId);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetDocumentTermsCount", cancellable, base, timeout_msec);
+
+    guint32 out_count;
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+    return out_count;
+}
+
+/**
+ * Returns a document's terms.
+ *  docId: the document's ID
+ *  terms: array of terms
+ */
+void com::github::fabricecolin::PinotProxy::GetDocumentTerms(
+    guint32 arg_docId,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTerms_pack(
+        arg_docId);
+
+    m_proxy->call("GetDocumentTerms", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetDocumentTerms_finish(
+    std::vector<Glib::ustring> &out_terms,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+}
+
+std::vector<Glib::ustring>
+com::github::fabricecolin::PinotProxy::GetDocumentTerms_sync(
+    guint32 arg_docId,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTerms_pack(
+        arg_docId);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetDocumentTerms", cancellable, base, timeout_msec);
+
+    std::vector<Glib::ustring> out_terms;
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+    return out_terms;
 }
 
 /**
@@ -409,7 +511,6 @@ com::github::fabricecolin::PinotProxy::GetLabels_sync(
 /**
  * Adds a label.
  *  label: the name of the new label
- *        This method shouldn't be used by applications other than Pinot.
  */
 void com::github::fabricecolin::PinotProxy::AddLabel(
     const Glib::ustring & arg_label,
@@ -457,9 +558,8 @@ com::github::fabricecolin::PinotProxy::AddLabel_sync(
 }
 
 /**
- * Deletes a label.
+ * Deletes all references to a label.
  *  label: the name of the label to delete
- *        This method shouldn't be used by applications other than Pinot.
  */
 void com::github::fabricecolin::PinotProxy::DeleteLabel(
     const Glib::ustring & arg_label,
@@ -507,7 +607,61 @@ com::github::fabricecolin::PinotProxy::DeleteLabel_sync(
 }
 
 /**
- * Retrieves a document's labels.
+ * Determines whether a document has a label.
+ *  docId: the document's ID
+ *  label: the label to check
+ */
+void com::github::fabricecolin::PinotProxy::HasLabel(
+    guint32 arg_docId,
+    const Glib::ustring & arg_label,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::HasLabel_pack(
+        arg_docId,
+        arg_label);
+
+    m_proxy->call("HasLabel", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::HasLabel_finish(
+    guint32 &out_docId,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
+}
+
+guint32
+com::github::fabricecolin::PinotProxy::HasLabel_sync(
+    guint32 arg_docId,
+    const Glib::ustring & arg_label,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::HasLabel_pack(
+        arg_docId,
+        arg_label);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("HasLabel", cancellable, base, timeout_msec);
+
+    guint32 out_docId;
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
+    return out_docId;
+}
+
+/**
+ * Returns a document's labels.
  *  docId: the document's ID
  *  labels: array of labels applied to the document
  */
@@ -616,7 +770,7 @@ com::github::fabricecolin::PinotProxy::SetDocumentLabels_sync(
 }
 
 /**
- * Sets labels on a group of documents.
+ * Sets documents' labels.
  *  docIds: array of document IDs
  *  labels: array of labels to apply to the documents
  *  resetLabels: TRUE if existing labels should be unset
@@ -675,60 +829,272 @@ com::github::fabricecolin::PinotProxy::SetDocumentsLabels_sync(
 }
 
 /**
- * Retrieves information about a document.
+ * Checks whether the given URL is in the index.
  *  docId: the document's ID
- *  fields : array of (s name, s value) structures with name one of
- *  "caption", "url", "type", "language", "modtime", "size", "extract"
  */
-void com::github::fabricecolin::PinotProxy::GetDocumentInfo(
+void com::github::fabricecolin::PinotProxy::HasDocument(
+    const Glib::ustring & arg_url,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::HasDocument_pack(
+        arg_url);
+
+    m_proxy->call("HasDocument", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::HasDocument_finish(
+    guint32 &out_docId,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
+}
+
+guint32
+com::github::fabricecolin::PinotProxy::HasDocument_sync(
+    const Glib::ustring & arg_url,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::HasDocument_pack(
+        arg_url);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("HasDocument", cancellable, base, timeout_msec);
+
+    guint32 out_docId;
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
+    return out_docId;
+}
+
+/**
+ * Gets terms with the same root.
+ *  term: the base term
+ *     terms: array of suggested terms
+ */
+void com::github::fabricecolin::PinotProxy::GetCloseTerms(
+    const Glib::ustring & arg_term,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetCloseTerms_pack(
+        arg_term);
+
+    m_proxy->call("GetCloseTerms", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetCloseTerms_finish(
+    std::vector<Glib::ustring> &out_terms,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+}
+
+std::vector<Glib::ustring>
+com::github::fabricecolin::PinotProxy::GetCloseTerms_sync(
+    const Glib::ustring & arg_term,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetCloseTerms_pack(
+        arg_term);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetCloseTerms", cancellable, base, timeout_msec);
+
+    std::vector<Glib::ustring> out_terms;
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+    return out_terms;
+}
+
+/**
+ * Returns the number of documents.
+ *  label: a label name
+ *  count: the terms count
+ */
+void com::github::fabricecolin::PinotProxy::GetDocumentsCount(
+    const Glib::ustring & arg_label,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentsCount_pack(
+        arg_label);
+
+    m_proxy->call("GetDocumentsCount", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetDocumentsCount_finish(
+    guint32 &out_count,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+}
+
+guint32
+com::github::fabricecolin::PinotProxy::GetDocumentsCount_sync(
+    const Glib::ustring & arg_label,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentsCount_pack(
+        arg_label);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetDocumentsCount", cancellable, base, timeout_msec);
+
+    guint32 out_count;
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+    return out_count;
+}
+
+/**
+ * Lists documents.
+ *  term: the term to optionally filter documents with
+ *  termType: the term type
+ *  maxCount: the maximum count
+ *     startOffset: the start offset
+ *  docIds: array of document ID
+ */
+void com::github::fabricecolin::PinotProxy::ListDocuments(
+    const Glib::ustring & arg_term,
+    guint32 arg_termType,
+    guint32 arg_maxCount,
+    guint32 arg_startOffset,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::ListDocuments_pack(
+        arg_term,
+        arg_termType,
+        arg_maxCount,
+        arg_startOffset);
+
+    m_proxy->call("ListDocuments", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::ListDocuments_finish(
+    std::vector<Glib::ustring> &out_docIds,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<std::vector<Glib::ustring>> out_docIds_v;
+    wrapped.get_child(out_docIds_v, 0);
+    out_docIds = out_docIds_v.get();
+}
+
+std::vector<Glib::ustring>
+com::github::fabricecolin::PinotProxy::ListDocuments_sync(
+    const Glib::ustring & arg_term,
+    guint32 arg_termType,
+    guint32 arg_maxCount,
+    guint32 arg_startOffset,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::ListDocuments_pack(
+        arg_term,
+        arg_termType,
+        arg_maxCount,
+        arg_startOffset);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("ListDocuments", cancellable, base, timeout_msec);
+
+    std::vector<Glib::ustring> out_docIds;
+    Glib::Variant<std::vector<Glib::ustring>> out_docIds_v;
+    wrapped.get_child(out_docIds_v, 0);
+    out_docIds = out_docIds_v.get();
+    return out_docIds;
+}
+
+/**
+ * Updates the given document.
+ *  docId: the document's ID
+ */
+void com::github::fabricecolin::PinotProxy::UpdateDocument(
     guint32 arg_docId,
     const Gio::SlotAsyncReady &callback,
     const Glib::RefPtr<Gio::Cancellable> &cancellable,
     int timeout_msec)
 {
     Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentInfo_pack(
+    base = PinotTypeWrap::UpdateDocument_pack(
         arg_docId);
 
-    m_proxy->call("GetDocumentInfo", callback, cancellable, base, timeout_msec);
+    m_proxy->call("UpdateDocument", callback, cancellable, base, timeout_msec);
 }
 
-void com::github::fabricecolin::PinotProxy::GetDocumentInfo_finish(
-    std::vector<std::tuple<Glib::ustring,Glib::ustring>> &out_fields,
+void com::github::fabricecolin::PinotProxy::UpdateDocument_finish(
+    guint32 &out_docId,
     const Glib::RefPtr<Gio::AsyncResult> &result)
 {
     Glib::VariantContainerBase wrapped;
     wrapped = m_proxy->call_finish(result);
 
-    Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> out_fields_v;
-    wrapped.get_child(out_fields_v, 0);
-    out_fields = out_fields_v.get();
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
 }
 
-std::vector<std::tuple<Glib::ustring,Glib::ustring>>
-com::github::fabricecolin::PinotProxy::GetDocumentInfo_sync(
+guint32
+com::github::fabricecolin::PinotProxy::UpdateDocument_sync(
     guint32 arg_docId,
     const Glib::RefPtr<Gio::Cancellable> &cancellable,
     int timeout_msec)
 {
     Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentInfo_pack(
+    base = PinotTypeWrap::UpdateDocument_pack(
         arg_docId);
 
     Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_sync("GetDocumentInfo", cancellable, base, timeout_msec);
+    wrapped = m_proxy->call_sync("UpdateDocument", cancellable, base, timeout_msec);
 
-    std::vector<std::tuple<Glib::ustring,Glib::ustring>> out_fields;
-    Glib::Variant<std::vector<std::tuple<Glib::ustring,Glib::ustring>>> out_fields_v;
-    wrapped.get_child(out_fields_v, 0);
-    out_fields = out_fields_v.get();
-    return out_fields;
+    guint32 out_docId;
+    Glib::Variant<guint32> out_docId_v;
+    wrapped.get_child(out_docId_v, 0);
+    out_docId = out_docId_v.get();
+    return out_docId;
 }
 
 /**
- * Sets information about a document.
+ * Sets a document's properties.
  *  docId: the document's ID
- *  fields : array of (s name, s value) structures with name one of
+ *  fields: array of (s name, s value) structures with name one of
  *  "caption", "url", "type", "language", "modtime", "size", "extract"
  */
 void com::github::fabricecolin::PinotProxy::SetDocumentInfo(
@@ -778,107 +1144,6 @@ com::github::fabricecolin::PinotProxy::SetDocumentInfo_sync(
     wrapped.get_child(out_docId_v, 0);
     out_docId = out_docId_v.get();
     return out_docId;
-}
-
-/**
- * Retrieves a document's terms count.
- *  docId: the document's ID
- *  count: the terms count
- */
-void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount(
-    guint32 arg_docId,
-    const Gio::SlotAsyncReady &callback,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentTermsCount_pack(
-        arg_docId);
-
-    m_proxy->call("GetDocumentTermsCount", callback, cancellable, base, timeout_msec);
-}
-
-void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_finish(
-    guint32 &out_count,
-    const Glib::RefPtr<Gio::AsyncResult> &result)
-{
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_finish(result);
-
-    Glib::Variant<guint32> out_count_v;
-    wrapped.get_child(out_count_v, 0);
-    out_count = out_count_v.get();
-}
-
-guint32
-com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_sync(
-    guint32 arg_docId,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentTermsCount_pack(
-        arg_docId);
-
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_sync("GetDocumentTermsCount", cancellable, base, timeout_msec);
-
-    guint32 out_count;
-    Glib::Variant<guint32> out_count_v;
-    wrapped.get_child(out_count_v, 0);
-    out_count = out_count_v.get();
-    return out_count;
-}
-
-/**
- * Retrieves a document's terms.
- *  docId: the document's ID
- *  fields : array of (s name, s value) structures with name one of
- *  "caption", "url", "type", "language", "modtime", "size", "extract"
- */
-void com::github::fabricecolin::PinotProxy::GetDocumentTerms(
-    guint32 arg_docId,
-    const Gio::SlotAsyncReady &callback,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentTerms_pack(
-        arg_docId);
-
-    m_proxy->call("GetDocumentTerms", callback, cancellable, base, timeout_msec);
-}
-
-void com::github::fabricecolin::PinotProxy::GetDocumentTerms_finish(
-    std::vector<Glib::ustring> &out_terms,
-    const Glib::RefPtr<Gio::AsyncResult> &result)
-{
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_finish(result);
-
-    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
-    wrapped.get_child(out_terms_v, 0);
-    out_terms = out_terms_v.get();
-}
-
-std::vector<Glib::ustring>
-com::github::fabricecolin::PinotProxy::GetDocumentTerms_sync(
-    guint32 arg_docId,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::GetDocumentTerms_pack(
-        arg_docId);
-
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_sync("GetDocumentTerms", cancellable, base, timeout_msec);
-
-    std::vector<Glib::ustring> out_terms;
-    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
-    wrapped.get_child(out_terms_v, 0);
-    out_terms = out_terms_v.get();
-    return out_terms;
 }
 
 /**
@@ -1021,55 +1286,6 @@ com::github::fabricecolin::PinotProxy::SimpleQuery_sync(
     wrapped.get_child(out_docIds_v, 0);
     out_docIds = out_docIds_v.get();
     return out_docIds;
-}
-
-/**
- * Updates a document.
- *  docId: the document's ID
- */
-void com::github::fabricecolin::PinotProxy::UpdateDocument(
-    guint32 arg_docId,
-    const Gio::SlotAsyncReady &callback,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::UpdateDocument_pack(
-        arg_docId);
-
-    m_proxy->call("UpdateDocument", callback, cancellable, base, timeout_msec);
-}
-
-void com::github::fabricecolin::PinotProxy::UpdateDocument_finish(
-    guint32 &out_docId,
-    const Glib::RefPtr<Gio::AsyncResult> &result)
-{
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_finish(result);
-
-    Glib::Variant<guint32> out_docId_v;
-    wrapped.get_child(out_docId_v, 0);
-    out_docId = out_docId_v.get();
-}
-
-guint32
-com::github::fabricecolin::PinotProxy::UpdateDocument_sync(
-    guint32 arg_docId,
-    const Glib::RefPtr<Gio::Cancellable> &cancellable,
-    int timeout_msec)
-{
-    Glib::VariantContainerBase base;
-    base = PinotTypeWrap::UpdateDocument_pack(
-        arg_docId);
-
-    Glib::VariantContainerBase wrapped;
-    wrapped = m_proxy->call_sync("UpdateDocument", cancellable, base, timeout_msec);
-
-    guint32 out_docId;
-    Glib::Variant<guint32> out_docId_v;
-    wrapped.get_child(out_docId_v, 0);
-    out_docId = out_docId_v.get();
-    return out_docId;
 }
 
 void com::github::fabricecolin::PinotProxy::handle_signal(const Glib::ustring&/* sender_name */,

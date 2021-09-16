@@ -253,21 +253,6 @@ void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
 	IndexFlushed_emitter(busNames, docsCount);
 }
 
-void DaemonState::DBusMessageHandler::flushIndexAndSignal(IndexInterface *pIndex)
-{
-	// FIXME: get rid of frequent flushes, the client should read through DBus too
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::flushIndexAndSignal: called" << endl;
-#endif
-	if (pIndex != NULL)
-	{
-		pIndex->flush();
-	}
-
-	// Signal
-	emit_IndexFlushed(pIndex->getDocumentsCount());
-}
-
 void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation &invocation)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
@@ -338,14 +323,15 @@ void DaemonState::DBusMessageHandler::Stop(PinotStub::MethodInvocation &invocati
 	m_mustQuit = true;
 }
 
-void DaemonState::DBusMessageHandler::HasDocument(const ustring &url,
+void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 	PinotStub::MethodInvocation &invocation)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
 	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	DocumentInfo docInfo;
 
 #ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::HasDocument: called on " << url << endl;
+	clog << "DaemonState::DBusMessageHandler::GetDocumentInfo: called on " << docId << endl;
 #endif
 	if (pIndex == NULL)
 	{
@@ -356,12 +342,88 @@ void DaemonState::DBusMessageHandler::HasDocument(const ustring &url,
 		return;
 	}
 
-	// Check the index
-	unsigned int docId = pIndex->hasDocument(url);
-
-	if (docId > 0)
+	if (pIndex->getDocumentInfo(docId, docInfo) == true)
 	{
-		invocation.ret(docId);
+		vector<tuple<ustring, ustring>> tuples;
+
+		DBusIndex::documentInfoToTuples(docInfo, tuples);
+
+		invocation.ret(tuples);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentTermsCount(guint32 docId,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentTermsCount: called on " << docId << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	unsigned int termsCount = pIndex->getDocumentTermsCount(docId);
+
+	if (termsCount > 0)
+	{
+		invocation.ret(termsCount);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentTerms(guint32 docId,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	map<unsigned int, string> wordsBuffer;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentTerms: called on " << docId << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (pIndex->getDocumentTerms(docId, wordsBuffer) == true)
+	{
+		vector<ustring> termsList;
+
+		for (map<unsigned int, string>::const_iterator termIter = wordsBuffer.begin();
+			termIter != wordsBuffer.end(); ++termIter)
+		{
+			termsList.push_back(termIter->second.c_str());
+		}
+
+		invocation.ret(termsList);
 	}
 	else
 	{
@@ -434,10 +496,9 @@ void DaemonState::DBusMessageHandler::AddLabel(const ustring &label,
 	}
 
 	// Is this a known label ?
-	if ((labelsCache.find(labelName) == labelsCache.end()) &&
-		(pIndex->addLabel(labelName) == true))
+	if (labelsCache.find(labelName) == labelsCache.end())
 	{
-		flushIndexAndSignal(pIndex);
+		pIndex->addLabel(labelName);
 	}
 
 	invocation.ret(label);
@@ -480,13 +541,46 @@ void DaemonState::DBusMessageHandler::DeleteLabel(const ustring &label,
 
 		pIndex->setLabels(labelsCache, true);
 
-		flushIndexAndSignal(pIndex);
-
 		// Update the metadata backup
 		metaData.deleteLabel(label.c_str());
 	}
 
 	invocation.ret(label);
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::HasLabel(guint32 docId,
+	const ustring &label,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	set<string> labels;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::HasLabel: called on " << docId
+		<< " " << label << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (pIndex->hasLabel(docId, label.c_str()) == true)
+	{
+		invocation.ret(docId);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
 
 	delete pIndex;
 }
@@ -586,8 +680,6 @@ void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
 			pIndex->setLabels(labelsCache, true);
 		}
 
-		flushIndexAndSignal(pIndex);
-
 		// Update the metadata backup
 		updateLabels(docId, metaData, pIndex, labelsList, resetLabels);
 
@@ -663,8 +755,6 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const vector<ustring> &
 			pIndex->setLabels(labelsCache, true);
 		}
 
-		flushIndexAndSignal(pIndex);
-
 		for (set<unsigned int>::const_iterator docIter = idsList.begin();
 			docIter != idsList.end(); ++docIter)
 		{
@@ -684,7 +774,168 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const vector<ustring> &
 	delete pIndex;
 }
 
-void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
+void DaemonState::DBusMessageHandler::HasDocument(const ustring &url,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::HasDocument: called on " << url << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	// Check the index
+	unsigned int docId = pIndex->hasDocument(url);
+
+	if (docId > 0)
+	{
+		invocation.ret(docId);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetCloseTerms(const ustring &term,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	set<string> terms;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetCloseTerms: called on " << term << endl; 
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	unsigned int termsCount = pIndex->getCloseTerms(term, terms);
+
+	if (terms.empty() == false)
+	{
+		vector<ustring> termsList;
+
+		for (set<string>::const_iterator termIter = terms.begin();
+			termIter != terms.end(); ++termIter)
+		{
+			termsList.push_back(*termIter);
+		}
+
+		invocation.ret(termsList);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentsCount(const ustring &label,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentsCount: called on " << label << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	unsigned int docsCount = pIndex->getDocumentsCount(label.c_str());
+
+	invocation.ret(docsCount);
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::ListDocuments(const ustring &term,
+	guint32 termType, guint32 maxCount, guint32 startOffset,
+	PinotStub::MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	set<unsigned int> docIds;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::ListDocuments: called on " << term
+		<< " " << termType << " " << maxCount << " " << startOffset << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (term.empty() == true)
+	{
+		pIndex->listDocuments(docIds, maxCount, startOffset);
+	}
+	else if ((termType >= 0) &&
+		(termType <= 3))
+	{
+		IndexInterface::NameType type = (IndexInterface::NameType)termType;
+
+		pIndex->listDocuments(term.c_str(), docIds, type,
+			maxCount, startOffset);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::INVALID_ARGS, "Type is not supported");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	vector<ustring> docIdsList;
+
+	for (set<unsigned int>::const_iterator docIter = docIds.begin();
+		docIter != docIds.end(); ++docIter)
+	{
+		stringstream docIdStr;
+
+		docIdStr << *docIter;
+		docIdsList.push_back(docIdStr.str().c_str());
+	}
+
+	invocation.ret(docIdsList);
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
 	PinotStub::MethodInvocation &invocation)
 {
 	PinotSettings &settings = PinotSettings::getInstance();
@@ -692,7 +943,7 @@ void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 	DocumentInfo docInfo;
 
 #ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::GetDocumentInfo: called on " << docId << endl;
+	clog << "DaemonState::DBusMessageHandler::UpdateDocument: called on " << docId << endl;
 #endif
 	if (pIndex == NULL)
 	{
@@ -705,11 +956,10 @@ void DaemonState::DBusMessageHandler::GetDocumentInfo(guint32 docId,
 
 	if (pIndex->getDocumentInfo(docId, docInfo) == true)
 	{
-		vector<tuple<ustring, ustring>> tuples;
+		// Update document
+		m_pServer->queue_index(docInfo);
 
-		DBusIndex::documentInfoToTuples(docInfo, tuples);
-
-		invocation.ret(tuples);
+		invocation.ret(docId);
 	}
 	else
 	{
@@ -751,81 +1001,6 @@ void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
 		metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
 
 		invocation.ret(docId);
-	}
-	else
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
-
-		invocation.ret(error);
-	}
-
-	delete pIndex;
-}
-
-void DaemonState::DBusMessageHandler::GetDocumentTermsCount(guint32 docId,
-	MethodInvocation &invocation)
-{
-	PinotSettings &settings = PinotSettings::getInstance();
-	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::GetDocumentTermsCount: called on " << docId << endl;
-#endif
-	if (pIndex == NULL)
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
-
-		invocation.ret(error);
-
-		return;
-	}
-
-	unsigned int termsCount = pIndex->getDocumentTermsCount(docId);
-
-	if (termsCount > 0)
-	{
-		invocation.ret(termsCount);
-	}
-	else
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
-
-		invocation.ret(error);
-	}
-
-	delete pIndex;
-}
-
-void DaemonState::DBusMessageHandler::GetDocumentTerms(guint32 docId,
-	MethodInvocation &invocation)
-{
-	PinotSettings &settings = PinotSettings::getInstance();
-	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-	map<unsigned int, string> wordsBuffer;
-
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::GetDocumentTerms: called on " << docId << endl;
-#endif
-	if (pIndex == NULL)
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
-
-		invocation.ret(error);
-
-		return;
-	}
-
-	if (pIndex->getDocumentTerms(docId, wordsBuffer) == true)
-	{
-		vector<ustring> termsList;
-
-		for (map<unsigned int, string>::const_iterator termIter = wordsBuffer.begin();
-			termIter != wordsBuffer.end(); ++termIter)
-		{
-			termsList.push_back(termIter->second.c_str());
-		}
-
-		invocation.ret(termsList);
 	}
 	else
 	{
@@ -911,42 +1086,6 @@ void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
 		settings.m_defaultBackend, settings.m_defaultBackend,
 		settings.m_daemonIndexLocation, queryProps,
 		0, true));
-}
-
-void DaemonState::DBusMessageHandler::UpdateDocument(guint32 docId,
-	PinotStub::MethodInvocation &invocation)
-{
-	PinotSettings &settings = PinotSettings::getInstance();
-	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-	DocumentInfo docInfo;
-
-#ifdef DEBUG
-	clog << "DaemonState::DBusMessageHandler::UpdateDocument: called on " << docId << endl;
-#endif
-	if (pIndex == NULL)
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
-
-		invocation.ret(error);
-
-		return;
-	}
-
-	if (pIndex->getDocumentInfo(docId, docInfo) == true)
-	{
-		// Update document
-		m_pServer->queue_index(docInfo);
-
-		invocation.ret(docId);
-	}
-	else
-	{
-		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
-
-		invocation.ret(error);
-	}
-
-	delete pIndex;
 }
 
 DaemonState::DBusSearchProvider::DBusSearchProvider(DaemonState *pServer) :
