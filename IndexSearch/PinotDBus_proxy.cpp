@@ -781,6 +781,107 @@ com::github::fabricecolin::PinotProxy::SetDocumentInfo_sync(
 }
 
 /**
+ * Retrieves a document's terms count.
+ *  docId: the document's ID
+ *  count: the terms count
+ */
+void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount(
+    guint32 arg_docId,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTermsCount_pack(
+        arg_docId);
+
+    m_proxy->call("GetDocumentTermsCount", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_finish(
+    guint32 &out_count,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+}
+
+guint32
+com::github::fabricecolin::PinotProxy::GetDocumentTermsCount_sync(
+    guint32 arg_docId,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTermsCount_pack(
+        arg_docId);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetDocumentTermsCount", cancellable, base, timeout_msec);
+
+    guint32 out_count;
+    Glib::Variant<guint32> out_count_v;
+    wrapped.get_child(out_count_v, 0);
+    out_count = out_count_v.get();
+    return out_count;
+}
+
+/**
+ * Retrieves a document's terms.
+ *  docId: the document's ID
+ *  fields : array of (s name, s value) structures with name one of
+ *  "caption", "url", "type", "language", "modtime", "size", "extract"
+ */
+void com::github::fabricecolin::PinotProxy::GetDocumentTerms(
+    guint32 arg_docId,
+    const Gio::SlotAsyncReady &callback,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTerms_pack(
+        arg_docId);
+
+    m_proxy->call("GetDocumentTerms", callback, cancellable, base, timeout_msec);
+}
+
+void com::github::fabricecolin::PinotProxy::GetDocumentTerms_finish(
+    std::vector<Glib::ustring> &out_terms,
+    const Glib::RefPtr<Gio::AsyncResult> &result)
+{
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_finish(result);
+
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+}
+
+std::vector<Glib::ustring>
+com::github::fabricecolin::PinotProxy::GetDocumentTerms_sync(
+    guint32 arg_docId,
+    const Glib::RefPtr<Gio::Cancellable> &cancellable,
+    int timeout_msec)
+{
+    Glib::VariantContainerBase base;
+    base = PinotTypeWrap::GetDocumentTerms_pack(
+        arg_docId);
+
+    Glib::VariantContainerBase wrapped;
+    wrapped = m_proxy->call_sync("GetDocumentTerms", cancellable, base, timeout_msec);
+
+    std::vector<Glib::ustring> out_terms;
+    Glib::Variant<std::vector<Glib::ustring>> out_terms_v;
+    wrapped.get_child(out_terms_v, 0);
+    out_terms = out_terms_v.get();
+    return out_terms;
+}
+
+/**
  * Queries the index.
  *  engineType : engine type (defaults to "xapian"). See pinot-search(1) for a list of supported types
  *  engineName : engine name (defaults to "~/.pinot/daemon"). See pinot-search(1) for examples

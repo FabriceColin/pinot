@@ -140,6 +140,12 @@ class DaemonState : public QueueManager
 					const std::vector<std::tuple<Glib::ustring,Glib::ustring>> &fields,
 					PinotStub::MethodInvocation &invocation);
 
+				virtual void GetDocumentTermsCount(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
+				virtual void GetDocumentTerms(guint32 docId,
+					PinotStub::MethodInvocation &invocation);
+
 			    virtual void Query(const Glib::ustring &engineType,
 					const Glib::ustring &engineName,
 					const Glib::ustring &searchText,

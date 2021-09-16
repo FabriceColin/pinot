@@ -21,6 +21,7 @@
 #include <iostream>
 #include <sstream>
 #include <typeinfo>
+#include <utility>
 
 #include "Languages.h"
 #include "DBusIndex.h"
@@ -34,6 +35,7 @@ using std::vector;
 using std::set;
 using std::map;
 using std::min;
+using std::pair;
 using std::tuple;
 
 using namespace Gio;
@@ -81,7 +83,8 @@ DBusIndex &DBusIndex::operator=(const DBusIndex &other)
 void DBusIndex::documentInfoFromTuples(const vector<tuple<ustring, ustring>> &tuples,
 	DocumentInfo &docInfo)
 {
-	for (vector<tuple<ustring, ustring>>::const_iterator tupleIter = tuples.begin(); tupleIter != tuples.end(); ++tupleIter)
+	for (vector<tuple<ustring, ustring>>::const_iterator tupleIter = tuples.begin();
+		tupleIter != tuples.end(); ++tupleIter)
 	{
 		ustring fieldName, fieldValue;
 
@@ -251,41 +254,74 @@ string DBusIndex::getLocation(void) const
 /// Returns a document's properties.
 bool DBusIndex::getDocumentInfo(unsigned int docId, DocumentInfo &docInfo) const
 {
-	if (m_pROIndex == NULL)
+	vector<tuple<ustring, ustring>> tuples;
+
+	try
+	{
+		tuples = m_refProxy->GetDocumentInfo_sync(docId);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::getDocumentInfo: " << ex.what() << endl;
+	}
+
+	if (tuples.empty() == true)
 	{
 		return false;
 	}
 
-	reopen();
+	documentInfoFromTuples(tuples, docInfo);
 
-	return m_pROIndex->getDocumentInfo(docId, docInfo);
+	return true;
 }
 
 /// Returns a document's terms count.
 unsigned int DBusIndex::getDocumentTermsCount(unsigned int docId) const
 {
-	if (m_pROIndex == NULL)
+	unsigned int termsCount = 0;
+
+	try
 	{
-		return false;
+		termsCount = m_refProxy->GetDocumentTermsCount_sync(docId);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::getDocumentTermsCount: " << ex.what() << endl;
 	}
 
-	reopen();
-
-	return m_pROIndex->getDocumentTermsCount(docId);
+	return termsCount;
 }
 
 /// Returns a document's terms.
 bool DBusIndex::getDocumentTerms(unsigned int docId,
 	map<unsigned int, string> &wordsBuffer) const
 {
-	if (m_pROIndex == NULL)
+	vector<ustring> termsList;
+
+	try
+	{
+		termsList = m_refProxy->GetDocumentTerms_sync(docId);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::getDocumentTerms: " << ex.what() << endl;
+	}
+
+	if (termsList.empty() == true)
 	{
 		return false;
 	}
 
-	reopen();
+	unsigned int termPos = 0;
 
-	return m_pROIndex->getDocumentTerms(docId, wordsBuffer);
+	for (vector<ustring>::const_iterator termIter = termsList.begin();
+		termIter != termsList.end(); ++termIter)
+	{
+		wordsBuffer.insert(pair<unsigned int, string>(termPos, termIter->c_str()));
+		++termPos;
+	}
+
+	return true;
 }
 
 /// Sets the list of known labels.
@@ -309,7 +345,8 @@ bool DBusIndex::getLabels(set<string> &labels) const
 		clog << "DBusIndex::getLabels: " << ex.what() << endl;
 	}
 
-	for (vector<ustring>::const_iterator labelIter = labelsList.begin(); labelIter != labelsList.end(); ++labelIter)
+	for (vector<ustring>::const_iterator labelIter = labelsList.begin();
+		labelIter != labelsList.end(); ++labelIter)
 	{
 		labels.insert(labelIter->c_str());
 	}
@@ -379,7 +416,9 @@ bool DBusIndex::getDocumentLabels(unsigned int docId, set<string> &labels) const
 	{
 		clog << "DBusIndex::getDocumentLabels: " << ex.what() << endl;
 	}
-	for (vector<ustring>::const_iterator labelIter = labelsList.begin(); labelIter != labelsList.end(); ++labelIter)
+
+	for (vector<ustring>::const_iterator labelIter = labelsList.begin();
+		labelIter != labelsList.end(); ++labelIter)
 	{
 		labels.insert(labelIter->c_str());
 	}
@@ -394,7 +433,8 @@ bool DBusIndex::setDocumentLabels(unsigned int docId, const set<string> &labels,
 	vector<ustring> labelsList;
 
 	labelsList.reserve(labels.size());
-	for (set<string>::const_iterator labelIter = labels.begin(); labelIter != labels.end(); ++labelIter)
+	for (set<string>::const_iterator labelIter = labels.begin();
+		labelIter != labels.end(); ++labelIter)
 	{
 		labelsList.push_back(labelIter->c_str());
 	}
@@ -418,7 +458,8 @@ bool DBusIndex::setDocumentsLabels(const set<unsigned int> &docIds,
 	vector<ustring> labelsList;
 
 	idsList.reserve(docIds.size());
-	for (set<unsigned int>::const_iterator idIter = docIds.begin(); idIter != docIds.end(); ++idIter)
+	for (set<unsigned int>::const_iterator idIter = docIds.begin();
+		idIter != docIds.end(); ++idIter)
 	{
 		stringstream numStr;
 
@@ -426,7 +467,8 @@ bool DBusIndex::setDocumentsLabels(const set<unsigned int> &docIds,
 		idsList.push_back(numStr.str().c_str());
 	}
 	labelsList.reserve(labels.size());
-	for (set<string>::const_iterator labelIter = labels.begin(); labelIter != labels.end(); ++labelIter)
+	for (set<string>::const_iterator labelIter = labels.begin();
+		labelIter != labels.end(); ++labelIter)
 	{
 		labelsList.push_back(labelIter->c_str());
 	}
