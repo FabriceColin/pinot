@@ -1825,7 +1825,12 @@ unsigned int XapianIndex::listDocuments(set<unsigned int> &docIds,
 	unsigned int maxDocsCount, unsigned int startDoc) const
 {
 	// All documents have the magic term
-	return listDocumentsWithTerm("", docIds, maxDocsCount, startDoc);
+	if (listDocumentsWithTerm("", docIds, maxDocsCount, startDoc) == true)
+	{
+		return docIds.size();
+	}
+
+	return 0;
 }
 
 /// Lists documents.
