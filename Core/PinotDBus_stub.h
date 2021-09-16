@@ -165,6 +165,12 @@ protected:
         guint32 docId,
         const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & fields,
         MethodInvocation &invocation) = 0;
+    virtual void GetDocumentTermsCount(
+        guint32 docId,
+        MethodInvocation &invocation) = 0;
+    virtual void GetDocumentTerms(
+        guint32 docId,
+        MethodInvocation &invocation) = 0;
     virtual void Query(
         const Glib::ustring & engineType,
         const Glib::ustring & engineName,

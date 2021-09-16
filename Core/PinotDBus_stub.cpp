@@ -139,6 +139,27 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="u" name="docId" direction="out"/>
     </method>
     <!--
+	Retrieves a document's terms count.
+	 docId: the document's ID
+	 count: the terms count
+	-->
+    <method name="GetDocumentTermsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Retrieves a document's terms.
+	 docId: the document's ID
+	 fields : array of (s name, s value) structures with name one of
+	 "caption", "url", "type", "language", "modtime", "size", "extract"
+	-->
+    <method name="GetDocumentTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
+    </method>
+    <!--
 	Queries the index.
 	 engineType : engine type (defaults to "xapian"). See pinot-search(1) for a list of supported types
 	 engineName : engine name (defaults to "~/.pinot/daemon"). See pinot-search(1) for examples
@@ -545,6 +566,28 @@ void com::github::fabricecolin::PinotStub::on_method_call(
         SetDocumentInfo(
             (p_docId),
             (p_fields),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetDocumentTermsCount") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
+
+        MethodInvocation methodInvocation(invocation);
+        GetDocumentTermsCount(
+            (p_docId),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetDocumentTerms") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
+
+        MethodInvocation methodInvocation(invocation);
+        GetDocumentTerms(
+            (p_docId),
             methodInvocation);
     }
 

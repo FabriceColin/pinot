@@ -275,6 +275,36 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         guint32 docId,        const std::vector<std::tuple<Glib::ustring,Glib::ustring>> & fields,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
+    void GetDocumentTermsCount(
+        guint32 docId,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTermsCount_finish (
+        guint32 &count,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    guint32
+    GetDocumentTermsCount_sync(
+        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTerms(
+        guint32 docId,
+        const Gio::SlotAsyncReady &slot,
+        const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
+    void GetDocumentTerms_finish (
+        std::vector<Glib::ustring> &terms,
+        const Glib::RefPtr<Gio::AsyncResult> &res);
+
+    std::vector<Glib::ustring>
+    GetDocumentTerms_sync(
+        guint32 docId,const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
+        int timeout_msec = -1);
+
     void Query(
         const Glib::ustring & engineType,
         const Glib::ustring & engineName,

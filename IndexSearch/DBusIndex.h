@@ -60,7 +60,7 @@ class DBusIndex : public IndexInterface
 			std::vector<std::tuple<Glib::ustring, Glib::ustring>> &tuples);
 
 		/// Asks the D-Bus service to reload its configuration.
-		 bool reload(void);
+		bool reload(void);
 
 		/// Gets some statistics from the D-Bus service.
 		bool getStatistics(unsigned int &crawledCount, unsigned int &docsCount,

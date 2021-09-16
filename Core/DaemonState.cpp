@@ -747,12 +747,85 @@ void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
 	// Update the document info
 	if (pIndex->updateDocumentInfo(docId, docInfo) == true)
 	{
-		flushIndexAndSignal(pIndex);
-
 		// Update the metadata backup
 		metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
 
 		invocation.ret(docId);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentTermsCount(guint32 docId,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentTermsCount: called on " << docId << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	unsigned int termsCount = pIndex->getDocumentTermsCount(docId);
+
+	if (termsCount > 0)
+	{
+		invocation.ret(termsCount);
+	}
+	else
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Unknown document");
+
+		invocation.ret(error);
+	}
+
+	delete pIndex;
+}
+
+void DaemonState::DBusMessageHandler::GetDocumentTerms(guint32 docId,
+	MethodInvocation &invocation)
+{
+	PinotSettings &settings = PinotSettings::getInstance();
+	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
+	map<unsigned int, string> wordsBuffer;
+
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::GetDocumentTerms: called on " << docId << endl;
+#endif
+	if (pIndex == NULL)
+	{
+		Gio::DBus::Error error(Gio::DBus::Error::FAILED, "Couldn't open index");
+
+		invocation.ret(error);
+
+		return;
+	}
+
+	if (pIndex->getDocumentTerms(docId, wordsBuffer) == true)
+	{
+		vector<ustring> termsList;
+
+		for (map<unsigned int, string>::const_iterator termIter = wordsBuffer.begin();
+			termIter != wordsBuffer.end(); ++termIter)
+		{
+			termsList.push_back(termIter->second.c_str());
+		}
+
+		invocation.ret(termsList);
 	}
 	else
 	{

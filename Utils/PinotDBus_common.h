@@ -173,6 +173,22 @@ public:
         return Glib::VariantContainerBase::create_tuple(params);
     }
 
+    static Glib::VariantContainerBase GetDocumentTermsCount_pack(
+        guint32 arg_docId) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<guint32> params =
+            Glib::Variant<guint32>::create(arg_docId);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
+    static Glib::VariantContainerBase GetDocumentTerms_pack(
+        guint32 arg_docId) {
+        Glib::VariantContainerBase base;
+        Glib::Variant<guint32> params =
+            Glib::Variant<guint32>::create(arg_docId);
+        return Glib::VariantContainerBase::create_tuple(params);
+    }
+
     static Glib::VariantContainerBase Query_pack(
         const Glib::ustring & arg_engineType,
         const Glib::ustring & arg_engineName,

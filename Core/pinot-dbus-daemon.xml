@@ -118,7 +118,7 @@
     <!--
 	Retrieves information about a document.
 	 docId: the document's ID
-	 fields : array of (s name, s value) structures with name one of
+	 fields: array of (s name, s value) structures with name one of
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
     <method name="GetDocumentInfo">
@@ -129,7 +129,7 @@
     <!--
 	Sets information about a document.
 	 docId: the document's ID
-	 fields : array of (s name, s value) structures with name one of
+	 fields: array of (s name, s value) structures with name one of
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
     <method name="SetDocumentInfo">
@@ -137,6 +137,26 @@
       <arg type="u" name="docId" direction="in"/>
       <arg type="a(ss)" name="fields" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Retrieves a document's terms count.
+	 docId: the document's ID
+	 count: the terms count
+	-->
+    <method name="GetDocumentTermsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Retrieves a document's terms.
+	 docId: the document's ID
+	 terms: array of terms
+	-->
+    <method name="GetDocumentTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
     </method>
     <!--
 	Queries the index.
