@@ -7,6 +7,7 @@
   </interface>
   <!--
 	WARNING: This interface is subject to change
+    These methods shouldn't be used by any applications other than Pinot.
 	-->
   <interface name="com.github.fabricecolin.Pinot">
     <signal name="IndexFlushed">
@@ -43,13 +44,35 @@
       <arg type="i" name="exitStatus" direction="out" />
     </method>
     <!--
-	Checks if a URL is indexed.
+	Returns a document's properties.
 	 docId: the document's ID
+	 fields: array of (s name, s value) structures with name one of
+	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
-    <method name="HasDocument">
-      <annotation name="com.github.fabricecolin.Pinot.HasDocument" value="pinotDBus"/>
-      <arg type="s" name="url" direction="in"/>
-      <arg type="u" name="docId" direction="out"/>
+    <method name="GetDocumentInfo">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentInfo" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="a(ss)" name="fields" direction="out"/>
+    </method>
+    <!--
+	Returns a document's terms count.
+	 docId: the document's ID
+	 count: the terms count
+	-->
+    <method name="GetDocumentTermsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Returns a document's terms.
+	 docId: the document's ID
+	 terms: array of terms
+	-->
+    <method name="GetDocumentTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
     </method>
     <!--
 	Gets the list of known labels.
@@ -62,7 +85,6 @@
     <!--
 	Adds a label.
 	 label: the name of the new label
-        This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="AddLabel">
       <annotation name="com.github.fabricecolin.Pinot.AddLabel" value="pinotDBus"/>
@@ -70,9 +92,8 @@
       <arg type="s" name="label" direction="out"/>
     </method>
     <!--
-	Deletes a label.
+	Deletes all references to a label.
 	 label: the name of the label to delete
-        This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="DeleteLabel">
       <annotation name="com.github.fabricecolin.Pinot.DeleteLabel" value="pinotDBus"/>
@@ -80,7 +101,18 @@
       <arg type="s" name="label" direction="out"/>
     </method>
     <!--
-	Retrieves a document's labels.
+	Determines whether a document has a label.
+	 docId: the document's ID
+	 label: the label to check
+	-->
+    <method name="HasLabel">
+      <annotation name="com.github.fabricecolin.Pinot.HasLabel" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Returns a document's labels.
 	 docId: the document's ID
 	 labels: array of labels applied to the document
 	-->
@@ -103,7 +135,7 @@
       <arg type="u" name="docId" direction="out"/>
     </method>
     <!--
-	Sets labels on a group of documents.
+	Sets documents' labels.
 	 docIds: array of document IDs
 	 labels: array of labels to apply to the documents
 	 resetLabels: TRUE if existing labels should be unset
@@ -116,18 +148,61 @@
       <arg type="b" name="status" direction="out"/>
     </method>
     <!--
-	Retrieves information about a document.
+	Checks whether the given URL is in the index.
 	 docId: the document's ID
-	 fields: array of (s name, s value) structures with name one of
-	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
-    <method name="GetDocumentInfo">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentInfo" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="a(ss)" name="fields" direction="out"/>
+    <method name="HasDocument">
+      <annotation name="com.github.fabricecolin.Pinot.HasDocument" value="pinotDBus"/>
+      <arg type="s" name="url" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
     </method>
     <!--
-	Sets information about a document.
+	Gets terms with the same root.
+	 term: the base term
+     terms: array of suggested terms
+	-->
+    <method name="GetCloseTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetCloseTerms" value="pinotDBus"/>
+      <arg type="s" name="term" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
+    </method>
+    <!--
+	Returns the number of documents.
+	 label: a label name
+	 count: the terms count
+	-->
+    <method name="GetDocumentsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentsCount" value="pinotDBus"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Lists documents.
+	 term: the term to optionally filter documents with
+	 termType: the term type
+	 maxCount: the maximum count
+     startOffset: the start offset
+	 docIds: array of document ID
+	-->
+    <method name="ListDocuments">
+      <annotation name="com.github.fabricecolin.Pinot.ListDocuments" value="pinotDBus"/>
+      <arg type="s" name="term" direction="in"/>
+      <arg type="u" name="termType" direction="in"/>
+      <arg type="u" name="maxCount" direction="in"/>
+      <arg type="u" name="startOffset" direction="in"/>
+      <arg type="as" name="docIds" direction="out"/>
+    </method>
+    <!--
+	Updates the given document.
+	 docId: the document's ID
+	-->
+    <method name="UpdateDocument">
+      <annotation name="com.github.fabricecolin.Pinot.UpdateDocument" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Sets a document's properties.
 	 docId: the document's ID
 	 fields: array of (s name, s value) structures with name one of
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
@@ -137,26 +212,6 @@
       <arg type="u" name="docId" direction="in"/>
       <arg type="a(ss)" name="fields" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
-    </method>
-    <!--
-	Retrieves a document's terms count.
-	 docId: the document's ID
-	 count: the terms count
-	-->
-    <method name="GetDocumentTermsCount">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="u" name="count" direction="out"/>
-    </method>
-    <!--
-	Retrieves a document's terms.
-	 docId: the document's ID
-	 terms: array of terms
-	-->
-    <method name="GetDocumentTerms">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="as" name="terms" direction="out"/>
     </method>
     <!--
 	Queries the index.
@@ -191,15 +246,6 @@
       <arg type="s" name="searchText" direction="in" />
       <arg type="u" name="maxHits" direction="in" />
       <arg type="as" name="docIds" direction="out" />
-    </method>
-    <!--
-	Updates a document.
-	 docId: the document's ID
-	-->
-    <method name="UpdateDocument">
-      <annotation name="com.github.fabricecolin.Pinot.UpdateDocument" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="u" name="docId" direction="out"/>
     </method>
   </interface>
   <interface name="org.gnome.Shell.SearchProvider2">

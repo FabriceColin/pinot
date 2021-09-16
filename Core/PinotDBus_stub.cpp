@@ -7,6 +7,7 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
   </interface>
   <!--
 	WARNING: This interface is subject to change
+    These methods shouldn't be used by any applications other than Pinot.
 	-->
   <interface name="com.github.fabricecolin.Pinot">
     <signal name="IndexFlushed">
@@ -43,13 +44,35 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="i" name="exitStatus" direction="out" />
     </method>
     <!--
-	Checks if a URL is indexed.
+	Returns a document's properties.
 	 docId: the document's ID
+	 fields: array of (s name, s value) structures with name one of
+	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
-    <method name="HasDocument">
-      <annotation name="com.github.fabricecolin.Pinot.HasDocument" value="pinotDBus"/>
-      <arg type="s" name="url" direction="in"/>
-      <arg type="u" name="docId" direction="out"/>
+    <method name="GetDocumentInfo">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentInfo" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="a(ss)" name="fields" direction="out"/>
+    </method>
+    <!--
+	Returns a document's terms count.
+	 docId: the document's ID
+	 count: the terms count
+	-->
+    <method name="GetDocumentTermsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Returns a document's terms.
+	 docId: the document's ID
+	 terms: array of terms
+	-->
+    <method name="GetDocumentTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
     </method>
     <!--
 	Gets the list of known labels.
@@ -62,7 +85,6 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
     <!--
 	Adds a label.
 	 label: the name of the new label
-        This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="AddLabel">
       <annotation name="com.github.fabricecolin.Pinot.AddLabel" value="pinotDBus"/>
@@ -70,9 +92,8 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="s" name="label" direction="out"/>
     </method>
     <!--
-	Deletes a label.
+	Deletes all references to a label.
 	 label: the name of the label to delete
-        This method shouldn't be used by applications other than Pinot.
 	-->
     <method name="DeleteLabel">
       <annotation name="com.github.fabricecolin.Pinot.DeleteLabel" value="pinotDBus"/>
@@ -80,7 +101,18 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="s" name="label" direction="out"/>
     </method>
     <!--
-	Retrieves a document's labels.
+	Determines whether a document has a label.
+	 docId: the document's ID
+	 label: the label to check
+	-->
+    <method name="HasLabel">
+      <annotation name="com.github.fabricecolin.Pinot.HasLabel" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Returns a document's labels.
 	 docId: the document's ID
 	 labels: array of labels applied to the document
 	-->
@@ -103,7 +135,7 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="u" name="docId" direction="out"/>
     </method>
     <!--
-	Sets labels on a group of documents.
+	Sets documents' labels.
 	 docIds: array of document IDs
 	 labels: array of labels to apply to the documents
 	 resetLabels: TRUE if existing labels should be unset
@@ -116,20 +148,63 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="b" name="status" direction="out"/>
     </method>
     <!--
-	Retrieves information about a document.
+	Checks whether the given URL is in the index.
 	 docId: the document's ID
-	 fields : array of (s name, s value) structures with name one of
-	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
-    <method name="GetDocumentInfo">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentInfo" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="a(ss)" name="fields" direction="out"/>
+    <method name="HasDocument">
+      <annotation name="com.github.fabricecolin.Pinot.HasDocument" value="pinotDBus"/>
+      <arg type="s" name="url" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
     </method>
     <!--
-	Sets information about a document.
+	Gets terms with the same root.
+	 term: the base term
+     terms: array of suggested terms
+	-->
+    <method name="GetCloseTerms">
+      <annotation name="com.github.fabricecolin.Pinot.GetCloseTerms" value="pinotDBus"/>
+      <arg type="s" name="term" direction="in"/>
+      <arg type="as" name="terms" direction="out"/>
+    </method>
+    <!--
+	Returns the number of documents.
+	 label: a label name
+	 count: the terms count
+	-->
+    <method name="GetDocumentsCount">
+      <annotation name="com.github.fabricecolin.Pinot.GetDocumentsCount" value="pinotDBus"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="u" name="count" direction="out"/>
+    </method>
+    <!--
+	Lists documents.
+	 term: the term to optionally filter documents with
+	 termType: the term type
+	 maxCount: the maximum count
+     startOffset: the start offset
+	 docIds: array of document ID
+	-->
+    <method name="ListDocuments">
+      <annotation name="com.github.fabricecolin.Pinot.ListDocuments" value="pinotDBus"/>
+      <arg type="s" name="term" direction="in"/>
+      <arg type="u" name="termType" direction="in"/>
+      <arg type="u" name="maxCount" direction="in"/>
+      <arg type="u" name="startOffset" direction="in"/>
+      <arg type="as" name="docIds" direction="out"/>
+    </method>
+    <!--
+	Updates the given document.
 	 docId: the document's ID
-	 fields : array of (s name, s value) structures with name one of
+	-->
+    <method name="UpdateDocument">
+      <annotation name="com.github.fabricecolin.Pinot.UpdateDocument" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Sets a document's properties.
+	 docId: the document's ID
+	 fields: array of (s name, s value) structures with name one of
 	 "caption", "url", "type", "language", "modtime", "size", "extract"
 	-->
     <method name="SetDocumentInfo">
@@ -137,27 +212,6 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="u" name="docId" direction="in"/>
       <arg type="a(ss)" name="fields" direction="in"/>
       <arg type="u" name="docId" direction="out"/>
-    </method>
-    <!--
-	Retrieves a document's terms count.
-	 docId: the document's ID
-	 count: the terms count
-	-->
-    <method name="GetDocumentTermsCount">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTermsCount" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="u" name="count" direction="out"/>
-    </method>
-    <!--
-	Retrieves a document's terms.
-	 docId: the document's ID
-	 fields : array of (s name, s value) structures with name one of
-	 "caption", "url", "type", "language", "modtime", "size", "extract"
-	-->
-    <method name="GetDocumentTerms">
-      <annotation name="com.github.fabricecolin.Pinot.GetDocumentTerms" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="as" name="terms" direction="out"/>
     </method>
     <!--
 	Queries the index.
@@ -192,15 +246,6 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="s" name="searchText" direction="in" />
       <arg type="u" name="maxHits" direction="in" />
       <arg type="as" name="docIds" direction="out" />
-    </method>
-    <!--
-	Updates a document.
-	 docId: the document's ID
-	-->
-    <method name="UpdateDocument">
-      <annotation name="com.github.fabricecolin.Pinot.UpdateDocument" value="pinotDBus"/>
-      <arg type="u" name="docId" direction="in"/>
-      <arg type="u" name="docId" direction="out"/>
     </method>
   </interface>
 </node>
@@ -450,14 +495,36 @@ void com::github::fabricecolin::PinotStub::on_method_call(
             methodInvocation);
     }
 
-    if (method_name.compare("HasDocument") == 0) {
-        Glib::Variant<Glib::ustring> base_url;
-        parameters.get_child(base_url, 0);
-        Glib::ustring p_url = specialGetter(base_url);
+    if (method_name.compare("GetDocumentInfo") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
 
         MethodInvocation methodInvocation(invocation);
-        HasDocument(
-            (p_url),
+        GetDocumentInfo(
+            (p_docId),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetDocumentTermsCount") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
+
+        MethodInvocation methodInvocation(invocation);
+        GetDocumentTermsCount(
+            (p_docId),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetDocumentTerms") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
+
+        MethodInvocation methodInvocation(invocation);
+        GetDocumentTerms(
+            (p_docId),
             methodInvocation);
     }
 
@@ -485,6 +552,22 @@ void com::github::fabricecolin::PinotStub::on_method_call(
 
         MethodInvocation methodInvocation(invocation);
         DeleteLabel(
+            (p_label),
+            methodInvocation);
+    }
+
+    if (method_name.compare("HasLabel") == 0) {
+        Glib::Variant<guint32> base_docId;
+        parameters.get_child(base_docId, 0);
+        guint32 p_docId = specialGetter(base_docId);
+
+        Glib::Variant<Glib::ustring> base_label;
+        parameters.get_child(base_label, 1);
+        Glib::ustring p_label = specialGetter(base_label);
+
+        MethodInvocation methodInvocation(invocation);
+        HasLabel(
+            (p_docId),
             (p_label),
             methodInvocation);
     }
@@ -542,13 +625,72 @@ void com::github::fabricecolin::PinotStub::on_method_call(
             methodInvocation);
     }
 
-    if (method_name.compare("GetDocumentInfo") == 0) {
+    if (method_name.compare("HasDocument") == 0) {
+        Glib::Variant<Glib::ustring> base_url;
+        parameters.get_child(base_url, 0);
+        Glib::ustring p_url = specialGetter(base_url);
+
+        MethodInvocation methodInvocation(invocation);
+        HasDocument(
+            (p_url),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetCloseTerms") == 0) {
+        Glib::Variant<Glib::ustring> base_term;
+        parameters.get_child(base_term, 0);
+        Glib::ustring p_term = specialGetter(base_term);
+
+        MethodInvocation methodInvocation(invocation);
+        GetCloseTerms(
+            (p_term),
+            methodInvocation);
+    }
+
+    if (method_name.compare("GetDocumentsCount") == 0) {
+        Glib::Variant<Glib::ustring> base_label;
+        parameters.get_child(base_label, 0);
+        Glib::ustring p_label = specialGetter(base_label);
+
+        MethodInvocation methodInvocation(invocation);
+        GetDocumentsCount(
+            (p_label),
+            methodInvocation);
+    }
+
+    if (method_name.compare("ListDocuments") == 0) {
+        Glib::Variant<Glib::ustring> base_term;
+        parameters.get_child(base_term, 0);
+        Glib::ustring p_term = specialGetter(base_term);
+
+        Glib::Variant<guint32> base_termType;
+        parameters.get_child(base_termType, 1);
+        guint32 p_termType = specialGetter(base_termType);
+
+        Glib::Variant<guint32> base_maxCount;
+        parameters.get_child(base_maxCount, 2);
+        guint32 p_maxCount = specialGetter(base_maxCount);
+
+        Glib::Variant<guint32> base_startOffset;
+        parameters.get_child(base_startOffset, 3);
+        guint32 p_startOffset = specialGetter(base_startOffset);
+
+        MethodInvocation methodInvocation(invocation);
+        ListDocuments(
+            (p_term),
+            (p_termType),
+            (p_maxCount),
+            (p_startOffset),
+            methodInvocation);
+    }
+
+    if (method_name.compare("UpdateDocument") == 0) {
         Glib::Variant<guint32> base_docId;
         parameters.get_child(base_docId, 0);
         guint32 p_docId = specialGetter(base_docId);
 
         MethodInvocation methodInvocation(invocation);
-        GetDocumentInfo(
+        UpdateDocument(
             (p_docId),
             methodInvocation);
     }
@@ -566,28 +708,6 @@ void com::github::fabricecolin::PinotStub::on_method_call(
         SetDocumentInfo(
             (p_docId),
             (p_fields),
-            methodInvocation);
-    }
-
-    if (method_name.compare("GetDocumentTermsCount") == 0) {
-        Glib::Variant<guint32> base_docId;
-        parameters.get_child(base_docId, 0);
-        guint32 p_docId = specialGetter(base_docId);
-
-        MethodInvocation methodInvocation(invocation);
-        GetDocumentTermsCount(
-            (p_docId),
-            methodInvocation);
-    }
-
-    if (method_name.compare("GetDocumentTerms") == 0) {
-        Glib::Variant<guint32> base_docId;
-        parameters.get_child(base_docId, 0);
-        guint32 p_docId = specialGetter(base_docId);
-
-        MethodInvocation methodInvocation(invocation);
-        GetDocumentTerms(
-            (p_docId),
             methodInvocation);
     }
 
@@ -635,17 +755,6 @@ void com::github::fabricecolin::PinotStub::on_method_call(
         SimpleQuery(
             (p_searchText),
             (p_maxHits),
-            methodInvocation);
-    }
-
-    if (method_name.compare("UpdateDocument") == 0) {
-        Glib::Variant<guint32> base_docId;
-        parameters.get_child(base_docId, 0);
-        guint32 p_docId = specialGetter(base_docId);
-
-        MethodInvocation methodInvocation(invocation);
-        UpdateDocument(
-            (p_docId),
             methodInvocation);
     }
 

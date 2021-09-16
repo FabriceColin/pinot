@@ -393,14 +393,18 @@ bool DBusIndex::deleteLabel(const string &name)
 /// Determines whether a document has a label.
 bool DBusIndex::hasLabel(unsigned int docId, const string &name) const
 {
-	if (m_pROIndex == NULL)
+	unsigned int foundDocId = 0;
+
+	try
 	{
-		return false;
+		foundDocId = m_refProxy->HasLabel_sync(docId, name.c_str());
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::hasDocument: " << ex.what() << endl;
 	}
 
-	reopen();
-
-	return m_pROIndex->hasLabel(docId, name);
+	return (foundDocId == docId);
 }
 
 /// Returns a document's labels.
@@ -503,68 +507,102 @@ unsigned int DBusIndex::hasDocument(const string &url) const
 /// Gets terms with the same root.
 unsigned int DBusIndex::getCloseTerms(const string &term, set<string> &suggestions)
 {
-	if (m_pROIndex == NULL)
+	vector<ustring> termsList;
+
+	try
 	{
-		return false;
+		termsList = m_refProxy->GetCloseTerms_sync(term.c_str());
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::getCloseTerms: " << ex.what() << endl;
 	}
 
-	reopen();
+	if (termsList.empty() == true)
+	{
+		return 0;
+	}
 
-	return m_pROIndex->getCloseTerms(term, suggestions);
+	for (vector<ustring>::const_iterator termIter = termsList.begin();
+		termIter != termsList.end(); ++termIter)
+	{
+		suggestions.insert(termIter->c_str());
+	}
+
+	return termsList.size();
 }
 
 /// Returns the ID of the last document.
 unsigned int DBusIndex::getLastDocumentID(void) const
 {
-	if (m_pROIndex == NULL)
-	{
-		return false;
-	}
-
-	reopen();
-
-	return m_pROIndex->getLastDocumentID();
+	return 0;
 }
 
 /// Returns the number of documents.
 unsigned int DBusIndex::getDocumentsCount(const string &labelName) const
 {
-	if (m_pROIndex == NULL)
+	unsigned int docsCount = 0;
+
+	try
 	{
-		return false;
+		docsCount = m_refProxy->GetDocumentsCount_sync(labelName);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::getDocumentsCount: " << ex.what() << endl;
 	}
 
-	reopen();
-
-	return m_pROIndex->getDocumentsCount(labelName);
+	return docsCount;
 }
 
 /// Lists documents.
 unsigned int DBusIndex::listDocuments(set<unsigned int> &docIds,
 	unsigned int maxDocsCount, unsigned int startDoc) const
 {
-	if (m_pROIndex == NULL)
+	vector<ustring> docIdsList;
+
+	try
 	{
-		return false;
+		docIdsList = m_refProxy->ListDocuments_sync("",
+			0, maxDocsCount, startDoc);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::listDocuments: " << ex.what() << endl;
 	}
 
-	reopen();
+	for (vector<ustring>::const_iterator docIter = docIdsList.begin();
+		docIter != docIdsList.end(); ++docIter)
+	{
+		docIds.insert((unsigned int)atoi(docIter->c_str()));
+	}
 
-	return m_pROIndex->listDocuments(docIds, maxDocsCount, startDoc);
+	return docIdsList.size();
 }
 
 /// Lists documents.
 bool DBusIndex::listDocuments(const string &name, set<unsigned int> &docIds,
 	NameType type, unsigned int maxDocsCount, unsigned int startDoc) const
 {
-	if (m_pROIndex == NULL)
+	vector<ustring> docIdsList;
+
+	try
 	{
-		return false;
+		docIdsList = m_refProxy->ListDocuments_sync(name.c_str(),
+			(unsigned int)type, maxDocsCount, startDoc);
+	}
+	catch (const Glib::Error &ex)
+	{
+		clog << "DBusIndex::listDocuments: " << ex.what() << endl;
 	}
 
-	reopen();
+	for (vector<ustring>::const_iterator docIter = docIdsList.begin();
+		docIter != docIdsList.end(); ++docIter)
+	{
+		docIds.insert((unsigned int)atoi(docIter->c_str()));
+	}
 
-	return m_pROIndex->listDocuments(name, docIds, type, maxDocsCount, startDoc);
+	return !docIdsList.empty();
 }
 
 /// Indexes the given data.
@@ -578,7 +616,7 @@ bool DBusIndex::indexDocument(const Document &doc, const set<string> &labels,
 /// Updates the given document; true if success.
 bool DBusIndex::updateDocument(unsigned int docId, const Document &doc)
 {
-	unsigned updatedDocId;
+	unsigned updatedDocId = 0;
 
 	try
 	{
@@ -650,12 +688,7 @@ bool DBusIndex::flush(void)
 /// Reopens the index.
 bool DBusIndex::reopen(void) const
 {
-	if (m_pROIndex == NULL)
-	{
-		return false;
-	}
-
-	return m_pROIndex->reopen();
+	return true;
 }
 
 /// Resets the index.
