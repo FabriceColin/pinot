@@ -71,7 +71,7 @@ bool MetaDataBackup::setAttribute(const DocumentInfo &docInfo,
 			value.c_str(), (size_t)value.length(), 0) != 0)
 		{
 #ifdef DEBUG
-			clog << "MetaDataBackup::setAttribute: setxattr failed with " << strerror(errno) << endl;
+			clog << "MetaDataBackup::setAttribute: setxattr failed with error " << errno << endl;
 #endif
 		}
 	}

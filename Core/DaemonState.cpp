@@ -1154,8 +1154,8 @@ void DaemonState::DBusSearchProvider::GetSubsearchResultSet(const vector<ustring
 	// The caller expects the same output as that of SimpleQuery
 	// FIXME: is this meant to return only a subset of previous_results?
 	m_pServer->start_thread(new DBusEngineQueryThread(invocation.getMessage(),
-	settings.m_defaultBackend, settings.m_defaultBackend,
-	settings.m_daemonIndexLocation, queryProps, 0, true, false));
+		settings.m_defaultBackend, settings.m_defaultBackend,
+		settings.m_daemonIndexLocation, queryProps, 0, true, false));
 }
 
 void DaemonState::DBusSearchProvider::GetResultMetas(const vector<ustring> &identifiers,

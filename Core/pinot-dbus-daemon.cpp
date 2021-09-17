@@ -344,7 +344,7 @@ int main(int argc, char **argv)
 	signal(SIGTERM, quitAll);
 #endif
 
-	// Open the daemon index in read-write mode 
+	// Open the daemon index in read-write mode
 	bool wasObsoleteFormat = false;
 	if (ModuleFactory::openOrCreateIndex(settings.m_defaultBackend, settings.m_daemonIndexLocation, wasObsoleteFormat, false) == false)
 	{
