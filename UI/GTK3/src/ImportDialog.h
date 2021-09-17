@@ -43,6 +43,8 @@ public:
 	ImportDialog(_GtkDialog *&pParent, Glib::RefPtr<Gtk::Builder>& refBuilder);
 	virtual ~ImportDialog();
 
+	void resetLocation(void);
+
 	const DocumentInfo &getDocumentInfo(void) const;
 
 protected:
