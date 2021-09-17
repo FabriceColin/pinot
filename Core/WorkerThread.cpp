@@ -75,7 +75,9 @@ string WorkerThread::errorToString(int errorNum)
 
 	if (errorNum < INDEX_ERROR)
 	{
-		return strerror(errorNum);
+		char errBuffer[1024];
+
+		return strerror_r(errorNum, errBuffer, 1024);
 	}
 
 	// Internal error codes
