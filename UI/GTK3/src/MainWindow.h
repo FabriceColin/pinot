@@ -255,8 +255,10 @@ private:
 
 			void on_IndexFlushed(guint32 docsCount);
 
+#ifdef HAVE_DBUS
 			// DBus proxy
 			Glib::RefPtr<com::github::fabricecolin::PinotProxy> m_refProxy;
+#endif
 			// Query
 			unsigned int m_liveQueryLength;
 			// Notebook pages
