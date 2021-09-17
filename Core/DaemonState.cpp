@@ -1356,6 +1356,7 @@ void DaemonState::disconnect(void)
 #endif
 }
 
+#ifdef HAVE_DBUS
 void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
 	const vector<ustring> &invalidated_properties)
 {
@@ -1383,6 +1384,7 @@ void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapCha
 		}
 	}
 }
+#endif
 
 bool DaemonState::on_activity_timeout(void)
 {
@@ -1421,6 +1423,7 @@ bool DaemonState::on_activity_timeout(void)
 		check_battery_state();
 #endif
 
+#ifdef HAVE_DBUS
 		if (m_messageHandler.mustQuit() == true)
 		{
 			// Disconnect the timeout signal
@@ -1431,6 +1434,7 @@ bool DaemonState::on_activity_timeout(void)
 			}
 			m_signalQuit(0);
 		}
+#endif
 	}
 
 	return true;
@@ -1790,6 +1794,7 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			start(false);
 		}
 	}
+#ifdef HAVE_DBUS
 	else if (type == "DBusEngineQueryThread")
 	{
 		DBusEngineQueryThread *pEngineQueryThread = dynamic_cast<DBusEngineQueryThread *>(pThread);
@@ -1852,6 +1857,7 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			shellInvocation.ret(idsList);
 		}
 	}
+#endif
 	else if (type == "DBusReloadThread")
 	{
 		m_tryReload = true;

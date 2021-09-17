@@ -222,8 +222,10 @@ class DaemonState : public QueueManager
 		unsigned int m_crawlers;
 		std::queue<PinotSettings::IndexableLocation> m_crawlQueue;
 
+#ifdef HAVE_DBUS
 		void handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
 			const std::vector<Glib::ustring> &invalidated_properties);
+#endif
 
 		bool on_activity_timeout(void);
 
