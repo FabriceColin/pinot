@@ -27,9 +27,7 @@
 
 #include "config.h"
 #include "DocumentInfo.h"
-#include "MIMEScanner.h"
 #include "NLS.h"
-#include "Url.h"
 #include "QueryHistory.h"
 #include "PinotSettings.h"
 #include "PinotUtils.h"
@@ -91,6 +89,13 @@ ImportDialog::~ImportDialog()
 {
 }
 
+void ImportDialog::resetLocation(void)
+{
+	locationEntry->set_text(ustring("file://") +
+		PinotSettings::getHomeDirectory() + "/file_name");
+	resize(350, get_height());
+}
+
 const DocumentInfo &ImportDialog::getDocumentInfo(void) const
 {
 	return m_docInfo;
@@ -143,7 +148,7 @@ void ImportDialog::on_importButton_clicked()
 	string location(from_utf8(locationEntry->get_text()));
 	string labelName;
 #ifdef DEBUG
-	clog << "ImportDialog::on_importButton_clicked: called" << endl;
+	clog << "ImportDialog::on_importButton_clicked: called on " << location << endl;
 #endif
 
 	// Label
@@ -153,8 +158,8 @@ void ImportDialog::on_importButton_clicked()
 		labelName = from_utf8(labelNameCombobox->get_active_text());
 	}
 
-	Url urlObj(location);
-	m_docInfo = DocumentInfo(title, location, MIMEScanner::scanUrl(urlObj), "");
+	// Keep this to a minimum
+	m_docInfo = DocumentInfo(title, location, "", "");
 
 	// Any label ?
 	if (labelName.empty() == false)
@@ -171,34 +176,17 @@ void ImportDialog::on_importButton_clicked()
 void ImportDialog::on_locationEntry_changed()
 {
 	ustring fileName = from_utf8(locationEntry->get_text());
-	bool enableImport = true;
-
-	if (fileName.empty() == false)
-	{
-		Url urlObj(fileName);
-
-		// Check the URL is valid
-		if (urlObj.getProtocol().empty() == true)
-		{
-			enableImport = false;
-		}
-		// FIXME: be more thorough
-	}
-	else
-	{
-		enableImport = false;
-	}
-
 	unsigned int locationLength = fileName.length();
-	if (locationLength > 0)
-	{
-		// Enable the import button
-		importButton->set_sensitive(true);
-	}
-	else
+
+	if (fileName.empty() == true)
 	{
 		// Disable the import button
 		importButton->set_sensitive(false);
+	}
+	else
+	{
+		// Enable the import button
+		importButton->set_sensitive(true);
 	}
 
 	// Reset the list

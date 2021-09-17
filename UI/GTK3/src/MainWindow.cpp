@@ -122,16 +122,20 @@ MainWindow::ExpandSet::~ExpandSet()
 
 MainWindow::InternalState::InternalState(MainWindow *pWindow) :
 	QueueManager(PinotSettings::getInstance().m_docsIndexLocation, 60, true),
+#ifdef HAVE_DBUS
 	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
 		Gio::DBus::BUS_TYPE_SESSION,
 		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
 		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
+#endif
 	m_liveQueryLength(0),
 	m_currentPage(0),
 	m_browsingIndex(false)
 {
 	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &MainWindow::on_thread_end));
+#ifdef HAVE_DBUS
 	m_refProxy->IndexFlushed_signal.connect(sigc::mem_fun(*this, &MainWindow::InternalState::on_IndexFlushed));
+#endif
 }
 
 MainWindow::InternalState::~InternalState()
@@ -1701,7 +1705,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 	string type(pThread->getType());
 	string threadStatus(pThread->getStatus());
 #ifdef DEBUG
-	clog << "MainWindow::on_thread_end: end of thread " << pThread->getId() << endl;
+	clog << "MainWindow::on_thread_end: end of " << type << " " << pThread->getId() << endl;
 #endif
 
 	// Did the thread fail for some reason ?
@@ -1753,6 +1757,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 				pIndexPage->setDocumentsCount(pListThread->getDocumentsCount());
 				pIndexPage->updateButtonsState(m_maxDocsCount);
 
+				// FIXME: fix this for RTL languages
 				status = _("Showing");
 				status += " ";
 				snprintf(docsCountStr, 64, "%u", pIndexPage->getFirstDocument());
@@ -1803,6 +1808,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 			labels.insert(labelName);
 		}
 
+		// FIXME: fix this for RTL languages
 		status = _("Query");
 		status += " ";
 		status += queryName;
@@ -1821,6 +1827,8 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		{
 			QueryHistory queryHistory(m_settings.getHistoryDatabaseName());
 			set<unsigned int> docsIds, daemonIds;
+			unsigned int docsIndexId = m_settings.getIndexPropertiesByName(_("My Web Pages")).m_id;
+			unsigned int daemonIndexId = m_settings.getIndexPropertiesByName(_("My Documents")).m_id;
 
 			for (vector<DocumentInfo>::const_iterator resultIter = resultsList.begin();
 				resultIter != resultsList.end(); ++resultIter)
@@ -1839,24 +1847,29 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 					isNewResult = true;
 				}
 				
-				if ((indexResults == QueryProperties::ALL_RESULTS) || (isNewResult == true))
+				if ((indexResults == QueryProperties::ALL_RESULTS) ||
+					((indexResults == QueryProperties::NEW_RESULTS) && (isNewResult == true)))
 				{
-					if ((docId == 0) ||
-						(indexId != m_settings.getIndexPropertiesByName(_("My Documents")).m_id))
+					// Don't bother indexing what's already indexed
+					if (docId == 0)
 					{
 						// This document will be indexed or updated
 						docsToIndex.insert(*resultIter);
 					}
+#ifdef DEBUG
+					else clog << "MainWindow::on_thread_end: result " << resultIter->getLocation(true)
+						<< " from index " << indexId << endl;
+#endif
 				}
 				else if ((docId > 0) &&
 					(labels.empty() == false))
 				{
 					// Apply this label
-					if (indexId == m_settings.getIndexPropertiesByName(_("My Web Pages")).m_id)
+					if (indexId == docsIndexId)
 					{
 						docsIds.insert(docId);
 					}
-					else if (indexId == m_settings.getIndexPropertiesByName(_("My Documents")).m_id)
+					else if (indexId == daemonIndexId)
 					{
 						daemonIds.insert(docId);
 					}
@@ -2102,8 +2115,6 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 	}
 	else if (type == "IndexingThread")
 	{
-		char docIdStr[64];
-
 		IndexingThread *pIndexThread = dynamic_cast<IndexingThread *>(pThread);
 		if (pIndexThread == NULL)
 		{
@@ -2130,10 +2141,10 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		if (pIndexThread->isNewDocument() == false)
 		{
 			// Yes, it did
+			// FIXME: fix this for RTL languages
 			status = _("Updated document");
 			status += " ";
-			snprintf(docIdStr, 64, "%u", docId);
-			status += docIdStr;
+			status += to_utf8(indexedUrl);
 
 			if (pResultsTree != NULL)
 			{
@@ -2143,6 +2154,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		}
 		else
 		{
+			// FIXME: fix this for RTL languages
 			status = _("Indexed");
 			status += " ";
 			status += to_utf8(indexedUrl);
@@ -2739,6 +2751,7 @@ void MainWindow::on_import_activate()
 		return;
 	}
 
+	pImportBox->resetLocation();
 	pImportBox->show();
 	if (pImportBox->run() != RESPONSE_OK)
 	{
@@ -2922,6 +2935,7 @@ void MainWindow::on_properties_activate()
 	PinotSettings::IndexProperties indexProps(m_settings.getIndexPropertiesByName(indexName));
 	if (indexProps.m_location.empty() == true)
 	{
+		// FIXME: fix this for RTL languages
 		ustring statusText = _("Index");
 		statusText += " ";
 		statusText += indexName;
@@ -3853,8 +3867,8 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 	{
 		TreeModel::iterator engineIter = m_pEnginesTree->getIter(*enginePath);
 		TreeModel::Row engineRow = *engineIter;
-
 		EnginesModelColumns::EngineType engineType = engineRow[engineColumns.m_type];
+
 		if (engineType < EnginesModelColumns::ENGINE_FOLDER)
 		{
 			// Skip
@@ -3880,11 +3894,6 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 				engineIters.push_back(folderEngineIter);
 			}
 		}
-		else if (engineType == EnginesModelColumns::INTERNAL_INDEX_ENGINE)
-		{
-			// Push this at the beginning of the list
-			engineIters.insert(engineIters.begin(), engineIter);
-		}
 		else
 		{
 			engineIters.push_back(engineIter);
@@ -3894,6 +3903,8 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 	clog << "MainWindow::run_search: selected " << engineIters.size()
 		<< " engines" << endl;
 #endif
+
+	PinotSettings &settings = PinotSettings::getInstance();
 
 	// Now go through the selected search engines
 	set<ustring> engineDisplayableNames;
@@ -3919,6 +3930,7 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 		clog << "MainWindow::run_search: engine " << engineDisplayableName << endl;
 #endif
 
+		// FIXME: fix this for RTL languages
 		ustring status = _("Running query");
 		status += " \"";
 		status += queryProps.getName();
