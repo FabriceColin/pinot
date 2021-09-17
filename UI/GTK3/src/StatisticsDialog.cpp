@@ -105,6 +105,7 @@ void StatisticsDialog::populate(void)
 
 		ustring countText(countStr.str());
 
+		// FIXME: fix this for RTL languages
 		if (docsCount == 1)
 		{
 			countText += " ";
@@ -138,6 +139,7 @@ void StatisticsDialog::populate(void)
 
 		ustring countText(countStr.str());
 
+		// FIXME: fix this for RTL languages
 		if (docsCount == 1)
 		{
 			countText += " ";
