@@ -198,7 +198,6 @@ class IndexingThread : public DownloadingThread
 	public:
 		IndexingThread(const DocumentInfo &docInfo, const std::string &indexLocation,
 			bool allowAllMIMETypes = true);
-		IndexingThread(const std::string &indexLocation);
 		virtual ~IndexingThread();
 
 		virtual std::string getType(void) const;
@@ -276,7 +275,7 @@ class HistoryMonitorThread : public MonitorThread
 class DirectoryScannerThread : public IndexingThread
 {
 	public:
-		DirectoryScannerThread(const std::string &dirName,
+		DirectoryScannerThread(const DocumentInfo &docInfo,
 			const std::string &indexLocation, unsigned int maxLevel = 0,
 			bool inlineIndexing = false, bool followSymLinks = true);
 		virtual ~DirectoryScannerThread();
@@ -310,6 +309,7 @@ class DirectoryScannerThread : public IndexingThread
 		virtual void foundFile(const DocumentInfo &docInfo);
 
 		bool scanEntry(const std::string &entryName,
+			int &entryStatus,
 			bool statLinks = true);
 		virtual void doWork(void);
 

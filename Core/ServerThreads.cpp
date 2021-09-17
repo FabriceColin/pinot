@@ -49,7 +49,7 @@ using namespace std;
 CrawlerThread::CrawlerThread(const string &dirName, bool isSource,
 	MonitorInterface *pMonitor, MonitorHandler *pHandler,
 	bool inlineIndexing) :
-	DirectoryScannerThread(dirName,
+	DirectoryScannerThread(DocumentInfo("", string("file://") + dirName, "", ""),
 		PinotSettings::getInstance().m_daemonIndexLocation,
 		0, inlineIndexing, true),
 	m_sourceId(0),
@@ -205,6 +205,8 @@ void CrawlerThread::recordCrawling(const string &location, bool itemExists, time
 
 void CrawlerThread::recordError(const string &location, int errorCode)
 {
+	DirectoryScannerThread::recordError(location, errorCode);
+
 	// It may still be in the cache
 	map<string, CrawlItem>::iterator updateIter = m_crawlCache.find(location);
 	if (updateIter != m_crawlCache.end())
@@ -281,6 +283,7 @@ void CrawlerThread::doWork(void)
 	::Timer scanTimer;
 	set<string> urls;
 	unsigned int currentOffset = 0;
+	int entryStatus = 0;
 
 	if (m_dirName.empty() == true)
 	{
@@ -299,9 +302,16 @@ void CrawlerThread::doWork(void)
 	// Update this source's items status so that we can detect files that have been deleted
 	m_crawlHistory.updateItemsStatus(CrawlHistory::CRAWLED, CrawlHistory::TO_CRAWL, m_sourceId);
 
-	if (scanEntry(m_dirName) == false)
+	if (scanEntry(m_dirName, entryStatus) == false)
 	{
-		m_errorNum = OPENDIR_FAILED;
+		if (entryStatus == 0)
+		{
+			m_errorNum = OPENDIR_FAILED;
+		}
+		else
+		{
+			m_errorNum = entryStatus;
+		}
 		m_errorParam = m_dirName;
 	}
 	flushUpdates();

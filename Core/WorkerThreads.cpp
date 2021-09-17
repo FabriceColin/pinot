@@ -74,6 +74,9 @@ ustring QueueManager::index_document(const DocumentInfo &docInfo)
 {
 	string location(docInfo.getLocation());
 
+#ifdef DEBUG
+	clog << "ThreadsManager::index_document: called with " << location << endl;
+#endif
 	if (m_stopIndexing == true)
 	{
 #ifdef DEBUG
@@ -111,6 +114,7 @@ ustring QueueManager::index_document(const DocumentInfo &docInfo)
 		if (beingProcessed == true)
 		{
 			// FIXME: we may have to set labels on this document
+			// FIXME: fix this for RTL languages
 			ustring status(location);
 			status += " ";
 			status += _("is already being indexed");
@@ -121,6 +125,7 @@ ustring QueueManager::index_document(const DocumentInfo &docInfo)
 	// Is the document blacklisted ?
 	if (PinotSettings::getInstance().isBlackListed(location) == true)
 	{
+		// FIXME: fix this for RTL languages
 		ustring status(location);
 		status += " ";
 		status += _("is blacklisted");
@@ -130,8 +135,12 @@ ustring QueueManager::index_document(const DocumentInfo &docInfo)
 	if ((m_scanLocalFiles == true) &&
 		(urlObj.isLocal() == true))
 	{
+#ifdef DEBUG
+		clog << "ThreadsManager::index_document: scanning " <<
+			urlObj.getLocation() + "/" + urlObj.getFile() << endl;
+#endif
 		// This handles both directories and files
-		start_thread(new DirectoryScannerThread(urlObj.getLocation() + "/" + urlObj.getFile(),
+		start_thread(new DirectoryScannerThread(docInfo,
 			m_defaultIndexLocation, 0, true, true));
 	}
 	else
@@ -199,7 +208,7 @@ bool QueueManager::pop_queue(const string &urlWasIndexed)
 	bool emptyQueue = false;
 
 #ifdef DEBUG
-	clog << "QueueManager::pop_queue: called" << endl;
+	clog << "QueueManager::pop_queue: called with " << urlWasIndexed << endl;
 #endif
 	if (get_threads_count() >= m_maxIndexThreads)
 	{
@@ -248,6 +257,7 @@ bool QueueManager::pop_queue(const string &urlWasIndexed)
 				if (docInfo.getLocation() == previousLocation)
 				{
 					// Something dodgy is going on, we got the same item twice !
+					// FIXME: fix this for RTL languages
 					status = previousLocation;
 					status += " ";
 					status += _("is already being indexed");
@@ -796,16 +806,6 @@ IndexingThread::IndexingThread(const DocumentInfo &docInfo, const string &indexL
 {
 }
 
-IndexingThread::IndexingThread(const string &indexLocation) :
-	DownloadingThread(),
-	m_pIndex(NULL),
-	m_indexLocation(indexLocation),
-	m_allowAllMIMETypes(true),
-	m_update(false),
-	m_docId(0)
-{
-}
-
 IndexingThread::~IndexingThread()
 {
 	if (m_pIndex != NULL)
@@ -1261,16 +1261,18 @@ void HistoryMonitorThread::fileModified(const string &location)
 #endif
 }
 
-DirectoryScannerThread::DirectoryScannerThread(const string &dirName,
+DirectoryScannerThread::DirectoryScannerThread(const DocumentInfo &docInfo,
 	const string &indexLocation, unsigned int maxLevel,
 	bool inlineIndexing, bool followSymLinks) :
-	IndexingThread(indexLocation),
-	m_dirName(dirName),
+	IndexingThread(docInfo, indexLocation),
 	m_currentLevel(0),
 	m_maxLevel(maxLevel),
 	m_inlineIndexing(inlineIndexing),
 	m_followSymLinks(followSymLinks)
 {
+	Url urlObj(docInfo.getLocation());
+
+	m_dirName = urlObj.getLocation() + "/" + urlObj.getFile();
 }
 
 DirectoryScannerThread::~DirectoryScannerThread()
@@ -1397,13 +1399,12 @@ void DirectoryScannerThread::foundFile(const DocumentInfo &docInfo)
 }
 
 bool DirectoryScannerThread::scanEntry(const string &entryName,
-	bool statLinks)
+	int &entryStatus, bool statLinks)
 {
 	string location("file://" + entryName);
-	DocumentInfo docInfo("", location, "", "");
+	DocumentInfo docInfo(m_docInfo);
 	time_t itemDate = time(NULL);
 	struct stat fileStat;
-	int entryStatus = 0;
 	bool scanSuccess = true, reportFile = false, itemExists = false;
 
 	if (entryName.empty() == true)
@@ -1526,7 +1527,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 			recordSymlink(referreeLocation, itemDate);
 
 			// Do it again, this time by stat'ing what the link refers to
-			bool scannedReferree = scanEntry(entryName, false);
+			bool scannedReferree = scanEntry(entryName, entryStatus, false);
 
 			m_currentLinks.pop();
 			m_currentLinkReferrees.pop();
@@ -1601,6 +1602,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 						(pEntryName[0] != '.'))
 					{
 						string subEntryName(entryName);
+						int subEntryStatus = 0;
 
 						if (entryName[entryName.length() - 1] != '/')
 						{
@@ -1609,7 +1611,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 						subEntryName += pEntryName;
 
 						// Scan this entry
-						scanEntry(subEntryName);
+						scanEntry(subEntryName, subEntryStatus);
 					}
 
 					// Next entry
@@ -1704,6 +1706,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 void DirectoryScannerThread::doWork(void)
 {
 	Timer scanTimer;
+	int entryStatus = 0;
 
 	if (m_dirName.empty() == true)
 	{
@@ -1711,9 +1714,16 @@ void DirectoryScannerThread::doWork(void)
 	}
 	scanTimer.start();
 
-	if (scanEntry(m_dirName) == false)
+	if (scanEntry(m_dirName, entryStatus) == false)
 	{
-		m_errorNum = OPENDIR_FAILED;
+		if (entryStatus == 0)
+		{
+			m_errorNum = OPENDIR_FAILED;
+		}
+		else
+		{
+			m_errorNum = entryStatus;
+		}
 		m_errorParam = m_dirName;
 	}
 	clog << "Scanned " << m_dirName << " in " << scanTimer.stop() << " ms" << endl;
