@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2019 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -291,13 +291,31 @@ bool SherlockResponseParser::parse(const Document *pResponseDoc, vector<Document
 	}
 
 	// Extract results
+	string resStart(m_resultItemStart);
+	string resEnd(m_resultItemEnd);
 	string::size_type endPos = 0;
 #ifdef DEBUG
 	clog << "SherlockResponseParser::parse: getting first result ("
 		<< m_resultItemStart << ", " << m_resultItemEnd << ")" << endl;
 #endif
 	string resultItem = StringManip::extractField(resultList,
-		m_resultItemStart, m_resultItemEnd, endPos);
+		resStart, resEnd, endPos);
+	if (resultItem.empty() == true)
+	{
+		// The other quotes may be used
+		if (m_resultItemStart.find("\"") != string::npos)
+		{
+			resStart = StringManip::replaceSubString(m_resultItemStart, "\"", "'");
+		}
+		else if (m_resultItemStart.find("'") != string::npos)
+		{
+			resStart = StringManip::replaceSubString(m_resultItemStart, "'", "\"");
+		}
+
+		// Try again
+		resultItem = StringManip::extractField(resultList,
+			resStart, resEnd, endPos);
+	}
 	while (resultItem.empty() == false)
 	{
 		string contentType, url, name, extract;
@@ -441,7 +459,7 @@ bool SherlockResponseParser::parse(const Document *pResponseDoc, vector<Document
 		// Next
 		endPos += m_resultItemEnd.length();
 		resultItem = StringManip::extractField(resultList,
-			m_resultItemStart, m_resultItemEnd, endPos);
+			resStart, resEnd, endPos);
 	}
 
 	return foundResult;
