@@ -1,8 +1,10 @@
 Pinot
 Copyright 2005-2021 Fabrice Colin <fabrice dot colin at gmail dot com>
-https://github.com/FabriceColin/pinot
+
+Homepage - https://github.com/FabriceColin/pinot
  previously hosted at http://code.google.com/p/pinot-search/
  and http://pinot.berlios.de/
+Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
 
 
 1. What is Pinot
@@ -20,7 +22,7 @@ https://github.com/FabriceColin/pinot
 12. CJKV support
 13. Environment variables and aliases
 14. How to reset indexes
-15. Compiling Pinot
+15. Compiling
 
 
 1. What is Pinot
@@ -452,7 +454,7 @@ https://github.com/FabriceColin/pinot
   $ pinot-dbus-daemon --reindex
 
 
-15. Compiling Pinot
+15. Compiling
 
 
   Pinot's configure understands the following optional switches.

@@ -1,3 +1,37 @@
+2021/09/?? version_1_2_0
+General :
+ - dropped xdgmime in favour of gio
+ - require giomm >= 2.6
+IndexSearch :
+ - removed obsolete search plugins, dead code
+ - better results with the dir query filter
+ - fixed size range queries
+ - synced with how Xapian Omega indexes file extensions
+ - added sort by file size (descending)
+ - pinot-index shows document IDs to facilitate troubleshooting
+ with xapian-delve
+ - require Xapian >= 1.4.10
+ - reindexing is recommended.
+Daemon :
+ - fixed a bug that would cause the loss of documents for one directory
+ when crawling ends for the next one
+ - overhauled the D-Bus implementation, extended the interface
+ - reduced flushing
+ - rely on org.gnome.Shell.SearchProvider2.OnBattery on systems with
+ a battery
+ - implemented the org.gnome.Shell.SearchProvider2 interface. The content
+ of documents in directories Pinot indexed can be searched through the
+ Gnome 3 Shell.
+UI :
+ - removed the gtk2 UI, refreshed the gtk3 UI
+ - the gtk3 UI is loaded from a Glade XML file
+ - reduced direct reading of the daemon's index
+ - fixed file imports and error reporting
+ - stored queries' results may be sorted by file size
+ - rationalized activation and behaviour of the Edit menuitems
+ - pinot may be started on any new query with -q/--query TERMS
+ - require gtkmm >= 3.24
+
 2020/01/09 version_1_1_0
 General:
  - updated gmime, textcat, exiv, glib, OpenSSL and Xapian dependencies
