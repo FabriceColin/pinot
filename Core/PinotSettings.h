@@ -64,7 +64,9 @@ class PinotSettings
 
 		static PinotSettings &getInstance(void);
 
-		static bool enableClientMode(bool enable);
+		static bool setClientMode(bool enable);
+
+		static bool getClientMode(void);
 
 		static std::string getHomeDirectory(void);
 

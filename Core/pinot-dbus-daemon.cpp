@@ -290,7 +290,7 @@ int main(int argc, char **argv)
 	// This will create the necessary directories on the first run
 	PinotSettings &settings = PinotSettings::getInstance();
 	// This is the daemon so disable client-side code 
-	settings.enableClientMode(false);
+	settings.setClientMode(false);
 
 	// Initialize utility classes
 	if (MIMEScanner::initialize(PinotSettings::getHomeDirectory() + "/.local",

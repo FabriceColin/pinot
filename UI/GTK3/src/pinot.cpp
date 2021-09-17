@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 	PinotSettings &settings = PinotSettings::getInstance();
 #ifdef HAVE_DBUS
 	// Talk to the daemon through DBus
-	settings.enableClientMode(true);
+	settings.setClientMode(true);
 #endif
 
 	string confDirectory(PinotSettings::getConfigurationDirectory());

@@ -171,13 +171,18 @@ PinotSettings &PinotSettings::getInstance(void)
 	return m_instance;
 }
 
-bool PinotSettings::enableClientMode(bool enable)
+bool PinotSettings::setClientMode(bool enable)
 {
 	bool isEnabled = m_clientMode;
 
 	m_clientMode = enable;
 
 	return isEnabled;
+}
+
+bool PinotSettings::getClientMode(void)
+{
+	return m_clientMode;
 }
 
 string PinotSettings::getHomeDirectory(void)
