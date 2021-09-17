@@ -18,7 +18,7 @@
 Summary: Personal search and metasearch tool
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: GPL
 Group: Applications/Internet 
 Source: %{name}-%{version}.tar.gz
