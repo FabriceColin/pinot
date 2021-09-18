@@ -224,20 +224,16 @@ void EnginesTree::onStyleChanged(void)
 }
 
 //
-// Gets a list of selected items.
+// Gets an iterator.
 //
-vector<TreeModel::Path> EnginesTree::getSelection(void)
-{
-	return get_selection()->get_selected_rows();
-}
-
-/// Gets an iterator.
 TreeModel::iterator EnginesTree::getIter(TreeModel::Path enginePath)
 {
 	return m_refStore->get_iter(enginePath);
 }
 
-/// Gets the column record.
+//
+// Gets the column record.
+//
 EnginesModelColumns &EnginesTree::getColumnRecord(void)
 {
 	return m_enginesColumns;

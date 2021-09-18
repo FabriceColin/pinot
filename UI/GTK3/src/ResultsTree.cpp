@@ -932,9 +932,10 @@ ustring ResultsTree::getFirstSelectionURL(void)
 //
 // Gets a list of selected items.
 //
-bool ResultsTree::getSelection(vector<DocumentInfo> &resultsList, bool skipIndexed)
+bool ResultsTree::getSelectedResults(vector<DocumentInfo> &resultsList, bool skipIndexed)
 {
-	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
+	RefPtr<TreeSelection> refSelection = get_selection();
+	vector<TreeModel::Path> selectedItems = refSelection->get_selected_rows();
 
 	if (selectedItems.empty() == true)
 	{
@@ -947,10 +948,12 @@ bool ResultsTree::getSelection(vector<DocumentInfo> &resultsList, bool skipIndex
 	{
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 		TreeModel::Row row = *iter;
-
 		ResultsModelColumns::RowType type = row[m_resultsColumns.m_resultType];
-		if (type != ResultsModelColumns::ROW_RESULT)
+
+		if ((refSelection->is_selected(*itemPath) == false) ||
+			(type != ResultsModelColumns::ROW_RESULT))
 		{
+			// Skip
 			continue;
 		}
 
@@ -999,7 +1002,8 @@ bool ResultsTree::getSelection(vector<DocumentInfo> &resultsList, bool skipIndex
 //
 void ResultsTree::setSelectionState(bool viewed)
 {
-	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
+	RefPtr<TreeSelection> refSelection = get_selection();
+	vector<TreeModel::Path> selectedItems = refSelection->get_selected_rows();
 
 	if (selectedItems.empty() == true)
 	{
@@ -1013,6 +1017,14 @@ void ResultsTree::setSelectionState(bool viewed)
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 		TreeModel::Row row = *iter;
   
+		if (refSelection->is_selected(*itemPath) == false)
+		{
+#ifdef DEBUG
+			clog << "ResultsTree::setSelectionState: not selected" << endl;
+#endif
+			continue;
+		}
+
 		ResultsModelColumns::RowType type = row[m_resultsColumns.m_resultType];
 		if (type != ResultsModelColumns::ROW_RESULT)
 		{
@@ -1068,18 +1080,32 @@ bool ResultsTree::updateResult(const DocumentInfo &result)
 //
 bool ResultsTree::deleteSelection(void)
 {
+	RefPtr<TreeSelection> refSelection = get_selection();
 	bool empty = false;
 
 	// Go through selected items
-	vector<TreeModel::Path> selectedItems = get_selection()->get_selected_rows();
+	vector<TreeModel::Path> selectedItems = refSelection->get_selected_rows();
 	vector<TreeModel::Path>::iterator itemPath = selectedItems.begin();
 
+#ifdef DEBUG
+	clog << "ResultsTree::deleteSelection: called on "
+		<< selectedItems.size() << " items" << endl;
+#endif
 	while (itemPath != selectedItems.end())
 	{
 		TreeModel::iterator iter = m_refStore->get_iter(*itemPath);
 		TreeModel::Row row = *iter;
 		TreeModel::iterator parentIter;
 		bool updateParent = false;
+
+		if (refSelection->is_selected(*itemPath) == false)
+		{
+			++itemPath;
+			continue;
+		}
+#ifdef DEBUG
+		clog << "ResultsTree::deleteSelection: erasing " << row[m_resultsColumns.m_text] << endl;
+#endif
 
 		// This could be a group that's in the map and should be removed first
 		ResultsModelColumns::RowType type = row[m_resultsColumns.m_resultType];
@@ -1102,8 +1128,11 @@ bool ResultsTree::deleteSelection(void)
 			updateParent = true;
 		}
 
+		vector<TreeModel::Path>::iterator nextItemPath = itemPath;
+		++nextItemPath;
+
 		// Unselect and erase
-		get_selection()->unselect(iter);
+		refSelection->unselect(iter);
 		m_refStore->erase(row);
 
 		// Update group ?
@@ -1113,8 +1142,7 @@ bool ResultsTree::deleteSelection(void)
 			updateGroup(parentIter);
 		}
 
-		selectedItems = get_selection()->get_selected_rows();
-		itemPath = selectedItems.begin();
+		itemPath = nextItemPath;
 	}
 
 	TreeModel::Children children = m_refStore->children();

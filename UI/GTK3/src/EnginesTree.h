@@ -46,9 +46,6 @@ class EnginesTree : public Gtk::TreeView
 		EnginesTree(Gtk::VBox *enginesVbox, PinotSettings &settings);
 		virtual ~EnginesTree();
 
-		/// Gets a list of selected items.
-		std::vector<Gtk::TreeModel::Path> getSelection(void);
-
 		/// Gets an iterator.
 		Gtk::TreeModel::iterator getIter(Gtk::TreeModel::Path enginePath);
 

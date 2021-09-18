@@ -1033,7 +1033,7 @@ bool MainWindow::get_results_page_details(const ustring &queryName,
 			ResultsTree *pResultsTree = pNotebookPage->getTree();
 			if (pResultsTree != NULL)
 			{
-				pResultsTree->getSelection(resultsList);
+				pResultsTree->getSelectedResults(resultsList);
 			}
 
 			NotebookPageBox::PageType type = pNotebookPage->getType();
@@ -1215,7 +1215,8 @@ void MainWindow::on_data_received(const RefPtr<DragContext> &context,
 //
 void MainWindow::on_enginesTreeviewSelection_changed()
 {
-	vector<TreeModel::Path> selectedEngines = m_pEnginesTree->getSelection();
+	RefPtr<TreeSelection> refSelection = m_pEnginesTree->get_selection();
+	vector<TreeModel::Path> selectedEngines = refSelection->get_selected_rows();
 
 	// If there are more than one row selected, don't bother
 	if (selectedEngines.size() != 1)
@@ -1281,7 +1282,7 @@ void MainWindow::on_resultsTreeviewSelection_changed(ustring queryName)
 		ResultsTree *pResultsTree = pNotebookPage->getTree();
 		if (pResultsTree != NULL)
 		{
-			hasSelection = pResultsTree->getSelection(resultsList);
+			hasSelection = pResultsTree->getSelectedResults(resultsList);
 		}
 	}
 
@@ -1299,7 +1300,7 @@ void MainWindow::on_indexTreeviewSelection_changed(ustring indexName)
 		ResultsTree *pResultsTree = pNotebookPage->getTree();
 		if (pResultsTree != NULL)
 		{
-			hasSelection = pResultsTree->getSelection(resultsList);
+			hasSelection = pResultsTree->getSelectedResults(resultsList);
 		}
 	}
 
@@ -1484,7 +1485,7 @@ void MainWindow::on_cache_changed(PinotSettings::CacheProvider cacheProvider)
 		{
 			vector<DocumentInfo> resultsList;
 
-			if (pResultsTree->getSelection(resultsList) == true)
+			if (pResultsTree->getSelectedResults(resultsList) == true)
 			{
 				for (vector<DocumentInfo>::iterator resultIter = resultsList.begin();
 					resultIter != resultsList.end(); ++resultIter)
@@ -2498,7 +2499,7 @@ void MainWindow::on_copy_activate()
 				else
 				{
 					// Get the current results selection
-					pResultsTree->getSelection(documentsList);
+					pResultsTree->getSelectedResults(documentsList);
 				}
 			}
 
@@ -2720,7 +2721,7 @@ void MainWindow::on_addtoindex_activate()
 			ResultsTree *pResultsTree = pResultsPage->getTree();
 			if (pResultsTree != NULL)
 			{
-				pResultsTree->getSelection(resultsList, true);
+				pResultsTree->getSelectedResults(resultsList, true);
 
 				// Go through selected results
 				for (vector<DocumentInfo>::const_iterator resultIter = resultsList.begin();
@@ -2790,7 +2791,7 @@ void MainWindow::on_open_activate()
 		{
 			vector<DocumentInfo> resultsList;
 
-			if (pResultsTree->getSelection(resultsList) == true)
+			if (pResultsTree->getSelectedResults(resultsList) == true)
 			{
 				view_documents(resultsList);
 
@@ -2814,7 +2815,7 @@ void MainWindow::on_openparent_activate()
 		{
 			vector<DocumentInfo> resultsList;
 
-			if (pResultsTree->getSelection(resultsList) == true)
+			if (pResultsTree->getSelectedResults(resultsList) == true)
 			{
 				vector<DocumentInfo>::iterator resultIter = resultsList.begin();
 				while (resultIter != resultsList.end())
@@ -2866,7 +2867,7 @@ void MainWindow::on_updateindex_activate()
 
 		if (pResultsTree != NULL)
 		{
-			if ((pResultsTree->getSelection(documentsList) == false) ||
+			if ((pResultsTree->getSelectedResults(documentsList) == false) ||
 				(documentsList.empty() == true))
 			{
 				// No selection
@@ -2946,7 +2947,7 @@ void MainWindow::on_properties_activate()
 
 	// Get the current documents selection
 	if ((pResultsTree == NULL) ||
-		(pResultsTree->getSelection(documentsList) == false) ||
+		(pResultsTree->getSelectedResults(documentsList) == false) ||
 		(documentsList.empty() == true))
 	{
 		// No selection
@@ -3028,7 +3029,7 @@ void MainWindow::on_unindex_activate()
 
 	// Get the current documents selection
 	if ((pResultsTree == NULL) ||
-		(pResultsTree->getSelection(documentsList) == false) ||
+		(pResultsTree->getSelectedResults(documentsList) == false) ||
 		(documentsList.empty() == true))
 	{
 		return;
@@ -3171,7 +3172,8 @@ void MainWindow::on_addIndexButton_clicked()
 //
 void MainWindow::on_removeIndexButton_clicked()
 {
-	vector<TreeModel::Path> selectedEngines = m_pEnginesTree->getSelection();
+	RefPtr<TreeSelection> refSelection = m_pEnginesTree->get_selection();
+	vector<TreeModel::Path> selectedEngines = refSelection->get_selected_rows();
 
 	// If there are more than one row selected, don't bother
 	if (selectedEngines.size() != 1)
@@ -3849,7 +3851,8 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 #endif
 
 	// Check a search engine has been selected
-	vector<TreeModel::Path> selectedEngines = m_pEnginesTree->getSelection();
+	RefPtr<TreeSelection> refSelection = m_pEnginesTree->get_selection();
+	vector<TreeModel::Path> selectedEngines = refSelection->get_selected_rows();
 
 	if (selectedEngines.empty() == true)
 	{
@@ -3868,7 +3871,8 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 		TreeModel::Row engineRow = *engineIter;
 		EnginesModelColumns::EngineType engineType = engineRow[engineColumns.m_type];
 
-		if (engineType < EnginesModelColumns::ENGINE_FOLDER)
+		if ((refSelection->is_selected(*enginePath) == false) ||
+			(engineType < EnginesModelColumns::ENGINE_FOLDER))
 		{
 			// Skip
 			continue;
