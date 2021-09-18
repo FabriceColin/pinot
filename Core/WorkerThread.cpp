@@ -659,9 +659,6 @@ void MonitorThread::processEvents(void)
 	if ((m_pMonitor == NULL) ||
 		(m_pMonitor->retrievePendingEvents(events) == false))
 	{
-#ifdef DEBUG
-		clog << "MonitorThread::processEvents: failed to retrieve pending events" << endl;
-#endif
 		return;
 	}
 #ifdef DEBUG

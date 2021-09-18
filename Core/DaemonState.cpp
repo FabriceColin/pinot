@@ -1789,6 +1789,8 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 						m_pDiskMonitor->removeLocations(locationIter->m_name);
 					}
 				}
+
+				m_pDiskMonitor->dropPendingEvents();
 			}
 
 			// Reload settings
