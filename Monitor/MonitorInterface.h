@@ -54,6 +54,9 @@ class MonitorInterface
 		/// Retrieves pending events.
 		virtual bool retrievePendingEvents(std::queue<MonitorEvent> &events) = 0;
 
+		/// Drops pending events.
+		virtual void dropPendingEvents(void) = 0;
+
 	protected:
 		std::map<int, std::string> m_watches;
 		int m_monitorFd;

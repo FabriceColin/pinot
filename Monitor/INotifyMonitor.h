@@ -49,6 +49,9 @@ class INotifyMonitor : public MonitorInterface
 		/// Retrieves pending events.
 		virtual bool retrievePendingEvents(std::queue<MonitorEvent> &events);
 
+		/// Drops pending events.
+		virtual void dropPendingEvents(void);
+
 	protected:
 		pthread_mutex_t m_mutex;
 		std::queue<MonitorEvent> m_internalEvents;
@@ -58,6 +61,9 @@ class INotifyMonitor : public MonitorInterface
 		unsigned int m_watchesCount;
 
 		bool removeWatch(const std::string &location);
+
+		bool retrievePendingEvents(std::queue<MonitorEvent> &events,
+			bool dropAll);
 
 	private:
 		INotifyMonitor(const INotifyMonitor &other);

@@ -106,148 +106,8 @@ bool INotifyMonitor::removeWatch(const string &location)
 	return false;
 }
 
-/// Returns the maximum number of files that can be monitored.
-unsigned int INotifyMonitor::getLimit(void) const
-{
-	return m_maxUserWatches;
-}
-
-/// Adds a watch for the specified location.
-bool INotifyMonitor::addLocation(const string &location, bool isDirectory)
-{
-	uint32_t eventsMask = IN_CLOSE_WRITE|IN_MOVE|IN_CREATE|IN_DELETE|IN_UNMOUNT|IN_MOVE_SELF|IN_DELETE_SELF;
-	bool addedLocation = false;
-
-	if ((location.empty() == true) ||
-		(location == "/") ||
-		(m_monitorFd < 0) ||
-		(m_watchesCount > m_maxUserWatches))
-	{
-		return false;
-	}
-
-	if (access(location.c_str(), F_OK) != 0)
-	{
-		return false;
-	}
-
-	if (pthread_mutex_lock(&m_mutex) != 0)
-	{
-		return false;
-	}
-
-	map<string, int>::iterator locationIter = m_locations.find(location);
-	if (locationIter != m_locations.end())
-	{
-		// This is already being monitored
-		addedLocation = true;
-	}
-	else
-	{
-		int watchNum = inotify_add_watch(m_monitorFd, location.c_str(), eventsMask);
-		if (watchNum >= 0)
-		{
-			++m_watchesCount;
-
-			// Generate an event to signal the file exists and is being monitored
-			if (isDirectory == false)
-			{
-				MonitorEvent monEvent;
-				monEvent.m_location = location;
-				monEvent.m_isWatch = true;
-				monEvent.m_type = MonitorEvent::EXISTS;
-				monEvent.m_isDirectory = false;
-				m_internalEvents.push(monEvent);
-			}
-
-			m_watches.insert(pair<int, string>(watchNum, location));
-			m_locations.insert(pair<string, int>(location, watchNum));
-#ifdef DEBUG
-			clog << "INotifyMonitor::addLocation: added watch "
-				<< watchNum << " for " << location << endl;
-#endif
-			addedLocation = true;
-		}
-		else
-		{
-			if (errno == ENOSPC)
-			{
-				// There are no watches left
-				m_watchesCount = m_maxUserWatches + 1;
-			}
-			clog << "Couldn't monitor " << location << endl;
-		}
-	}
-	pthread_mutex_unlock(&m_mutex);
-
-	return addedLocation;
-}
-
-/// Removes the watch for the specified location.
-bool INotifyMonitor::removeLocation(const string &location)
-{
-	bool removedLocation = false;
-
-	if ((location.empty() == true) ||
-		(m_monitorFd < 0))
-	{
-		return false;
-	}
-
-	if (pthread_mutex_lock(&m_mutex) != 0)
-	{
-		return false;
-	}
-
-	removedLocation = removeWatch(location);
-	pthread_mutex_unlock(&m_mutex);
-
-	return removedLocation;
-}
-
-/// Removes watches for the specified location and all underneath.
-bool INotifyMonitor::removeLocations(const string &location)
-{
-	if ((location.empty() == true) ||
-		(m_monitorFd < 0))
-	{
-		return false;
-	}
-
-	if (pthread_mutex_lock(&m_mutex) != 0)
-	{
-		return false;
-	}
-
-	map<string, int>::iterator locationIter = m_locations.begin();
-
-	while (locationIter != m_locations.end())
-	{
-		if ((locationIter->first.length() >= location.length()) &&
-			(locationIter->first.find(location) == 0))
-		{
-			inotify_rm_watch(m_monitorFd, locationIter->second);
-			--m_watchesCount;
-
-			map<int, string>::iterator watchIter = m_watches.find(locationIter->second);
-			if (watchIter != m_watches.end())
-			{
-				m_watches.erase(watchIter);
-			}
-			locationIter = m_locations.erase(locationIter);
-		}
-		else
-		{
-			++locationIter;
-		}
-	}
-	pthread_mutex_unlock(&m_mutex);
-
-	return true;
-}
-
-/// Retrieves pending events.
-bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events)
+bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events,
+	bool dropAll)
 {
 	set<MonitorEvent> removedLocations;
 	char buffer[1024];
@@ -285,7 +145,7 @@ bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events)
 	{
 		// Nothing to read
 		pthread_mutex_unlock(&m_mutex);
-		return true;
+		return false;
 	}
 
 	int bytesRead = read(m_monitorFd, buffer, 1024);
@@ -295,9 +155,14 @@ bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events)
 		struct inotify_event *pEvent = (struct inotify_event *)&buffer[offset];
 		size_t eventSize = sizeof(struct inotify_event) + pEvent->len;
 
+		if (dropAll == true)
+		{
+			offset += eventSize;
+			continue;
+		}
 #ifdef DEBUG
 		clog << "INotifyMonitor::retrievePendingEvents: read "
-			<< bytesRead << " bytes at offset " << offset << endl;
+			<< eventSize << " bytes event at offset " << offset << endl;
 #endif
 
 		// What location is this event for ?
@@ -517,5 +382,169 @@ bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events)
 	pthread_mutex_unlock(&m_mutex);
 
 	return true;
+}
+
+/// Returns the maximum number of files that can be monitored.
+unsigned int INotifyMonitor::getLimit(void) const
+{
+	return m_maxUserWatches;
+}
+
+/// Adds a watch for the specified location.
+bool INotifyMonitor::addLocation(const string &location, bool isDirectory)
+{
+	uint32_t eventsMask = IN_CLOSE_WRITE|IN_MOVE|IN_CREATE|IN_DELETE|IN_UNMOUNT|IN_MOVE_SELF|IN_DELETE_SELF;
+	bool addedLocation = false;
+
+	if ((location.empty() == true) ||
+		(location == "/") ||
+		(m_monitorFd < 0) ||
+		(m_watchesCount > m_maxUserWatches))
+	{
+		return false;
+	}
+
+	if (access(location.c_str(), F_OK) != 0)
+	{
+		return false;
+	}
+
+	if (pthread_mutex_lock(&m_mutex) != 0)
+	{
+		return false;
+	}
+
+	map<string, int>::iterator locationIter = m_locations.find(location);
+	if (locationIter != m_locations.end())
+	{
+		// This is already being monitored
+		addedLocation = true;
+	}
+	else
+	{
+		int watchNum = inotify_add_watch(m_monitorFd, location.c_str(), eventsMask);
+		if (watchNum >= 0)
+		{
+			++m_watchesCount;
+
+			// Generate an event to signal the file exists and is being monitored
+			if (isDirectory == false)
+			{
+				MonitorEvent monEvent;
+				monEvent.m_location = location;
+				monEvent.m_isWatch = true;
+				monEvent.m_type = MonitorEvent::EXISTS;
+				monEvent.m_isDirectory = false;
+				m_internalEvents.push(monEvent);
+			}
+
+			m_watches.insert(pair<int, string>(watchNum, location));
+			m_locations.insert(pair<string, int>(location, watchNum));
+#ifdef DEBUG
+			clog << "INotifyMonitor::addLocation: added watch "
+				<< watchNum << " for " << location << endl;
+#endif
+			addedLocation = true;
+		}
+		else
+		{
+			if (errno == ENOSPC)
+			{
+				// There are no watches left
+				m_watchesCount = m_maxUserWatches + 1;
+			}
+			clog << "Couldn't monitor " << location << endl;
+		}
+	}
+	pthread_mutex_unlock(&m_mutex);
+
+	return addedLocation;
+}
+
+/// Removes the watch for the specified location.
+bool INotifyMonitor::removeLocation(const string &location)
+{
+	bool removedLocation = false;
+
+	if ((location.empty() == true) ||
+		(m_monitorFd < 0))
+	{
+		return false;
+	}
+
+	if (pthread_mutex_lock(&m_mutex) != 0)
+	{
+		return false;
+	}
+
+	removedLocation = removeWatch(location);
+	pthread_mutex_unlock(&m_mutex);
+
+	return removedLocation;
+}
+
+/// Removes watches for the specified location and all underneath.
+bool INotifyMonitor::removeLocations(const string &location)
+{
+	if ((location.empty() == true) ||
+		(m_monitorFd < 0))
+	{
+		return false;
+	}
+
+	if (pthread_mutex_lock(&m_mutex) != 0)
+	{
+		return false;
+	}
+
+	map<string, int>::iterator locationIter = m_locations.begin();
+
+	while (locationIter != m_locations.end())
+	{
+		if ((locationIter->first.length() >= location.length()) &&
+			(locationIter->first.find(location) == 0))
+		{
+			inotify_rm_watch(m_monitorFd, locationIter->second);
+			--m_watchesCount;
+
+			map<int, string>::iterator watchIter = m_watches.find(locationIter->second);
+			if (watchIter != m_watches.end())
+			{
+				m_watches.erase(watchIter);
+			}
+			locationIter = m_locations.erase(locationIter);
+		}
+		else
+		{
+			++locationIter;
+		}
+	}
+	pthread_mutex_unlock(&m_mutex);
+
+	return true;
+}
+
+/// Retrieves pending events.
+bool INotifyMonitor::retrievePendingEvents(queue<MonitorEvent> &events)
+{
+	return retrievePendingEvents(events, false);
+}
+
+/// Drops pending events.
+void INotifyMonitor::dropPendingEvents(void)
+{
+	bool readEvents = false;
+
+	do
+	{
+		readEvents = retrievePendingEvents(m_internalEvents, true);
+	}
+	while (readEvents == true);
+
+	while (m_internalEvents.empty() == false)
+	{
+		// Next
+		m_internalEvents.pop();
+	}
 }
 
