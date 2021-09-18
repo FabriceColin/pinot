@@ -3,7 +3,7 @@
 <SEARCH
 	version="1.0"
 	name="Arxiv"
-	description="wikipedia.com"
+	description="arxiv.org"
 	method="GET"
 	action="https://arxiv.org/search/"
 	routeType="Encyclopedia"
