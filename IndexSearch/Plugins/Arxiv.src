@@ -1,0 +1,25 @@
+# Arxiv Search Plugin
+
+<SEARCH
+	version="1.0"
+	name="Arxiv"
+	description="wikipedia.com"
+	method="GET"
+	action="https://arxiv.org/search/"
+	routeType="Encyclopedia"
+>
+
+<INPUT NAME="searchtype" VALUE="all">
+<INPUT NAME="abstracts" VALUE="show">
+<INPUT NAME="order" VALUE="-announced_date_first">
+<INPUT NAME="size" VALUE="50">
+<INPUT NAME="query" USER>
+
+<INTERPRET
+resultListStart='<ol class="breathe-horizontal" start="1">'
+resultListEnd='</ol>'
+resultItemStart="<li class='arxiv-result'>"
+resultItemEnd="</li>"
+>
+
+</SEARCH>
