@@ -54,7 +54,6 @@ PropertiesDialog::PropertiesDialog(_GtkDialog *&pParent, RefPtr<Builder>& refBui
 	labelsTreeview(NULL),
 	m_indexLocation(""),
 	m_docId(0),
-	m_notALanguageName(false),
 	m_editDocument(false),
 	m_changedInfo(false),
 	m_changedLabels(false)
@@ -101,6 +100,10 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 
 	m_indexLocation = indexLocation;
 	m_documentsList = documentsList;
+	m_docId = 0;
+	m_editDocument = false;
+	m_changedInfo = false;
+	m_changedLabels = false;
 
 	// If there's only one document selected, get its labels
 	if (m_documentsList.size() == 1)
@@ -144,35 +147,26 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 
 			m_editDocument = true;
 		}
+
+		// Show these widgets
+		titleLabel->show();
+		titleEntry->show();
+		languageLabel->show();
+		languageCombobox->show();
+		typeLabel->show();
+		typeEntry->show();
+		sizeLabel->show();
+		bytesLabel->show();
+		sizeEntry->show();
+		termsLabel->show();
+		termsEntry->show();
+		saveTermsButton->show();
 	}
 	else
 	{
-		string perDoc(_("Per document"));
-		bool firstDoc = true;
-
-		// If all documents are of the same language, show it
-		for (vector<DocumentInfo>::const_iterator docIter = m_documentsList.begin();
-			docIter != m_documentsList.end(); ++docIter)
-		{
-#ifdef DEBUG
-			clog << "PropertiesDialog::PropertiesDialog: language " << language << endl;
-#endif
-			if (firstDoc == true)
-			{
-				language = docIter->getLanguage();
-				firstDoc = false;
-			}
-			else if (language != docIter->getLanguage())
-			{
-				language = perDoc;
-				m_notALanguageName = true;
-			}
-		}
-		if (language.empty() == true)
-		{
-			language = perDoc;
-			m_notALanguageName = true;
-		}
+		// FIXME: if all documents are of the same language, show it
+		// FIXME: show labels that some and all documents have
+		language = _("English");
 
 		// Hide these widgets
 		titleLabel->hide();
@@ -196,15 +190,9 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 
 void PropertiesDialog::populate_languageCombobox(const string &language)
 {
-	int unknownLanguagePos = 0;
 	bool foundLanguage = false;
 
-	if (m_notALanguageName == true)
-	{
-		languageCombobox->append(language);
-		languageCombobox->set_active(0);
-		unknownLanguagePos = 1;
-	}
+	languageCombobox->remove_all();
 
 	// Add all supported languages
 	for (unsigned int languageNum = 0; languageNum < Languages::m_count; ++languageNum)
@@ -214,22 +202,20 @@ void PropertiesDialog::populate_languageCombobox(const string &language)
 		languageCombobox->append(languageName);
 
 		// Is this the language we are looking for ?
-		if ((m_notALanguageName == false) &&
-			(language.empty() == false) &&
+		if ((language.empty() == false) &&
 			(strncasecmp(languageName.c_str(), language.c_str(),
 			min(languageName.length(), language.length())) == 0))
 		{
-			languageCombobox->set_active(languageNum + unknownLanguagePos);
+			languageCombobox->set_active(languageNum);
 			foundLanguage = true;
 		}
 	}
 
 	// Did we find the given language ?
-	if ((m_notALanguageName == false) &&
-		(foundLanguage == false))
+	if (foundLanguage == false)
 	{
 		// The first language in the list should be unknown
-		languageCombobox->set_active(unknownLanguagePos);
+		languageCombobox->set_active(0);
 	}
 }
 
@@ -321,44 +307,29 @@ void PropertiesDialog::on_cancelPropertiesButton_clicked()
 
 void PropertiesDialog::on_applyPropertiesButton_clicked()
 {
-	string title, languageName(from_utf8(languageCombobox->get_active_text())), labelsString;
-	int unknownLanguagePos = 0;
+	string title, languageName, labelsString;
+
 #ifdef DEBUG
 	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: called" << endl;
 #endif
-
 	// If only one document was edited, set its title
 	if (m_editDocument == true)
 	{
 		vector<DocumentInfo>::iterator docIter = m_documentsList.begin();
 
+		// FIXME: find out if changes were actually made
 		title = from_utf8(titleEntry->get_text());
 		docIter->setTitle(title);
-		// FIXME: find out if changes were actually made 
-	}
-#ifdef DEBUG
-	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: chosen title " << title << endl;
-#endif
+		languageName = from_utf8(languageCombobox->get_active_text());
+		docIter->setLanguage(from_utf8(languageName));
 
-	// Did we add an extra string to the languages list ?
-	int chosenLanguagePos = languageCombobox->get_active_row_number();
-	if (m_notALanguageName == true)
-	{
-		unknownLanguagePos = 1;
-	}
-	if (chosenLanguagePos == unknownLanguagePos)
-	{
-		languageName.clear();
-	}
+		if (m_infoHash != StringManip::hashString(title + languageName))
+		{
 #ifdef DEBUG
-	clog << "PropertiesDialog::on_applyPropertiesButton_clicked: chosen language " << languageName << endl;
+			clog << "PropertiesDialog::on_applyPropertiesButton_clicked: properties changed" << endl;
 #endif
-	if (m_infoHash != StringManip::hashString(title + languageName))
-	{
-#ifdef DEBUG
-		clog << "PropertiesDialog::on_applyPropertiesButton_clicked: properties changed" << endl;
-#endif
-		m_changedInfo = true;
+			m_changedInfo = true;
+		}
 	}
 
 	// Go through the labels tree
@@ -393,12 +364,6 @@ void PropertiesDialog::on_applyPropertiesButton_clicked()
 	for (vector<DocumentInfo>::iterator docIter = m_documentsList.begin();
 		docIter != m_documentsList.end(); ++docIter)
 	{
-		// Apply the new language if necessary
-		if (chosenLanguagePos >= unknownLanguagePos)
-		{
-			docIter->setLanguage(from_utf8(languageName));
-		}
-
 		// Apply labels
 		docIter->setLabels(m_labels);
 	}
