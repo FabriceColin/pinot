@@ -278,21 +278,41 @@ bool SherlockResponseParser::parse(const Document *pResponseDoc, vector<Document
 		return false;
 	}
 
+	string listStart(m_resultListStart);
+	string listEnd(m_resultListEnd);
+	string resStart(m_resultItemStart);
+	string resEnd(m_resultItemEnd);
+
 	// Extract the results list
 #ifdef DEBUG
 	clog << "SherlockResponseParser::parse: getting results list ("
 		<< m_resultListStart << ", " << m_resultListEnd << ")" << endl;
 #endif
 	const char *pContent = pResponseDoc->getData(contentLen);
-	string resultList = StringManip::extractField(pContent, m_resultListStart, m_resultListEnd);
+	string resultList = StringManip::extractField(pContent,
+		listStart, listEnd);
+	if (resultList.empty() == true)
+	{
+		// The other quotes may be used
+		if (m_resultListStart.find("\"") != string::npos)
+		{
+			listStart = StringManip::replaceSubString(m_resultListStart, "\"", "'");
+		}
+		else if (m_resultListStart.find("'") != string::npos)
+		{
+			listStart = StringManip::replaceSubString(m_resultListStart, "'", "\"");
+		}
+
+		// Try again
+		resultList = StringManip::extractField(pContent,
+			listStart, listEnd);
+	}
 	if (resultList.empty() == true)
 	{
 		resultList = string(pContent, contentLen);
 	}
 
 	// Extract results
-	string resStart(m_resultItemStart);
-	string resEnd(m_resultItemEnd);
 	string::size_type endPos = 0;
 #ifdef DEBUG
 	clog << "SherlockResponseParser::parse: getting first result ("
