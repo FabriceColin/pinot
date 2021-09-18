@@ -77,7 +77,7 @@ class ResultsTree : public Gtk::TreeView
 		Glib::ustring getFirstSelectionURL(void);
 
 		/// Gets a list of selected items.
-		bool getSelection(std::vector<DocumentInfo> &resultsList, bool skipIndexed = false);
+		bool getSelectedResults(std::vector<DocumentInfo> &resultsList, bool skipIndexed = false);
 
 		/// Sets the selected items' state.
 		void setSelectionState(bool viewed);
