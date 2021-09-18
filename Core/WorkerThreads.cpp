@@ -1402,7 +1402,7 @@ bool DirectoryScannerThread::scanEntry(const string &entryName,
 	int &entryStatus, bool statLinks)
 {
 	string location("file://" + entryName);
-	DocumentInfo docInfo(m_docInfo);
+	DocumentInfo docInfo("", location, "", "");
 	time_t itemDate = time(NULL);
 	struct stat fileStat;
 	bool scanSuccess = true, reportFile = false, itemExists = false;
