@@ -105,6 +105,8 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 	m_changedInfo = false;
 	m_changedLabels = false;
 
+	set_title(_("Properties"));
+
 	// If there's only one document selected, get its labels
 	if (m_documentsList.size() == 1)
 	{
@@ -132,8 +134,7 @@ void PropertiesDialog::setDocuments(const string &indexLocation,
 			title = docInfo.getTitle();
 			language = docInfo.getLanguage();
 
-			snprintf(numStr, 128, "%u", m_docId);
-			set_title(get_title() + " (ID " + numStr + ")");
+			set_title(title);
 
 			titleEntry->set_text(to_utf8(title));
 			typeEntry->set_text(to_utf8(MIMEScanner::getDescription(docInfo.getType(false))));
