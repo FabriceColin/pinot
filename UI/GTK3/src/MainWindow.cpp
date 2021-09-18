@@ -2126,7 +2126,6 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		indexedUrl = pIndexThread->getURL();
 
 		// Get the document properties
-		unsigned int docId = pIndexThread->getDocumentID();
 		DocumentInfo docInfo = pIndexThread->getDocumentInfo();
 
 		// Is the index still being shown ?
@@ -3904,8 +3903,6 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 		<< " engines" << endl;
 #endif
 
-	PinotSettings &settings = PinotSettings::getInstance();
-
 	// Now go through the selected search engines
 	set<ustring> engineDisplayableNames;
 	for (vector<TreeModel::iterator>::iterator iter = engineIters.begin();
@@ -3925,7 +3922,6 @@ void MainWindow::run_search(const QueryProperties &queryProps)
 
 		ustring engineName = engineRow[engineColumns.m_engineName];
 		ustring engineOption = engineRow[engineColumns.m_option];
-		EnginesModelColumns::EngineType engineType = engineRow[engineColumns.m_type];
 #ifdef DEBUG
 		clog << "MainWindow::run_search: engine " << engineDisplayableName << endl;
 #endif
