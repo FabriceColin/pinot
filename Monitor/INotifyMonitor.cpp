@@ -241,6 +241,7 @@ bool INotifyMonitor::removeLocations(const string &location)
 			++locationIter;
 		}
 	}
+	pthread_mutex_unlock(&m_mutex);
 
 	return true;
 }
