@@ -417,6 +417,7 @@ void DaemonState::DBusMessageHandler::GetDocumentTerms(guint32 docId,
 	{
 		vector<ustring> termsList;
 
+		termsList.reserve(wordsBuffer.size());
 		for (map<unsigned int, string>::const_iterator termIter = wordsBuffer.begin();
 			termIter != wordsBuffer.end(); ++termIter)
 		{
@@ -459,6 +460,7 @@ void DaemonState::DBusMessageHandler::GetLabels(PinotStub::MethodInvocation &inv
 		pIndex->getLabels(labelsCache);
 	}
 
+	labelsList.reserve(labelsCache.size());
 	for (set<string>::const_iterator labelIter = labelsCache.begin();
 		labelIter != labelsCache.end(); ++labelIter)
 	{
@@ -608,6 +610,7 @@ void DaemonState::DBusMessageHandler::GetDocumentLabels(guint32 docId,
 	{
 		vector<ustring> labelsList;
 
+		labelsList.reserve(labels.size());
 		for (set<string>::const_iterator labelIter = labels.begin();
 			labelIter != labels.end(); ++labelIter)
 		{
@@ -834,6 +837,7 @@ void DaemonState::DBusMessageHandler::GetCloseTerms(const ustring &term,
 	{
 		vector<ustring> termsList;
 
+		termsList.reserve(terms.size());
 		for (set<string>::const_iterator termIter = terms.begin();
 			termIter != terms.end(); ++termIter)
 		{
@@ -921,6 +925,7 @@ void DaemonState::DBusMessageHandler::ListDocuments(const ustring &term,
 
 	vector<ustring> docIdsList;
 
+	docIdsList.reserve(docIds.size());
 	for (set<unsigned int>::const_iterator docIter = docIds.begin();
 		docIter != docIds.end(); ++docIter)
 	{
