@@ -77,7 +77,6 @@ protected:
 	std::vector<DocumentInfo> m_documentsList;
 	std::set<std::string> m_labels;
 	unsigned int m_docId;
-	bool m_notALanguageName;
 	bool m_editDocument;
 	std::string m_infoHash;
 	std::string m_labelsHash;

@@ -84,6 +84,7 @@ void QueryDialog::setQueryProperties(const QueryProperties &properties)
 	// Name
 	if (m_name.empty() == true)
 	{
+		nameEntry->set_text("");
 		queryOkButton->set_sensitive(false);
 	}
 	else
