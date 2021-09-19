@@ -249,7 +249,8 @@ void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
 {
 	vector<ustring> busNames;
 
-	// Emit to all listeners, not just PINOT_DBUS_SERVICE_NAME
+	busNames.push_back(PINOT_DBUS_SERVICE_NAME);
+
 	IndexFlushed_emitter(busNames, docsCount);
 }
 
@@ -501,6 +502,7 @@ void DaemonState::DBusMessageHandler::AddLabel(const ustring &label,
 	if (labelsCache.find(labelName) == labelsCache.end())
 	{
 		pIndex->addLabel(labelName);
+		m_pServer->set_flag(DaemonState::SHOULD_FLUSH);
 	}
 
 	invocation.ret(label);
@@ -545,6 +547,7 @@ void DaemonState::DBusMessageHandler::DeleteLabel(const ustring &label,
 
 		// Update the metadata backup
 		metaData.deleteLabel(label.c_str());
+		m_pServer->set_flag(DaemonState::SHOULD_FLUSH);
 	}
 
 	invocation.ret(label);
@@ -685,6 +688,7 @@ void DaemonState::DBusMessageHandler::SetDocumentLabels(guint32 docId,
 
 		// Update the metadata backup
 		updateLabels(docId, metaData, pIndex, labelsList, resetLabels);
+		m_pServer->set_flag(DaemonState::SHOULD_FLUSH);
 
 		invocation.ret(docId);
 	}
@@ -764,6 +768,7 @@ void DaemonState::DBusMessageHandler::SetDocumentsLabels(const vector<ustring> &
 			// Update the metadata backup
 			updateLabels(*docIter, metaData, pIndex, labelsList, resetLabels);
 		}
+		m_pServer->set_flag(DaemonState::SHOULD_FLUSH);
 
 		invocation.ret(resetLabels);
 	}
@@ -1004,6 +1009,7 @@ void DaemonState::DBusMessageHandler::SetDocumentInfo(guint32 docId,
 	{
 		// Update the metadata backup
 		metaData.addItem(docInfo, DocumentInfo::SERIAL_FIELDS);
+		m_pServer->set_flag(DaemonState::SHOULD_FLUSH);
 
 		invocation.ret(docId);
 	}
@@ -1319,7 +1325,6 @@ DaemonState::DaemonState() :
 	m_isReindex(false),
 	m_tryReload(false),
 	m_readyToReload(false),
-	m_flush(false),
 	m_crawlHistory(PinotSettings::getInstance().getHistoryDatabaseName()),
 	m_pDiskMonitor(MonitorFactory::getMonitor()),
 	m_pDiskHandler(NULL),
@@ -1428,6 +1433,13 @@ bool DaemonState::on_activity_timeout(void)
 		check_battery_state();
 #endif
 
+		if ((get_threads_count() == 0) &&
+			(is_flag_set(SHOULD_FLUSH) == true))
+		{
+			// Do the actual flush here
+			reset_flag(SHOULD_FLUSH);
+			flush_and_reclaim();
+		}
 #ifdef HAVE_DBUS
 		if (m_messageHandler.mustQuit() == true)
 		{
@@ -1594,6 +1606,9 @@ void DaemonState::register_session(void)
 void DaemonState::emit_IndexFlushed(unsigned int docsCount)
 {
 #ifdef HAVE_DBUS
+#ifdef DEBUG
+	clog << "DaemonState::emit_IndexFlushed: called" << endl;
+#endif
 	m_messageHandler.emit_IndexFlushed(docsCount);
 #endif
 }
@@ -1704,7 +1719,7 @@ void DaemonState::stop_crawling(void)
 void DaemonState::on_thread_end(WorkerThread *pThread)
 {
 	string indexedUrl;
-	bool emptyQueue = false;
+	bool restoreMetadata = false;
 
 	if (pThread == NULL)
 	{
@@ -1736,7 +1751,8 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 			// Pop the queue
 			m_crawlQueue.pop();
 
-			m_flush = true;
+			restoreMetadata = true;
+			set_flag(DaemonState::SHOULD_FLUSH);
 		}
 		// Else, the directory wasn't fully crawled so better leave it in the queue
 
@@ -1874,8 +1890,7 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 	}
 	else if (type == "RestoreMetaDataThread")
 	{
-		// Do the actual flush here
-		flush_and_reclaim();
+		set_flag(DaemonState::SHOULD_FLUSH);
 	}
 
 	// Delete the thread
@@ -1898,32 +1913,22 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 		// ...clear the queues
 		clear_queues();
 	}
-	else
+	else if (isStopped == false)
 	{
 		// Try to run a queued action unless threads were stopped
-		if (isStopped == false)
-		{
-			emptyQueue = pop_queue(indexedUrl);
-		}
+		bool emptyQueue = pop_queue(indexedUrl);
 
 		// Wait until there are no threads running (except background ones)
 		// and the queue is empty to flush the index
-		if ((m_flush == true) &&
+		if ((restoreMetadata == true) &&
 			(emptyQueue == true) &&
 			(get_threads_count() == 0))
 		{
-			m_flush = false;
-
 			if ((m_isReindex == true) &&
 				(m_crawlQueue.empty() == true))
 			{
 				// Restore metadata on documents and flush when the tread returns
 				start_thread(new RestoreMetaDataThread());
-			}
-			else
-			{
-				// Flush now
-				flush_and_reclaim();
 			}
 		}
 	}

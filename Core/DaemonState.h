@@ -48,7 +48,7 @@ class DaemonState : public QueueManager
 		DaemonState();
 		virtual ~DaemonState();
 
-		typedef enum { LOW_DISK_SPACE = 0, ON_BATTERY, CRAWLING, STOPPED, DISCONNECTED } StatusFlag;
+		typedef enum { LOW_DISK_SPACE = 0, ON_BATTERY, CRAWLING, STOPPED, DISCONNECTED, SHOULD_FLUSH } StatusFlag;
 
 		virtual void disconnect(void);
 
@@ -212,7 +212,6 @@ class DaemonState : public QueueManager
 		bool m_isReindex;
 		bool m_tryReload;
 		bool m_readyToReload;
-		bool m_flush;
 		fd_set m_flagsSet;
 		CrawlHistory m_crawlHistory;
 		MonitorInterface *m_pDiskMonitor;
