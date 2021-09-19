@@ -118,9 +118,9 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   the value of /proc/sys/fs/inotify/max_user_watches - 1024.
 
   The daemon will skip symlinks that refer to locations that have already
-  been crawled, or locations it knows it will have to crawl.
-  When skipped, symlinks are not followed but are still indexed, with the
-  MIME type "inode/symlink".
+  been crawled, or locations it knows it will have to crawl. When skipped,
+  symlinks are not followed but are still indexed, with the MIME type
+  "inode/symlink".
 
   While Pinot is not currently able to get to and index application-specific
   data held in dot-directories, it can index common file formats as listed
@@ -327,23 +327,28 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
     * when starting, the service will first crawl all configured locations
       and (re)index new and modified files. The daemon's scheduling priority
       is set very low (15, can be adjusted with --priority) so that it
-      hopefully doesn't prevent other activities!
+      hopefully doesn't prevent other activities. Crawling is suspended
+      while the system is on battery.
     * when finished crawling, the service will monitor some locations for
       changes (as per preferences) and should consume little resources, unless
       a huge quantity of files needs its attention.
-    * any change detected by the monitor is immediately queued and acted upon
-      as soon as possible, eg reindex a file that was modified. This and low
-      priority should make the daemon not very intrusive.
+    * any change detected by the monitor is queued and acted upon as soon as
+      possible, eg reindex a file that was modified.
     * operations that involve communicating with the daemon, such as editing
       documents metadata, may timeout if the system is under heavy load and/or
       the daemon is busy. In most cases, the message will have been received
       by the daemon, but the reply may take longer than expected. The Pinot
       UI may report that the operation failed, even though it was queued for
-      processing and will be acted upon by the daemon as soon as possible.
+      processing and will be acted upon by the daemon.
 
   See section "13. Environment variables and aliases" for some tips on how to
   query the D-Bus interface. A list of available D-Bus methods can be found
   in the file pinot-dbus-daemon.xml.
+
+  Pinot v1.20 implements the GNOME Shell search provider interface, and
+  allows searching the contents of files the daemon found at locations it
+  crawled, basically the My Documents index. Enable Pinot as a provider
+  om GNOME Settings' Search screen.
 
 
 12. CJKV support

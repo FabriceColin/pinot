@@ -2,6 +2,7 @@
 General :
  - dropped xdgmime in favour of gio
  - require giomm >= 2.6
+ - run rst2txt on RST files, if available
 IndexSearch :
  - removed obsolete search plugins, dead code
  - better results with the dir query filter
