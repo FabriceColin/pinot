@@ -47,7 +47,7 @@ DBusIndex::DBusIndex(IndexInterface *pROIndex) :
 	IndexInterface(),
 	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
 		DBus::BUS_TYPE_SESSION,
-		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
+		Gio::DBus::PROXY_FLAGS_NONE,
 		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
 	m_pROIndex(pROIndex)
 {
