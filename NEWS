@@ -5,6 +5,7 @@ General :
  - run rst2txt on RST files, if available
 IndexSearch :
  - removed obsolete search plugins, dead code
+ - added a plugin for Arxiv
  - better results with the dir query filter
  - fixed size range queries
  - synced with how Xapian Omega indexes file extensions
@@ -20,8 +21,7 @@ Daemon :
  - reduced flushing
  - a IndexFlushEpoch property indicates the last time index changed
  were flushed to disk
- - rely on org.gnome.Shell.SearchProvider2.OnBattery on systems with
- a battery
+ - rely on org.freedesktop.UPower's OnBattery on systems with a battery
  - implemented the org.gnome.Shell.SearchProvider2 interface. The content
  of documents in directories Pinot indexed can be searched through the
  Gnome 3 Shell.
