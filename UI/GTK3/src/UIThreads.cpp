@@ -89,6 +89,7 @@ void IndexBrowserThread::doWork(void)
 	clog << "IndexBrowserThread::doWork: " << m_maxDocsCount << " off " << m_documentsCount
 		<< " documents to browse, starting at position " << m_startDoc << endl;
 #endif
+	// FIXME: this should provide documents' info
 	pIndex->listDocuments(docIDList, m_maxDocsCount, m_startDoc);
 
 	m_documentsList.clear();
@@ -250,14 +251,24 @@ string LabelUpdateThread::getType(void) const
 	return "LabelUpdateThread";
 }
 
-bool LabelUpdateThread::modifiedDocsIndex(void) const
+const set<unsigned int> &LabelUpdateThread::getDocIds(void) const
 {
-	return !m_docsIds.empty();
+	return m_docsIds;
 }
 
-bool LabelUpdateThread::modifiedDaemonIndex(void) const
+const set<unsigned int> &LabelUpdateThread::getDaemonIds(void) const
 {
-	return !m_daemonIds.empty();
+	return m_daemonIds;
+}
+
+const set<string> &LabelUpdateThread::getLabels(void) const
+{
+	return m_labelsToAdd;
+}
+
+bool LabelUpdateThread::resetLabels(void) const
+{
+	return m_resetLabels;
 }
 
 void LabelUpdateThread::doWork(void)
@@ -333,11 +344,6 @@ string UpdateDocumentThread::getType(void) const
 PinotSettings::IndexProperties UpdateDocumentThread::getIndexProperties(void) const
 {
 	return m_indexProps;
-}
-
-unsigned int UpdateDocumentThread::getDocumentID(void) const
-{
-	return m_docId;
 }
 
 const DocumentInfo &UpdateDocumentThread::getDocumentInfo(void) const

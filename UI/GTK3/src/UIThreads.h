@@ -105,9 +105,13 @@ class LabelUpdateThread : public WorkerThread
 
 		virtual std::string getType(void) const;
 
-		bool modifiedDocsIndex(void) const;
+		const std::set<unsigned int> &getDocIds(void) const;
 
-		bool modifiedDaemonIndex(void) const;
+		const std::set<unsigned int> &getDaemonIds(void) const;
+
+		const std::set<std::string> &getLabels(void) const;
+
+		bool resetLabels(void) const;
 
 	protected:
 		std::set<std::string> m_labelsToAdd;
@@ -136,8 +140,6 @@ class UpdateDocumentThread : public WorkerThread
 		virtual std::string getType(void) const;
 
 		PinotSettings::IndexProperties getIndexProperties(void) const;
-
-		unsigned int getDocumentID(void) const;
 
 		const DocumentInfo &getDocumentInfo(void) const;
 

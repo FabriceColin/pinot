@@ -42,6 +42,7 @@
 #include <gtkmm/treestore.h>
 #include <gtkmm/window.h>
 
+#include "config.h"
 #include "DocumentInfo.h"
 #include "QueryProperties.h"
 #include "MonitorInterface.h"
