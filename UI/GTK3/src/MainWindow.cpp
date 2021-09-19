@@ -125,7 +125,7 @@ MainWindow::InternalState::InternalState(MainWindow *pWindow) :
 #ifdef HAVE_DBUS
 	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
 		Gio::DBus::BUS_TYPE_SESSION,
-		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
+		Gio::DBus::PROXY_FLAGS_NONE,
 		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
 #endif
 	m_liveQueryLength(0),
@@ -2017,37 +2017,8 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 	}
 	else if (type == "LabelUpdateThread")
 	{
-		LabelUpdateThread *pLabelUpdateThread = dynamic_cast<LabelUpdateThread *>(pThread);
-		if (pLabelUpdateThread == NULL)
-		{
-			delete pThread;
-			return;
-		}
-
-		// Refresh index lists if necessary, as they may be filtered by labels
-		if (pLabelUpdateThread->modifiedDocsIndex() == true)
-		{
-			IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_page(_("My Web Pages"), NotebookPageBox::INDEX_PAGE));
-			if (pIndexPage != NULL)
-			{
-				browse_index(_("My Web Pages"), pIndexPage->getQueryName(), 0, false);
-#ifdef DEBUG
-				clog << "MainWindow::on_thread_end: refreshed My Web Pages" << endl;
-#endif
-			}
-		}
-		if (pLabelUpdateThread->modifiedDaemonIndex() == true)
-		{
-			IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_page(_("My Documents"), NotebookPageBox::INDEX_PAGE));
-			if (pIndexPage != NULL)
-			{
-				browse_index(_("My Documents"), pIndexPage->getQueryName(), 0, false);
-#ifdef DEBUG
-				clog << "MainWindow::on_thread_end: refreshed My Documents" << endl;
-#endif
-			}
-		}
-
+		// This could refresh index lists but refreshing My Documents won't help
+		// as the daemon may not have flushed the changes
 		status = _("Updated label(s)");
 		set_status(status);
 	}
@@ -2222,23 +2193,13 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 			return;
 		}
 
-		PinotSettings::IndexProperties indexProps(pUpdateThread->getIndexProperties());
-		IndexPage *pIndexPage = dynamic_cast<IndexPage*>(get_page(indexProps.m_name, NotebookPageBox::INDEX_PAGE));
-		if (pIndexPage != NULL)
-		{
-			ResultsTree *pResultsTree = pIndexPage->getTree();
-			if ((pResultsTree != NULL) &&
-				(pResultsTree->updateResult(pUpdateThread->getDocumentInfo()) == true))
-			{
-				char docIdStr[64];
+		DocumentInfo docInfo(pUpdateThread->getDocumentInfo());
 
-				status = _("Updated document");
-				status += " ";
-				snprintf(docIdStr, 64, "%u", pUpdateThread->getDocumentID());
-				status += docIdStr;
-				set_status(status);
-			}
-		}
+		// FIXME: fix this for RTL languages
+		status = _("Updated document");
+		status += " ";
+		status += docInfo.getTitle();
+		set_status(status);
 	}
 #ifdef HAVE_DBUS
 	else if (type == "DaemonStatusThread")
@@ -2974,18 +2935,32 @@ void MainWindow::on_properties_activate()
 	}
 
 	documentsList = pPropertiesBox->getDocuments();
+	const set<string> &labels = pPropertiesBox->getLabels();
 
 	// Update documents properties
 	for (vector<DocumentInfo>::iterator docIter = documentsList.begin();
 		docIter != documentsList.end(); ++docIter)
 	{
+		DocumentInfo docInfo(*docIter);
 		unsigned int indexId = 0;
-		unsigned int docId = docIter->getIsIndexed(indexId);
+		unsigned int docId = docInfo.getIsIndexed(indexId);
+		bool updateResult = false;
 
 		// ... only if something was modified
 		if (pPropertiesBox->changedInfo() == true)
 		{
-			start_thread(new UpdateDocumentThread(indexProps, docId, *docIter, false));
+			start_thread(new UpdateDocumentThread(indexProps, docId, docInfo, false));
+			updateResult = true;
+		}
+		if (pPropertiesBox->changedLabels() == true)
+		{
+			docInfo.setLabels(labels);
+			updateResult = true;
+		}
+
+		if (updateResult == true)
+		{
+			pResultsTree->updateResult(docInfo);
 		}
 
 		docIds.insert(docId);
@@ -2996,7 +2971,6 @@ void MainWindow::on_properties_activate()
 	{
 		LabelUpdateThread *pThread = NULL;
 		set<unsigned int> empty;
-		const set<string> &labels = pPropertiesBox->getLabels();
 
 		// Apply the labels en masse
 		if (docsIndex == true)
