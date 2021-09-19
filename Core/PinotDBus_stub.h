@@ -127,6 +127,8 @@ public:
 
     class MethodInvocation;
 
+    bool DaemonVersion_set(const Glib::ustring & value);
+    bool IndexFlushEpoch_set(guint32 value);
 protected:
     virtual void GetStatistics(
         MethodInvocation &invocation) = 0;
@@ -202,9 +204,21 @@ protected:
         guint32 maxHits,
         MethodInvocation &invocation) = 0;
 
-    void IndexFlushed_emitter(const std::vector<Glib::ustring> &destination_bus_names, guint32);
-    sigc::signal<void, guint32> IndexFlushed_signal;
-    sigc::signal<void, const std::vector<Glib::ustring>&, guint32> IndexFlushed_selectiveSignal;
+    /* Handle the setting of a property
+     * This method will be called as a result of a call to <PropName>_set
+     * and should implement the actual setting of the property value.
+     * Should return true on success and false otherwise.
+     */
+    virtual bool DaemonVersion_setHandler(const Glib::ustring & value) = 0;
+    virtual Glib::ustring DaemonVersion_get() = 0;
+
+    /* Handle the setting of a property
+     * This method will be called as a result of a call to <PropName>_set
+     * and should implement the actual setting of the property value.
+     * Should return true on success and false otherwise.
+     */
+    virtual bool IndexFlushEpoch_setHandler(guint32 value) = 0;
+    virtual guint32 IndexFlushEpoch_get() = 0;
 
     void on_method_call(const Glib::RefPtr<Gio::DBus::Connection> &connection,
                         const Glib::ustring &sender,

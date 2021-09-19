@@ -54,8 +54,6 @@ class DaemonState : public QueueManager
 
 		void register_session(void);
 
-		void emit_IndexFlushed(unsigned int docsCount);
-
 		void start(bool isReindex);
 
 		bool start_crawling(void);
@@ -73,6 +71,8 @@ class DaemonState : public QueueManager
 		bool is_flag_set(StatusFlag flag);
 
 		void reset_flag(StatusFlag flag);
+
+		void flush_and_reclaim(void);
 
 	protected:
 #ifdef HAVE_DBUS
@@ -95,10 +95,9 @@ class DaemonState : public QueueManager
 
 				bool mustQuit(void) const;
 
-				void emit_IndexFlushed(unsigned int docsCount);
-
 			protected:
 				DaemonState *m_pServer;
+				time_t m_flushTime;
 				bool m_mustQuit;
 
 			    virtual void GetStatistics(PinotStub::MethodInvocation &invocation);
@@ -172,6 +171,14 @@ class DaemonState : public QueueManager
 					guint32 maxHits,
 					PinotStub::MethodInvocation &invocation);
 
+				virtual bool DaemonVersion_setHandler(const Glib::ustring &value);
+
+				virtual Glib::ustring DaemonVersion_get();
+
+				virtual bool IndexFlushEpoch_setHandler(guint32 value);
+
+				virtual guint32 IndexFlushEpoch_get();
+
 		};
 		class DBusSearchProvider : public org::gnome::Shell::SearchProvider2Stub
 		{
@@ -231,8 +238,6 @@ class DaemonState : public QueueManager
 		void check_battery_state(void);
 
 		bool crawl_location(const PinotSettings::IndexableLocation &location);
-
-		void flush_and_reclaim(void);
 
 };
 

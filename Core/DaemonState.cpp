@@ -232,6 +232,7 @@ void DaemonState::DBusIntrospectHandler::Introspect(IntrospectableStub::MethodIn
 DaemonState::DBusMessageHandler::DBusMessageHandler(DaemonState *pServer) :
 	PinotStub(),
 	m_pServer(pServer),
+	m_flushTime(time(NULL)),
 	m_mustQuit(false)
 {
 }
@@ -243,15 +244,6 @@ DaemonState::DBusMessageHandler::~DBusMessageHandler()
 bool DaemonState::DBusMessageHandler::mustQuit(void) const
 {
 	return m_mustQuit;
-}
-
-void DaemonState::DBusMessageHandler::emit_IndexFlushed(unsigned int docsCount)
-{
-	vector<ustring> busNames;
-
-	busNames.push_back(PINOT_DBUS_SERVICE_NAME);
-
-	IndexFlushed_emitter(busNames, docsCount);
 }
 
 void DaemonState::DBusMessageHandler::GetStatistics(PinotStub::MethodInvocation &invocation)
@@ -1099,6 +1091,34 @@ void DaemonState::DBusMessageHandler::SimpleQuery(const ustring &searchText,
 		0, true));
 }
 
+bool DaemonState::DBusMessageHandler::DaemonVersion_setHandler(const ustring &value)
+{
+	return true;
+}
+
+ustring DaemonState::DBusMessageHandler::DaemonVersion_get()
+{
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::DaemonVersion_get: called" << endl;
+#endif
+	return PACKAGE_VERSION;
+}
+
+bool DaemonState::DBusMessageHandler::IndexFlushEpoch_setHandler(guint32 value)
+{
+	m_flushTime = (time_t)value;
+	return true;
+}
+
+guint32 DaemonState::DBusMessageHandler::IndexFlushEpoch_get()
+{
+#ifdef DEBUG
+	clog << "DaemonState::DBusMessageHandler::IndexFlushEpoch_get: called on "
+		<< m_flushTime << endl;
+#endif
+	return (unsigned int)m_flushTime;
+}
+
 DaemonState::DBusSearchProvider::DBusSearchProvider(DaemonState *pServer) :
 	SearchProvider2Stub(),
 	m_pServer(pServer)
@@ -1539,24 +1559,6 @@ bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &locatio
 	return false;
 }
 
-void DaemonState::flush_and_reclaim(void)
-{
-	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
-	if (pIndex != NULL)
-	{
-		// Flush
-		pIndex->flush();
-
-		// Signal
-		emit_IndexFlushed(pIndex->getDocumentsCount());
-
-		delete pIndex;
-	}
-
-	int inUse = Memory::getUsage();
-	Memory::reclaim();
-}
-
 void DaemonState::register_session(void)
 {
 #ifdef HAVE_DBUS
@@ -1590,16 +1592,6 @@ void DaemonState::register_session(void)
 			mustQuit(true);
 		}
 	);
-#endif
-}
-
-void DaemonState::emit_IndexFlushed(unsigned int docsCount)
-{
-#ifdef HAVE_DBUS
-#ifdef DEBUG
-	clog << "DaemonState::emit_IndexFlushed: called" << endl;
-#endif
-	m_messageHandler.emit_IndexFlushed(docsCount);
 #endif
 }
 
@@ -1970,5 +1962,25 @@ bool DaemonState::is_flag_set(StatusFlag flag)
 void DaemonState::reset_flag(StatusFlag flag)
 {
 	FD_CLR((int)flag, &m_flagsSet);
+}
+
+void DaemonState::flush_and_reclaim(void)
+{
+	IndexInterface *pIndex = PinotSettings::getInstance().getIndex(PinotSettings::getInstance().m_daemonIndexLocation);
+	if (pIndex != NULL)
+	{
+		// Flush
+		pIndex->flush();
+
+#ifdef HAVE_DBUS
+		// Update the DBus property
+		m_messageHandler.IndexFlushEpoch_set((unsigned int)time(NULL));
+#endif
+
+		delete pIndex;
+	}
+
+	int inUse = Memory::getUsage();
+	Memory::reclaim();
 }
 

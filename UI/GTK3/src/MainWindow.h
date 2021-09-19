@@ -254,11 +254,10 @@ private:
 			InternalState(MainWindow *pWindow);
 			virtual ~InternalState();
 
-			void on_IndexFlushed(guint32 docsCount);
-
 #ifdef HAVE_DBUS
 			// DBus proxy
 			Glib::RefPtr<com::github::fabricecolin::PinotProxy> m_refProxy;
+			time_t m_flushEpoch;
 #endif
 			// Query
 			unsigned int m_liveQueryLength;

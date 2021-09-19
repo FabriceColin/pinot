@@ -1288,6 +1288,46 @@ com::github::fabricecolin::PinotProxy::SimpleQuery_sync(
     return out_docIds;
 }
 
+Glib::ustring com::github::fabricecolin::PinotProxy::DaemonVersion_get(bool *ok)
+{
+    Glib::Variant<Glib::ustring> b;
+    m_proxy->get_cached_property(b, "DaemonVersion");
+    if (b) {
+        if (ok) {
+            *ok = true;
+        }
+        return (specialGetter(b));
+    } else {
+        if (ok) {
+            *ok = false;
+        } else {
+            g_warning("Unhandled error while getting property DaemonVersion");
+        }
+        return Glib::ustring();
+    }
+
+}
+
+guint32 com::github::fabricecolin::PinotProxy::IndexFlushEpoch_get(bool *ok)
+{
+    Glib::Variant<guint32> b;
+    m_proxy->get_cached_property(b, "IndexFlushEpoch");
+    if (b) {
+        if (ok) {
+            *ok = true;
+        }
+        return (specialGetter(b));
+    } else {
+        if (ok) {
+            *ok = false;
+        } else {
+            g_warning("Unhandled error while getting property IndexFlushEpoch");
+        }
+        return guint32();
+    }
+
+}
+
 void com::github::fabricecolin::PinotProxy::handle_signal(const Glib::ustring&/* sender_name */,
     const Glib::ustring& signal_name,
     const Glib::VariantContainerBase& parameters)
@@ -1295,15 +1335,6 @@ void com::github::fabricecolin::PinotProxy::handle_signal(const Glib::ustring&/*
     static_cast<void>(signal_name); // maybe unused
     static_cast<void>(parameters); // maybe unused
 
-    if (signal_name == "IndexFlushed") {
-        if (parameters.get_n_children() != 1) return;
-        Glib::Variant<guint32> base_docsCount;
-        parameters.get_child(base_docsCount, 0);
-        guint32 p_docsCount;
-        p_docsCount = base_docsCount.get();
-
-        IndexFlushed_signal.emit((p_docsCount));
-    }
 }
 
 void com::github::fabricecolin::PinotProxy::handle_properties_changed(
@@ -1316,6 +1347,10 @@ void com::github::fabricecolin::PinotProxy::handle_properties_changed(
     // values of invalidated properties in which case property will be in changed_properties when
     // value is actually received. See Gio::DBus::ProxyFlags::PROXY_FLAGS_GET_INVALIDATED_PROPERTIES .
 
+    if (changed_properties.find("DaemonVersion") != changed_properties.cend())
+        m_DaemonVersion_changed.emit();
+    if (changed_properties.find("IndexFlushEpoch") != changed_properties.cend())
+        m_IndexFlushEpoch_changed.emit();
 }
 
 com::github::fabricecolin::PinotProxy::PinotProxy(const Glib::RefPtr<Gio::DBus::Proxy> &proxy) : m_proxy(proxy)

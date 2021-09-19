@@ -10,10 +10,6 @@
     These methods shouldn't be used by any applications other than Pinot.
 	-->
   <interface name="com.github.fabricecolin.Pinot">
-    <signal name="IndexFlushed">
-      <annotation name="com.github.fabricecolin.Pinot.IndexFlushed" value="pinotDBus"/>
-      <arg type="u" name="docsCount" direction="out"/>
-    </signal>
     <!--
 	Retrieves statistics.
 	 crawledCount: the number of documents crawled
@@ -247,6 +243,16 @@
       <arg type="u" name="maxHits" direction="in" />
       <arg type="as" name="docIds" direction="out" />
     </method>
+    <!--
+    The daemon's version.
+	-->
+    <property name="DaemonVersion" type="s" access="read">
+    </property>
+    <!--
+    Epoch of the latest flush operation.
+	-->
+    <property name="IndexFlushEpoch" type="u" access="read">
+    </property>
   </interface>
   <interface name="org.gnome.Shell.SearchProvider2">
 

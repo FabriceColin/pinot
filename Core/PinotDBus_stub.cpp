@@ -10,10 +10,6 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
     These methods shouldn't be used by any applications other than Pinot.
 	-->
   <interface name="com.github.fabricecolin.Pinot">
-    <signal name="IndexFlushed">
-      <annotation name="com.github.fabricecolin.Pinot.IndexFlushed" value="pinotDBus"/>
-      <arg type="u" name="docsCount" direction="out"/>
-    </signal>
     <!--
 	Retrieves statistics.
 	 crawledCount: the number of documents crawled
@@ -247,6 +243,16 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<?xml version="1.0" encoding
       <arg type="u" name="maxHits" direction="in" />
       <arg type="as" name="docIds" direction="out" />
     </method>
+    <!--
+    The daemon's version.
+	-->
+    <property name="DaemonVersion" type="s" access="read">
+    </property>
+    <!--
+    Epoch of the latest flush operation.
+	-->
+    <property name="IndexFlushEpoch" type="u" access="read">
+    </property>
   </interface>
 </node>
 )XML_DELIMITER";
@@ -408,9 +414,6 @@ bool org::freedesktop::DBus::IntrospectableStub::emitSignal(
 }com::github::fabricecolin::PinotStub::PinotStub():
     m_interfaceName("com.github.fabricecolin.Pinot")
 {
-    IndexFlushed_signal.connect(sigc::bind<0>(sigc::mem_fun(this, &PinotStub::IndexFlushed_emitter),
-            std::vector<Glib::ustring>({""})) );
-    IndexFlushed_selectiveSignal.connect(sigc::mem_fun(this, &PinotStub::IndexFlushed_emitter));
 }
 
 com::github::fabricecolin::PinotStub::~PinotStub()
@@ -771,6 +774,16 @@ void com::github::fabricecolin::PinotStub::on_interface_get_property(
     static_cast<void>(property); // maybe unused
     static_cast<void>(property_name); // maybe unused
 
+    if (property_name.compare("DaemonVersion") == 0) {
+
+        property = Glib::Variant<Glib::ustring>::create((DaemonVersion_get()));
+    }
+
+    if (property_name.compare("IndexFlushEpoch") == 0) {
+
+        property = Glib::Variant<guint32>::create((IndexFlushEpoch_get()));
+    }
+
 }
 
 bool com::github::fabricecolin::PinotStub::on_interface_set_property(
@@ -787,27 +800,32 @@ bool com::github::fabricecolin::PinotStub::on_interface_set_property(
     return true;
 }
 
-void com::github::fabricecolin::PinotStub::IndexFlushed_emitter(
-    const std::vector<Glib::ustring> &destination_bus_names,guint32 docsCount)
+
+bool com::github::fabricecolin::PinotStub::DaemonVersion_set(const Glib::ustring & value)
 {
-    std::vector<Glib::VariantBase> paramsList;
+    if (DaemonVersion_setHandler(value)) {
+        Glib::Variant<Glib::ustring> value_get =
+            Glib::Variant<Glib::ustring>::create((DaemonVersion_get()));
 
-    paramsList.push_back(Glib::Variant<guint32>::create((docsCount)));;
-
-    const Glib::VariantContainerBase params =
-        Glib::Variant<std::vector<Glib::VariantBase>>::create_tuple(paramsList);
-    for (const RegisteredObject &obj: m_registered_objects) {
-        for (const auto &bus_name: destination_bus_names) {
-            obj.connection->emit_signal(
-                    obj.object_path,
-                    "com.github.fabricecolin.Pinot",
-                    "IndexFlushed",
-                    bus_name,
-                    params);
-        }
+        emitSignal("DaemonVersion", value_get);
+        return true;
     }
+
+    return false;
 }
 
+bool com::github::fabricecolin::PinotStub::IndexFlushEpoch_set(guint32 value)
+{
+    if (IndexFlushEpoch_setHandler(value)) {
+        Glib::Variant<guint32> value_get =
+            Glib::Variant<guint32>::create((IndexFlushEpoch_get()));
+
+        emitSignal("IndexFlushEpoch", value_get);
+        return true;
+    }
+
+    return false;
+}
 
 bool com::github::fabricecolin::PinotStub::emitSignal(
     const std::string &propName,

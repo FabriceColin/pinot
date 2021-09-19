@@ -127,35 +127,17 @@ MainWindow::InternalState::InternalState(MainWindow *pWindow) :
 		Gio::DBus::BUS_TYPE_SESSION,
 		Gio::DBus::PROXY_FLAGS_NONE,
 		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
+	m_flushEpoch(time(NULL)),
 #endif
 	m_liveQueryLength(0),
 	m_currentPage(0),
 	m_browsingIndex(false)
 {
 	m_onThreadEndSignal.connect(sigc::mem_fun(*pWindow, &MainWindow::on_thread_end));
-#ifdef HAVE_DBUS
-	m_refProxy->IndexFlushed_signal.connect(sigc::mem_fun(*this, &MainWindow::InternalState::on_IndexFlushed));
-#endif
 }
 
 MainWindow::InternalState::~InternalState()
 {
-}
-
-void MainWindow::InternalState::on_IndexFlushed(guint32 docsCount)
-{
-	PinotSettings &settings = PinotSettings::getInstance();
-
-#ifdef DEBUG
-	clog << "MainWindow::InternalState::on_IndexFlushed: called with " << docsCount << endl;
-#endif
-	IndexInterface *pIndex = settings.getIndex(settings.m_daemonIndexLocation);
-	if (pIndex != NULL)
-	{
-		pIndex->reopen();
-
-		delete pIndex;
-	}
 }
 
 //
@@ -479,6 +461,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::setQueryTerms(const ustring &queryTerms)
 {
+	if (queryTerms.empty() == true)
+	{
+		return;
+	}
+
 	QueryProperties queryProps(_("Live query"), queryTerms);
 
 	liveQueryEntry->set_text(queryTerms);
@@ -4185,6 +4172,27 @@ void MainWindow::view_documents(const vector<DocumentInfo> &documentsList)
 //
 bool MainWindow::start_thread(WorkerThread *pNewThread, bool inBackground)
 {
+#ifdef HAVE_DBUS
+	time_t flushEpoch = (time_t)m_state.m_refProxy->IndexFlushEpoch_get();
+
+#ifdef DEBUG
+	clog << "MainWindow::start_thread: index flushed at " << flushEpoch
+		<< " versus " << m_state.m_flushEpoch << endl;
+#endif
+	if (flushEpoch > m_state.m_flushEpoch)
+	{
+		m_state.m_flushEpoch = flushEpoch;
+
+		IndexInterface *pIndex = m_settings.getIndex(m_settings.m_daemonIndexLocation);
+		if (pIndex != NULL)
+		{
+			pIndex->reopen();
+
+			delete pIndex;
+		}
+	}
+#endif
+
 	if (m_state.start_thread(pNewThread, inBackground) == false)
 	{
 		// Delete the object

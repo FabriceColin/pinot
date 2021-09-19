@@ -446,8 +446,7 @@ int main(int argc, char **argv)
 			{
 				// Reset the index so that all documents are reindexed
 				pIndex->reset();
-				pIndex->flush();
-				server.emit_IndexFlushed(0);
+				server.flush_and_reclaim();
 
 				clog << "Reset index" << endl;
 
