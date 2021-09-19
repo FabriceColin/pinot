@@ -17,6 +17,8 @@ Daemon :
  when crawling ends for the next one
  - overhauled the D-Bus implementation, extended the interface
  - reduced flushing
+ - a IndexFlushEpoch property indicates the last time index changed
+ were flushed to disk
  - rely on org.gnome.Shell.SearchProvider2.OnBattery on systems with
  a battery
  - implemented the org.gnome.Shell.SearchProvider2 interface. The content
@@ -26,6 +28,7 @@ UI :
  - removed the gtk2 UI, refreshed the gtk3 UI
  - the gtk3 UI is loaded from a Glade XML file
  - reduced direct reading of the daemon's index
+ - reopen the daemon's index as per the IndexFlushEpoch property
  - fixed file imports and error reporting
  - stored queries' results may be sorted by file size
  - rationalized activation and behaviour of the Edit menuitems

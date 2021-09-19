@@ -59,9 +59,8 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   Additional engines can be installed in that directory or in ~/.pinot/engines.
   Note this directory is not created automatically.
 
-  Sherlock is what Firefox and the Mozilla suite use. Chances are that somebody
-  wrote a plugin for the engine you are interested in. MyCroft at
-  http://mycroft.mozdev.org/ has got plenty of plugins. Beware that a lot are
+  Sherlock is what Firefox and the Mozilla Suite use. Chances are that somebody
+  wrote a plugin for the engine you are interested in. Beware that a lot are
   out of date and will require some changes. Use pinot-search on the
   command-line to run a quick check on a plugin, eg
   $ pinot-search sherlock $PREFIX/share/pinot/engines/Bozo.src "clowns"
@@ -69,13 +68,10 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   Plugins are categorized by channels. For Sherlock plugins, the routeType
   element under SEARCH specifies the name of the channel the plugin belongs to.
 
-  As for OpenSearch, A9.com has an extensive list at
-  http://a9.com/-/search/moreColumns.jsp. A Description file is not available
-  for all engines though...
-  Pinot should work with OpenSearch Description 1.0 and 1.1 (draft 2) plugins.
-  One thing to keep in mind is that because Description doesn't describe how
-  to parse the results page returned by the search engine, Pinot assumes that
-  the engine will return results formatted according to the OpenSearch Response
+  As for OpenSearch, Pinot should work with OpenSearch Description 1.0 and 1.1
+  (draft 2) plugins. Keep in mind that the spec doesn't describe how to parse
+  the results pages returned by search engines, therefore Pinot assumes that
+  engines return results formatted according to the OpenSearch Response
   standard.
   In practice, this means that plugins that don't stick to the following rules
   will be ignored or won't show any result :
