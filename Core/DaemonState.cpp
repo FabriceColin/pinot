@@ -1372,26 +1372,7 @@ void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapCha
 {
 	if (changed_properties.find("OnBattery") != changed_properties.cend())
 	{
-		Variant<bool> boolValue;
-
-		m_powerProxy->get_cached_property(boolValue, "OnBattery");
-
-		if (boolValue)
-		{
-			// We are now on battery
-			set_flag(ON_BATTERY);
-			stop_crawling();
-
-			clog << "System is now on battery" << endl;
-		}
-		else
-		{
-			// Back on-line
-			reset_flag(ON_BATTERY);
-			start_crawling();
-
-			clog << "System is now on AC" << endl;
-		}
+		check_battery_state();
 	}
 }
 #endif
@@ -1459,44 +1440,53 @@ bool DaemonState::on_activity_timeout(void)
 
 void DaemonState::check_battery_state(void)
 {
+	bool wasOnBattery = is_flag_set(ON_BATTERY);
+	bool onBattery = false;
 #ifdef CHECK_BATTERY_SYSCTL
 	int acline = 1;
 	size_t len = sizeof(acline);
-	bool onBattery = false;
 
 	// Are we on battery power ?
-	if (sysctlbyname("hw.acpi.acline", &acline, &len, NULL, 0) == 0)
+	if (sysctlbyname("hw.acpi.acline", &acline, &len, NULL, 0) != 0)
 	{
+		return;
+	}
 #ifdef DEBUG
-		clog << "DaemonState::check_battery_state: acline " << acline << endl;
+	clog << "DaemonState::check_battery_state: acline " << acline << endl;
 #endif
-		if (acline == 0)
+	if (acline == 0)
+	{
+		onBattery = true;
+	}
+#else
+#ifdef HAVE_DBUS
+	Variant<bool> boolValue;
+
+	m_powerProxy->get_cached_property(boolValue, "OnBattery");
+
+	onBattery = boolValue.get();
+#endif
+#endif
+
+	if (onBattery != wasOnBattery)
+	{
+		if (onBattery == true)
 		{
-			onBattery = true;
+			// We are now on battery
+			set_flag(ON_BATTERY);
+			stop_crawling();
+
+			clog << "System is now on battery" << endl;
 		}
-
-		bool wasOnBattery = is_flag_set(ON_BATTERY);
-		if (onBattery != wasOnBattery)
+		else
 		{
-			if (onBattery == true)
-			{
-				// We are now on battery
-				set_flag(ON_BATTERY);
-				stop_crawling();
+			// Back on-line
+			reset_flag(ON_BATTERY);
+			start_crawling();
 
-				clog << "System is now on battery" << endl;
-			}
-			else
-			{
-				// Back on-line
-				reset_flag(ON_BATTERY);
-				start_crawling();
-
-				clog << "System is now on AC" << endl;
-			}
+			clog << "System is now on AC" << endl;
 		}
 	}
-#endif
 }
 
 bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &location)
