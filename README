@@ -348,7 +348,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   Pinot v1.20 implements the GNOME Shell search provider interface, and
   allows searching the contents of files the daemon found at locations it
   crawled, basically the My Documents index. Enable Pinot as a provider
-  om GNOME Settings' Search screen.
+  in GNOME Settings' Search screen.
 
 
 12. CJKV support
