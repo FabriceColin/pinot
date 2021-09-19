@@ -363,7 +363,8 @@ void XapianIndex::addPostingsToDocument(const Xapian::Utf8Iterator &itor, Xapian
 
 	// Do we know what language to use for stemming ?
 	if ((noStemming == false) &&
-		(m_stemLanguage.empty() == false))
+		(m_stemLanguage.empty() == false) &&
+		(m_stemLanguage != "unknown"))
 	{
 		try
 		{

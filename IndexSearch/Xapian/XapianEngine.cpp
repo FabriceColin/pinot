@@ -1156,7 +1156,8 @@ bool XapianEngine::runQuery(QueryProperties& queryProps,
 		return false;
 	}
 
-	if (stemLanguage.empty() == false)
+	if ((stemLanguage.empty() == false) &&
+		(stemLanguage != "unknown"))
 	{
 #ifdef DEBUG
 		clog << "XapianEngine::runQuery: " << stemLanguage << " stemming" << endl;
