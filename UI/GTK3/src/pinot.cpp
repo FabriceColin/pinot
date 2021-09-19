@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 					<< "Usage: pinot [OPTIONS]\n\n"
 					<< "Options:\n"
 					<< "  -h, --help		display this help and exit\n"
-					<< "  -p, --preferences		show preferences\n"
+					<< "  -p, --preferences	show preferences\n"
 					<< "  -q, --query		open with query terms\n"
 					<< "  -v, --version		output version information and exit\n"
 					<< "\nReport bugs to " << PACKAGE_BUGREPORT << endl;
