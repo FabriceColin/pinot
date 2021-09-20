@@ -28,12 +28,12 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
 1. What is Pinot
 
 
-  Pinot is :
-    * a D-Bus service that crawls, indexes and monitors your documents
-      ("pinot-dbus-daemon")
-    * a GTK-based user interface that enables to query the index built by the
-      service or your favourite Web engine, and display and analyze the
-      results ("pinot")
+  Pinot combines desktop search and metasearch. It consists of :
+    * a D-Bus service that crawls, indexes, monitors your documents and
+      that plugs into the GNOME Shell search system ("pinot-dbus-daemon")
+    * a GTK3-based user interface that enables to query the index built by
+      the service as well as Web engines, and which can display and analyze
+      the results ("pinot")
     * other command-line tools
 
   It was developed and tested on GNU/Linux and should work on other Unix-like
@@ -345,10 +345,10 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   query the D-Bus interface. A list of available D-Bus methods can be found
   in the file pinot-dbus-daemon.xml.
 
-  Pinot v1.20 implements the GNOME Shell search provider interface, and
-  allows searching the contents of files the daemon found at locations it
-  crawled, basically the My Documents index. Enable Pinot as a provider
-  in GNOME Settings' Search screen.
+  Pinot v1.20 implements the GNOME Shell search provider interface to allow
+  searching the contents of files the daemon found at locations it crawled,
+  basically the My Documents index. Enable Pinot as a provider in GNOME
+  Settings' Search screen.
 
 
 12. CJKV support

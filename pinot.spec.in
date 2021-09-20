@@ -15,7 +15,7 @@
 %define dbus_dev_pkg dbus-glib-devel
 %endif
 
-Summary: Personal search and metasearch tool
+Summary: Desktop search and metasearch
 Name: @PACKAGE@
 Version: @VERSION@
 Release: 1%{?dist}

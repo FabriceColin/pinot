@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 		{
 			case 'h':
 				// Help
-				clog << "pinot - A metasearch tool for the Free Desktop\n\n"
+				clog << "pinot - Desktop search and metasearch\n\n"
 					<< "Usage: pinot [OPTIONS]\n\n"
 					<< "Options:\n"
 					<< "  -h, --help		display this help and exit\n"
