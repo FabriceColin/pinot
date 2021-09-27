@@ -24,8 +24,8 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_ATTR_XATTR_H
-#include <attr/xattr.h>
+#ifdef HAVE_SYS_XATTR_H
+#include <sys/xattr.h>
 #endif
 #include <set>
 #include <iostream>
@@ -55,7 +55,7 @@ bool MetaDataBackup::setAttribute(const DocumentInfo &docInfo,
 {
 	string url(docInfo.getLocation());
 	string urlWithIPath(docInfo.getLocation(true));
-#ifdef HAVE_ATTR_XATTR_H
+#ifdef HAVE_SYS_XATTR_H
 	Url urlObj(url);
 
 	// If the file is local and isn't a nested document, use an extended attribute
@@ -125,7 +125,7 @@ bool MetaDataBackup::getAttribute(const DocumentInfo &docInfo,
 	string url(docInfo.getLocation());
 	string urlWithIPath(docInfo.getLocation(true));
 	bool success = false;
-#ifdef HAVE_ATTR_XATTR_H
+#ifdef HAVE_SYS_XATTR_H
 	Url urlObj(url);
 
 	// If the file is local and isn't a nested document, use an extended attribute
@@ -268,7 +268,7 @@ bool MetaDataBackup::removeAttribute(const DocumentInfo &docInfo,
 	string url(docInfo.getLocation());
 	string urlWithIPath(docInfo.getLocation(true));
 	bool success = false;
-#ifdef HAVE_ATTR_XATTR_H
+#ifdef HAVE_SYS_XATTR_H
 	Url urlObj(url);
 
 	// If the file is local and isn't a nested document, use an extended attribute

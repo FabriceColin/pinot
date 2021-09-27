@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
 #endif
-#ifdef HAVE_ATTR_XATTR_H
-#include <attr/xattr.h>
+#ifdef HAVE_SYS_XATTR_H
+#include <sys/xattr.h>
 #endif
 #include <unistd.h>
 #include <fcntl.h>
@@ -43,7 +43,7 @@ using std::endl;
 using std::string;
 using std::set;
 
-#ifdef HAVE_ATTR_XATTR_H
+#ifdef HAVE_SYS_XATTR_H
 static char *getXAttr(int fd, const string &attrName)
 {
 	ssize_t attrSize = fgetxattr(fd, attrName.c_str(), NULL, 0);
@@ -264,7 +264,7 @@ bool Document::setDataFromFile(const string &fileName)
 	setTimestamp(TimeConverter::toTimestamp(fileStat.st_mtime));
 	setSize(fileStat.st_size);
 
-#ifdef HAVE_ATTR_XATTR_H
+#ifdef HAVE_SYS_XATTR_H
 	// Any extended attributes ?
 	ssize_t listSize = flistxattr(fd, NULL, 0);
 	if (listSize > 0)
