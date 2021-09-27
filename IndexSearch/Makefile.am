@@ -66,7 +66,7 @@ pinot_label_LDFLAGS = \
 pinot_label_LDADD = \
 	-L$(top_builddir)/Utils \
 	-lIndex -lUtils -lBasicUtils \
-	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ \
 	@GTHREAD_LIBS@ @HTTP_LIBS@ @MISC_LIBS@
 
 pinot_label_SOURCES = pinot-label.cpp
@@ -84,8 +84,7 @@ AM_CXXFLAGS = \
 	@INDEX_CFLAGS@ @GIOMM_CFLAGS@ @GLIBMM_CFLAGS@
 
 if HAVE_DBUS
-AM_CXXFLAGS += @DBUS_CFLAGS@ \
-	-DHAVE_DBUS
+AM_CXXFLAGS += -DHAVE_DBUS
 endif
 
 if HAVE_BOOST_SPIRIT

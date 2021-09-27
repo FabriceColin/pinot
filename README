@@ -307,8 +307,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
     * CSV, a text format
       The semi-colon character (';') is used to delimit fields.
     * OpenSearch response, a XML/RSS format
-      See http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_response_elements
-      for details.
+      See https://en.wikipedia.org/wiki/OpenSearch for details.
 
 
 11. D-Bus service
@@ -347,8 +346,10 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
 
   Pinot v1.20 implements the GNOME Shell search provider interface to allow
   searching the contents of files the daemon found at locations it crawled,
-  basically the My Documents index. Enable Pinot as a provider in GNOME
-  Settings' Search screen.
+  basically the My Documents index. Go to the GNOME Settings' Search screen
+  to enable Pinot as a provider. For this to work, the file
+  com.github.fabricecolin.Pinot.search-provider.ini should be in the folder
+  $PREFIX/share/gnome-shell/search-providers/
 
 
 12. CJKV support

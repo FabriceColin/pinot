@@ -48,7 +48,7 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/Collect \
 	-I$(top_srcdir)/IndexSearch \
 	-I$(top_srcdir)/Core \
-	@SQL_CFLAGS@ @HTTP_CFLAGS@ @XML_CFLAGS@ @DBUS_CFLAGS@ \
+	@SQL_CFLAGS@ @HTTP_CFLAGS@ @XML_CFLAGS@ \
 	@INDEX_CFLAGS@ @GTHREAD_CFLAGS@ @GIOMM_CFLAGS@ @GTKMM_CFLAGS@
 
 if HAVE_DBUS
@@ -68,6 +68,6 @@ pinot_LDADD = \
 	-L$(top_srcdir)/Core \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GTKMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GTKMM_LIBS@ @GIOMM_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 

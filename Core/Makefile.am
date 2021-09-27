@@ -44,7 +44,7 @@ AM_CXXFLAGS = \
 	-I$(top_srcdir)/Monitor \
 	-I$(top_srcdir)/Collect \
 	-I$(top_srcdir)/IndexSearch \
-	@SQL_CFLAGS@ @HTTP_CFLAGS@ @XML_CFLAGS@ @DBUS_CFLAGS@ \
+	@SQL_CFLAGS@ @HTTP_CFLAGS@ @XML_CFLAGS@ \
 	@INDEX_CFLAGS@ @GTHREAD_CFLAGS@ @GIOMM_CFLAGS@ \
 	@GLIBMM_CFLAGS@ @GTKMM_CFLAGS@
 
@@ -64,7 +64,7 @@ pinot_index_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 
 pinot_index_SOURCES = pinot-index.cpp
@@ -81,7 +81,7 @@ pinot_search_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lCollect -lTokenize -lFilter \
 	-lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ \
 	@XML_LIBS@ @HTTP_LIBS@ @MISC_LIBS@
 
 pinot_search_SOURCES = \
@@ -101,7 +101,7 @@ pinot_dbus_daemon_LDADD = \
 	-L$(top_builddir)/IndexSearch \
 	-lCore -lThread -lIndexSearch -lMonitor -lCollect -lSQLDB -lSQLite -lSQL \
 	-lTokenize -lFilter -lBasicUtils -lUtils @LIBS@ \
-	@GLIBMM_LIBS@ @GIOMM_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
+	@GLIBMM_LIBS@ @GIOMM_LIBS@ @GTHREAD_LIBS@ @XML_LIBS@ \
 	@HTTP_LIBS@ @SQL_LIBS@ @MISC_LIBS@
 
 pinot_dbus_daemon_SOURCES = \

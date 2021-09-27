@@ -197,15 +197,9 @@ int main(int argc, char **argv)
 	{
 		Glib::thread_init();
 	}
-	// Initialize the GType and the D-Bus thread system
+	// Initialize GType
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init();
-#endif
-#if DBUS_NUM_VERSION > 1000000
-	dbus_threads_init_default();
-#endif
-#ifdef HAVE_DBUS
-	dbus_g_thread_init();
 #endif
 
 	g_refMainLoop = Glib::MainLoop::create();

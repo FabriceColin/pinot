@@ -22,6 +22,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <giomm/init.h>
+#include <glibmm/init.h>
 
 #include "config.h"
 #include "NLS.h"
@@ -156,6 +158,9 @@ int main(int argc, char **argv)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif //ENABLE_NLS
+
+	Glib::init();
+	Gio::init();
 
 	if (argc == 1)
 	{

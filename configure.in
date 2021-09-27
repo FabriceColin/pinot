@@ -104,20 +104,13 @@ AC_ARG_ENABLE(dbus,
    [AS_HELP_STRING([--enable-dbus], [enable DBus support [default=yes]])],
    ,[enable_dbus=yes])
 if test "x$enable_dbus" != "xyes"; then
-   DBUS_CFLAGS=""
-   DBUS_LIBS=""
    enable_dbus=no
 fi
 AC_MSG_RESULT($enable_dbus)
 AM_CONDITIONAL(HAVE_DBUS, false)
 if test "x$enable_dbus" = "xyes"; then
-   PKG_CHECK_MODULES(DBUS, dbus-glib-1)
-   DBUS_NUM_VERSION=`pkg-config --modversion dbus-1 | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-   AC_DEFINE_UNQUOTED(DBUS_NUM_VERSION,$DBUS_NUM_VERSION, [DBus version number])
    AM_CONDITIONAL(HAVE_DBUS, true)
 fi
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
 
 dnl Neon or Curl ?
 AC_MSG_CHECKING(which HTTP library to use)

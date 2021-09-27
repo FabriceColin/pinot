@@ -154,13 +154,13 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-#if !GLIB_CHECK_VERSION(2,35,0)
+	Glib::init();
+	Gio::init();
 	// Initialize GType
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init();
 #endif
 
-	Glib::init();
-	Gio::init();
 	MIMEScanner::initialize("", "");
 
 	// We need a pure DBusIndex object

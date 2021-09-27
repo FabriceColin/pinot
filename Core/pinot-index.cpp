@@ -24,6 +24,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <giomm/init.h>
 #include <glibmm.h>
 #include <glibmm/thread.h>
 #include <glibmm/miscutils.h>
@@ -276,6 +277,18 @@ int main(int argc, char **argv)
 	textdomain(GETTEXT_PACKAGE);
 #endif //ENABLE_NLS
 
+	Glib::init();
+	Gio::init();
+	// Initialize threads support before doing anything else
+	if (Glib::thread_supported() == false)
+	{
+		Glib::thread_init();
+	}
+	// Initialize GType
+#if !GLIB_CHECK_VERSION(2,35,0)
+	g_type_init();
+#endif
+
 	if (argc == 1)
 	{
 		printHelp();
@@ -295,12 +308,6 @@ int main(int argc, char **argv)
 	{
 		clog << "Incorrect parameters" << endl;
 		return EXIT_FAILURE;
-	}
-
-	// Initialize threads support before doing anything else
-	if (Glib::thread_supported() == false)
-	{
-		Glib::thread_init();
 	}
 
 	g_refMainLoop = Glib::MainLoop::create();

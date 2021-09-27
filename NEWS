@@ -18,6 +18,7 @@ Daemon :
  - fixed a bug that would cause the loss of documents for one directory
  when crawling ends for the next one
  - overhauled the D-Bus implementation, extended the interface
+ - dropped dependency on dbus-glib
  - reduced flushing
  - a IndexFlushEpoch property indicates the last time index changed
  were flushed to disk

@@ -24,6 +24,7 @@
 #include <strings.h>
 #include <iostream>
 #include <fstream>
+#include <giomm/init.h>
 #include <glibmm.h>
 #include <glibmm/thread.h>
 #include <glibmm/ustring.h>
@@ -157,17 +158,16 @@ int main(int argc, char **argv)
 	textdomain(GETTEXT_PACKAGE);
 #endif //ENABLE_NLS
 
+	Glib::init();
+	Gio::init();
 	// Initialize threads support before doing anything else
-	Glib::thread_init();
-	// Initialize the GType and the D-Bus thread system
+	if (Glib::thread_supported() == false)
+	{
+		Glib::thread_init();
+	}
+	// Initialize GType
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init();
-#endif
-#ifdef HAVE_DBUS
-#if DBUS_NUM_VERSION > 1000000
-	dbus_threads_init_default();
-#endif
-	dbus_g_thread_init();
 #endif
 
 	Gtk::Main m(&argc, &argv);

@@ -2,17 +2,9 @@
 %if 0%{?suse_version}
 # SuSE
 %define pftotext_pkg xpdf-tools
-%define dbus_pkg dbus-1-glib
-%if 0%{?suse_version} > 1010
-%define dbus_dev_pkg dbus-1-glib-devel
-%else
-%define dbus_dev_pkg dbus-1-devel
-%endif
 %else
 # Fedora and anything else
 %define pftotext_pkg poppler-utils
-%define dbus_pkg dbus-glib
-%define dbus_dev_pkg dbus-glib-devel
 %endif
 
 Summary: Desktop search and metasearch
@@ -32,10 +24,6 @@ BuildRequires: xapian-core-devel >= 1.4.10, libuuid-devel, libexttextcat-devel, 
 BuildRequires: libxml++-devel >= 2.12, gtkmm30-devel >= 3.24, openssl-devel, gettext-devel, desktop-file-utils, help2man
 BuildRequires: taglib-devel >= 1.4, exiv2-devel >= 0.18
 BuildRequires: gcc-c++
-%if 0%{?!_with_nodbus:1}
-Requires: %{dbus_pkg} >= 0.60
-BuildRequires: %{dbus_dev_pkg} >= 0.60
-%endif
 %if 0%{?_with_libarchive:1}
 Requires: libarchive >= 2.6.2
 BuildRequires: libarchive-devel >= 2.6.2
