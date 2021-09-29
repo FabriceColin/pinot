@@ -52,8 +52,7 @@ INotifyMonitor::INotifyMonitor() :
 	{
 		char errBuffer[1024];
 
-		clog << "Couldn't initialize inotify: "
-			<< strerror_r(errno, errBuffer, 1024) << endl;
+		clog << "Couldn't initialize inotify: error " << errno << endl;
 	}
 
 	// FIXME: check for existence of /proc

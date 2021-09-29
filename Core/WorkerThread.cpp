@@ -35,9 +35,10 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <glibmm/miscutils.h>
 #include <glibmm/convert.h>
 #include <glibmm/exception.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/stringutils.h>
 
 #include "config.h"
 #include "NLS.h"
@@ -75,9 +76,9 @@ string WorkerThread::errorToString(int errorNum)
 
 	if (errorNum < INDEX_ERROR)
 	{
-		char errBuffer[1024];
+		ustring errorText(Glib::strerror(errorNum));
 
-		return strerror_r(errorNum, errBuffer, 1024);
+		return errorText.c_str();
 	}
 
 	// Internal error codes
