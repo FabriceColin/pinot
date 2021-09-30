@@ -68,7 +68,9 @@ if HAVE_DBUS
 endif
 	$(INSTALL_DATA) $(srcdir)/UI/GTK3/metase-gtk3.gtkbuilder $(DESTDIR)$(datadir)/pinot/metase-gtk3.gtkbuilder
 	@mkdir -p $(DESTDIR)$(datadir)/pinot/engines
+if HAVE_BOOST_SPIRIT
 	$(INSTALL_DATA) $(srcdir)/IndexSearch/Plugins/*.src $(DESTDIR)$(datadir)/pinot/engines/
+endif
 	$(INSTALL_DATA) $(srcdir)/IndexSearch/Plugins/*.xml $(DESTDIR)$(datadir)/pinot/engines/
 	@mkdir -p $(DESTDIR)$(libdir)/pinot/filters
 	@rm -f $(DESTDIR)$(libdir)/lib*filter.a $(DESTDIR)$(libdir)/lib*filter.la
