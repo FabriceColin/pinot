@@ -24,8 +24,8 @@ Daemon :
  were flushed to disk
  - rely on org.freedesktop.UPower's OnBattery on systems with a battery
  - implemented the org.gnome.Shell.SearchProvider2 interface. The content
- of documents in directories Pinot indexed can be searched through the
- Gnome 3 Shell.
+ of documents in directories indexed by the daemon can be searched through
+ the Gnome 3 Shell.
 UI :
  - removed the gtk2 UI, refreshed the gtk3 UI
  - the gtk3 UI is loaded from a Glade XML file

@@ -456,7 +456,8 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   The automated way is to tell the daemon to reindex everything by launching
   it with the "--reindex" option, ie
   $ pinot-dbus-daemon --reindex
-
+  It may be useful to take a look at the log file located at
+  ~/.pinot/pinot-dbus-daemon.log.
 
 15. Compiling
 
