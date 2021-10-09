@@ -260,11 +260,11 @@ MainWindow::MainWindow(_GtkWindow *&pParent, RefPtr<Builder>& refBuilder,
 	if ((pEnvVar != NULL) &&
 		(strlen(pEnvVar) > 0))
 	{
-		int threadsNum = atoi(pEnvVar);
+		int resultsNum = atoi(pEnvVar);
 
-		if (threadsNum > 0)
+		if (resultsNum > 0)
 		{
-			m_maxResultsCount = (unsigned int)threadsNum;
+			m_maxResultsCount = (unsigned int)resultsNum;
 		}
 	}
 
