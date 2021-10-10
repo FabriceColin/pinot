@@ -18,7 +18,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
 8. File patterns
 9. Digging deeper
 10. Saving results
-11. D-Bus service
+11. D-Bus service & daemon
 12. CJKV support
 13. Environment variables and aliases
 14. How to reset indexes
@@ -29,8 +29,8 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
 
 
   Pinot combines desktop search and metasearch. It consists of :
-    * a D-Bus service that crawls, indexes, monitors your documents and
-      that plugs into the GNOME Shell search system ("pinot-dbus-daemon")
+    * a D-Bus service daemon that crawls, indexes, monitors your documents
+      and that plugs into the GNOME Shell search system ("pinot-dbus-daemon")
     * a GTK3-based user interface that enables to query the index built by
       the service as well as Web engines, and which can display and analyze
       the results ("pinot")
@@ -121,9 +121,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   The number of files and directories that can be monitored is capped by
   the value of /proc/sys/fs/inotify/max_user_watches - 1024.
 
-  The daemon will skip symlinks that refer to locations that have already
-  been crawled, or locations it knows it will have to crawl. When skipped,
-  symlinks are not followed but are still indexed, with the MIME type
+  Symlinks are not followed but are still indexed, with the MIME type
   "inode/symlink".
 
   While Pinot is not currently able to get to and index application-specific
@@ -314,17 +312,19 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
       See https://en.wikipedia.org/wiki/OpenSearch for details.
 
 
-11. D-Bus service
+11. D-Bus service & daemon
 
+
+  Unless Pinot was built without support for D-Bus, the daemon program
+  "pinot-dbus-daemon" implements the D-Bus service and should be
+  auto-started through the desktop file installed at
+  /etc/xdg/autostart/pinot-dbus-daemon.desktop.
 
   D-Bus activation makes sure the service is running whenever one of its
   methods is invoked by any consumer application. For instance, clicking
-  OK on the Preferences box will call the service's Reload method, thus
-  ensuring the service is running. This also causes the service to reload
+  OK on the Preferences box will call the service's Reload method, which
+  should start the service. This method also causes the service to reload
   the configuration file.
-
-  The service is auto-started through the desktop file installed at
-  /etc/xdg/autostart/pinot-dbus-daemon.desktop.
 
   A few things to keep in mind :
     * when starting, the service will first crawl all configured locations
@@ -337,7 +337,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
       a huge quantity of files needs its attention.
     * any change detected by the monitor is queued and acted upon as soon as
       possible, eg reindex a file that was modified.
-    * operations that involve communicating with the daemon, such as editing
+    * operations that involve communicating with the service, such as editing
       documents metadata, may timeout if the system is under heavy load and/or
       the daemon is busy. In most cases, the message will have been received
       by the daemon, but the reply may take longer than expected. The Pinot
@@ -411,8 +411,7 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   Xapian is to flush changes to the index. The default value is set to 10000
   at the time of writing this.
   Lowering this value should decrease the amount of memory used to cache
-  changes to the index. Note that pinot-dbus-daemon explicitely flushes the
-  index once it has crawled each directory configured in Preferences.
+  changes to the index.
 
   Pinot provides a "tagged cd" script that enables to change a shell's
   current directory to the directory that matches the path elements passed
@@ -430,8 +429,8 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
     --dest=com.github.fabricecolin.Pinot /com/github/fabricecolin/Pinot com.github.fabricecolin.Pinot.GetStatistics'
   $ alias pinot-stop='dbus-send --session --print-reply --type=method_call \
     --dest=com.github.fabricecolin.Pinot /com/github/fabricecolin/Pinot com.github.fabricecolin.Pinot.Stop'
-  The first will start the daemon by calling its GetStatistics method, while
-  the second alias will stop it by calling the Stop method.
+  The first will start the service daemon by calling its GetStatistics method,
+  while the second alias will send it a request to stop and exit.
 
 
 14. How to reset indexes
