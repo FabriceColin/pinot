@@ -1,767 +1,1137 @@
-------------------------------------------------------------------------
-r42 | fabricecolin | 2020-05-14 21:57:00 +0200 (Thu, 14 May 2020) | 2 lines
-Changed paths:
-   M /trunk/UI/GTK2/src/statisticsDialog.cc
-
-Fixed what PID file to open when built without D-Bus support.
-
-------------------------------------------------------------------------
-r40 | fabricecolin | 2020-02-09 18:33:00 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-
-Current log.
-
-------------------------------------------------------------------------
-r39 | fabricecolin | 2020-02-09 18:32:03 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   M /trunk/configure.in
-   M /trunk/po/cs.po
-   M /trunk/po/de.po
-   M /trunk/po/es.po
-   M /trunk/po/fr.po
-   M /trunk/po/he.po
-   M /trunk/po/it.po
-   M /trunk/po/ja.po
-   M /trunk/po/nl.po
-   M /trunk/po/pt.po
-   M /trunk/po/pt_BR.po
-   M /trunk/po/ru.po
-   M /trunk/po/sv.po
-   M /trunk/po/zh_CN.po
-   M /trunk/po/zh_TW.po
-
-Make automake stop complain about subdir-objects.
-
-------------------------------------------------------------------------
-r38 | fabricecolin | 2020-02-09 18:11:06 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   A /trunk/ChangeLog
-
-Changelog for commits to the current repository.
-
-------------------------------------------------------------------------
-r37 | fabricecolin | 2020-02-09 18:09:21 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   M /trunk/aclocal.m4
-   M /trunk/ltmain.sh
-
-Regenerated with aclocal 1.16.1 and libtool 2.4.6.
-
-------------------------------------------------------------------------
-r36 | fabricecolin | 2020-02-09 18:05:42 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/NEWS
-   M /trunk/README
-   M /trunk/UI/GTK2/src/mainWindow.cc
-   M /trunk/configure.in
-   M /trunk/po/cs.po
-   M /trunk/po/de.po
-   M /trunk/po/es.po
-   M /trunk/po/fr.po
-   M /trunk/po/he.po
-   M /trunk/po/it.po
-   M /trunk/po/ja.po
-   M /trunk/po/nl.po
-   M /trunk/po/pt.po
-   M /trunk/po/pt_BR.po
-   M /trunk/po/ru.po
-   M /trunk/po/sv.po
-   M /trunk/po/zh_CN.po
-   M /trunk/po/zh_TW.po
-
-Updating for 1.10.
-
-------------------------------------------------------------------------
-r35 | fabricecolin | 2020-02-09 17:59:21 +0100 (Sun, 09 Feb 2020) | 2 lines
-Changed paths:
-   M /trunk/pinot.spec.in
-
-Fedora 31 require dbus-glib-devel. Also added openssl-devel.
-
-------------------------------------------------------------------------
-r34 | fabricecolin | 2019-12-21 17:29:59 +0100 (Sat, 21 Dec 2019) | 2 lines
-Changed paths:
-   M /trunk/IndexSearch/Xapian/XapianEngine.cpp
-   M /trunk/IndexSearch/Xapian/XapianIndex.cpp
-
-Support for Xapian 1.1.0 (commit()) and 1.3.6 (RangeProcessor) APIs.
-
-------------------------------------------------------------------------
-r33 | fabricecolin | 2019-10-18 19:31:17 +0200 (Fri, 18 Oct 2019) | 3 lines
-
-Merge pull request #6 from ojwb/gmime3-support
-
-Add support for gmime >= 3.0
-------------------------------------------------------------------------
-r32 | olly.betts | 2019-10-18 05:40:32 +0200 (Fri, 18 Oct 2019) | 15 lines
-Changed paths:
-   M /trunk/README
-   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
-   M /trunk/configure.in
-   M /trunk/pinot.spec.in
-
-Add support for gmime >= 3.0
-
-The minimum required gmime version is now 2.6, though 2.4 may work
-if you adjust the configure check (but gmime 2.4 is really old now,
-and I'm not able to check with it).
-
-Before this change it seems GMIME_ENABLE_RFC2047_WORKAROUNDS was
-abused as a gmime version indicator - ChangeLog-dijon says:
-
-> If GMIME_ENABLE_RFC2047_WORKAROUNDS is defined, assume gmime 2.4.
-
-But this is no longer defined by gmime >= 3.0, and gmime < 2.4 seems
-completely irrelevant now so I've stripped out these checks instead
-of trying to adjust them to keep working.
-
-------------------------------------------------------------------------
-r31 | fabricecolin | 2019-07-23 22:34:46 +0200 (Tue, 23 Jul 2019) | 2 lines
-Changed paths:
-   M /trunk/README
-   M /trunk/pinot.spec.in
-   M /trunk/textcat_conf.txt
-
-libtextcat 2.2 is too ancient...
-
-------------------------------------------------------------------------
-r30 | fabricecolin | 2019-07-23 22:04:43 +0200 (Tue, 23 Jul 2019) | 2 lines
-Changed paths:
-   M /trunk/README
-
-Updated copyright years.
-
-------------------------------------------------------------------------
-r29 | fabricecolin | 2019-07-23 22:03:52 +0200 (Tue, 23 Jul 2019) | 2 lines
-Changed paths:
-   M /trunk/Core/Makefile.am
-
-The Thread library wasn't listed as a dependency.
-
-------------------------------------------------------------------------
-r28 | fabricecolin | 2019-07-23 22:03:14 +0200 (Tue, 23 Jul 2019) | 2 lines
-Changed paths:
-   M /trunk/Tokenize/filters/Exiv2ImageFilter.cc
-   M /trunk/configure.in
-
-Handle newer versions of exiv2.
-
-------------------------------------------------------------------------
-r27 | fabricecolin | 2019-05-12 18:27:41 +0200 (Sun, 12 May 2019) | 3 lines
-Changed paths:
-   M /trunk/Core/pinot-dbus-daemon.cpp
-   M /trunk/IndexSearch/SherlockParser.cpp
-   M /trunk/IndexSearch/XesamGLib/XesamEngine.cpp
-   M /trunk/IndexSearch/pinot-label.cpp
-   M /trunk/UI/GTK2/src/mainWindow.cc
-   M /trunk/UI/GTK2/src/pinot.cc
-   M /trunk/configure.in
-
-Added a check on boost/spirit/include/classic.hpp, on Glib for versions that
-have obsoleted g_type_init. Updated copyright years.
-
-------------------------------------------------------------------------
-r26 | fabricecolin | 2018-06-18 09:23:49 +0200 (Mon, 18 Jun 2018) | 3 lines
-
-Merge pull request #5 from ojwb/fix-occurred-typos
-
-Fix widespread typos for "occurred"
-------------------------------------------------------------------------
-r25 | olly.betts | 2018-06-18 02:12:33 +0200 (Mon, 18 Jun 2018) | 5 lines
-Changed paths:
-   M /trunk/Core/ServerThreads.cpp
-   M /trunk/Core/WorkerThreads.cpp
-   M /trunk/IndexSearch/ResultsExporter.h
-   M /trunk/IndexSearch/Xapian/XapianIndex.cpp
-   M /trunk/Tokenize/filters/ArchiveFilter.h
-   M /trunk/Tokenize/filters/ChmFilter.h
-   M /trunk/Tokenize/filters/ExifImageFilter.h
-   M /trunk/Tokenize/filters/Exiv2ImageFilter.h
-   M /trunk/Tokenize/filters/ExternalFilter.h
-   M /trunk/Tokenize/filters/FileOutputFilter.cc
-   M /trunk/Tokenize/filters/Filter.h
-   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
-   M /trunk/Tokenize/filters/GMimeMboxFilter.h
-   M /trunk/Tokenize/filters/HtmlFilter.h
-   M /trunk/Tokenize/filters/JsonFilter.h
-   M /trunk/Tokenize/filters/TagLibMusicFilter.h
-   M /trunk/Tokenize/filters/TarFilter.h
-   M /trunk/Tokenize/filters/TextFilter.h
-   M /trunk/Tokenize/filters/XmlFilter.h
-   M /trunk/UI/GTK2/src/mainWindow.cc
-   M /trunk/Utils/CommandLine.cpp
-
-Fix widespread typos for "occurred"
-
-Reported on the Debian package by lintian's spelling-error-in-binary
-check.
-
-------------------------------------------------------------------------
-r24 | fabricecolin | 2017-12-22 18:31:49 +0100 (Fri, 22 Dec 2017) | 2 lines
-Changed paths:
-   M /trunk/configure.in
-
-It looks like Centos 7 needs the option "-std=c++11".
-
-------------------------------------------------------------------------
-r23 | fabricecolin | 2017-12-17 16:10:04 +0100 (Sun, 17 Dec 2017) | 2 lines
-Changed paths:
-   M /trunk/Collect/DownloaderInterface.cpp
-   M /trunk/Utils/MIMEScanner.cpp
-
-Catch up with current glib and OpenSSL.
-
-------------------------------------------------------------------------
-r22 | fabricecolin | 2017-03-03 14:43:26 +0100 (Fri, 03 Mar 2017) | 3 lines
-
-Merge pull request #4 from ojwb/faq-fixes
-
-FAQ fixes from Olly Betts
-------------------------------------------------------------------------
-r21 | olly.betts | 2017-02-28 22:42:40 +0100 (Tue, 28 Feb 2017) | 18 lines
-Changed paths:
-   M /trunk/FAQ
-
-Remove suggestion to delete "flintlock"
-
-Xapian's `flintlock` is not a lock file whose presence indicates that
-the lock is held, but rather a file which is locked using `fcntl()`
-locking.  Such locks are automatically released by the OS when the
-process holding them terminates, so there's no such thing as a "stale
-lock", and the `flintlock` file should always exist.
-
-The `flicklock` file was a typo and fixed back in 2006, before Xapian
-1.0.0 - so the name only of historic interest now, but similarly it
-should not be deleted.
-
-The `db_lock` file was used by the old `quartz` backend and did work
-by its presence indicating that the lock was held.  But `flint` was
-the default backend from 1.0.0 and `quartz` was removed completely
-in 2008, so I find it hard to believe that anyone will have such a
-database.
-
-------------------------------------------------------------------------
-r20 | olly.betts | 2017-02-28 22:42:07 +0100 (Tue, 28 Feb 2017) | 4 lines
-Changed paths:
-   M /trunk/FAQ
-
-Remove Xapian-related entries more than a decade old
-
-Nobody will be using Xapian versions from 2006 now.
-
-------------------------------------------------------------------------
-r19 | fabricecolin | 2017-02-13 19:51:11 +0100 (Mon, 13 Feb 2017) | 2 lines
-Changed paths:
-   M /trunk/UI/GTK2/src/mainWindow.cc
-
-Extended copyright years, updated the Web site URL.
-
-------------------------------------------------------------------------
-r18 | fabricecolin | 2017-02-13 19:49:32 +0100 (Mon, 13 Feb 2017) | 3 lines
-Changed paths:
-   M /trunk/Core/WorkerThreads.cpp
-   M /trunk/IndexSearch/SherlockParser.cpp
-   M /trunk/Tokenize/filters/ArchiveFilter.cc
-   M /trunk/Tokenize/filters/ArchiveFilter.h
-   M /trunk/Tokenize/filters/ChmFilter.cc
-   M /trunk/Tokenize/filters/ChmFilter.h
-   M /trunk/Tokenize/filters/ExifImageFilter.cc
-   M /trunk/Tokenize/filters/ExifImageFilter.h
-   M /trunk/Tokenize/filters/Exiv2ImageFilter.cc
-   M /trunk/Tokenize/filters/Exiv2ImageFilter.h
-   M /trunk/Tokenize/filters/ExternalFilter.cc
-   M /trunk/Tokenize/filters/ExternalFilter.h
-   M /trunk/Tokenize/filters/FileOutputFilter.cc
-   M /trunk/Tokenize/filters/FileOutputFilter.h
-   M /trunk/Tokenize/filters/Filter.cc
-   M /trunk/Tokenize/filters/Filter.h
-   M /trunk/Tokenize/filters/FilterFactory.cc
-   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
-   M /trunk/Tokenize/filters/GMimeMboxFilter.h
-   M /trunk/Tokenize/filters/HtmlFilter.cc
-   M /trunk/Tokenize/filters/HtmlFilter.h
-   M /trunk/Tokenize/filters/JsonFilter.cc
-   M /trunk/Tokenize/filters/JsonFilter.h
-   M /trunk/Tokenize/filters/TagLibMusicFilter.cc
-   M /trunk/Tokenize/filters/TagLibMusicFilter.h
-   M /trunk/Tokenize/filters/TarFilter.cc
-   M /trunk/Tokenize/filters/TarFilter.h
-   M /trunk/Tokenize/filters/TextFilter.cc
-   M /trunk/Tokenize/filters/TextFilter.h
-   M /trunk/Tokenize/filters/XmlFilter.cc
-   M /trunk/Tokenize/filters/XmlFilter.h
-
-Changed the filter interface, and the entry points dynamic filter libraries
-should export to hopefully compiler-agnostic mangled names.
-
-------------------------------------------------------------------------
-r17 | fabricecolin | 2017-02-12 18:28:05 +0100 (Sun, 12 Feb 2017) | 2 lines
-Changed paths:
-   D /trunk/ChangeLog
-   A /trunk/ChangeLog-svn
-   M /trunk/Makefile.am
-   M /trunk/README
-   M /trunk/pinot.spec.in
-
-Moved the old repo's ChangeLog file, updated URLs.
-
-------------------------------------------------------------------------
-r16 | fabricecolin | 2017-02-12 18:26:38 +0100 (Sun, 12 Feb 2017) | 2 lines
-Changed paths:
-   M /trunk/SQL/SQLDB.cpp
-   M /trunk/SQL/SQLDB.h
-
-Useful upgrade() method.
-
-------------------------------------------------------------------------
-r15 | fabricecolin | 2016-11-13 20:57:38 +0100 (Sun, 13 Nov 2016) | 3 lines
-Changed paths:
-   M /trunk/IndexSearch/Xapian/Makefile.am
-   M /trunk/configure.in
-
-There's nothing in the Xapian backend that requires OpenSSL so we probably can
-avoid linking to it, and sidestep https://bugs.debian.org/833692.
-
-------------------------------------------------------------------------
-r14 | fabricecolin | 2016-10-18 16:59:24 +0200 (Tue, 18 Oct 2016) | 3 lines
-Changed paths:
-   M /trunk/Tokenize/filters/FilterFactory.cc
-
-Merge pull request #2 from ojwb/fix-c++11-warning
-
-Fix GCC C++11 -Wliteral-suffix warning
-------------------------------------------------------------------------
-r13 | olly.betts | 2016-10-01 00:41:09 +0200 (Sat, 01 Oct 2016) | 6 lines
-Changed paths:
-   M /trunk/Tokenize/filters/FilterFactory.cc
-   M /trunk/Tokenize/filters/GMimeMboxFilter.cc
-
-Fix GCC C++11 -Wliteral-suffix warning
-
-../Tokenize/filters/GMimeMboxFilter.cc:304:28: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]
-  if (sscanf(ipath.c_str(), "o="GMIME_OFFSET_MODIFIER"&l=[", &m_messageStart) != 1)
-                            ^
-
-------------------------------------------------------------------------
-r12 | fabricecolin | 2016-10-18 16:58:54 +0200 (Tue, 18 Oct 2016) | 3 lines
-
-Merge pull request #1 from ojwb/cx11-abi-mangling-fix
-
-Fix condition under which C++11 ABI symbol is used
-------------------------------------------------------------------------
-r11 | olly.betts | 2016-10-01 00:15:51 +0200 (Sat, 01 Oct 2016) | 2 lines
-Changed paths:
-   M /trunk/Tokenize/filters/FilterFactory.cc
-
-Fix condition under which C++11 ABI symbol is used
-
-------------------------------------------------------------------------
-r10 | fabricecolin | 2016-06-20 20:07:02 +0200 (Mon, 20 Jun 2016) | 2 lines
-Changed paths:
-   M /trunk/AUTHORS
-
-Forgot to add Olly Betts here for the configure patch.
-
-------------------------------------------------------------------------
-r9 | fabricecolin | 2016-06-19 11:16:18 +0200 (Sun, 19 Jun 2016) | 7 lines
-Changed paths:
-   M /trunk/configure.in
-
-Patch from Olly Betts to "fix a bug in pinot's configure which makes things
-like this misbehave:
-
-./configure XAPIAN_CONFIG=/usr/bin/xapian-config-1.3
-"
-Also, always link with -lboost_system to help with newer versions of boost.
-
-------------------------------------------------------------------------
-r8 | fabricecolin | 2016-06-19 11:11:47 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   M /trunk/IndexSearch/ModuleFactory.cpp
-
-Fix return value (https://bugs.debian.org/812165).
-
-------------------------------------------------------------------------
-r7 | fabricecolin | 2016-06-19 11:10:22 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/ChangeLog
-   A /trunk/ChangeLog-dijon
-   A /trunk/Makefile.am
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r6 | fabricecolin | 2016-06-19 11:08:58 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/AUTHORS
-   A /trunk/COPYING
-   A /trunk/FAQ
-   A /trunk/INSTALL
-   A /trunk/NEWS
-   A /trunk/README
-   A /trunk/TODO
-   A /trunk/acinclude.m4
-   A /trunk/aclocal.m4
-   A /trunk/autogen.sh
-   A /trunk/configure.in
-   A /trunk/globalconfig.xml
-   A /trunk/ltmain.sh
-   A /trunk/mkinstalldirs
-   A /trunk/pinot-dbus-daemon.desktop
-   A /trunk/pinot-prefs.desktop
-   A /trunk/pinot.desktop
-   A /trunk/pinot.spec.in
-   A /trunk/po
-   A /trunk/po/Makefile.in.in
-   A /trunk/po/Makevars
-   A /trunk/po/POTFILES.in
-   A /trunk/po/cs.po
-   A /trunk/po/de.po
-   A /trunk/po/es.po
-   A /trunk/po/fr.po
-   A /trunk/po/he.po
-   A /trunk/po/it.po
-   A /trunk/po/ja.po
-   A /trunk/po/nl.po
-   A /trunk/po/pt.po
-   A /trunk/po/pt_BR.po
-   A /trunk/po/ru.po
-   A /trunk/po/sv.po
-   A /trunk/po/zh_CN.po
-   A /trunk/po/zh_TW.po
-   A /trunk/scripts
-   A /trunk/scripts/bash
-   A /trunk/scripts/bash/pinot-cd.sh
-   A /trunk/scripts/bash/pinot-check-file.sh
-   A /trunk/scripts/bash/pinot-enum-index.sh
-   A /trunk/textcat31_conf.txt
-   A /trunk/textcat32_conf.txt
-   A /trunk/textcat3_conf.txt
-   A /trunk/textcat_conf.txt
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r5 | fabricecolin | 2016-06-19 11:07:31 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/UI
-   A /trunk/UI/GTK2
-   A /trunk/UI/GTK2/metase-gtk2.glade
-   A /trunk/UI/GTK2/metase-gtk2.gladep
-   A /trunk/UI/GTK2/src
-   A /trunk/UI/GTK2/src/EnginesTree.cc
-   A /trunk/UI/GTK2/src/EnginesTree.hh
-   A /trunk/UI/GTK2/src/IndexPage.cc
-   A /trunk/UI/GTK2/src/IndexPage.hh
-   A /trunk/UI/GTK2/src/Makefile.am
-   A /trunk/UI/GTK2/src/ModelColumns.cc
-   A /trunk/UI/GTK2/src/ModelColumns.hh
-   A /trunk/UI/GTK2/src/Notebook.cc
-   A /trunk/UI/GTK2/src/Notebook.hh
-   A /trunk/UI/GTK2/src/PinotUtils.cc
-   A /trunk/UI/GTK2/src/PinotUtils.hh
-   A /trunk/UI/GTK2/src/ResultsTree.cc
-   A /trunk/UI/GTK2/src/ResultsTree.hh
-   A /trunk/UI/GTK2/src/UIThreads.cc
-   A /trunk/UI/GTK2/src/UIThreads.hh
-   A /trunk/UI/GTK2/src/importDialog.cc
-   A /trunk/UI/GTK2/src/importDialog.hh
-   A /trunk/UI/GTK2/src/importDialog_glade.cc
-   A /trunk/UI/GTK2/src/importDialog_glade.hh
-   A /trunk/UI/GTK2/src/indexDialog.cc
-   A /trunk/UI/GTK2/src/indexDialog.hh
-   A /trunk/UI/GTK2/src/indexDialog_glade.cc
-   A /trunk/UI/GTK2/src/indexDialog_glade.hh
-   A /trunk/UI/GTK2/src/launcherDialog.cc
-   A /trunk/UI/GTK2/src/launcherDialog.hh
-   A /trunk/UI/GTK2/src/launcherDialog_glade.cc
-   A /trunk/UI/GTK2/src/launcherDialog_glade.hh
-   A /trunk/UI/GTK2/src/mainWindow.cc
-   A /trunk/UI/GTK2/src/mainWindow.hh
-   A /trunk/UI/GTK2/src/mainWindow_glade.cc
-   A /trunk/UI/GTK2/src/mainWindow_glade.hh
-   A /trunk/UI/GTK2/src/pinot.1
-   A /trunk/UI/GTK2/src/pinot.cc
-   A /trunk/UI/GTK2/src/prefsWindow.cc
-   A /trunk/UI/GTK2/src/prefsWindow.hh
-   A /trunk/UI/GTK2/src/prefsWindow_glade.cc
-   A /trunk/UI/GTK2/src/prefsWindow_glade.hh
-   A /trunk/UI/GTK2/src/propertiesDialog.cc
-   A /trunk/UI/GTK2/src/propertiesDialog.hh
-   A /trunk/UI/GTK2/src/propertiesDialog_glade.cc
-   A /trunk/UI/GTK2/src/propertiesDialog_glade.hh
-   A /trunk/UI/GTK2/src/queryDialog.cc
-   A /trunk/UI/GTK2/src/queryDialog.hh
-   A /trunk/UI/GTK2/src/queryDialog_glade.cc
-   A /trunk/UI/GTK2/src/queryDialog_glade.hh
-   A /trunk/UI/GTK2/src/statisticsDialog.cc
-   A /trunk/UI/GTK2/src/statisticsDialog.hh
-   A /trunk/UI/GTK2/src/statisticsDialog_glade.cc
-   A /trunk/UI/GTK2/src/statisticsDialog_glade.hh
-   A /trunk/UI/GTK2/xapian-powered.png
-   A /trunk/UI/icons
-   A /trunk/UI/icons/16x16
-   A /trunk/UI/icons/16x16/pinot.png
-   A /trunk/UI/icons/22x22
-   A /trunk/UI/icons/22x22/pinot.png
-   A /trunk/UI/icons/24x24
-   A /trunk/UI/icons/24x24/pinot.png
-   A /trunk/UI/icons/32x32
-   A /trunk/UI/icons/32x32/pinot.png
-   A /trunk/UI/icons/48x48
-   A /trunk/UI/icons/48x48/pinot.png
-   A /trunk/UI/icons/pinot.xcf
-   A /trunk/Utils
-   A /trunk/Utils/CommandLine.cpp
-   A /trunk/Utils/CommandLine.h
-   A /trunk/Utils/Document.cpp
-   A /trunk/Utils/Document.h
-   A /trunk/Utils/DocumentInfo.cpp
-   A /trunk/Utils/DocumentInfo.h
-   A /trunk/Utils/Languages.cpp
-   A /trunk/Utils/Languages.h
-   A /trunk/Utils/MIMEScanner.cpp
-   A /trunk/Utils/MIMEScanner.h
-   A /trunk/Utils/Makefile.am
-   A /trunk/Utils/Memory.cpp
-   A /trunk/Utils/Memory.h
-   A /trunk/Utils/NLS.h
-   A /trunk/Utils/StringManip.cpp
-   A /trunk/Utils/StringManip.h
-   A /trunk/Utils/TimeConverter.cpp
-   A /trunk/Utils/TimeConverter.h
-   A /trunk/Utils/Timer.cpp
-   A /trunk/Utils/Timer.h
-   A /trunk/Utils/Url.cpp
-   A /trunk/Utils/Url.h
-   A /trunk/Utils/Visibility.h
-   A /trunk/Utils/xdgmime
-   A /trunk/Utils/xdgmime/ChangeLog
-   A /trunk/Utils/xdgmime/xdgmime.c
-   A /trunk/Utils/xdgmime/xdgmime.h
-   A /trunk/Utils/xdgmime/xdgmimealias.c
-   A /trunk/Utils/xdgmime/xdgmimealias.h
-   A /trunk/Utils/xdgmime/xdgmimecache.c
-   A /trunk/Utils/xdgmime/xdgmimecache.h
-   A /trunk/Utils/xdgmime/xdgmimeglob.c
-   A /trunk/Utils/xdgmime/xdgmimeglob.h
-   A /trunk/Utils/xdgmime/xdgmimeint.c
-   A /trunk/Utils/xdgmime/xdgmimeint.h
-   A /trunk/Utils/xdgmime/xdgmimemagic.c
-   A /trunk/Utils/xdgmime/xdgmimemagic.h
-   A /trunk/Utils/xdgmime/xdgmimeparent.c
-   A /trunk/Utils/xdgmime/xdgmimeparent.h
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r4 | fabricecolin | 2016-06-19 11:06:55 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/SQL
-   A /trunk/SQL/ActionQueue.cpp
-   A /trunk/SQL/ActionQueue.h
-   A /trunk/SQL/CrawlHistory.cpp
-   A /trunk/SQL/CrawlHistory.h
-   A /trunk/SQL/Makefile.am
-   A /trunk/SQL/MetaDataBackup.cpp
-   A /trunk/SQL/MetaDataBackup.h
-   A /trunk/SQL/QueryHistory.cpp
-   A /trunk/SQL/QueryHistory.h
-   A /trunk/SQL/SQLDB.cpp
-   A /trunk/SQL/SQLDB.h
-   A /trunk/SQL/SQLiteBase.cpp
-   A /trunk/SQL/SQLiteBase.h
-   A /trunk/SQL/ViewHistory.cpp
-   A /trunk/SQL/ViewHistory.h
-   A /trunk/Tokenize
-   A /trunk/Tokenize/FilterUtils.cpp
-   A /trunk/Tokenize/FilterUtils.h
-   A /trunk/Tokenize/Makefile.am
-   A /trunk/Tokenize/TextConverter.cpp
-   A /trunk/Tokenize/TextConverter.h
-   A /trunk/Tokenize/filters
-   A /trunk/Tokenize/filters/ArchiveFilter.cc
-   A /trunk/Tokenize/filters/ArchiveFilter.h
-   A /trunk/Tokenize/filters/ChmFilter.cc
-   A /trunk/Tokenize/filters/ChmFilter.h
-   A /trunk/Tokenize/filters/ExifImageFilter.cc
-   A /trunk/Tokenize/filters/ExifImageFilter.h
-   A /trunk/Tokenize/filters/Exiv2ImageFilter.cc
-   A /trunk/Tokenize/filters/Exiv2ImageFilter.h
-   A /trunk/Tokenize/filters/ExternalFilter.cc
-   A /trunk/Tokenize/filters/ExternalFilter.h
-   A /trunk/Tokenize/filters/FileOutputFilter.cc
-   A /trunk/Tokenize/filters/FileOutputFilter.h
-   A /trunk/Tokenize/filters/Filter.cc
-   A /trunk/Tokenize/filters/Filter.h
-   A /trunk/Tokenize/filters/FilterFactory.cc
-   A /trunk/Tokenize/filters/FilterFactory.h
-   A /trunk/Tokenize/filters/GMimeMboxFilter.cc
-   A /trunk/Tokenize/filters/GMimeMboxFilter.h
-   A /trunk/Tokenize/filters/HtmlFilter.cc
-   A /trunk/Tokenize/filters/HtmlFilter.h
-   A /trunk/Tokenize/filters/HtmlParser.cc
-   A /trunk/Tokenize/filters/HtmlParser.h
-   A /trunk/Tokenize/filters/JsonFilter.cc
-   A /trunk/Tokenize/filters/JsonFilter.h
-   A /trunk/Tokenize/filters/TagLibMusicFilter.cc
-   A /trunk/Tokenize/filters/TagLibMusicFilter.h
-   A /trunk/Tokenize/filters/TarFilter.cc
-   A /trunk/Tokenize/filters/TarFilter.h
-   A /trunk/Tokenize/filters/TextFilter.cc
-   A /trunk/Tokenize/filters/TextFilter.h
-   A /trunk/Tokenize/filters/XmlFilter.cc
-   A /trunk/Tokenize/filters/XmlFilter.h
-   A /trunk/Tokenize/filters/external-filters.xml
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r3 | fabricecolin | 2016-06-19 11:06:31 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/IndexSearch
-   A /trunk/IndexSearch/DBusIndex.cpp
-   A /trunk/IndexSearch/DBusIndex.h
-   A /trunk/IndexSearch/FieldMapperInterface.h
-   A /trunk/IndexSearch/FilterWrapper.cpp
-   A /trunk/IndexSearch/FilterWrapper.h
-   A /trunk/IndexSearch/Google
-   A /trunk/IndexSearch/Google/GAPI.nsmap
-   A /trunk/IndexSearch/Google/GAPIC.cpp
-   A /trunk/IndexSearch/Google/GAPIClient.cpp
-   A /trunk/IndexSearch/Google/GAPIClientLib.cpp
-   A /trunk/IndexSearch/Google/GAPIGoogleSearchBindingProxy.h
-   A /trunk/IndexSearch/Google/GAPIH.h
-   A /trunk/IndexSearch/Google/GAPIStub.h
-   A /trunk/IndexSearch/Google/GoogleAPIEngine.cpp
-   A /trunk/IndexSearch/Google/GoogleAPIEngine.h
-   A /trunk/IndexSearch/Google/GoogleSearch.h
-   A /trunk/IndexSearch/Google/Makefile.am
-   A /trunk/IndexSearch/Google/ModuleExports.cpp
-   A /trunk/IndexSearch/IndexInterface.h
-   A /trunk/IndexSearch/Makefile.am
-   A /trunk/IndexSearch/ModuleFactory.cpp
-   A /trunk/IndexSearch/ModuleFactory.h
-   A /trunk/IndexSearch/ModuleProperties.h
-   A /trunk/IndexSearch/OpenSearchParser.cpp
-   A /trunk/IndexSearch/OpenSearchParser.h
-   A /trunk/IndexSearch/PluginParsers.h
-   A /trunk/IndexSearch/PluginWebEngine.cpp
-   A /trunk/IndexSearch/PluginWebEngine.h
-   A /trunk/IndexSearch/Plugins
-   A /trunk/IndexSearch/Plugins/AmazonAPI.src
-   A /trunk/IndexSearch/Plugins/Bing.src
-   A /trunk/IndexSearch/Plugins/Clusty.src
-   A /trunk/IndexSearch/Plugins/Freecode.src
-   A /trunk/IndexSearch/Plugins/Google.src
-   A /trunk/IndexSearch/Plugins/KodersDescription.xml
-   A /trunk/IndexSearch/Plugins/OmegaDescription.xml
-   A /trunk/IndexSearch/Plugins/Topix.src
-   A /trunk/IndexSearch/Plugins/UNData.src
-   A /trunk/IndexSearch/Plugins/Wikipedia.src
-   A /trunk/IndexSearch/QueryProperties.cpp
-   A /trunk/IndexSearch/QueryProperties.h
-   A /trunk/IndexSearch/ResultsExporter.cpp
-   A /trunk/IndexSearch/ResultsExporter.h
-   A /trunk/IndexSearch/SearchEngineInterface.cpp
-   A /trunk/IndexSearch/SearchEngineInterface.h
-   A /trunk/IndexSearch/SearchPluginProperties.cpp
-   A /trunk/IndexSearch/SearchPluginProperties.h
-   A /trunk/IndexSearch/SherlockParser.cpp
-   A /trunk/IndexSearch/SherlockParser.h
-   A /trunk/IndexSearch/WebEngine.cpp
-   A /trunk/IndexSearch/WebEngine.h
-   A /trunk/IndexSearch/Xapian
-   A /trunk/IndexSearch/Xapian/AbstractGenerator.cpp
-   A /trunk/IndexSearch/Xapian/AbstractGenerator.h
-   A /trunk/IndexSearch/Xapian/LanguageDetector.cpp
-   A /trunk/IndexSearch/Xapian/LanguageDetector.h
-   A /trunk/IndexSearch/Xapian/Makefile.am
-   A /trunk/IndexSearch/Xapian/ModuleExports.cpp
-   A /trunk/IndexSearch/Xapian/XapianDatabase.cpp
-   A /trunk/IndexSearch/Xapian/XapianDatabase.h
-   A /trunk/IndexSearch/Xapian/XapianDatabaseFactory.cpp
-   A /trunk/IndexSearch/Xapian/XapianDatabaseFactory.h
-   A /trunk/IndexSearch/Xapian/XapianEngine.cpp
-   A /trunk/IndexSearch/Xapian/XapianEngine.h
-   A /trunk/IndexSearch/Xapian/XapianIndex.cpp
-   A /trunk/IndexSearch/Xapian/XapianIndex.h
-   A /trunk/IndexSearch/XesamGLib
-   A /trunk/IndexSearch/XesamGLib/Makefile.am
-   A /trunk/IndexSearch/XesamGLib/ModuleExports.cpp
-   A /trunk/IndexSearch/XesamGLib/XesamEngine.cpp
-   A /trunk/IndexSearch/XesamGLib/XesamEngine.h
-   A /trunk/IndexSearch/XesamLog.h
-   A /trunk/IndexSearch/cjkv
-   A /trunk/IndexSearch/cjkv/CJKVTokenizer.cc
-   A /trunk/IndexSearch/cjkv/CJKVTokenizer.h
-   A /trunk/IndexSearch/pinot-label.1
-   A /trunk/IndexSearch/pinot-label.cpp
-   A /trunk/Monitor
-   A /trunk/Monitor/INotifyMonitor.cpp
-   A /trunk/Monitor/INotifyMonitor.h
-   A /trunk/Monitor/Makefile.am
-   A /trunk/Monitor/MonitorEvent.cpp
-   A /trunk/Monitor/MonitorEvent.h
-   A /trunk/Monitor/MonitorFactory.cpp
-   A /trunk/Monitor/MonitorFactory.h
-   A /trunk/Monitor/MonitorHandler.cpp
-   A /trunk/Monitor/MonitorHandler.h
-   A /trunk/Monitor/MonitorInterface.h
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r2 | fabricecolin | 2016-06-19 11:05:58 +0200 (Sun, 19 Jun 2016) | 2 lines
-Changed paths:
-   A /trunk/Collect
-   A /trunk/Collect/CurlDownloader.cpp
-   A /trunk/Collect/CurlDownloader.h
-   A /trunk/Collect/DownloaderFactory.cpp
-   A /trunk/Collect/DownloaderFactory.h
-   A /trunk/Collect/DownloaderInterface.cpp
-   A /trunk/Collect/DownloaderInterface.h
-   A /trunk/Collect/FileCollector.cpp
-   A /trunk/Collect/FileCollector.h
-   A /trunk/Collect/Makefile.am
-   A /trunk/Collect/NeonDownloader.cpp
-   A /trunk/Collect/NeonDownloader.h
-   A /trunk/Core
-   A /trunk/Core/DaemonState.cpp
-   A /trunk/Core/DaemonState.h
-   A /trunk/Core/Makefile.am
-   A /trunk/Core/OnDiskHandler.cpp
-   A /trunk/Core/OnDiskHandler.h
-   A /trunk/Core/PinotSettings.cpp
-   A /trunk/Core/PinotSettings.h
-   A /trunk/Core/ServerThreads.cpp
-   A /trunk/Core/ServerThreads.h
-   A /trunk/Core/UniqueApplication.cpp
-   A /trunk/Core/UniqueApplication.h
-   A /trunk/Core/WorkerThread.cpp
-   A /trunk/Core/WorkerThread.h
-   A /trunk/Core/WorkerThreads.cpp
-   A /trunk/Core/WorkerThreads.h
-   A /trunk/Core/de.berlios.Pinot.service.in
-   A /trunk/Core/pinot-daemon.1
-   A /trunk/Core/pinot-dbus-daemon.1
-   A /trunk/Core/pinot-dbus-daemon.cpp
-   A /trunk/Core/pinot-dbus-daemon.xml
-   A /trunk/Core/pinot-index.1
-   A /trunk/Core/pinot-index.cpp
-   A /trunk/Core/pinot-search.1
-   A /trunk/Core/pinot-search.cpp
-
-Source exported from Google Code and as found in v1.09 dated 2015/06/11.
-
-------------------------------------------------------------------------
-r1 | fabricecolin | 2016-06-19 10:41:10 +0200 (Sun, 19 Jun 2016) | 1 line
-Changed paths:
-   A /branches
-   A /trunk
-   A /trunk/LICENSE
-
-Initial commit
-------------------------------------------------------------------------
+commit 6b921fa31eff4fd2c6510ec15136540f8392ddac
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Oct 16 17:29:55 2021 +0200
+
+    Updated manual pages.
+
+commit b8e75a8ed7cd379c2c68c6c4f084cc5244dbfc9c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Oct 16 17:28:33 2021 +0200
+
+    Releasing version 1.20.
+
+commit 69e97ac50ae40247d48afee2b27019326092c93c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Oct 10 10:19:35 2021 +0200
+
+    Removed obsolete information, tried to clarify a few things about the
+    D-Bus service.
+
+commit 17463d2e79ea1290a05c60c7b2630194c0726a9d
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Oct 10 10:19:15 2021 +0200
+
+    Updated translations.
+
+commit 404f236ac2e504266ceab7f7ab6ead11ef2aed73
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Oct 9 18:40:58 2021 +0200
+
+    Mention what the Xapian Omega plugin is for.
+
+commit 6ef7621b97d171e82f1d5a0c52f6e5877fde7b5a
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Oct 9 18:34:11 2021 +0200
+
+    More accurate information.
+
+commit b12ac7e9e1a1bc75ec72e9daeaf82fa52f6221a6
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Oct 9 18:25:47 2021 +0200
+
+    Better variable name.
+
+commit 904a5f4a89d0d7021e5a3082a84ed2e4216a1f4b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 30 18:32:52 2021 +0200
+
+    Don't install the Sherlock plugins if HAVE_BOOST_SPIRIT is not defined.
+
+commit cb4add1b311aa104e58b733f769ec19494e93c1f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Wed Sep 29 17:00:15 2021 +0200
+
+    Prefer Glib::strerror to sidestep having to detect what version of
+    strerror_r is available.
+
+commit d3d357a51e8d8317a9e89960878424ddc30580cf
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 27 17:53:28 2021 +0200
+
+    Address Debian bug #953912 and check for <sys/xattr.h>.
+
+commit 24c0ea7eb84e495d90ce4cec8d4c5532d7dff937
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 27 17:48:45 2021 +0200
+
+    Address Debian bug #951559 and use PKG_PROG_PKG_CONFIG.
+
+commit 6bea48c1dea7f37e8830c1a62dc4e9c3133a5856
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 27 17:43:26 2021 +0200
+
+    The dependency on dbus-glib can be dropped as we now use gio.
+    This should address Debian bug #955937.
+
+commit 411505911d21da1a64049eff4fa2f558136049be
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 20 19:25:17 2021 +0200
+
+    Clarified a few things.
+
+commit 68f0ca1b31a30af32c4e3a5cd2d1bc3e584fefdb
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 21:45:14 2021 +0200
+
+    Missing details.
+
+commit 3261c30b807e52b372fc583101f87fd2b77ee540
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 21:20:52 2021 +0200
+
+    Fixed typo.
+
+commit 05289aea4dfb96958cdc4febc0d380124aa41e78
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 21:19:50 2021 +0200
+
+    Don't attempt stemming if the language is unknown.
+
+commit b72f451b2759a04977339f91a8cbd112bd05ba84
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 21:18:36 2021 +0200
+
+    Mention GNOME Shell integration, that crawling doesn't happen while
+    on battery and that rst2txt is used by the RST filter.
+
+commit c42b89215a6980badb246940403ae1dd030ba1a7
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 17:59:26 2021 +0200
+
+    Removed ancient links from the README. Updated NEWS.
+
+commit e48599ab7f531361ef58dd756afb8bef629fc690
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 17:45:30 2021 +0200
+
+    Dropped the IndexFlushed signal in favour of a IndexFlushEpoch property
+    set by the daemon after a flush and checked for by the UI whenever a new
+    thread is about to start in order to decide whether to reopen the index.
+
+commit a52b0ea05022de6c03a3b9af176daaf71927a1be
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 17:03:00 2021 +0200
+
+    The flag PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION only applies
+    to "well-known names".
+
+commit b4b30a60eca77a0b5b849aacae652eda476c9ca9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 17:02:26 2021 +0200
+
+    Cosmetic help output fix.
+
+commit 6b42a356bb0717648b45b9b219e529acb1b726e9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 16:21:45 2021 +0200
+
+    Refactored battery check code, fixed UPower property check.
+
+commit c2841808c56a09caeb1f986dfb0d9288f10cc18b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 13:08:17 2021 +0200
+
+    Upon updating a document's properties or its labels, the results tree
+    is updated right away, resulting threads don't have to do that nor
+    trigger a refresh of the index listing.
+
+commit 7fad9e6074c2adf8de1f82112ecbcdf3552cccc0
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 19 13:04:09 2021 +0200
+
+    Write operations over D-Bus, crawling and restoring metadata set
+    a "should flush" flag that will trigger an index flush once threads
+    aren't running.
+    Emitting the IndexFlushed signal needs a target bus name apparently.
+
+commit 331eeccbcc05b1c12ace79eeedf18eb0f0ea951b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 22:57:44 2021 +0200
+
+    Reset the title.
+
+commit eb4d08a9f6f01706ab0719cde41c4bf4747bd98c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 22:00:57 2021 +0200
+
+    Fixed horrible shortcut introduced in 8819fc6.
+
+commit d5ab4cc6fab71972e8c4853a435a9e3017e95c9a
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 21:57:27 2021 +0200
+
+    Properly reset the properties and query dialogs across invocations.
+    Removed cumbersome language edit when multiple document properties
+    are viewed.
+
+commit 43c6580527d05f05a904e318809ac4ba33f85201
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 20:20:18 2021 +0200
+
+    On restart, drop any pending event that may have been generated from
+    stipping monitoring some locations.
+
+commit 12a93d4456c4faf5c695c755e249cd7952d5a0a1
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 19:10:43 2021 +0200
+
+    Fixed INotifyMonitor::removeLocations to unlock.
+
+commit f478bbf38f8ae3cc2f0d5969d804be3e25192a2f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 18:39:53 2021 +0200
+
+    Reserve vectors.
+
+commit 6a412f619c2c14add1d7cf674661426c9191ee7b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 18:28:47 2021 +0200
+
+    Tweaked how tree selections are obtained and looped through.
+    This fixes an issue where unindexing one document would clear the whole
+    index listing.
+
+commit 44d8cb94cd8d89c394efd837e64201fcceb8058c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 10:57:42 2021 +0200
+
+    Removed unused variables.
+
+commit 9b2a0b4ca60d00ae6c9f93072132bd67d32271fb
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 10:53:38 2021 +0200
+
+    If no results list is found, try switching resultListStart from
+    double quotes to single quotes or vice versa.
+
+commit 67a244b81d43b3333cb6743bb6e21d378a11e2b4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 10:52:27 2021 +0200
+
+    Name fix.
+
+commit 8fdd1c6f16ac6e71492d71cfc8c7b3dac7069d17
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 18 10:51:43 2021 +0200
+
+    Sherlock plugin for Arxiv.
+
+commit b134436c7265ab771cb9cbac32c7a75ed1d7aad5
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 21:57:29 2021 +0200
+
+    Updated NEWS, TODO and some minor tweaks.
+
+commit 12cf7563ef0ea487f8d5123ff11ad6b7acb61627
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 21:38:06 2021 +0200
+
+    Use strerror_r and some cosmetic changes.
+
+commit 477b58c0ca42c1257fe11a416e93929da0665de8
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:56:02 2021 +0200
+
+    This Makefile should have been added at the same time as the rest of
+    the GTK3 code.
+
+commit 4560aa47a976e7f8a6cfd5f7033d8bbdbb1600e4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:53:46 2021 +0200
+
+    Deleted UI/GTK2 code.
+
+commit 60b68a95a4425dba51013342802ea73757d9a129
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:52:06 2021 +0200
+
+    If no result is found, try switching resultItemStart from double quotes
+    to single quotes or vice versa.
+
+commit 8002f616f9ea3341196740c5b0646e38d9aaf1e4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:51:12 2021 +0200
+
+    Bumped version number to 1.20.
+
+commit 7a976bc4163332915c5e28482e45cafeff11d4f7
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:48:08 2021 +0200
+
+    Left FIXMEs about translation.
+
+commit 07d5f8cdee67f83004e1f9f5c6deff83d436126b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:47:47 2021 +0200
+
+    No DBus compilation switch.
+
+commit daf043e65c2d55076d9b81ad652b239efa168ca1
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:45:51 2021 +0200
+
+    Crawler and DirectoryScanner threads should now report any error they
+    run into as well as the URL of the document.
+
+commit 189a0877d226e4eb2a255b17f6819ad10445449a
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:42:10 2021 +0200
+
+    Queries set to index results don't index any result found in any index.
+    Removed broken and unused checks on import. The dialog box is larger,
+    has a default file name suggestion.
+    The status bar message on index update shows the document location.
+    Some no DBus compilation switches fixes.
+
+commit 95c3a8ec822d8490e71c5d5c9d59293d24f67949
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:40:03 2021 +0200
+
+    Renamed PinotSettings::enableClientMode to setClientMode.
+
+commit fb8aeefbc3f435dc8b7dc202fbad3adaeafedf62
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 17 18:39:10 2021 +0200
+
+    No DBus compilation switches.
+
+commit f7f62ebe10446991dbedff25ad5744287a025c68
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 16 21:07:18 2021 +0200
+
+    Implemented over the (d)bus support for most index methods.
+
+commit ca4b53f89ce2465d91e85736c7c5d2884483b610
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 16 20:59:14 2021 +0200
+
+    Minor fix for listDocuments to return the number of documents.
+
+commit 09e21e410b785fb81b39d1731ed2bdb35b60522f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 16 08:10:38 2021 +0200
+
+    Retrieve document info, terms and terms count over DBus.
+    The daemon doesn't need to flush the index when setting document info.
+
+commit 97244ef3acd5208a7ad3a0ea26302339c00572d1
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Sep 14 21:52:56 2021 +0200
+
+    Replaced references to the original Web site on Berlios.
+
+commit 55a2d5cebbb9bbeb54fc1ce54c2013af0bab6b3a
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Sep 14 21:16:59 2021 +0200
+
+    Rationalized activation and behaviour of the Edit menuitems.
+
+commit c3d9f2671b9c469368c20625877933b01e6bd553
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Sep 14 19:32:40 2021 +0200
+
+    Corrected the README, --enable-libnotify is useful on BSD .
+
+commit dedf09b1fb37d6a60add60ee1dbe3135c1d59b58
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 13 19:43:17 2021 +0200
+
+    Dropped mentions of ancient versions.
+    Document configure flags and which should be enabled when.
+
+commit da1a75b592d8e4a69ec653333084f30af713d38e
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 13 19:07:28 2021 +0200
+
+    Minor edits to how to reset indexes.
+
+commit b4de861d1e770653c672c32e3d0d8623882e0bcc
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 13 19:04:29 2021 +0200
+
+    Upon receiving LaunchSearch, run pinot with the query terms.
+    Pinot can be run with a series of terms provided with -q/--query.
+
+commit 015801f459cf9d1e116131b022d54f173da80dc7
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 19:22:00 2021 +0200
+
+    Moved crawl stats under Daemon.
+    Show the right copy for indexes with just one document.
+
+commit b70b1d156afee17e387ba220db41cde43b18efd4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 19:08:08 2021 +0200
+
+    Mention how to dig into document terms with delve.
+
+commit 9a6e2ac9106458a3d44f6535fe91639c518066dd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 19:07:00 2021 +0200
+
+    Stats show a count for all crawled files, regardless of their current
+    status.
+
+commit f3c2960d3cddf976f258c1d3ae1b67b017a8af27
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 19:06:30 2021 +0200
+
+    Fixed count methods, dropped some legacy upgrade code.
+
+commit e89ead74ac814fce938aab694bec550a167d21a6
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 16:24:58 2021 +0200
+
+    Output the document ID.
+
+commit 117880b98f4aaade6f38fd386f037e5aadd440c8
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 15:57:31 2021 +0200
+
+    Reloads now happen in two steps. First, threads are told to stop,
+    then when the monitoring thread stops, all watches are removed,
+    the configuration is reloaded and a new start is performed.
+
+commit 24f237e59fa06c269b437260b71f304880effd82
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 15:55:44 2021 +0200
+
+    Reverted change to wasCrawled introduced in 593fb7d.
+    Implemented CrawlerThread::unmonitorEntry though it's not
+    used right now.
+    Added some DEBUG.
+
+commit 6e6e176b3fe1745ec98b50ed6e7d4297b4793d29
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 15:52:25 2021 +0200
+
+    Added removeLocations to remove watches on anything under a given
+    location.
+
+commit c24501b83cd82c5b359da3e193800fc731e2aad4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 15:51:36 2021 +0200
+
+    Cosmetic edit.
+
+commit 8d888fa02df803a273cb9fe093eca96cdff8ae66
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 12 15:38:04 2021 +0200
+
+    Fixed preserving of labels on update.
+    Also fixed recent changes that had caused the removal of documents
+    on update, originally meant onlt for those nested in containers.
+
+commit 89a8f14c64018107c0f9a6d6d7d22af2861f38d6
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:43:15 2021 +0200
+
+    Merged two condition checks.
+
+commit d126328c735a553e95bb061606853dc1c8f39cbd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:30:15 2021 +0200
+
+    No point running directories through the list of supported MIME types.
+
+commit 877a1ab8d2ceac0072c605a3476b2e043eaf16a0
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:28:53 2021 +0200
+
+    Return early if initialize has no source to process.
+
+commit a88134f8548cbf14b75404a3ff9d1fa5abc3f109
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:26:50 2021 +0200
+
+    Add an extra XDIR-prefixed term for the full name of local directories,
+    so that a query for dir:/xyz actually returns the document for /xyz.
+
+commit 73ee002ae5cb45dbc9ce5789bffab2395b0c3672
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:24:51 2021 +0200
+
+    Added helper method DocumentInfo::getIsDirectory.
+
+commit 54bdcdf140f79e65bf75f319cdedbb56a29df167
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 22:24:10 2021 +0200
+
+    Fixed hasSource, it would always provide source ID 0.
+
+commit 8db086d1bdeebf35074e7f9db84477465729467c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 18:10:40 2021 +0200
+
+    Overloaded DocumentInfo::getType() to drop MIME type without indication
+    of charset.
+    On second thought, and in line with Omega, produce a prefixed term when
+    no file extension exists, with prefix E.
+
+commit 0b882a37c1d898651c63a3ca9e0a53115371caff
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 17:22:22 2021 +0200
+
+    Looking up documents by file name should really be done with
+    the U prefix not XFILE.
+    No need to add a XEXT prefixed term when there's no exception.
+
+commit 2b4312481ab9988a7ebac5c53c74310e85345fdd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 10:50:03 2021 +0200
+
+    Bumped the requirement on Xapian to 1.4.10 minimum, removed conditionals
+    that dealt with older versions.
+
+commit 0c0f5ea816b3a40a7fffd69ff8fed841b20fa59f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 10:26:00 2021 +0200
+
+    Set the Builder's translation domain.
+
+commit 7037f6f51ef32f0aeb872667d63f6c22b7f3cce1
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 10:19:26 2021 +0200
+
+    Various fixes to launcherDialog.
+    The preferences window should not be visible by default.
+
+commit ab8432e0deaa939ab8a42c51cb7e716d8dfb0d56
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 10:07:41 2021 +0200
+
+    Script to extract single line translatable strings from the XML file
+    and generate a dummy header file for gettext.
+    Updated the list of files that have translations.
+
+commit caa8990a7cb4c12e08812990a76f89ea9defab94
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 11 10:01:25 2021 +0200
+
+    Bringing back launcherDialog.
+
+commit 65c67e27bcac54dede5e70cfcc8fb48c14b07dc7
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 10 21:40:44 2021 +0200
+
+    Fixed use of Xapian::NumberRangeProcessor and size ranges.
+    Added a size descending query sorter.
+
+commit ae0e484f8b2702d3bbd36eba048c6d5486ee28fd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 10 21:23:54 2021 +0200
+
+    Fixed calls to get_widget_derived.
+
+commit 17652822ffc424b9f765a7bd0ea648ecde52e734
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 10 19:41:34 2021 +0200
+
+    Renamed GTK3 source files and classes to use the same conventions as
+    the rest of the codebase.
+
+commit c1d2c97313401920000c76d25223f0df01f23363
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 10 17:46:52 2021 +0200
+
+    Removed support for older gtkmm versions.
+
+commit 9d8f0819dc044dd796ca3b52d867d6feb7f016b7
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Sep 10 17:31:29 2021 +0200
+
+    Removed statisticsDialog's InternalState.
+
+commit cdccf3fc3f8be5caca8f9fde2099865011b9d929
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 9 23:49:02 2021 +0200
+
+    Gtkmm >= 3.24 is now default.
+
+commit 610d58ee373e043165b0d5ebdbf75caf2ca914fe
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 9 23:46:02 2021 +0200
+
+    First shot at a refreshed gtk3 based UI loaded with Gtk::Builder.
+    Dropped UI/GTK2/xapian-powered.png which wasn't used.
+
+commit 2bbfc8861eb34899490d71043e019d84dac46431
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu Sep 9 17:34:51 2021 +0200
+
+    Mostly cosmetic edit of SQL statements.
+
+commit 9453a4b996903684f71693d012c20dea6873ed23
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Sep 7 19:38:50 2021 +0200
+
+    Removed unsupported agent attribute on property.
+
+commit 4b1231dfd8199891b10260b0319f700afdd59059
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 22:24:59 2021 +0200
+
+    Expect rst2txt for RST files as rst2html isn't packaged in the current Fedora.
+
+commit 92aaf47892457e1811b9b997d90ec05a88528d4e
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 22:23:40 2021 +0200
+
+    Fixed recordCrawled to update dates.
+    Fixed wasCrawled to ignore dates on items not yet crawled.
+
+commit eee3e6c59a650cf0e412058a839cadcf17e27884
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 17:55:43 2021 +0200
+
+    Xapian's Chert backend is 13 years old, default to whatever is current.
+
+commit d98be98d392993e16c92775690cb05b8fe716477
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 13:02:12 2021 +0200
+
+    While search is provided by the daemon not the desktop app, get this
+    INI file to point to the latter's desktop file. The daemon's desktop
+    file is in a location that's not considered.
+
+commit 6a3d39ddabf8c369f76aa7a0b798643f8fb25be3
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 12:58:20 2021 +0200
+
+    Silence error output of which.
+
+commit 8df1230ece2bf1e59501282b2ee20ca94c9d5014
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 12:56:53 2021 +0200
+
+    Added the search interface to the XML file to faciliate introspection.
+    Fixed output of GetResultMetas.
+
+commit 9c57fcb5848f16965370bad77c99bdda862e6b77
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Sep 6 10:22:04 2021 +0200
+
+    Implement the org.gnome.ShellSearchProvider2 interface.
+
+commit b50d48a1c8a648942f05a423e4495f8bb5911ec9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 22:41:29 2021 +0200
+
+    Build the UI against giomm.
+
+commit c8d66e42212871d564c115bd48c7d6d61e52fb94
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 22:40:22 2021 +0200
+
+    Trimmed down headers, moved registration call to try block.
+
+commit cd11d03768474478a73b3b41a7259992b1cbc94b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 22:39:21 2021 +0200
+
+    Moved the handling of the IndexFlushed signal to mainWindow.
+
+commit adcef4bede57bbe045e59dda65ac2d724762203c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 21:15:46 2021 +0200
+
+    Simplified showing a initial status text in the main window.
+
+commit 4b61b1cbd37aa28994e03f41d8f4c4d80e74d3a5
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 21:14:33 2021 +0200
+
+    Moved DBusEngineQueryThread to DBusServerThreads.cpp/h.
+
+commit 9c4a2c86ad7587a8a489e8788ee765c3a4c409d4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 21:12:37 2021 +0200
+
+    Minor capitalization fix. Removed unused variables.
+
+commit 514f1f4ebac59ef9f81c9fb6aa01638aae9ef30f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 10:24:43 2021 +0200
+
+    Dropped obsolete Xesam and Google API related code.
+    Dropped xdgmime in favour of gio.
+
+commit d7b63bd5db0e5ebcedc401f5a44f1d734d3c9338
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Sep 5 09:54:05 2021 +0200
+
+    Various fixes to messages handling.
+
+commit c754226e64f91d65959f01d79ae4dec4f779b2dd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 23:01:03 2021 +0200
+
+    The DBus service file was renamed.
+
+commit 4ab5889896466e02b1505157c48c08f864181007
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 22:48:27 2021 +0200
+
+    Try and get battery status via org.freedesktop.UPower's OnBattery
+    property unless battery checks can be done with sysctl.
+    Check whether Stop was called in the activity timeout.
+
+commit 8006dc1ca46590620d024475a55d06e4d9386545
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 21:01:17 2021 +0200
+
+    Sweeping changes that replace DBusServletInfo/Thread with the auto
+    generated DBus stub.
+
+commit e35957ce3fe412da545216d9a9962e7e8d70bd1d
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 21:00:06 2021 +0200
+
+    Bundle auto generated DBus code.
+
+commit 3d76ab60431035a233b1dd71b9b5bac78ce354bc
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:59:03 2021 +0200
+
+    Additional fields for autostart.
+
+commit 621a59c2b93afee36c6c93584611971c8ae61ea9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:57:21 2021 +0200
+
+    Sync with changes to DBusIndex.
+    Expect pinot-prefs to exist when opening preferences.
+
+commit 4cec1c4d35d11b006fce729c1cf7790381f1de2e
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:55:41 2021 +0200
+
+    Migrated DBusIndex to the auto generated proxy.
+    Bundle proxy files.
+    Added a reload parameter to pinot-label.
+
+commit 5572872ede3c0a28d2e2aaa1d431493a56e0b185
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:54:18 2021 +0200
+
+    Implemented the convenience method addLabel.
+
+commit 676adfc1b629309faa107f1c672bd20dfd8ff727
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:51:48 2021 +0200
+
+    Bundle auto generated common DBus files.
+    Some DEBUG.
+
+commit 5c0f9e171007d1a449d4b1ee43e5d8a36afff9fe
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:51:20 2021 +0200
+
+    Check for giomm.
+
+commit f14a6bbe0d26558f7ca93183adba35fe1680c545
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:48:59 2021 +0200
+
+    Switched the DBus namespace.
+
+commit fdbd4acfe51f42eca9afe04b29c24ead6905921d
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:28:39 2021 +0200
+
+    Added make target "dbus-code" to regenerate DBus code with
+    gdbus-codegen-glibmm3.
+
+commit 2080076e1b5024c6e555e6f8de7ebd87190665b0
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Sep 4 20:26:58 2021 +0200
+
+    DBus proxy and stubs generated with gdbus-codegen-glibmm.
+    Switched the DBus namespace to om.github.FabriceColin.
+
+commit 6615dff657f0545eba4ebcd232e53ec4d204d8b9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Aug 29 15:26:12 2021 +0200
+
+    Fixed mode.
+
+commit b632aa0cd60002db31cd9c5d373a83b6a05e88bd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Aug 29 15:24:38 2021 +0200
+
+    Removed obsolete plugins.
+    Updated the Wikipedia plugin.
+
+commit 2b9811d2b70485d89f4c5efce70cd8c3c1e861e0
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Aug 29 14:44:11 2021 +0200
+
+    GtkUIManager was deprecated.
+    Moved menu items out of the glade generated files.
+
+commit 0f3f8e6abed9c9d862bca9d477485b0066dce82c
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Aug 29 12:12:25 2021 +0200
+
+    Generated with gtk-builder-convert --target-version 3 \
+     UI/GTK2/metase-gtk2.glade UI/GTK2/metase-gtk3.gtkbuilder
+
+commit 0d1b22ebbf00b3d02ad618f8a31f9af560d0c783
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Thu Jul 22 18:52:44 2021 +0200
+
+    Bumped boost dependency to 1.75 which doesn't include a boost_system
+    library.
+
+commit e670050d53677c0f79793588d9235746f02cc7c6
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Thu Jul 22 18:52:01 2021 +0200
+
+    Condition CSS styles on gtk3 3.14 or older.
+
+commit e11e7025cb86c69ca28a1b23a5a305c83f31020c
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Tue Jul 20 19:20:42 2021 +0200
+
+    Latest POs.
+
+commit 4b6a190264915b1e9fd0151e71a210ba03e0d4c7
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Tue Jul 20 19:20:21 2021 +0200
+
+    Regenerated.
+
+commit 20520b7ed9c978d1e652ec800a3e968beef2ac81
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Tue Jul 20 19:15:25 2021 +0200
+
+    Regenerated with aclocal 1.16.2.
+
+commit 6ff084927750547385a3289c9d2ecb7c3b87bb47
+Author: Fabrice Colin <fabrice.colin@gmail.com>
+Date:   Tue Jul 20 19:14:54 2021 +0200
+
+    Updated year.
+
+commit 810b5841b6e03dddac8108fc62d4323116864d85
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat May 23 16:01:59 2020 +0200
+
+    Minor edits.
+
+commit 6c585417ace45d9de475b4cccb80f587f8bbfc35
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Thu May 14 21:57:00 2020 +0200
+
+    Fixed what PID file to open when built without D-Bus support.
+
+commit 79784f0bf8232bc1874a528f97deb8a2b23390a1
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 18:33:00 2020 +0100
+
+    Current log.
+
+commit 7617039b24805dd32b74aba992e151abecc3f8d4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 18:32:03 2020 +0100
+
+    Make automake stop complain about subdir-objects.
+
+commit c8c708c13427e41a370c08af18f7120eefcce901
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 18:11:06 2020 +0100
+
+    Changelog for commits to the current repository.
+
+commit e377dfc06990de5b3843fcbd0750b1870aebda29
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 18:09:21 2020 +0100
+
+    Regenerated with aclocal 1.16.1 and libtool 2.4.6.
+
+commit d2d6e3bcf86d7a7b26e91deaf2f3a015326c3a58
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 18:05:42 2020 +0100
+
+    Updating for 1.10.
+
+commit 6cb7bcb42a7e6671ab232b4153f63a8f52a564c4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 9 17:59:21 2020 +0100
+
+    Fedora 31 require dbus-glib-devel. Also added openssl-devel.
+
+commit 7e912534c16fea2fc1ce606dfc5de379e6595e97
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sat Dec 21 17:29:59 2019 +0100
+
+    Support for Xapian 1.1.0 (commit()) and 1.3.6 (RangeProcessor) APIs.
+
+commit e12b2d17a8b54e6def7e4b850a630aad34ea5593
+Merge: f0a5627 a0e8665
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Oct 18 19:31:17 2019 +0200
+
+    Merge pull request #6 from ojwb/gmime3-support
+    
+    Add support for gmime >= 3.0
+
+commit a0e8665c6900eb5fb51149fc2cc1520216f43be4
+Author: Olly Betts <olly@survex.com>
+Date:   Fri Oct 18 16:40:32 2019 +1300
+
+    Add support for gmime >= 3.0
+    
+    The minimum required gmime version is now 2.6, though 2.4 may work
+    if you adjust the configure check (but gmime 2.4 is really old now,
+    and I'm not able to check with it).
+    
+    Before this change it seems GMIME_ENABLE_RFC2047_WORKAROUNDS was
+    abused as a gmime version indicator - ChangeLog-dijon says:
+    
+    > If GMIME_ENABLE_RFC2047_WORKAROUNDS is defined, assume gmime 2.4.
+    
+    But this is no longer defined by gmime >= 3.0, and gmime < 2.4 seems
+    completely irrelevant now so I've stripped out these checks instead
+    of trying to adjust them to keep working.
+
+commit f0a56270e8d2c808b5da93c50c97629bc87957cc
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Jul 23 22:34:46 2019 +0200
+
+    libtextcat 2.2 is too ancient...
+
+commit 23ab339f9e847c2cfe0f738155b044804ef6eb2a
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Jul 23 22:04:43 2019 +0200
+
+    Updated copyright years.
+
+commit 54e5dfe55a50837d7c8e59ddb009f0dee6db160b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Jul 23 22:03:52 2019 +0200
+
+    The Thread library wasn't listed as a dependency.
+
+commit faaa552de9ec099184d131c08b76ae0b1ce4f5ec
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Jul 23 22:03:14 2019 +0200
+
+    Handle newer versions of exiv2.
+
+commit 860036227d22ad1448c88a673e5245e7a10d7184
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun May 12 18:27:41 2019 +0200
+
+    Added a check on boost/spirit/include/classic.hpp, on Glib for versions that
+    have obsoleted g_type_init. Updated copyright years.
+
+commit ae0d6ab9fd1842c54f57bcd7c07ee522ec7cf3a1
+Merge: 996a800 4eefb5f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Jun 18 15:23:49 2018 +0800
+
+    Merge pull request #5 from ojwb/fix-occurred-typos
+    
+    Fix widespread typos for "occurred"
+
+commit 4eefb5f7a755674299aed7b6b1fc83e2621e422d
+Author: Olly Betts <olly@survex.com>
+Date:   Mon Jun 18 12:09:09 2018 +1200
+
+    Fix widespread typos for "occurred"
+    
+    Reported on the Debian package by lintian's spelling-error-in-binary
+    check.
+
+commit 996a80052cc2ecfa3ffbe31a187fda5dffab9190
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Dec 22 18:31:49 2017 +0100
+
+    It looks like Centos 7 needs the option "-std=c++11".
+
+commit a932cd1093599e8e26f5e408292faff92daceb74
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Dec 17 16:10:04 2017 +0100
+
+    Catch up with current glib and OpenSSL.
+
+commit 0b38e7da27ff1363b7fc04e0af75f72861291f52
+Merge: 995ba20 c2fdda2
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Fri Mar 3 14:43:26 2017 +0100
+
+    Merge pull request #4 from ojwb/faq-fixes
+    
+    FAQ fixes from Olly Betts
+
+commit c2fdda24d8dc8ea48b8b2ebfa3158fe20b4e1df0
+Author: Olly Betts <olly@survex.com>
+Date:   Wed Mar 1 10:42:40 2017 +1300
+
+    Remove suggestion to delete "flintlock"
+    
+    Xapian's `flintlock` is not a lock file whose presence indicates that
+    the lock is held, but rather a file which is locked using `fcntl()`
+    locking.  Such locks are automatically released by the OS when the
+    process holding them terminates, so there's no such thing as a "stale
+    lock", and the `flintlock` file should always exist.
+    
+    The `flicklock` file was a typo and fixed back in 2006, before Xapian
+    1.0.0 - so the name only of historic interest now, but similarly it
+    should not be deleted.
+    
+    The `db_lock` file was used by the old `quartz` backend and did work
+    by its presence indicating that the lock was held.  But `flint` was
+    the default backend from 1.0.0 and `quartz` was removed completely
+    in 2008, so I find it hard to believe that anyone will have such a
+    database.
+
+commit d8b65f108b0e7c2a85bd751d3c9e0ba96cd520a5
+Author: Olly Betts <olly@survex.com>
+Date:   Wed Mar 1 10:42:07 2017 +1300
+
+    Remove Xapian-related entries more than a decade old
+    
+    Nobody will be using Xapian versions from 2006 now.
+
+commit 995ba2005392f6f69066a5cb4b68eec0b36997de
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Feb 13 19:51:11 2017 +0100
+
+    Extended copyright years, updated the Web site URL.
+
+commit 57f59068c76c418d71d013b138d5f0b4f8ccdee9
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Feb 13 19:49:32 2017 +0100
+
+    Changed the filter interface, and the entry points dynamic filter libraries
+    should export to hopefully compiler-agnostic mangled names.
+
+commit f6b5773c025dda83f4b5c7035c3e43ac3e8e0e6f
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 12 18:28:05 2017 +0100
+
+    Moved the old repo's ChangeLog file, updated URLs.
+
+commit 9f59c561f40ca4c9fbd00e175335694520c6cdc6
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Feb 12 18:26:38 2017 +0100
+
+    Useful upgrade() method.
+
+commit 3a40d5abe159a106f3aabaedf1a199020946b3b5
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Nov 13 20:57:38 2016 +0100
+
+    There's nothing in the Xapian backend that requires OpenSSL so we probably can
+    avoid linking to it, and sidestep https://bugs.debian.org/833692.
+
+commit ae6d2437cca116dbdab4023c44d40a1392f9cceb
+Merge: 9219d5e 23418f4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Oct 18 16:59:24 2016 +0200
+
+    Merge pull request #2 from ojwb/fix-c++11-warning
+    
+    Fix GCC C++11 -Wliteral-suffix warning
+
+commit 9219d5e7630b66704179a1346e807cd3bdd3e600
+Merge: c14d6d5 73e539b
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Tue Oct 18 16:58:54 2016 +0200
+
+    Merge pull request #1 from ojwb/cx11-abi-mangling-fix
+    
+    Fix condition under which C++11 ABI symbol is used
+
+commit 23418f46ae66318944edb1ee7347cd54c758b1cc
+Author: Olly Betts <olly@survex.com>
+Date:   Sat Oct 1 11:38:25 2016 +1300
+
+    Fix GCC C++11 -Wliteral-suffix warning
+    
+    ../Tokenize/filters/GMimeMboxFilter.cc:304:28: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]
+      if (sscanf(ipath.c_str(), "o="GMIME_OFFSET_MODIFIER"&l=[", &m_messageStart) != 1)
+                                ^
+
+commit 73e539be851fccb49c0ef5599fc6585b0f66bbfd
+Author: Olly Betts <olly@survex.com>
+Date:   Sat Oct 1 11:15:51 2016 +1300
+
+    Fix condition under which C++11 ABI symbol is used
+
+commit c14d6d5ba01ff3bf20d8a9e44a02b64a6a9b8c5e
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Mon Jun 20 20:07:02 2016 +0200
+
+    Forgot to add Olly Betts here for the configure patch.
+
+commit f4f0aaf1bc3af8f6b4700148b7c510aba2503830
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:16:18 2016 +0000
+
+    Patch from Olly Betts to "fix a bug in pinot's configure which makes things
+    like this misbehave:
+    
+    ./configure XAPIAN_CONFIG=/usr/bin/xapian-config-1.3
+    "
+    Also, always link with -lboost_system to help with newer versions of boost.
+
+commit 4d263b15216146915bc4108884c77053161dd252
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:11:47 2016 +0000
+
+    Fix return value (https://bugs.debian.org/812165).
+
+commit a34b8ac27d528361cf9f9d32b5bed1e975903e5d
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:10:22 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit 3b4e34d20f0cde22daceaaf981f756788cee0846
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:08:58 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit 46353ebcebdcba7a0b5d2874eb4513c9c83c17cd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:07:31 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit eced1f6ef25dcb9f5ab93c6237c0327a08656afd
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:06:55 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit 4ee29029839fb9b63b995b5168ddb0ab33b886a8
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:06:31 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit 4c44f7169c5fefbbd16f9ca618c5994ffeb602ca
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 09:05:58 2016 +0000
+
+    Source exported from Google Code and as found in v1.09 dated 2015/06/11.
+
+commit 756424aba64b0347b11343c63767c73886a255f4
+Author: FabriceColin <fabrice.colin@gmail.com>
+Date:   Sun Jun 19 10:41:10 2016 +0200
+
+    Initial commit
