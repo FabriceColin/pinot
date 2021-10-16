@@ -1,4 +1,4 @@
-2021/09/?? version_1_2_0
+2021/10/16 version_1_2_0
 General :
  - dropped xdgmime in favour of gio
  - require giomm >= 2.6
