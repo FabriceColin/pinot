@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2016 Fabrice Colin
+ *  Copyright 2007-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ string Filter::get_mime_type(void) const
 	return m_mimeType;
 }
 
-const map<string, std::string> &Filter::get_meta_data(void) const
+const map<string, string> &Filter::get_meta_data(void) const
 {
 	return m_metaData;
 }

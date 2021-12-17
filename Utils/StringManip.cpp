@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ string StringManip::extractField(const string &str, const string &start, const s
 }
 
 /// Replaces a sub-string.
-string StringManip::replaceSubString(const string &str, const std::string &substr, const std::string &rep)
+string StringManip::replaceSubString(const string &str, const string &substr, const string &rep)
 {
 	if (str.empty() == true)
 	{

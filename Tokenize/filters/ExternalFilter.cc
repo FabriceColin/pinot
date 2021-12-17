@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2016 Fabrice Colin
+ *  Copyright 2007-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ string ExternalFilter::get_error(void) const
 	return "";
 }
 
-void ExternalFilter::initialize(const std::string &config_file, MIMETypes &types)
+void ExternalFilter::initialize(const string &config_file, MIMETypes &types)
 {
 	xmlDoc *pDoc = NULL;
 	xmlNode *pRootElement = NULL;

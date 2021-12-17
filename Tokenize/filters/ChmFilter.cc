@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2016 Fabrice Colin
+ *  Copyright 2011-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -162,7 +162,7 @@ bool ChmFilter::next_document(void)
 	return next_document("");
 }
 
-bool ChmFilter::next_document(const std::string &ipath)
+bool ChmFilter::next_document(const string &ipath)
 {
 	struct chmUnitInfo unitInfo;
 	struct chmUnitInfo *pUnitInfo = NULL;

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2016 Fabrice Colin
+ *  Copyright 2009-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -285,7 +285,7 @@ void ArchiveFilter::initialize(void)
 	}
 }
 
-bool ArchiveFilter::next_document(const std::string &ipath)
+bool ArchiveFilter::next_document(const string &ipath)
 {
 	struct archive_entry *pEntry = NULL;
 	const char *pFileName = NULL;
