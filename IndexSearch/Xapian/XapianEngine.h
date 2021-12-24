@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005,2006 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,16 +27,6 @@
 
 #include "config.h"
 #include "SearchEngineInterface.h"
-
-#if !ENABLE_XAPIAN_SPELLING_CORRECTION
-// Spelling correction in Xapian 1.0.2 may cause a crash
-// See http://www.xapian.org/cgi-bin/bugzilla/show_bug.cgi?id=194
-#if XAPIAN_NUM_VERSION > 1000002
-#define ENABLE_XAPIAN_SPELLING_CORRECTION 1
-#else
-#define ENABLE_XAPIAN_SPELLING_CORRECTION 0
-#endif
-#endif
 
 /// Wraps Xapian's search funtionality.
 class XapianEngine : public SearchEngineInterface

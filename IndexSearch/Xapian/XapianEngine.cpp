@@ -809,9 +809,7 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	if (minimal == false)
 	{
 		flags |= Xapian::QueryParser::FLAG_WILDCARD;
-#if ENABLE_XAPIAN_SPELLING_CORRECTION>0
 		flags |= Xapian::QueryParser::FLAG_SPELLING_CORRECTION;
-#endif
 	}
 	Xapian::Query parsedQuery = parser.parse_query(freeQuery, flags);
 #ifdef DEBUG
@@ -833,7 +831,6 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 
 	if (minimal == false)
 	{
-#if ENABLE_XAPIAN_SPELLING_CORRECTION>0
 		// Any correction ?
 		correctedFreeQuery = parser.get_corrected_query_string();
 #ifdef DEBUG
@@ -841,7 +838,6 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 		{
 			clog << "XapianEngine::parseQuery: corrected spelling to: " << correctedFreeQuery << endl;
 		}
-#endif
 #endif
 	}
 
