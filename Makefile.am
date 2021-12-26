@@ -1,6 +1,16 @@
 
 SUBDIRS = po Utils Tokenize SQL Collect IndexSearch IndexSearch/Xapian Monitor Core UI/GTK3/src
 
+dist-hook:
+	@if test -d "$(srcdir)/.git"; \
+	then \
+		echo Creating ChangeLog && \
+		( cd "$(top_srcdir)" && \
+		  git log --decorate ) > ChangeLog; \
+	else \
+		echo A git clone is required to generate a ChangeLog >&2; \
+	fi
+
 EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TODO \
 	Tokenize/filters/external-filters.xml globalconfig.xml \
 	textcat*conf.txt pinot*.desktop pinot.spec \
