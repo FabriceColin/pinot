@@ -54,13 +54,16 @@ class XapianEngine : public SearchEngineInterface
 		std::set<std::string> m_expandDocuments;
 		Xapian::Stem m_stemmer;
 
+		static std::string getDocumentText(Xapian::Database *pIndex,
+			Xapian::docid docId, bool &hasCJKV);
+
 		bool queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
-			const string &stemLanguage, unsigned int startDoc,
+			const std::string &stemLanguage, unsigned int startDoc,
 			const QueryProperties &queryProps);
 
 		Xapian::Query parseQuery(Xapian::Database *pIndex, const QueryProperties &queryProps,
-			const string &stemLanguage, DefaultOperator defaultOperator,
-			string &correctedFreeQuery, bool minimal = false);
+			const std::string &stemLanguage, DefaultOperator defaultOperator,
+			std::string &correctedFreeQuery, bool minimal = false);
 
 	private:
 		XapianEngine(const XapianEngine &other);

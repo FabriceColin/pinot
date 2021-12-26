@@ -22,6 +22,7 @@
 #include <time.h>
 #include <string>
 #include <cstring>
+#include <map>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -36,10 +37,10 @@
 #include "CJKVTokenizer.h"
 #include "FieldMapperInterface.h"
 #include "XapianDatabaseFactory.h"
-#include "AbstractGenerator.h"
 #include "XapianEngine.h"
 
 using std::string;
+using std::map;
 using std::multimap;
 using std::vector;
 using std::clog;
@@ -99,7 +100,7 @@ class TimeValueRangeProcessor : public Xapian::RangeProcessor
 			m_valueNumber(valueNumber)
 		{
 		}
-		~TimeValueRangeProcessor()
+		virtual ~TimeValueRangeProcessor()
 		{
 		}
 
@@ -188,7 +189,7 @@ class TermDecider : public Xapian::ExpandDecider
 			clog << "TermDecider: avoiding " << m_pTermsToAvoid->size() << " terms" << endl;
 #endif
 		}
-		~TermDecider()
+		virtual ~TermDecider()
 		{
 			if (m_pTermsToAvoid != NULL)
 			{
@@ -382,7 +383,6 @@ class QueryModifier : public Dijon::CJKVTokenizer::TokensHandler
 			m_hasNonCJKV(false)
 		{
 		}
-
 		virtual ~QueryModifier()
 		{
 		}
@@ -862,9 +862,6 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 	timer.start();
 	try
 	{
-		AbstractGenerator abstractGen(pIndex, 50);
-		vector<string> seedTerms;
-
 		// Give the query object to the enquire session
 		enquire.set_query(query);
 		// How should results be sorted ?
@@ -933,49 +930,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 			{
 				Xapian::docid docId = *mIter;
 				Xapian::Document doc(mIter.get_document());
-
-				// What terms did this document match ?
-				seedTerms.clear();
-				for (Xapian::TermIterator termIter = enquire.get_matching_terms_begin(docId);
-					termIter != enquire.get_matching_terms_end(docId); ++termIter)
-				{
-					char firstChar = (*termIter)[0];
-
-					if (isupper(((int)firstChar)) == 0)
-					{
-						seedTerms.push_back(*termIter);
-#ifdef DEBUG
-						clog << "XapianEngine::queryDatabase: matched term " << *termIter << endl;
-#endif
-					}
-					else if (firstChar == 'Z')
-					{
-						string stemmed((*termIter).substr(1));
-						string::size_type stemmedLen = stemmed.length();
-
-						// Which of this document's terms stem to this ?
-						Xapian::TermIterator docTermIter = pIndex->termlist_begin(docId);
-						if (docTermIter != pIndex->termlist_end(docId))
-						{
-							for (docTermIter.skip_to(stemmed);
-								docTermIter != pIndex->termlist_end(docId); ++docTermIter)
-							{
-								// Is this a potential unstem ?
-								if (strncasecmp((*docTermIter).c_str(), stemmed.c_str(), stemmedLen) != 0)
-								{
-									// No, no point looking at the next terms
-									break;
-								}
-#ifdef DEBUG
-								clog << "XapianEngine::queryDatabase: matched unstem " << *docTermIter << endl;
-#endif
-
-								// FIXME: check this term stems to stemmed !
-								seedTerms.push_back(*docTermIter); 
-							}
-						}
-					}
-				}
+				bool hasCJKV = false;
 
 				if (docId <= 0)
 				{
@@ -986,7 +941,21 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 				}
 
 				DocumentInfo thisResult;
-				thisResult.setExtract(abstractGen.generateAbstract(docId, seedTerms));
+				string docText(getDocumentText(pIndex, docId, hasCJKV));
+				unsigned int flags = Xapian::MSet::SNIPPET_BACKGROUND_MODEL|Xapian::MSet::SNIPPET_EXHAUSTIVE;
+
+				if (hasCJKV == true)
+				{
+					flags |= Xapian::MSet::SNIPPET_CJK_NGRAM;
+				}
+				if (stemLanguage.empty() == true)
+				{
+					thisResult.setExtract(matches.snippet(docText, 300, Xapian::Stem(), flags));
+				}
+				else
+				{
+					thisResult.setExtract(matches.snippet(docText, 300, m_stemmer, flags));
+				}
 				thisResult.setScore((float)mIter.get_percent());
 
 #ifdef DEBUG
@@ -1089,6 +1058,70 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 void XapianEngine::freeAll(void)
 {
 	FileStopper::free_stopper();
+}
+
+string XapianEngine::getDocumentText(Xapian::Database *pIndex,
+	Xapian::docid docId, bool &hasCJKV)
+{
+	map<Xapian::termpos, string> wordsBuffer;
+	CJKVTokenizer tokenizer;
+
+	try
+	{
+		// Go through the position list of each term
+		for (Xapian::TermIterator termIter = pIndex->termlist_begin(docId);
+			termIter != pIndex->termlist_end(docId); ++termIter)
+		{
+			string termName(*termIter);
+
+			// Skip prefixed terms
+			if (isupper((int)termName[0]) != 0)
+			{
+				if (termName == "XTOK:CJKV")
+				{
+					hasCJKV = true;
+				}
+				continue;
+			}
+			// Skip multi-character CJKV terms
+			if ((tokenizer.has_cjkv(termName) == true) &&
+				(termName.length() > 4))
+			{
+				continue;
+			}
+
+			for (Xapian::PositionIterator positionIter = pIndex->positionlist_begin(docId, termName);
+				positionIter != pIndex->positionlist_end(docId, termName); ++positionIter)
+			{
+				Xapian::termpos termPos = *positionIter;
+
+				// If several terms exist at this position, prefer the shortest one
+				map<Xapian::termpos, string>::const_iterator wordIter = wordsBuffer.find(termPos);
+				if ((wordIter == wordsBuffer.end()) ||
+					(wordIter->second.length() > termName.length()))
+				{
+					wordsBuffer[termPos] = termName;
+				}
+			}
+		}
+	}
+	catch (const Xapian::Error &error)
+	{
+#ifdef DEBUG
+		clog << "XapianEngine::getDocumentText: " << error.get_msg() << endl;
+#endif
+	}
+
+	string docText;
+
+	for (map<Xapian::termpos, string>::const_iterator wordIter = wordsBuffer.begin();
+		wordIter != wordsBuffer.end(); ++wordIter)
+	{
+		docText += " ";
+		docText += wordIter->second;
+	}
+
+	return docText;
 }
 
 //

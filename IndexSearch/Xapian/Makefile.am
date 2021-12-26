@@ -1,7 +1,6 @@
 # Process this file with automake to produce Makefile.in
 
 noinst_HEADERS = \
-	AbstractGenerator.h \
 	LanguageDetector.h \
 	XapianDatabase.h \
 	XapianDatabaseFactory.h \
@@ -11,7 +10,6 @@ noinst_HEADERS = \
 lib_LTLIBRARIES = libxapianbackend.la
 
 libxapianbackend_la_SOURCES = \
-	AbstractGenerator.cpp \
 	LanguageDetector.cpp \
 	ModuleExports.cpp \
 	XapianDatabase.cpp \
