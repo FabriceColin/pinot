@@ -148,7 +148,6 @@ class TokensIndexer : public Dijon::CJKVTokenizer::TokensHandler
 			// Is this CJKV ?
 			if (is_cjkv == false)
 			{
-#ifndef _DIACRITICS_SENSITIVE
 				bool hasDiacritics = false;
 
 				// Remove accents and other diacritics
@@ -158,7 +157,6 @@ class TokensIndexer : public Dijon::CJKVTokenizer::TokensHandler
 					m_doc.add_posting(m_prefix + XapianDatabase::limitTermLength(unaccentedTerm), m_termPos);
 					hasDiacritics = true;
 				}
-#endif
 
 				// Don't stem if the term starts with a digit
 				if ((m_pStemmer != NULL) &&
@@ -167,14 +165,12 @@ class TokensIndexer : public Dijon::CJKVTokenizer::TokensHandler
 					string stemmedTerm((*m_pStemmer)(term));
 
 					m_doc.add_term("Z" + XapianDatabase::limitTermLength(stemmedTerm));
-#ifndef _DIACRITICS_SENSITIVE
 					if (hasDiacritics == true)
 					{
 						stemmedTerm = (*m_pStemmer)(unaccentedTerm);
 
 						m_doc.add_term("Z" + XapianDatabase::limitTermLength(stemmedTerm));
 					}
-#endif
 				}
 
 				// Does it include dots ?
@@ -359,7 +355,6 @@ void XapianIndex::addPostingsToDocument(const Xapian::Utf8Iterator &itor, Xapian
 	Xapian::termcount &termPos) const
 {
 	Xapian::Stem *pStemmer = NULL;
-	bool isCJKV = false;
 
 	// Do we know what language to use for stemming ?
 	if ((noStemming == false) &&
@@ -379,25 +374,14 @@ void XapianIndex::addPostingsToDocument(const Xapian::Utf8Iterator &itor, Xapian
 	const char *pRawData = itor.raw();
 	if (pRawData != NULL)
 	{
+#ifndef _TERM_GEN
 		Dijon::CJKVTokenizer tokenizer;
 		string text(pRawData);
 
-#ifdef _DIACRITICS_SENSITIVE
-		if (tokenizer.has_cjkv(text) == true)
-		{
-#endif
-			// Use overload
-			addPostingsToDocument(tokenizer, pStemmer, text, doc, db,
-				prefix, doSpelling, termPos);
-			isCJKV = true;
-#ifdef _DIACRITICS_SENSITIVE
-		}
-#endif
-	}
-
-#ifdef _DIACRITICS_SENSITIVE
-	if (isCJKV == false)
-	{
+		// Use overload
+		addPostingsToDocument(tokenizer, pStemmer, text, doc, db,
+			prefix, doSpelling, termPos);
+#else
 		Xapian::TermGenerator generator;
 
 		// Set the stemmer
@@ -435,8 +419,8 @@ void XapianIndex::addPostingsToDocument(const Xapian::Utf8Iterator &itor, Xapian
 			}
 		}
 		termPos = generator.get_termpos();
-	}
 #endif
+	}
 
 	if (pStemmer != NULL)
 	{

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2013 Fabrice Colin
+ *  Copyright 2005-2021 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -236,12 +236,6 @@ bool PluginWebEngine::runQuery(QueryProperties& queryProps,
 
 	m_resultsList.clear();
 	m_resultsCountEstimate = 0;
-
-	if (queryProps.getType() != QueryProperties::XAPIAN_QP)
-	{
-		clog << "PluginWebEngine::runQuery: query type not supported" << endl;
-		return false;
-	}
 
 	if (queryString.empty() == true)
 	{

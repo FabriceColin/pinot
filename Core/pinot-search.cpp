@@ -86,7 +86,6 @@ static void printHelp(void)
 
 int main(int argc, char **argv)
 {
-	QueryProperties::QueryType queryType = QueryProperties::XAPIAN_QP;
 	string engineType, option, csvExport, xmlExport, stemLanguage;
 	unsigned int maxResultsCount = 10; 
 	int longOptionIndex = 0;
@@ -214,31 +213,28 @@ int main(int argc, char **argv)
 	char *pQueryInput = argv[optind + 2];
 
 	// Set the query
-	QueryProperties queryProps("pinot-search", "", queryType);
-	if (queryType == QueryProperties::XAPIAN_QP)
+	QueryProperties queryProps("pinot-search", "");
+	if (isStoredQuery == true)
 	{
-		if (isStoredQuery == true)
+		const map<string, QueryProperties> &queries = settings.getQueries();
+		map<string, QueryProperties>::const_iterator queryIter = queries.find(pQueryInput);
+		if (queryIter != queries.end())
 		{
-			const map<string, QueryProperties> &queries = settings.getQueries();
-			map<string, QueryProperties>::const_iterator queryIter = queries.find(pQueryInput);
-			if (queryIter != queries.end())
-			{
-				queryProps = queryIter->second;
-			}
-			else
-			{
-				clog << "Couldn't find stored query " << pQueryInput << endl;
-
-				DownloaderInterface::shutdown();
-				MIMEScanner::shutdown();
-
-				return EXIT_FAILURE;
-			}
+			queryProps = queryIter->second;
 		}
 		else
 		{
-			queryProps.setFreeQuery(pQueryInput);
+			clog << "Couldn't find stored query " << pQueryInput << endl;
+
+			DownloaderInterface::shutdown();
+			MIMEScanner::shutdown();
+
+			return EXIT_FAILURE;
 		}
+	}
+	else
+	{
+		queryProps.setFreeQuery(pQueryInput);
 	}
 	queryProps.setStemmingLanguage(stemLanguage);
 	queryProps.setMaximumResultsCount(maxResultsCount);

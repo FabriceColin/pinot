@@ -30,13 +30,11 @@ using namespace std;
 class PINOT_EXPORT QueryProperties
 {
 	public:
-		typedef enum { XAPIAN_QP = 0 } QueryType;
 		typedef enum { RELEVANCE = 0, DATE_DESC, DATE_ASC, SIZE_DESC } SortOrder;
 		typedef enum { NOTHING = 0, ALL_RESULTS, NEW_RESULTS } IndexWhat;
 
 		QueryProperties();
-		QueryProperties(const string &name, const string &freeQuery,
-			QueryType type = XAPIAN_QP);
+		QueryProperties(const string &name, const string &freeQuery);
 		QueryProperties(const QueryProperties &other);
 		~QueryProperties();
 
@@ -49,11 +47,6 @@ class PINOT_EXPORT QueryProperties
 		/// Gets the name.
 		string getName(void) const;
 
-		/// Sets the type.
-		void setType(QueryType type);
-		/// Gets the type.
-		QueryType getType(void) const;
-
 		/// Sets the sort order.
 		void setSortOrder(SortOrder order);
 		/// Gets the sort order.
@@ -63,11 +56,6 @@ class PINOT_EXPORT QueryProperties
 		void setStemmingLanguage(const string &language);
 		/// Gets the language to use for stemming.
 		string getStemmingLanguage(void) const;
-
-		/// Sets whether the query is sensitive to diacritics.
-		void setDiacriticSensitive(bool sensitive);
-		/// Gets whether the query is sensitive to diacritics.
-		bool getDiacriticSensitive(void) const;
 
 		/// Sets the query string.
 		void setFreeQuery(const string &freeQuery);
@@ -102,10 +90,8 @@ class PINOT_EXPORT QueryProperties
 
 	protected:
 		string m_name;
-		QueryType m_type;
 		SortOrder m_order;
 		string m_language;
-		bool m_diacriticSensitive;
 		string m_freeQuery;
 		string m_freeQueryWithoutFilters;
 		unsigned int m_resultsCount;

@@ -106,21 +106,16 @@ class SetTokensHandler : public Dijon::CJKVTokenizer::TokensHandler
 };
 
 QueryProperties::QueryProperties() :
-	m_type(XAPIAN_QP),
 	m_order(RELEVANCE),
-	m_diacriticSensitive(false),
 	m_resultsCount(10),
 	m_indexResults(NOTHING),
 	m_modified(false)
 {
 }
 
-QueryProperties::QueryProperties(const string &name, const string &freeQuery,
-	QueryType type) :
+QueryProperties::QueryProperties(const string &name, const string &freeQuery) :
 	m_name(name),
-	m_type(type),
 	m_order(RELEVANCE),
-	m_diacriticSensitive(false),
 	m_freeQuery(freeQuery),
 	m_resultsCount(10),
 	m_indexResults(NOTHING),
@@ -131,10 +126,8 @@ QueryProperties::QueryProperties(const string &name, const string &freeQuery,
 
 QueryProperties::QueryProperties(const QueryProperties &other) :
 	m_name(other.m_name),
-	m_type(other.m_type),
 	m_order(other.m_order),
 	m_language(other.m_language),
-	m_diacriticSensitive(other.m_diacriticSensitive),
 	m_freeQuery(other.m_freeQuery),
 	m_freeQueryWithoutFilters(other.m_freeQueryWithoutFilters),
 	m_resultsCount(other.m_resultsCount),
@@ -153,10 +146,8 @@ QueryProperties &QueryProperties::operator=(const QueryProperties &other)
 	if (this != &other)
 	{
 		m_name = other.m_name;
-		m_type = other.m_type;
 		m_order = other.m_order;
 		m_language = other.m_language;
-		m_diacriticSensitive = other.m_diacriticSensitive;
 		m_freeQuery = other.m_freeQuery;
 		m_freeQueryWithoutFilters = other.m_freeQueryWithoutFilters;
 		m_resultsCount = other.m_resultsCount;
@@ -198,12 +189,6 @@ void QueryProperties::removeFilters(void)
 		return;
 	}
 
-	if (m_type != XAPIAN_QP)
-	{
-		m_freeQueryWithoutFilters = m_freeQuery.substr(0, min(20, (int)m_freeQuery.length()));
-		return;
-	}
-
 	// Remove carriage returns
 	string noCR(StringManip::replaceSubString(m_freeQuery, "\r\n", "\n"));
 	// If there's a line break right after an hyphen, remove both
@@ -231,18 +216,6 @@ string QueryProperties::getName(void) const
 	return m_name;
 }
 
-/// Sets the type.
-void QueryProperties::setType(QueryType type)
-{
-	m_type = type;
-}
-
-/// Gets the type.
-QueryProperties::QueryType QueryProperties::getType(void) const
-{
-	return m_type;
-}
-
 /// Sets the sort order.
 void QueryProperties::setSortOrder(SortOrder order)
 {
@@ -265,18 +238,6 @@ void QueryProperties::setStemmingLanguage(const string &language)
 string QueryProperties::getStemmingLanguage(void) const
 {
 	return m_language;
-}
-
-/// Sets whether the query is sensitive to diacritics.
-void QueryProperties::setDiacriticSensitive(bool sensitive)
-{
-	m_diacriticSensitive = sensitive;
-}
-
-/// Gets whether the query is sensitive to diacritics.
-bool QueryProperties::getDiacriticSensitive(void) const
-{
-	return m_diacriticSensitive;
 }
 
 /// Sets the query string.

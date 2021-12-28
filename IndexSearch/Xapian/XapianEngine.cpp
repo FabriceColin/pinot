@@ -370,9 +370,8 @@ class QueryModifier : public Dijon::CJKVTokenizer::TokensHandler
 		typedef enum { NONE = 0, BRACKETS } CJKVWrap;
 
 		QueryModifier(const string &query,
-			bool diacriticSensitive, unsigned int nGramSize) :
+			unsigned int nGramSize) :
 			m_query(query),
-			m_diacriticSensitive(diacriticSensitive),
 			m_pos(0),
 			m_wrap(BRACKETS),
 			m_wrapped(false),
@@ -442,17 +441,14 @@ class QueryModifier : public Dijon::CJKVTokenizer::TokensHandler
 					m_hasNonCJKV = true;
 				}
 
-				if (m_diacriticSensitive == false)
+				// Strip accents and other diacritics from terms
+				string unaccentedTok(Dijon::CJKVTokenizer::strip_marks(tok));
+				if (tok != unaccentedTok)
 				{
-					// Strip accents and other diacritics from terms
-					string unaccentedTok(Dijon::CJKVTokenizer::strip_marks(tok));
-					if (tok != unaccentedTok)
-					{
 #ifdef DEBUG
-						clog << "QueryModifier::handle_token: " << tok << " stripped to " << unaccentedTok << endl;
+					clog << "QueryModifier::handle_token: " << tok << " stripped to " << unaccentedTok << endl;
 #endif
-						m_query.replace(tokPos, tok.length(), unaccentedTok);
-					}
+					m_query.replace(tokPos, tok.length(), unaccentedTok);
 				}
 
 				// Return right away
@@ -536,7 +532,6 @@ class QueryModifier : public Dijon::CJKVTokenizer::TokensHandler
 
 	protected:
 		string m_query;
-		bool m_diacriticSensitive;
 		string m_modifiedQuery;
 		string::size_type m_pos;
 		CJKVWrap m_wrap;
@@ -613,45 +608,23 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	CJKVTokenizer tokenizer;
 	string freeQuery(queryProps.getFreeQuery());
 	unsigned int tokensCount = 1;
-	bool diacriticSensitive = queryProps.getDiacriticSensitive();
 
-	// Modifying the query is necessary if it's CJKV or diacritics are off
-	if ((tokenizer.has_cjkv(freeQuery) == true) ||
-		(diacriticSensitive == false))
-	{
-		QueryModifier handler(freeQuery,
-			diacriticSensitive,
-			tokenizer.get_ngram_size());
+	// Modifying the query is necessary as diacritics sensitivity is off
+	QueryModifier handler(freeQuery,
+		tokenizer.get_ngram_size());
 
-		tokenizer.tokenize(freeQuery, handler, true);
+	tokenizer.tokenize(freeQuery, handler, true);
 
-		tokensCount = handler.get_tokens_count();
+	tokensCount = handler.get_tokens_count();
 
-		// We can disable stemming and spelling correction for pure CJKV queries
-		string cjkvQuery(handler.get_modified_query(minimal));
+	// We can disable stemming and spelling correction for pure CJKV queries
+	string cjkvQuery(handler.get_modified_query(minimal));
 #ifdef DEBUG
-		clog << "XapianEngine::parseQuery: CJKV query is " << cjkvQuery << endl;
+	clog << "XapianEngine::parseQuery: CJKV query is " << cjkvQuery << endl;
 #endif
 
-		// Do as if the user had given this as input
-		freeQuery = cjkvQuery;
-	}
-	else
-	{
-		string::size_type spacePos = freeQuery.find(' ');
-		while (spacePos != string::npos)
-		{
-			++tokensCount;
-
-			if (spacePos + 1 >= freeQuery.length())
-			{
-				break;
-			}
-
-			// Next
-			spacePos = freeQuery.find(' ', spacePos + 1);
-		}
-	}
+	// Do as if the user had given this as input
+	freeQuery = cjkvQuery;
 #ifdef DEBUG
 	clog << "XapianEngine::parseQuery: " << tokensCount << " tokens" << endl;
 #endif
@@ -737,14 +710,6 @@ Xapian::Query XapianEngine::parseQuery(Xapian::Database *pIndex, const QueryProp
 	// Time range
 	TimeValueRangeProcessor timeProcessor(3);
 	parser.add_rangeprocessor(&timeProcessor);
-
-	// What type of query is this ?
-	QueryProperties::QueryType type = queryProps.getType();
-	if (type != QueryProperties::XAPIAN_QP)
-	{
-		// This isn't supported
-		return Xapian::Query();
-	}
 
 	// Do some pre-processing : look for filters with quoted values
 	string::size_type escapedFilterEnd = 0;
