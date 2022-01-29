@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ static void printHelp(void)
 		<< "  -c, --tocsv               file to export results in CSV format to\n"
 		<< "  -x, --toxml               file to export results in XML format to\n"
 		<< "  -v, --version             output version information and exit\n"
-		<< "Supported search engine types are :";
+		<< "Supported search engine types are:";
 	for (map<ModuleProperties, bool>::const_iterator engineIter = engines.begin(); engineIter != engines.end(); ++engineIter)
 	{
 		clog << " '" << engineIter->first.m_name << "'";

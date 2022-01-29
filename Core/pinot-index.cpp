@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ static void printHelp(void)
 		<< "  -o, --override            MIME type detection override, as TYPE:EXT\n"
 		<< "  -s, --showinfo            show information about the document\n"
 		<< "  -v, --version             output version information and exit\n\n"
-		<< "Supported back-ends are :";
+		<< "Supported back-ends are:";
 	for (map<ModuleProperties, bool>::const_iterator engineIter = engines.begin(); engineIter != engines.end(); ++engineIter)
 	{
 		if ((engineIter->second == true) &&

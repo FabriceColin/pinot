@@ -3044,7 +3044,7 @@ void MainWindow::on_about_activate()
 
 	aboutBox.set_comments(_("A metasearch tool for the Free Desktop") + string(".\n") +
 		_("Search the Web and your documents !"));
-	aboutBox.set_copyright("(C) 2005-2021 Fabrice Colin");
+	aboutBox.set_copyright("(C) 2005-2022 Fabrice Colin");
 	aboutBox.set_name("Pinot");
 	aboutBox.set_version(VERSION);
 	aboutBox.set_website("https://github.com/FabriceColin/pinot");
