@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2021 Fabrice Colin
+ *  Copyright 2009-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -138,6 +138,11 @@ EngineHistoryThread::EngineHistoryThread(const string &engineDisplayableName,
 
 EngineHistoryThread::~EngineHistoryThread()
 {
+}
+
+string EngineHistoryThread::getType(void) const
+{
+	return "EngineHistoryThread";
 }
 
 void EngineHistoryThread::doWork(void)

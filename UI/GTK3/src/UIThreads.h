@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2021 Fabrice Colin
+ *  Copyright 2009-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,8 @@ class EngineHistoryThread : public QueryingThread
 		EngineHistoryThread(const std::string &engineDisplayableName,
 			const QueryProperties &queryProps, unsigned int maxDocsCount);
 		virtual ~EngineHistoryThread();
+
+		virtual std::string getType(void) const;
 
 	protected:
 		unsigned int m_maxDocsCount;

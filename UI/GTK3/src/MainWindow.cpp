@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1243,18 +1243,30 @@ void MainWindow::on_enginesTreeviewSelection_changed()
 //
 void MainWindow::on_queryTreeviewSelection_changed()
 {
+	time_t lastRunTime = 0;
 	bool enableButtons = false;
 
 	TreeModel::iterator iter = queryTreeview->get_selection()->get_selected();
 	// Anything selected ?
 	if (iter)
 	{
+		TreeModel::Row row = *iter;
+		lastRunTime = row[m_queryColumns.m_lastRunTime];
+
 		// Enable all buttons
 		enableButtons = true;
 	}
 
 	removeQueryButton->set_sensitive(enableButtons);
-	queryHistoryButton->set_sensitive(enableButtons);
+	if ((enableButtons == true) &&
+		(lastRunTime > 0))
+	{
+		queryHistoryButton->set_sensitive(true);
+	}
+	else
+	{
+		queryHistoryButton->set_sensitive(false);
+	}
 	findQueryButton->set_sensitive(enableButtons);
 }
 
@@ -1769,7 +1781,8 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 			}
 		}
 	}
-	else if (type == "QueryingThread")
+	else if ((type == "QueryingThread") ||
+		(type == "EngineHistoryThread"))
 	{
 		set<DocumentInfo> docsToIndex;
 		int pageNum = -1;
@@ -1789,6 +1802,7 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		string resultsCharset(pQueryThread->getCharset());
 		set<string> labels;
 		const vector<DocumentInfo> &resultsList = pQueryThread->getDocuments();
+		QueryProperties::IndexWhat indexResults = queryProps.getIndexResults();
 
 		// These are the labels that need to be applied to results
 		if (labelName.empty() == false)
@@ -1809,8 +1823,12 @@ void MainWindow::on_thread_end(WorkerThread *pThread)
 		set_status(status);
 
 		// Index results ?
-		QueryProperties::IndexWhat indexResults = queryProps.getIndexResults();
-		if ((indexResults != QueryProperties::NOTHING) &&
+		if (type == "EngineHistoryThread")
+		{
+			// Not when showing history
+			indexResults = QueryProperties::NOTHING;
+		}
+		else if ((indexResults != QueryProperties::NOTHING) &&
 			(resultsList.empty() == false))
 		{
 			QueryHistory queryHistory(m_settings.getHistoryDatabaseName());
