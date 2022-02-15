@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2012 Fabrice Colin
+ *  Copyright 2007-2022 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -222,6 +222,7 @@ unsigned int ModuleFactory::loadModules(const string &directory)
 			string fileName = pEntryName;
 			string::size_type extPos = fileName.find_last_of(".");
 
+			// FIXME: prefer newer versioned modules
 			if ((extPos == string::npos) ||
 				(fileName.substr(extPos) != ".so"))
 			{
