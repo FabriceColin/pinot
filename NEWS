@@ -1,3 +1,14 @@
+2022/02/22 version_1_2_1
+General :
+ - removed code paths around diacritics sensitivity
+ - removed code paths pertaining to other query languages
+ - auto-generate the ChangeLog file
+IndexSearch :
+ - removed historical checks on old Xapian releases
+ - replaced homegrown abstract solution with Xapian's
+UI :
+ - fixed query history
+
 2021/10/16 version_1_2_0
 General :
  - dropped xdgmime in favour of gio

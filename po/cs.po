@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 18:22+0200\n"
+"POT-Creation-Date: 2022-01-30 21:43+0100\n"
 "PO-Revision-Date: 2012-10-24 21:40+0000\n"
 "Last-Translator: Zbyněk Schwarz <Unknown>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -86,18 +86,18 @@ msgstr "Turečtina"
 #. Internal indices
 #. Is this an internal index ?
 #: Core/PinotSettings.cpp:440 Core/PinotSettings.cpp:1736
-#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1296
-#: UI/GTK3/src/MainWindow.cpp:1563 UI/GTK3/src/MainWindow.cpp:1818
-#: UI/GTK3/src/MainWindow.cpp:2092 UI/GTK3/src/MainWindow.cpp:2127
-#: UI/GTK3/src/MainWindow.cpp:2152 UI/GTK3/src/MainWindow.cpp:2870
+#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1308
+#: UI/GTK3/src/MainWindow.cpp:1575 UI/GTK3/src/MainWindow.cpp:1836
+#: UI/GTK3/src/MainWindow.cpp:2110 UI/GTK3/src/MainWindow.cpp:2145
+#: UI/GTK3/src/MainWindow.cpp:2170 UI/GTK3/src/MainWindow.cpp:2888
 #: UI/GTK3/src/StatisticsDialog.cpp:95
 msgid "My Web Pages"
 msgstr "Mé internetové stránky"
 
 #. Spawn new threads
 #: Core/PinotSettings.cpp:441 Core/PinotSettings.cpp:1737
-#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1558
-#: UI/GTK3/src/MainWindow.cpp:1819 UI/GTK3/src/MainWindow.cpp:2874
+#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1570
+#: UI/GTK3/src/MainWindow.cpp:1837 UI/GTK3/src/MainWindow.cpp:2892
 #: UI/GTK3/src/StatisticsDialog.cpp:129
 msgid "My Documents"
 msgstr "Mé dokumenty"
@@ -542,7 +542,7 @@ msgstr "Aktualizace"
 
 #. Find this query
 #: UI/GTK3/src/MainWindow.cpp:469 UI/GTK3/src/MainWindow.cpp:1048
-#: UI/GTK3/src/MainWindow.cpp:3318
+#: UI/GTK3/src/MainWindow.cpp:3336
 msgid "Live query"
 msgstr "Dotaz za běhu"
 
@@ -566,7 +566,7 @@ msgstr "Otevřít nadřazený"
 msgid "_Add To Index"
 msgstr "_Přidat do indexu"
 
-#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3006
+#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3024
 msgid "Unindex"
 msgstr "Odstranit z indexu"
 
@@ -619,177 +619,177 @@ msgid "_Help"
 msgstr "_Nápověda"
 
 #. Show the URL of the first document in the status bar
-#: UI/GTK3/src/MainWindow.cpp:1324
+#: UI/GTK3/src/MainWindow.cpp:1336
 msgid "Document location is"
 msgstr "Umístění dokumentu je"
 
-#: UI/GTK3/src/MainWindow.cpp:1544
+#: UI/GTK3/src/MainWindow.cpp:1556
 msgid "Couldn't search in results"
 msgstr "Nekze hledat ve výsledcích"
 
-#: UI/GTK3/src/MainWindow.cpp:1554
+#: UI/GTK3/src/MainWindow.cpp:1566
 msgid "In Results"
 msgstr "Ve výsledcích"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1749
+#: UI/GTK3/src/MainWindow.cpp:1761
 msgid "Showing"
 msgstr "Zobrazování"
 
-#: UI/GTK3/src/MainWindow.cpp:1757
+#: UI/GTK3/src/MainWindow.cpp:1769
 msgid "of"
 msgstr "z"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1800
+#: UI/GTK3/src/MainWindow.cpp:1814
 msgid "Query"
 msgstr "Dotaz"
 
-#: UI/GTK3/src/MainWindow.cpp:1804 UI/GTK3/src/MainWindow.cpp:3899
+#: UI/GTK3/src/MainWindow.cpp:1818 UI/GTK3/src/MainWindow.cpp:3917
 msgid "on"
 msgstr "v"
 
-#: UI/GTK3/src/MainWindow.cpp:1808
+#: UI/GTK3/src/MainWindow.cpp:1822
 msgid "ended"
 msgstr "ukončen"
 
-#: UI/GTK3/src/MainWindow.cpp:1971
+#: UI/GTK3/src/MainWindow.cpp:1989
 msgid "More Like"
 msgstr "Podobné"
 
 #. This could refresh index lists but refreshing My Documents won't help
 #. as the daemon may not have flushed the changes
-#: UI/GTK3/src/MainWindow.cpp:2009
+#: UI/GTK3/src/MainWindow.cpp:2027
 msgid "Updated label(s)"
 msgstr "Aktualizované štítky"
 
 #. Yes, it did
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2103 UI/GTK3/src/MainWindow.cpp:2186
+#: UI/GTK3/src/MainWindow.cpp:2121 UI/GTK3/src/MainWindow.cpp:2204
 msgid "Updated document"
 msgstr "Dokument aktualizován"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2116
+#: UI/GTK3/src/MainWindow.cpp:2134
 msgid "Indexed"
 msgstr "Indexováno"
 
-#: UI/GTK3/src/MainWindow.cpp:2153
+#: UI/GTK3/src/MainWindow.cpp:2171
 msgid "Unindexed document(s)"
 msgstr "Neindexované dokumenty"
 
-#: UI/GTK3/src/MainWindow.cpp:2265
+#: UI/GTK3/src/MainWindow.cpp:2283
 msgid "Couldn't rename index, name"
 msgstr "Nelze přejmenovat index, název"
 
-#: UI/GTK3/src/MainWindow.cpp:2269 UI/GTK3/src/MainWindow.cpp:3102
-#: UI/GTK3/src/MainWindow.cpp:3724
+#: UI/GTK3/src/MainWindow.cpp:2287 UI/GTK3/src/MainWindow.cpp:3120
+#: UI/GTK3/src/MainWindow.cpp:3742
 msgid "is already in use"
 msgstr "již je používán"
 
-#: UI/GTK3/src/MainWindow.cpp:2281
+#: UI/GTK3/src/MainWindow.cpp:2299
 msgid "Couldn't rename index"
 msgstr "Nelze přejmenovat index"
 
-#: UI/GTK3/src/MainWindow.cpp:2296
+#: UI/GTK3/src/MainWindow.cpp:2314
 msgid "Edited index"
 msgstr "Index upraven"
 
-#: UI/GTK3/src/MainWindow.cpp:2591
+#: UI/GTK3/src/MainWindow.cpp:2609
 msgid "Export"
 msgstr "Exportovat"
 
-#: UI/GTK3/src/MainWindow.cpp:2636
+#: UI/GTK3/src/MainWindow.cpp:2654
 msgid "Couldn't find similar documents"
 msgstr "Nelze najít podobné dokumenty"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2887
+#: UI/GTK3/src/MainWindow.cpp:2905
 msgid "Index"
 msgstr "Index"
 
-#: UI/GTK3/src/MainWindow.cpp:2891
+#: UI/GTK3/src/MainWindow.cpp:2909
 msgid "doesn't exist"
 msgstr "neexistuje"
 
-#: UI/GTK3/src/MainWindow.cpp:2982
+#: UI/GTK3/src/MainWindow.cpp:3000
 msgid "Remove this document from the index ?"
 msgstr "Odstranit tento dokument z indexu ?"
 
-#: UI/GTK3/src/MainWindow.cpp:3001
+#: UI/GTK3/src/MainWindow.cpp:3019
 msgid "Remove these documents from the index ?"
 msgstr "Odstranit tyto dokument z indexu ?"
 
-#: UI/GTK3/src/MainWindow.cpp:3045
+#: UI/GTK3/src/MainWindow.cpp:3063
 msgid "A metasearch tool for the Free Desktop"
 msgstr "Nástroj metahledání pro Free Desktop"
 
-#: UI/GTK3/src/MainWindow.cpp:3046
+#: UI/GTK3/src/MainWindow.cpp:3064
 msgid "Search the Web and your documents !"
 msgstr "Hledat na internetu a ve vašich dokumentech !"
 
-#: UI/GTK3/src/MainWindow.cpp:3098
+#: UI/GTK3/src/MainWindow.cpp:3116
 msgid "Index name"
 msgstr "Název indexu"
 
-#: UI/GTK3/src/MainWindow.cpp:3112
+#: UI/GTK3/src/MainWindow.cpp:3130
 msgid "Couldn't add index"
 msgstr "Nelze přidat index"
 
-#: UI/GTK3/src/MainWindow.cpp:3128
+#: UI/GTK3/src/MainWindow.cpp:3146
 msgid "Added new index"
 msgstr "Přidán nový index"
 
-#: UI/GTK3/src/MainWindow.cpp:3166
+#: UI/GTK3/src/MainWindow.cpp:3184
 msgid "Couldn't remove index"
 msgstr "Index nelze odstranit"
 
-#: UI/GTK3/src/MainWindow.cpp:3409
+#: UI/GTK3/src/MainWindow.cpp:3427
 msgid "No history for"
 msgstr "Žádná historie pro"
 
-#: UI/GTK3/src/MainWindow.cpp:3502 UI/GTK3/src/PrefsWindow.cpp:911
+#: UI/GTK3/src/MainWindow.cpp:3520 UI/GTK3/src/PrefsWindow.cpp:911
 msgid "At least one task hasn't completed yet. Quit now ?"
 msgstr "Alespoň jeden úkol není dokončen. Chcete nyní odejít ?"
 
-#: UI/GTK3/src/MainWindow.cpp:3504 UI/GTK3/src/PrefsWindow.cpp:913
+#: UI/GTK3/src/MainWindow.cpp:3522 UI/GTK3/src/PrefsWindow.cpp:913
 msgid "Quit"
 msgstr "Odejít"
 
-#: UI/GTK3/src/MainWindow.cpp:3720
+#: UI/GTK3/src/MainWindow.cpp:3738
 msgid "Query name"
 msgstr "Název dotazu"
 
-#: UI/GTK3/src/MainWindow.cpp:3747
+#: UI/GTK3/src/MainWindow.cpp:3765
 msgid "Couldn't update query"
 msgstr "Dotaz nelze aktualizovat"
 
-#: UI/GTK3/src/MainWindow.cpp:3758
+#: UI/GTK3/src/MainWindow.cpp:3776
 msgid "Edited query"
 msgstr "Dotaz upraven"
 
-#: UI/GTK3/src/MainWindow.cpp:3765
+#: UI/GTK3/src/MainWindow.cpp:3783
 msgid "Couldn't add query"
 msgstr "Nelze přidat dotaz"
 
-#: UI/GTK3/src/MainWindow.cpp:3773
+#: UI/GTK3/src/MainWindow.cpp:3791
 msgid "Added new query"
 msgstr "Přidán nový dotaz"
 
-#: UI/GTK3/src/MainWindow.cpp:3807
+#: UI/GTK3/src/MainWindow.cpp:3825
 msgid "Query is not set"
 msgstr "Dotaz není nastaven"
 
-#: UI/GTK3/src/MainWindow.cpp:3820
+#: UI/GTK3/src/MainWindow.cpp:3838
 msgid "No search engine selected"
 msgstr "Není vybrán žádný vyhledávač"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:3895
+#: UI/GTK3/src/MainWindow.cpp:3913
 msgid "Running query"
 msgstr "Spouštění dotazu"
 
-#: UI/GTK3/src/MainWindow.cpp:4107
+#: UI/GTK3/src/MainWindow.cpp:4125
 msgid "No default application defined for type"
 msgstr "Pro typ není určena žádná výchozí aplikace"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 18:22+0200\n"
+"POT-Creation-Date: 2022-01-30 21:43+0100\n"
 "PO-Revision-Date: 2010-06-20 08:47+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -87,18 +87,18 @@ msgstr "Turkiska"
 #. Internal indices
 #. Is this an internal index ?
 #: Core/PinotSettings.cpp:440 Core/PinotSettings.cpp:1736
-#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1296
-#: UI/GTK3/src/MainWindow.cpp:1563 UI/GTK3/src/MainWindow.cpp:1818
-#: UI/GTK3/src/MainWindow.cpp:2092 UI/GTK3/src/MainWindow.cpp:2127
-#: UI/GTK3/src/MainWindow.cpp:2152 UI/GTK3/src/MainWindow.cpp:2870
+#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1308
+#: UI/GTK3/src/MainWindow.cpp:1575 UI/GTK3/src/MainWindow.cpp:1836
+#: UI/GTK3/src/MainWindow.cpp:2110 UI/GTK3/src/MainWindow.cpp:2145
+#: UI/GTK3/src/MainWindow.cpp:2170 UI/GTK3/src/MainWindow.cpp:2888
 #: UI/GTK3/src/StatisticsDialog.cpp:95
 msgid "My Web Pages"
 msgstr "Mina webbsidor"
 
 #. Spawn new threads
 #: Core/PinotSettings.cpp:441 Core/PinotSettings.cpp:1737
-#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1558
-#: UI/GTK3/src/MainWindow.cpp:1819 UI/GTK3/src/MainWindow.cpp:2874
+#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1570
+#: UI/GTK3/src/MainWindow.cpp:1837 UI/GTK3/src/MainWindow.cpp:2892
 #: UI/GTK3/src/StatisticsDialog.cpp:129
 msgid "My Documents"
 msgstr "Mina dokument"
@@ -543,7 +543,7 @@ msgstr "Uppdatera"
 
 #. Find this query
 #: UI/GTK3/src/MainWindow.cpp:469 UI/GTK3/src/MainWindow.cpp:1048
-#: UI/GTK3/src/MainWindow.cpp:3318
+#: UI/GTK3/src/MainWindow.cpp:3336
 msgid "Live query"
 msgstr "Levande fråga"
 
@@ -567,7 +567,7 @@ msgstr "Öppna förälder"
 msgid "_Add To Index"
 msgstr "_Lägg till i index"
 
-#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3006
+#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3024
 msgid "Unindex"
 msgstr "Avindexera"
 
@@ -620,177 +620,177 @@ msgid "_Help"
 msgstr "_Hjälp"
 
 #. Show the URL of the first document in the status bar
-#: UI/GTK3/src/MainWindow.cpp:1324
+#: UI/GTK3/src/MainWindow.cpp:1336
 msgid "Document location is"
 msgstr "Dokumentplatsen är"
 
-#: UI/GTK3/src/MainWindow.cpp:1544
+#: UI/GTK3/src/MainWindow.cpp:1556
 msgid "Couldn't search in results"
 msgstr "Kunde inte söka i resultat"
 
-#: UI/GTK3/src/MainWindow.cpp:1554
+#: UI/GTK3/src/MainWindow.cpp:1566
 msgid "In Results"
 msgstr "I resultat"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1749
+#: UI/GTK3/src/MainWindow.cpp:1761
 msgid "Showing"
 msgstr "Visar"
 
-#: UI/GTK3/src/MainWindow.cpp:1757
+#: UI/GTK3/src/MainWindow.cpp:1769
 msgid "of"
 msgstr "av"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1800
+#: UI/GTK3/src/MainWindow.cpp:1814
 msgid "Query"
 msgstr "Fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:1804 UI/GTK3/src/MainWindow.cpp:3899
+#: UI/GTK3/src/MainWindow.cpp:1818 UI/GTK3/src/MainWindow.cpp:3917
 msgid "on"
 msgstr "på"
 
-#: UI/GTK3/src/MainWindow.cpp:1808
+#: UI/GTK3/src/MainWindow.cpp:1822
 msgid "ended"
 msgstr "slutade"
 
-#: UI/GTK3/src/MainWindow.cpp:1971
+#: UI/GTK3/src/MainWindow.cpp:1989
 msgid "More Like"
 msgstr "Kanske mer som"
 
 #. This could refresh index lists but refreshing My Documents won't help
 #. as the daemon may not have flushed the changes
-#: UI/GTK3/src/MainWindow.cpp:2009
+#: UI/GTK3/src/MainWindow.cpp:2027
 msgid "Updated label(s)"
 msgstr "Uppdaterade etikett(er)"
 
 #. Yes, it did
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2103 UI/GTK3/src/MainWindow.cpp:2186
+#: UI/GTK3/src/MainWindow.cpp:2121 UI/GTK3/src/MainWindow.cpp:2204
 msgid "Updated document"
 msgstr "Uppdaterade dokument"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2116
+#: UI/GTK3/src/MainWindow.cpp:2134
 msgid "Indexed"
 msgstr "Indexerade"
 
-#: UI/GTK3/src/MainWindow.cpp:2153
+#: UI/GTK3/src/MainWindow.cpp:2171
 msgid "Unindexed document(s)"
 msgstr "Ej indexerade dokument"
 
-#: UI/GTK3/src/MainWindow.cpp:2265
+#: UI/GTK3/src/MainWindow.cpp:2283
 msgid "Couldn't rename index, name"
 msgstr "Kunde inte byta namn på index, namn"
 
-#: UI/GTK3/src/MainWindow.cpp:2269 UI/GTK3/src/MainWindow.cpp:3102
-#: UI/GTK3/src/MainWindow.cpp:3724
+#: UI/GTK3/src/MainWindow.cpp:2287 UI/GTK3/src/MainWindow.cpp:3120
+#: UI/GTK3/src/MainWindow.cpp:3742
 msgid "is already in use"
 msgstr "används redan"
 
-#: UI/GTK3/src/MainWindow.cpp:2281
+#: UI/GTK3/src/MainWindow.cpp:2299
 msgid "Couldn't rename index"
 msgstr "Kunde inte byta namn på index"
 
-#: UI/GTK3/src/MainWindow.cpp:2296
+#: UI/GTK3/src/MainWindow.cpp:2314
 msgid "Edited index"
 msgstr "Redigerade index"
 
-#: UI/GTK3/src/MainWindow.cpp:2591
+#: UI/GTK3/src/MainWindow.cpp:2609
 msgid "Export"
 msgstr "Exportera"
 
-#: UI/GTK3/src/MainWindow.cpp:2636
+#: UI/GTK3/src/MainWindow.cpp:2654
 msgid "Couldn't find similar documents"
 msgstr "Kunde inte hitta liknande dokument"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2887
+#: UI/GTK3/src/MainWindow.cpp:2905
 msgid "Index"
 msgstr "Index"
 
-#: UI/GTK3/src/MainWindow.cpp:2891
+#: UI/GTK3/src/MainWindow.cpp:2909
 msgid "doesn't exist"
 msgstr "finns inte"
 
-#: UI/GTK3/src/MainWindow.cpp:2982
+#: UI/GTK3/src/MainWindow.cpp:3000
 msgid "Remove this document from the index ?"
 msgstr "Ta bort detta dokument från indexet?"
 
-#: UI/GTK3/src/MainWindow.cpp:3001
+#: UI/GTK3/src/MainWindow.cpp:3019
 msgid "Remove these documents from the index ?"
 msgstr "Ta bort dessa dokument från indexet?"
 
-#: UI/GTK3/src/MainWindow.cpp:3045
+#: UI/GTK3/src/MainWindow.cpp:3063
 msgid "A metasearch tool for the Free Desktop"
 msgstr "Ett metasökningsverktyg för Free Desktop"
 
-#: UI/GTK3/src/MainWindow.cpp:3046
+#: UI/GTK3/src/MainWindow.cpp:3064
 msgid "Search the Web and your documents !"
 msgstr "Sök på webben och i dina dokument!"
 
-#: UI/GTK3/src/MainWindow.cpp:3098
+#: UI/GTK3/src/MainWindow.cpp:3116
 msgid "Index name"
 msgstr "Indexnamn"
 
-#: UI/GTK3/src/MainWindow.cpp:3112
+#: UI/GTK3/src/MainWindow.cpp:3130
 msgid "Couldn't add index"
 msgstr "Kunde inte lägga till index"
 
-#: UI/GTK3/src/MainWindow.cpp:3128
+#: UI/GTK3/src/MainWindow.cpp:3146
 msgid "Added new index"
 msgstr "Lade till nytt index"
 
-#: UI/GTK3/src/MainWindow.cpp:3166
+#: UI/GTK3/src/MainWindow.cpp:3184
 msgid "Couldn't remove index"
 msgstr "Kunde inte ta bort index"
 
-#: UI/GTK3/src/MainWindow.cpp:3409
+#: UI/GTK3/src/MainWindow.cpp:3427
 msgid "No history for"
 msgstr "Ingen historik för"
 
-#: UI/GTK3/src/MainWindow.cpp:3502 UI/GTK3/src/PrefsWindow.cpp:911
+#: UI/GTK3/src/MainWindow.cpp:3520 UI/GTK3/src/PrefsWindow.cpp:911
 msgid "At least one task hasn't completed yet. Quit now ?"
 msgstr "Åtminstone en uppgift har inte färdigställts än. Avsluta nu?"
 
-#: UI/GTK3/src/MainWindow.cpp:3504 UI/GTK3/src/PrefsWindow.cpp:913
+#: UI/GTK3/src/MainWindow.cpp:3522 UI/GTK3/src/PrefsWindow.cpp:913
 msgid "Quit"
 msgstr "Avsluta"
 
-#: UI/GTK3/src/MainWindow.cpp:3720
+#: UI/GTK3/src/MainWindow.cpp:3738
 msgid "Query name"
 msgstr "Frågenamn"
 
-#: UI/GTK3/src/MainWindow.cpp:3747
+#: UI/GTK3/src/MainWindow.cpp:3765
 msgid "Couldn't update query"
 msgstr "Kunde inte uppdatera fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:3758
+#: UI/GTK3/src/MainWindow.cpp:3776
 msgid "Edited query"
 msgstr "Redigerade fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:3765
+#: UI/GTK3/src/MainWindow.cpp:3783
 msgid "Couldn't add query"
 msgstr "Kunde inte lägga till fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:3773
+#: UI/GTK3/src/MainWindow.cpp:3791
 msgid "Added new query"
 msgstr "Lade till ny fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:3807
+#: UI/GTK3/src/MainWindow.cpp:3825
 msgid "Query is not set"
 msgstr "Frågan är inte inställd"
 
-#: UI/GTK3/src/MainWindow.cpp:3820
+#: UI/GTK3/src/MainWindow.cpp:3838
 msgid "No search engine selected"
 msgstr "Ingen sökmotor vald"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:3895
+#: UI/GTK3/src/MainWindow.cpp:3913
 msgid "Running query"
 msgstr "Kör fråga"
 
-#: UI/GTK3/src/MainWindow.cpp:4107
+#: UI/GTK3/src/MainWindow.cpp:4125
 msgid "No default application defined for type"
 msgstr "Inget standardprogram definierat för typen"
 

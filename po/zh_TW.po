@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 18:22+0200\n"
+"POT-Creation-Date: 2022-01-30 21:43+0100\n"
 "PO-Revision-Date: 2008-08-23 16:15+0000\n"
 "Last-Translator: Yung-chung Lin <henearkrxern@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -87,18 +87,18 @@ msgstr "土耳其語"
 #. Internal indices
 #. Is this an internal index ?
 #: Core/PinotSettings.cpp:440 Core/PinotSettings.cpp:1736
-#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1296
-#: UI/GTK3/src/MainWindow.cpp:1563 UI/GTK3/src/MainWindow.cpp:1818
-#: UI/GTK3/src/MainWindow.cpp:2092 UI/GTK3/src/MainWindow.cpp:2127
-#: UI/GTK3/src/MainWindow.cpp:2152 UI/GTK3/src/MainWindow.cpp:2870
+#: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1308
+#: UI/GTK3/src/MainWindow.cpp:1575 UI/GTK3/src/MainWindow.cpp:1836
+#: UI/GTK3/src/MainWindow.cpp:2110 UI/GTK3/src/MainWindow.cpp:2145
+#: UI/GTK3/src/MainWindow.cpp:2170 UI/GTK3/src/MainWindow.cpp:2888
 #: UI/GTK3/src/StatisticsDialog.cpp:95
 msgid "My Web Pages"
 msgstr "我的網頁"
 
 #. Spawn new threads
 #: Core/PinotSettings.cpp:441 Core/PinotSettings.cpp:1737
-#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1558
-#: UI/GTK3/src/MainWindow.cpp:1819 UI/GTK3/src/MainWindow.cpp:2874
+#: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1570
+#: UI/GTK3/src/MainWindow.cpp:1837 UI/GTK3/src/MainWindow.cpp:2892
 #: UI/GTK3/src/StatisticsDialog.cpp:129
 msgid "My Documents"
 msgstr "我的文件"
@@ -539,7 +539,7 @@ msgstr "更新"
 
 #. Find this query
 #: UI/GTK3/src/MainWindow.cpp:469 UI/GTK3/src/MainWindow.cpp:1048
-#: UI/GTK3/src/MainWindow.cpp:3318
+#: UI/GTK3/src/MainWindow.cpp:3336
 msgid "Live query"
 msgstr "查詢"
 
@@ -563,7 +563,7 @@ msgstr "打開父文件夾"
 msgid "_Add To Index"
 msgstr "添加到索引"
 
-#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3006
+#: UI/GTK3/src/MainWindow.cpp:610 UI/GTK3/src/MainWindow.cpp:3024
 msgid "Unindex"
 msgstr "解除索引"
 
@@ -616,177 +616,177 @@ msgid "_Help"
 msgstr "說明(_H)"
 
 #. Show the URL of the first document in the status bar
-#: UI/GTK3/src/MainWindow.cpp:1324
+#: UI/GTK3/src/MainWindow.cpp:1336
 msgid "Document location is"
 msgstr "文件位置在"
 
-#: UI/GTK3/src/MainWindow.cpp:1544
+#: UI/GTK3/src/MainWindow.cpp:1556
 msgid "Couldn't search in results"
 msgstr "無法在結果中搜索"
 
-#: UI/GTK3/src/MainWindow.cpp:1554
+#: UI/GTK3/src/MainWindow.cpp:1566
 msgid "In Results"
 msgstr "結果"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1749
+#: UI/GTK3/src/MainWindow.cpp:1761
 msgid "Showing"
 msgstr "顯示"
 
-#: UI/GTK3/src/MainWindow.cpp:1757
+#: UI/GTK3/src/MainWindow.cpp:1769
 msgid "of"
 msgstr "的"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:1800
+#: UI/GTK3/src/MainWindow.cpp:1814
 msgid "Query"
 msgstr "查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:1804 UI/GTK3/src/MainWindow.cpp:3899
+#: UI/GTK3/src/MainWindow.cpp:1818 UI/GTK3/src/MainWindow.cpp:3917
 msgid "on"
 msgstr ""
 
-#: UI/GTK3/src/MainWindow.cpp:1808
+#: UI/GTK3/src/MainWindow.cpp:1822
 msgid "ended"
 msgstr "結束"
 
-#: UI/GTK3/src/MainWindow.cpp:1971
+#: UI/GTK3/src/MainWindow.cpp:1989
 msgid "More Like"
 msgstr "比較類似"
 
 #. This could refresh index lists but refreshing My Documents won't help
 #. as the daemon may not have flushed the changes
-#: UI/GTK3/src/MainWindow.cpp:2009
+#: UI/GTK3/src/MainWindow.cpp:2027
 msgid "Updated label(s)"
 msgstr "更新的標記"
 
 #. Yes, it did
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2103 UI/GTK3/src/MainWindow.cpp:2186
+#: UI/GTK3/src/MainWindow.cpp:2121 UI/GTK3/src/MainWindow.cpp:2204
 msgid "Updated document"
 msgstr "更新的文件"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2116
+#: UI/GTK3/src/MainWindow.cpp:2134
 msgid "Indexed"
 msgstr "已索引"
 
-#: UI/GTK3/src/MainWindow.cpp:2153
+#: UI/GTK3/src/MainWindow.cpp:2171
 msgid "Unindexed document(s)"
 msgstr "未索引的文件"
 
-#: UI/GTK3/src/MainWindow.cpp:2265
+#: UI/GTK3/src/MainWindow.cpp:2283
 msgid "Couldn't rename index, name"
 msgstr "無法更改索引名稱，名稱為"
 
-#: UI/GTK3/src/MainWindow.cpp:2269 UI/GTK3/src/MainWindow.cpp:3102
-#: UI/GTK3/src/MainWindow.cpp:3724
+#: UI/GTK3/src/MainWindow.cpp:2287 UI/GTK3/src/MainWindow.cpp:3120
+#: UI/GTK3/src/MainWindow.cpp:3742
 msgid "is already in use"
 msgstr "已經在使用中"
 
-#: UI/GTK3/src/MainWindow.cpp:2281
+#: UI/GTK3/src/MainWindow.cpp:2299
 msgid "Couldn't rename index"
 msgstr "無法改變索引的名稱"
 
-#: UI/GTK3/src/MainWindow.cpp:2296
+#: UI/GTK3/src/MainWindow.cpp:2314
 msgid "Edited index"
 msgstr "編輯過的索引"
 
-#: UI/GTK3/src/MainWindow.cpp:2591
+#: UI/GTK3/src/MainWindow.cpp:2609
 msgid "Export"
 msgstr "出口"
 
-#: UI/GTK3/src/MainWindow.cpp:2636
+#: UI/GTK3/src/MainWindow.cpp:2654
 msgid "Couldn't find similar documents"
 msgstr "找不到類似的文件"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:2887
+#: UI/GTK3/src/MainWindow.cpp:2905
 msgid "Index"
 msgstr "索引"
 
-#: UI/GTK3/src/MainWindow.cpp:2891
+#: UI/GTK3/src/MainWindow.cpp:2909
 msgid "doesn't exist"
 msgstr "不存在"
 
-#: UI/GTK3/src/MainWindow.cpp:2982
+#: UI/GTK3/src/MainWindow.cpp:3000
 msgid "Remove this document from the index ?"
 msgstr "要從索引刪除這個文件嗎？"
 
-#: UI/GTK3/src/MainWindow.cpp:3001
+#: UI/GTK3/src/MainWindow.cpp:3019
 msgid "Remove these documents from the index ?"
 msgstr "要從索引刪除這些文件嗎？"
 
-#: UI/GTK3/src/MainWindow.cpp:3045
+#: UI/GTK3/src/MainWindow.cpp:3063
 msgid "A metasearch tool for the Free Desktop"
 msgstr "Free Desktop 的元搜尋工具"
 
-#: UI/GTK3/src/MainWindow.cpp:3046
+#: UI/GTK3/src/MainWindow.cpp:3064
 msgid "Search the Web and your documents !"
 msgstr "搜尋網際網路和你的文件！"
 
-#: UI/GTK3/src/MainWindow.cpp:3098
+#: UI/GTK3/src/MainWindow.cpp:3116
 msgid "Index name"
 msgstr "索引名稱"
 
-#: UI/GTK3/src/MainWindow.cpp:3112
+#: UI/GTK3/src/MainWindow.cpp:3130
 msgid "Couldn't add index"
 msgstr "無法新增索引"
 
-#: UI/GTK3/src/MainWindow.cpp:3128
+#: UI/GTK3/src/MainWindow.cpp:3146
 msgid "Added new index"
 msgstr "新加入的索引"
 
-#: UI/GTK3/src/MainWindow.cpp:3166
+#: UI/GTK3/src/MainWindow.cpp:3184
 msgid "Couldn't remove index"
 msgstr "無法移除索引"
 
-#: UI/GTK3/src/MainWindow.cpp:3409
+#: UI/GTK3/src/MainWindow.cpp:3427
 msgid "No history for"
 msgstr "沒有歷史"
 
-#: UI/GTK3/src/MainWindow.cpp:3502 UI/GTK3/src/PrefsWindow.cpp:911
+#: UI/GTK3/src/MainWindow.cpp:3520 UI/GTK3/src/PrefsWindow.cpp:911
 msgid "At least one task hasn't completed yet. Quit now ?"
 msgstr "至少還有一項工作尚未完成。要離開嗎？"
 
-#: UI/GTK3/src/MainWindow.cpp:3504 UI/GTK3/src/PrefsWindow.cpp:913
+#: UI/GTK3/src/MainWindow.cpp:3522 UI/GTK3/src/PrefsWindow.cpp:913
 msgid "Quit"
 msgstr "退出"
 
-#: UI/GTK3/src/MainWindow.cpp:3720
+#: UI/GTK3/src/MainWindow.cpp:3738
 msgid "Query name"
 msgstr "查詢名稱"
 
-#: UI/GTK3/src/MainWindow.cpp:3747
+#: UI/GTK3/src/MainWindow.cpp:3765
 msgid "Couldn't update query"
 msgstr "無法更新查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:3758
+#: UI/GTK3/src/MainWindow.cpp:3776
 msgid "Edited query"
 msgstr "編輯過的查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:3765
+#: UI/GTK3/src/MainWindow.cpp:3783
 msgid "Couldn't add query"
 msgstr "無法新增查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:3773
+#: UI/GTK3/src/MainWindow.cpp:3791
 msgid "Added new query"
 msgstr "新增的查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:3807
+#: UI/GTK3/src/MainWindow.cpp:3825
 msgid "Query is not set"
 msgstr "查詢尚未設定好"
 
-#: UI/GTK3/src/MainWindow.cpp:3820
+#: UI/GTK3/src/MainWindow.cpp:3838
 msgid "No search engine selected"
 msgstr "沒有選擇搜尋引擎"
 
 #. FIXME: fix this for RTL languages
-#: UI/GTK3/src/MainWindow.cpp:3895
+#: UI/GTK3/src/MainWindow.cpp:3913
 msgid "Running query"
 msgstr "正在執行的查詢"
 
-#: UI/GTK3/src/MainWindow.cpp:4107
+#: UI/GTK3/src/MainWindow.cpp:4125
 msgid "No default application defined for type"
 msgstr "檔案類型沒有定義應用程式"
 
