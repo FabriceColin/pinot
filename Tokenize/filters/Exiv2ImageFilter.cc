@@ -26,6 +26,7 @@
 #include <exiv2/image.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
+#include <exiv2/version.hpp>
 #ifdef HAVE_EXIV2_XMP_EXIV2_HPP
 #include <exiv2/xmp_exiv2.hpp>
 #include <exiv2/error.hpp>
@@ -236,7 +237,11 @@ bool Exiv2ImageFilter::next_document(void)
 
 	try
 	{
+#if EXIV2_TEST_VERSION(0,28,0)
+		Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(m_filePath);
+#else
 		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(m_filePath);
+#endif
 		if (image.get() == NULL)
 		{
 			clog << m_filePath.c_str() << " is not an image" << endl;
@@ -388,7 +393,11 @@ bool Exiv2ImageFilter::next_document(void)
 			}
 		}
 	}
+#if EXIV2_TEST_VERSION(0,28,0)
+	catch (Exiv2::Error &e)
+#else
 	catch (Exiv2::AnyError &e)
+#endif
 	{
 		clog << "Caught exiv2 exception: " << e << endl;
 		foundData = false;
