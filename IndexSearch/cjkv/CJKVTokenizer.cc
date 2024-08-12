@@ -24,7 +24,7 @@
 
 #include "CJKVTokenizer.h"
 
-static char *unicode_get_utf8(const char *p, gunichar *result)
+static const char *unicode_get_utf8(const char *p, gunichar *result)
 {
 	*result = g_utf8_get_char(p);
 
