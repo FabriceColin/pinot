@@ -1,3 +1,7 @@
+2024/??/?? version_1_2_2
+General:
+ - support for exiv2 0.28
+
 2022/02/22 version_1_2_1
 General :
  - removed code paths around diacritics sensitivity
