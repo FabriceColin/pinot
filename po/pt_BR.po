@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-30 21:43+0100\n"
+"POT-Creation-Date: 2024-05-29 09:12+0200\n"
 "PO-Revision-Date: 2012-09-19 16:27+0000\n"
 "Last-Translator: Adriano Steffler <Unknown>\n"
 "Language-Team: Portuguese (Brazil) <pt_BR@li.org>\n"
-"Language: \n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -85,7 +85,7 @@ msgstr "Turco"
 
 #. Internal indices
 #. Is this an internal index ?
-#: Core/PinotSettings.cpp:440 Core/PinotSettings.cpp:1736
+#: Core/PinotSettings.cpp:426 Core/PinotSettings.cpp:1772
 #: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1308
 #: UI/GTK3/src/MainWindow.cpp:1575 UI/GTK3/src/MainWindow.cpp:1836
 #: UI/GTK3/src/MainWindow.cpp:2110 UI/GTK3/src/MainWindow.cpp:2145
@@ -95,7 +95,7 @@ msgid "My Web Pages"
 msgstr "Minhas Páginas Web"
 
 #. Spawn new threads
-#: Core/PinotSettings.cpp:441 Core/PinotSettings.cpp:1737
+#: Core/PinotSettings.cpp:427 Core/PinotSettings.cpp:1773
 #: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1570
 #: UI/GTK3/src/MainWindow.cpp:1837 UI/GTK3/src/MainWindow.cpp:2892
 #: UI/GTK3/src/StatisticsDialog.cpp:129
@@ -103,47 +103,47 @@ msgid "My Documents"
 msgstr "Meus Documentos"
 
 #. Add default labels
-#: Core/PinotSettings.cpp:446
+#: Core/PinotSettings.cpp:432
 msgid "Important"
 msgstr "Importante"
 
-#: Core/PinotSettings.cpp:447
+#: Core/PinotSettings.cpp:433
 msgid "New"
 msgstr "Novo"
 
-#: Core/PinotSettings.cpp:448
+#: Core/PinotSettings.cpp:434
 msgid "Personal"
 msgstr "Pessoal"
 
-#: Core/PinotSettings.cpp:470
+#: Core/PinotSettings.cpp:456
 msgid "Me"
 msgstr "Eu"
 
-#: Core/PinotSettings.cpp:478
+#: Core/PinotSettings.cpp:464
 msgid "Latest First"
 msgstr "Primeiro dos últimos"
 
-#: Core/PinotSettings.cpp:481
+#: Core/PinotSettings.cpp:467
 msgid "10kb And Smaller"
 msgstr "1kb e menor"
 
-#: Core/PinotSettings.cpp:484
+#: Core/PinotSettings.cpp:470
 msgid "Home Stuff"
 msgstr "Coisas do Usuário"
 
-#: Core/PinotSettings.cpp:485
+#: Core/PinotSettings.cpp:471
 msgid "With Label New"
 msgstr "Com rótulo novo"
 
-#: Core/PinotSettings.cpp:486
+#: Core/PinotSettings.cpp:472
 msgid "Have CJKV"
 msgstr "Tem CJKV"
 
-#: Core/PinotSettings.cpp:487
+#: Core/PinotSettings.cpp:473
 msgid "In English"
 msgstr "Em inglês"
 
-#: Core/PinotSettings.cpp:532
+#: Core/PinotSettings.cpp:518
 msgid "Unclassified"
 msgstr "Não classificado"
 
