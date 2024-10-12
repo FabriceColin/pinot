@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2016 Fabrice Colin
+ *  Copyright 2007-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,13 +30,9 @@
 
 #include "Filter.h"
 
-#ifdef GMIME_ENABLE_RFC2047_WORKAROUNDS
-#define GMIME_OFFSET_TYPE gint64
-#define GMIME_OFFSET_MODIFIER "%ld" 
-#else
-#define GMIME_OFFSET_TYPE off_t
-#define GMIME_OFFSET_MODIFIER "%lld"
-#endif
+// sscanf expects unsigned int offsets
+#define GMIME_OFFSET_TYPE unsigned int
+#define GMIME_OFFSET_MODIFIER "%ld"
 
 namespace Dijon
 {
