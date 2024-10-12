@@ -530,8 +530,8 @@ http://www.freedesktop.org/software/desktop-file-utils
 TagLib							1.4
 http://ktown.kde.org/~wheeler/taglib/
 
-libarchive (5)						2.6.2
-http://people.freebsd.org/~kientzle/libarchive/
+libarchive (5)						3.0.0
+https://libarchive.org/
 
 exiv2							0.21
 http://www.exiv2.org/

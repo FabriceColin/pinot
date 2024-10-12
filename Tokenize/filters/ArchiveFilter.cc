@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2021 Fabrice Colin
+ *  Copyright 2009-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -256,13 +256,13 @@ void ArchiveFilter::initialize(void)
 		}
 		else if (m_mimeType == "application/x-bzip-compressed-tar")
 		{
-			archive_read_support_compression_bzip2(m_pHandle);
+			archive_read_support_filter_bzip2(m_pHandle);
 			archive_read_support_format_tar(m_pHandle);
 			archive_read_support_format_gnutar(m_pHandle);
 		}
 		else if (m_mimeType == "application/x-compressed-tar")
 		{
-			archive_read_support_compression_gzip(m_pHandle);
+			archive_read_support_filter_gzip(m_pHandle);
 			archive_read_support_format_tar(m_pHandle);
 			archive_read_support_format_gnutar(m_pHandle);
 		}
@@ -278,7 +278,7 @@ void ArchiveFilter::initialize(void)
 		}
 		else if (m_mimeType == "application/x-tarz")
 		{
-			archive_read_support_compression_compress(m_pHandle);
+			archive_read_support_filter_compress(m_pHandle);
 			archive_read_support_format_tar(m_pHandle);
 			archive_read_support_format_gnutar(m_pHandle);
 		}
@@ -422,7 +422,7 @@ void ArchiveFilter::rewind(void)
 	if (m_pHandle != NULL)
 	{
 		archive_read_close(m_pHandle);
-		archive_read_finish(m_pHandle);
+		archive_read_free(m_pHandle);
 		m_pHandle = NULL;
 	}
 	if (m_pMem != NULL)
