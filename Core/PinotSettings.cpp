@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -124,7 +124,9 @@ PinotSettings::PinotSettings() :
 
 	// Initialize libxml2 and check for potential ABI mismatches
 	LIBXML_TEST_VERSION
+#if LIBXML_VERSION < 21208
 	xmlParserDebugEntities = 0;
+#endif
 
 	// Find out if there is a .pinot directory
 	if (stat(directoryName.c_str(), &fileStat) != 0)
