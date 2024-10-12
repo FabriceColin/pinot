@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -635,7 +635,10 @@ void MonitorThread::stop(void)
 	WorkerThread::stop();
 	if (m_ctrlWritePipe >= 0)
 	{
-		write(m_ctrlWritePipe, "X", 1);
+		if (write(m_ctrlWritePipe, "X", 1) == -1)
+		{
+			clog << "Couldn't signal thread " << m_id << " to stop" << endl;
+		}
 	}
 }
 
