@@ -477,6 +477,13 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   libraries are available. Enable libnotify support when building
   on BSD systems. Other switches should most likely stay unchanged.
 
+  In order to build from the git repository, follow these steps:
+  $ git clone https://github.com/FabriceColin/pinot.git
+  $ cd pinot
+  $ touch ChangeLog
+  $ ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc \
+    --enable-debug=yes --enable-libarchive=yes --enable-chmlib=yes
+
   See the list below for dependencies. The version numbers indicate
   the minimum version Pinot has been tested with; older versions may
   or may not work.
