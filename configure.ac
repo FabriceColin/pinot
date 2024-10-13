@@ -1,17 +1,21 @@
 # First generated 2005/12/14 20:48:47 SGT
 
-AC_PREREQ(2.50)
-AC_INIT(pinot, 1.21, [fabrice.colin@gmail.com])
+AC_PREREQ([2.71])
+AC_INIT([pinot],[1.21],[fabrice.colin@gmail.com])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
-AC_ISC_POSIX
+AC_SEARCH_LIBS([strerror],[cposix])
 AC_PROG_CC
-AC_HEADER_STDC
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change. They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CXXCPP
-AM_PROG_LIBTOOL
+LT_INIT
 
 dnl An index with a version older than this should be upgraded
 AC_DEFINE_UNQUOTED(PINOT_INDEX_MIN_VERSION,"0.92",
@@ -63,7 +67,7 @@ AC_SUBST(DBUS_SERVICES_DIR)
 AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR",
 		[Define to the DBUS services directory.])
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 PKG_PROG_PKG_CONFIG
 AC_PATH_PROG(DESKTOP_INSTALL, desktop-file-install, no)
@@ -297,15 +301,13 @@ ORIG_LIBS="$LIBS"
 for candidatelib in '' '-pthread' '-lc_r' '-lthr'; do
    if test -z "$use_posix_mutex" ; then
       LIBS="$candidatelib $ORIG_LIBS"
-      AC_TRY_LINK([#include <pthread.h>],
-         [pthread_mutex_t lck;
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pthread.h>]], [[pthread_mutex_t lck;
          pthread_mutex_init(&lck, 0);
          pthread_mutex_lock(&lck);
          pthread_mutex_unlock(&lck);
-         pthread_mutex_destroy(&lck);],
-         [PTHREAD_LIBS="$candidatelib"
-         pthreadlib=candidatelib]
-      )
+         pthread_mutex_destroy(&lck);]])],[PTHREAD_LIBS="$candidatelib"
+         pthreadlib=candidatelib
+      ],[])
    fi
 done
 LIBS="$ORIG_LIBS"
@@ -427,8 +429,9 @@ AC_CHECK_FUNCS(sysctlbyname)
 AC_CHECK_FUNCS(timegm)
 AC_CHECK_FUNCS(vsnprintf)
 
-AC_OUTPUT( pinot.spec Core/com.github.fabricecolin.Pinot.service Makefile \
+AC_CONFIG_FILES([pinot.spec Core/com.github.fabricecolin.Pinot.service Makefile \
 	Utils/Makefile Tokenize/Makefile SQL/Makefile po/Makefile.in Collect/Makefile \
 	IndexSearch/Xapian/Makefile IndexSearch/Makefile \
-	Monitor/Makefile Core/Makefile UI/GTK3/src/Makefile )
+	Monitor/Makefile Core/Makefile UI/GTK3/src/Makefile ])
+AC_OUTPUT
 
