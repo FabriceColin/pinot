@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,8 +50,6 @@ INotifyMonitor::INotifyMonitor() :
 	m_monitorFd = inotify_init();
 	if (m_monitorFd < 0)
 	{
-		char errBuffer[1024];
-
 		clog << "Couldn't initialize inotify: error " << errno << endl;
 	}
 
