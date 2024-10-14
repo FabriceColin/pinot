@@ -124,7 +124,7 @@ PinotSettings::PinotSettings() :
 
 	// Initialize libxml2 and check for potential ABI mismatches
 	LIBXML_TEST_VERSION
-#if LIBXML_VERSION < 21208
+#if LIBXML_VERSION < 21200
 	xmlParserDebugEntities = 0;
 #endif
 
