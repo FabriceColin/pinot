@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,15 +44,11 @@ static ustring getNodeContent(const Node *pNode)
 	const Element *pElem = dynamic_cast<const Element*>(pNode);
 	if (pElem != NULL)
 	{
-#ifdef HAS_LIBXMLPP026
-		const TextNode *pText = pElem->get_child_content();
-#else
-		const TextNode *pText = pElem->get_child_text();
-#endif
+		const TextNode *pText = pElem->get_first_child_text();
 		if (pText == NULL)
 		{
 			// Maybe the text is given as CDATA
-			const Node::NodeList childNodes = pNode->get_children();
+			Node::const_NodeList childNodes = pNode->get_children();
 			if (childNodes.size() == 1)
 			{
 				// Is it CDATA ?
@@ -140,7 +136,7 @@ bool OpenSearchResponseParser::parse(const ::Document *pResponseDoc, vector<Docu
 		{
 			if (rootNodeName == "rss")
 			{
-				const Node::NodeList rssChildNodes = pRootElem->get_children();
+				Node::NodeList rssChildNodes = pRootElem->get_children();
 				for (Node::NodeList::const_iterator rssIter = rssChildNodes.begin();
 					rssIter != rssChildNodes.end(); ++rssIter)
 				{
@@ -187,7 +183,7 @@ bool OpenSearchResponseParser::parse(const ::Document *pResponseDoc, vector<Docu
 		}
 
 		// Go through the subnodes
-		const Node::NodeList childNodes = pRootElem->get_children();
+		Node::NodeList childNodes = pRootElem->get_children();
 		for (Node::NodeList::const_iterator iter = childNodes.begin();
 			iter != childNodes.end(); ++iter)
 		{
@@ -227,7 +223,7 @@ bool OpenSearchResponseParser::parse(const ::Document *pResponseDoc, vector<Docu
 
 			// Go through the item's subnodes
 			ustring title, url, extract;
-			const Node::NodeList itemChildNodes = pChildNode->get_children();
+			Node::NodeList itemChildNodes = pChildNode->get_children();
 			for (Node::NodeList::const_iterator itemIter = itemChildNodes.begin();
 				itemIter != itemChildNodes.end(); ++itemIter)
 			{
@@ -353,7 +349,7 @@ ResponseParserInterface *OpenSearchParser::parse(SearchPluginProperties &propert
 		}
 
 		// Go through the subnodes
-		const Node::NodeList childNodes = pRootElem->get_children();
+		Node::NodeList childNodes = pRootElem->get_children();
 		if (childNodes.empty() == false)
 		{
 			for (Node::NodeList::const_iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)

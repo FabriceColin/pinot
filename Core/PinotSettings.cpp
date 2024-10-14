@@ -61,11 +61,7 @@ static string getElementContent(const Element *pElem)
 		return "";
 	}
 
-#ifdef HAS_LIBXMLPP026
-	const TextNode *pText = pElem->get_child_content();
-#else
-	const TextNode *pText = pElem->get_child_text();
-#endif
+	const TextNode *pText = pElem->get_first_child_text();
 	if (pText == NULL)
 	{
 		return "";
@@ -81,14 +77,10 @@ static Element *addChildElement(Element *pElem, const string &nodeName, const st
 		return NULL;
 	}
 
-	Element *pSubElem = pElem->add_child(nodeName);
+	Element *pSubElem = pElem->add_child_element(nodeName);
 	if (pSubElem != NULL)
 	{
-#ifdef HAS_LIBXMLPP026
-		pSubElem->set_child_content(nodeContent);
-#else
-		pSubElem->set_child_text(nodeContent);
-#endif
+		pSubElem->set_first_child_text(nodeContent);
 	}
 
 	return pSubElem;
@@ -605,7 +597,7 @@ bool PinotSettings::loadConfiguration(const string &fileName, bool isGlobal)
 		}
 
 		// Go through the subnodes
-		const Node::NodeList childNodes = pRootElem->get_children();
+		Node::NodeList childNodes = pRootElem->get_children();
 		if (childNodes.empty() == false)
 		{
 			for (Node::NodeList::const_iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
@@ -734,16 +726,16 @@ bool PinotSettings::loadUi(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -805,7 +797,7 @@ bool PinotSettings::loadIndexes(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
@@ -813,10 +805,10 @@ bool PinotSettings::loadIndexes(const Element *pElem)
 
 	string indexName, indexLocation;
 
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -850,16 +842,16 @@ bool PinotSettings::loadEngineChannels(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -892,7 +884,7 @@ bool PinotSettings::loadQueries(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
@@ -904,10 +896,10 @@ bool PinotSettings::loadQueries(const Element *pElem)
 	bool enableMinDate = false, enableMaxDate = false;
 
 	// Load the query's properties
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1134,17 +1126,17 @@ bool PinotSettings::loadLabels(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
 	// Load the label's properties
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1170,17 +1162,17 @@ bool PinotSettings::loadColour(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
 	// Load the colour RGB components
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1214,16 +1206,16 @@ bool PinotSettings::loadProxy(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1267,7 +1259,7 @@ bool PinotSettings::loadIndexableLocations(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
@@ -1276,10 +1268,10 @@ bool PinotSettings::loadIndexableLocations(const Element *pElem)
 	IndexableLocation location;
 
 	// Load the indexable location's properties
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1322,17 +1314,17 @@ bool PinotSettings::loadFilePatterns(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
 	}
 
 	// Load the file patterns list
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1368,7 +1360,7 @@ bool PinotSettings::loadPluginParameters(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
@@ -1377,10 +1369,10 @@ bool PinotSettings::loadPluginParameters(const Element *pElem)
 	string name, value;
 
 	// Load the plugin parameters' values 
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1411,7 +1403,7 @@ bool PinotSettings::loadCacheProviders(const Element *pElem)
 		return false;
 	}
 
-	Node::NodeList childNodes = pElem->get_children();
+	Node::const_NodeList childNodes = pElem->get_children();
 	if (childNodes.empty() == true)
 	{
 		return false;
@@ -1420,10 +1412,10 @@ bool PinotSettings::loadCacheProviders(const Element *pElem)
 	CacheProvider cacheProvider;
 
 	// Load the cache provider's properties
-	for (Node::NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
+	for (Node::const_NodeList::iterator iter = childNodes.begin(); iter != childNodes.end(); ++iter)
 	{
-		Node *pNode = (*iter);
-		Element *pChildElem = dynamic_cast<Element*>(pNode);
+		const Node *pNode = (*iter);
+		const Element *pChildElem = dynamic_cast<const Element*>(pNode);
 		if (pChildElem == NULL)
 		{
 			continue;
@@ -1501,7 +1493,7 @@ bool PinotSettings::save(SaveWhat what)
 		{
 			addChildElement(pRootElem, "warnaboutversion", (m_warnAboutVersion ? "YES" : "NO"));
 			// User interface position and size
-			pElem = pRootElem->add_child("ui");
+			pElem = pRootElem->add_child_element("ui");
 			if (pElem == NULL)
 			{
 				return false;
@@ -1526,7 +1518,7 @@ bool PinotSettings::save(SaveWhat what)
 					continue;
 				}
 
-				pElem = pRootElem->add_child("extraindex");
+				pElem = pRootElem->add_child_element("extraindex");
 				if (pElem == NULL)
 				{
 					return false;
@@ -1541,7 +1533,7 @@ bool PinotSettings::save(SaveWhat what)
 				// Only save those whose group was collapsed
 				if (channelIter->second == false)
 				{
-					pElem = pRootElem->add_child("channel");
+					pElem = pRootElem->add_child_element("channel");
 					if (pElem == NULL)
 					{
 						return false;
@@ -1553,7 +1545,7 @@ bool PinotSettings::save(SaveWhat what)
 			for (map<string, QueryProperties>::iterator queryIter = m_queries.begin();
 				queryIter != m_queries.end(); ++queryIter)
 			{
-				pElem = pRootElem->add_child("storedquery");
+				pElem = pRootElem->add_child_element("storedquery");
 				if (pElem == NULL)
 				{
 					return false;
@@ -1602,7 +1594,7 @@ bool PinotSettings::save(SaveWhat what)
 			// Labels
 			for (set<string>::iterator labelIter = m_labels.begin(); labelIter != m_labels.end(); ++labelIter)
 			{
-				pElem = pRootElem->add_child("label");
+				pElem = pRootElem->add_child_element("label");
 				if (pElem == NULL)
 				{
 					return false;
@@ -1614,7 +1606,7 @@ bool PinotSettings::save(SaveWhat what)
 			// Enable terms suggestion
 			addChildElement(pRootElem, "suggestterms", (m_suggestQueryTerms ? "YES" : "NO"));
 			// New results colour
-			pElem = pRootElem->add_child("newresults");
+			pElem = pRootElem->add_child_element("newresults");
 			if (pElem == NULL)
 			{
 				return false;
@@ -1626,7 +1618,7 @@ bool PinotSettings::save(SaveWhat what)
 			snprintf(numStr, 64, "%u", m_newResultsColourBlue);
 			addChildElement(pElem, "blue", numStr);
 			// Proxy
-			pElem = pRootElem->add_child("proxy");
+			pElem = pRootElem->add_child_element("proxy");
 			if (pElem == NULL)
 			{
 				return false;
@@ -1640,7 +1632,7 @@ bool PinotSettings::save(SaveWhat what)
 			for (set<IndexableLocation>::iterator locationIter = m_indexableLocations.begin();
 				locationIter != m_indexableLocations.end(); ++locationIter)
 			{
-				pElem = pRootElem->add_child("indexable");
+				pElem = pRootElem->add_child_element("indexable");
 				if (pElem == NULL)
 				{
 					return false;
@@ -1649,7 +1641,7 @@ bool PinotSettings::save(SaveWhat what)
 				addChildElement(pElem, "monitor", (locationIter->m_monitor ? "YES" : "NO"));
 			}
 			// File patterns
-			pElem = pRootElem->add_child("patterns");
+			pElem = pRootElem->add_child_element("patterns");
 			if (pElem == NULL)
 			{
 				return false;
@@ -1669,7 +1661,7 @@ bool PinotSettings::save(SaveWhat what)
 					continue;
 				}
 
-				pElem = pRootElem->add_child("pluginparameters");
+				pElem = pRootElem->add_child_element("pluginparameters");
 				if (pElem == NULL)
 				{
 					return false;

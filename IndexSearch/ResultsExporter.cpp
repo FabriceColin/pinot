@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007 Fabrice Colin
+ *  Copyright 2007-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,14 +39,10 @@ static Element *addChildElement(Element *pElem, const string &nodeName, const st
 		return NULL;
 	}
 
-	Element *pSubElem = pElem->add_child(nodeName);
+	Element *pSubElem = pElem->add_child_element(nodeName);
 	if (pSubElem != NULL)
 	{
-#ifdef HAS_LIBXMLPP026
-		pSubElem->set_child_content(nodeContent);
-#else
-		pSubElem->set_child_text(nodeContent);
-#endif
+		pSubElem->set_first_child_text(nodeContent);
 	}
 
 	return pSubElem;
@@ -205,7 +201,7 @@ bool OpenSearchExporter::exportStart(const string &engineName, unsigned int maxR
 	pRootElem->set_attribute("xmlns:atom", "http://www.w3.org/2005/Atom");
 
 	// User interface position and size
-	m_pChannelElem = pRootElem->add_child("channel");
+	m_pChannelElem = pRootElem->add_child_element("channel");
 	if (m_pChannelElem == NULL)
 	{
 		return false;
@@ -250,7 +246,7 @@ bool OpenSearchExporter::exportResult(const string &engineName, const DocumentIn
 		return false;
 	}
 
-	Element *pElem = m_pChannelElem->add_child("item");
+	Element *pElem = m_pChannelElem->add_child_element("item");
 	addChildElement(pElem, "title", docInfo.getTitle());
 	addChildElement(pElem, "link", docInfo.getLocation());
 	addChildElement(pElem, "description", FilterUtils::stripMarkup(docInfo.getExtract()));
