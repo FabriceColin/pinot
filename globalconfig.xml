@@ -10,21 +10,8 @@
     %url0	the URL without protocol, eg github.com/FabriceColin/pinot
   -->
   <cache>
-    <name>Google</name>
-    <location>http://www.google.com/search?q=cache:%url0</location>
-    <protocols>http, https</protocols>
-  </cache>
-  <cache>
     <name>WayBack Machine</name>
     <location>http://web.archive.org/web/*/%url</location>
     <protocols>http, https</protocols>
   </cache>
-  <!--
-  MirrorDot is only useful for slashdotted sites
-  <cache>
-    <name>MirrorDot</name>
-    <location>http://www.mirrordot.com/find-mirror.html?%url</location>
-    <protocols>http, https</protocols>
-  </cache>
-  -->
 </pinot>
