@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pinot 1.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-29 09:12+0200\n"
+"POT-Creation-Date: 2024-10-14 19:03+0200\n"
 "PO-Revision-Date: 2008-08-23 16:15+0000\n"
 "Last-Translator: Yung-chung Lin <henearkrxern@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -86,7 +86,7 @@ msgstr "土耳其語"
 
 #. Internal indices
 #. Is this an internal index ?
-#: Core/PinotSettings.cpp:426 Core/PinotSettings.cpp:1772
+#: Core/PinotSettings.cpp:434 Core/PinotSettings.cpp:1730
 #: Core/WorkerThreads.cpp:535 UI/GTK3/src/MainWindow.cpp:1308
 #: UI/GTK3/src/MainWindow.cpp:1575 UI/GTK3/src/MainWindow.cpp:1836
 #: UI/GTK3/src/MainWindow.cpp:2110 UI/GTK3/src/MainWindow.cpp:2145
@@ -96,7 +96,7 @@ msgid "My Web Pages"
 msgstr "我的網頁"
 
 #. Spawn new threads
-#: Core/PinotSettings.cpp:427 Core/PinotSettings.cpp:1773
+#: Core/PinotSettings.cpp:435 Core/PinotSettings.cpp:1731
 #: Core/WorkerThreads.cpp:545 UI/GTK3/src/MainWindow.cpp:1570
 #: UI/GTK3/src/MainWindow.cpp:1837 UI/GTK3/src/MainWindow.cpp:2892
 #: UI/GTK3/src/StatisticsDialog.cpp:129
@@ -104,47 +104,47 @@ msgid "My Documents"
 msgstr "我的文件"
 
 #. Add default labels
-#: Core/PinotSettings.cpp:432
+#: Core/PinotSettings.cpp:440
 msgid "Important"
 msgstr "重要的"
 
-#: Core/PinotSettings.cpp:433
+#: Core/PinotSettings.cpp:441
 msgid "New"
 msgstr "新增"
 
-#: Core/PinotSettings.cpp:434
+#: Core/PinotSettings.cpp:442
 msgid "Personal"
 msgstr "個人資料"
 
-#: Core/PinotSettings.cpp:456
+#: Core/PinotSettings.cpp:464
 msgid "Me"
 msgstr "我"
 
-#: Core/PinotSettings.cpp:464
+#: Core/PinotSettings.cpp:472
 msgid "Latest First"
 msgstr "最新的第一"
 
-#: Core/PinotSettings.cpp:467
+#: Core/PinotSettings.cpp:475
 msgid "10kb And Smaller"
 msgstr "10kb 及以下"
 
-#: Core/PinotSettings.cpp:470
+#: Core/PinotSettings.cpp:478
 msgid "Home Stuff"
 msgstr "家庭文件"
 
-#: Core/PinotSettings.cpp:471
+#: Core/PinotSettings.cpp:479
 msgid "With Label New"
 msgstr "新標籤"
 
-#: Core/PinotSettings.cpp:472
+#: Core/PinotSettings.cpp:480
 msgid "Have CJKV"
 msgstr "CJKV"
 
-#: Core/PinotSettings.cpp:473
+#: Core/PinotSettings.cpp:481
 msgid "In English"
 msgstr "英語"
 
-#: Core/PinotSettings.cpp:518
+#: Core/PinotSettings.cpp:526
 msgid "Unclassified"
 msgstr "未分類的"
 
