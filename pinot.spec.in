@@ -17,16 +17,16 @@ Source: %{name}-%{version}.tar.gz
 URL: https://github.com/FabriceColin/pinot
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: xapian-core-libs >= 1.4.10, libexttextcat, sqlite >= 3.3.1, libcurl >= 7.13, gmime >= 2.6
-Requires: libxml++ >= 2.12, shared-mime-info, gtkmm30 >= 3.24
+Requires: libxml++30 >= 3.2, shared-mime-info, gtkmm30 >= 3.24
 Requires: taglib >= 1.4, exiv2-libs >= 0.18, unzip, antiword, unrtf, %{pftotext_pkg}
 #Suggests: xapian-omega
 BuildRequires: xapian-core-devel >= 1.4.10, libuuid-devel, libexttextcat-devel, sqlite-devel >= 3.3.1, libcurl-devel >= 7.13, gmime-devel >= 2.6, boost-devel >= 1.75
-BuildRequires: libxml++-devel >= 2.12, gtkmm30-devel >= 3.24, openssl-devel, gettext-devel, desktop-file-utils, help2man
+BuildRequires: libxml++30-devel >= 3.2, gtkmm30-devel >= 3.24, openssl-devel, gettext-devel, desktop-file-utils, help2man
 BuildRequires: taglib-devel >= 1.4, exiv2-devel >= 0.18
 BuildRequires: gcc-c++
 %if 0%{?_with_libarchive:1}
-Requires: libarchive >= 2.6.2
-BuildRequires: libarchive-devel >= 2.6.2
+Requires: libarchive >= 3.0.0
+BuildRequires: libarchive-devel >= 3.0.0
 %endif
 %if 0%{?_with_chmlib:1}
 Requires: chmlib >= 0.40
@@ -132,4 +132,3 @@ fi
 %{_libdir}/pinot/lib*
 
 %changelog
-
