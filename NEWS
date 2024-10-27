@@ -1,6 +1,10 @@
-2024/??/?? version_1_2_2
-General:
+2024/10/27 version_1_2_2
+General :
+ - const correctness and Debian unstable build fixes
  - support for exiv2 0.28
+ - require libarchive >= 3.0.0
+ - require libxml++ >= 3.2.0
+ - several warning fixes
 
 2022/02/22 version_1_2_1
 General :
