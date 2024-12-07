@@ -115,6 +115,7 @@ fi
 %{_datadir}/gnome-shell/search-providers/com.github.fabricecolin.Pinot.search-provider.ini
 %endif
 %{_datadir}/pinot/
+%{_datadir}/icons/hicolor/64x64/apps/pinot.png
 %{_datadir}/icons/hicolor/48x48/apps/pinot.png
 %{_datadir}/icons/hicolor/32x32/apps/pinot.png
 %{_datadir}/icons/hicolor/24x24/apps/pinot.png

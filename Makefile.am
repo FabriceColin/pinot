@@ -19,9 +19,9 @@ EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TOD
 	UI/GTK3/src/pinot.1 Core/pinot-dbus-daemon.xml \
 	Core/com.github.fabricecolin.Pinot.search-provider.ini \
 	Core/com.github.fabricecolin.Pinot.service \
-	UI/icons/48x48/pinot.png UI/icons/32x32/pinot.png \
-	UI/icons/24x24/pinot.png UI/icons/22x22/pinot.png \
-	UI/icons/16x16/pinot.png \
+	UI/icons/64x64/pinot.png UI/icons/48x48/pinot.png \
+	UI/icons/32x32/pinot.png UI/icons/24x24/pinot.png \
+	UI/icons/22x22/pinot.png UI/icons/16x16/pinot.png \
 	UI/GTK3/metase-gtk3.gtkbuilder \
 	scripts/bash/*.sh
 
@@ -89,6 +89,8 @@ endif
 	@rm -f $(DESTDIR)$(libdir)/lib*backend.a $(DESTDIR)$(libdir)/lib*backend.la
 	@mv $(DESTDIR)$(libdir)/lib*backend* $(DESTDIR)$(libdir)/pinot/backends/
 	@mkdir -p $(DESTDIR)$(datadir)/pinot/stopwords
+	@mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps/
+	$(INSTALL_DATA) $(srcdir)/UI/icons/64x64/pinot.png $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps/pinot.png
 	@mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/
 	$(INSTALL_DATA) $(srcdir)/UI/icons/48x48/pinot.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/pinot.png
 	@mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/32x32/apps/

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -377,7 +377,7 @@ int main(int argc, char **argv)
 	try
 	{
 		// Set an icon for all windows
-		Gtk::Window::set_default_icon_from_file(prefixDir + "/share/icons/hicolor/48x48/apps/pinot.png");
+		Gtk::Window::set_default_icon_from_file(prefixDir + "/share/icons/hicolor/64x64/apps/pinot.png");
 		// Get a builder
 		Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create_from_file(prefixDir + "/share/pinot/metase-gtk3.gtkbuilder");
 
