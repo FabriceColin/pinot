@@ -36,10 +36,10 @@ Patches, bug reports and helpful contributions from :
 	Martijn Verstrate <martijn dot verstrate at wm-m dot net>
 	Kamil Rytarowski <krytarowski at gmail dot com>
 	Takafumi Arakaki <aka dot tkf at gmail dot com>
-	Jelle van der Waa <jelle@vdwaa.nl>
-	Helmut Grohne <helmut@subdivi.de>
-	Olly Betts <olly@survex.com>
-	Pino Toscano <toscano.pino@tiscali.it>
+	Jelle van der Waa <jelle at vdwaa dot nl>
+	Helmut Grohne <helmut at subdivi dot de>
+	Olly Betts <olly dot survex dot com>
+	Pino Toscano <toscano dot pino at tiscali dot it>
 
 Some code is borrowed from Xapian Omega, which is "largely the work of
 Olly Betts, Mark Shinwell (omindex-config) and Richard Boulton",
