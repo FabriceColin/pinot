@@ -1,6 +1,9 @@
 2025/11/09 version_1_2_3
 Collect :
  - curl 8.16 type fix
+ - the HTML filter supports anchors titles
+IndexSearch :
+ - updated the Wikipedia plugin
 UI :
  - default 64x64 icon
 
