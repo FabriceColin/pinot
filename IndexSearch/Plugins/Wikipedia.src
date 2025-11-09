@@ -5,19 +5,22 @@
 	name="Wikipedia"
 	description="wikipedia.com"
 	method="GET"
-	action="http://en.wikipedia.org/wiki/Special:Search"
+	action="https://en.wikipedia.org/w/index.php"
 	routeType="Encyclopedia"
 >
 
+<INPUT NAME="title" VALUE="Special:Search">
+<INPUT NAME="profile" VALUE="advanced">
+<INPUT NAME="fulltext" VALUE="1">
+<INPUT NAME="ns0" VALUE="1">
 <INPUT NAME="search" USER>
-<INPUT NAME="fulltext" VALUE="Search">
 <INPUT NAME="limit" VALUE="10">
 <INPUTNEXT NAME="offset" FACTOR="10">
 
 <INTERPRET
 resultListStart="<ul class='mw-search-results'>"
 resultListEnd="</ul>"
-resultItemStart="<li class='mw-search-result'>"
+resultItemStart="<li class='mw-search-result"
 resultItemEnd="</li>"
 >
 
