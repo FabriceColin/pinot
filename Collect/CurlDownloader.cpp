@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2025 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -302,7 +302,7 @@ Document *CurlDownloader::retrieveUrl(const DocumentInfo &docInfo,
 	if ((m_proxyAddress.empty() == false) &&
 		(m_proxyPort > 0))
 	{
-		curl_proxytype proxyType = CURLPROXY_HTTP;
+		long proxyType = CURLPROXY_HTTP;
 
 		curl_easy_setopt(pCurlHandler, CURLOPT_PROXY, m_proxyAddress.c_str());
 		curl_easy_setopt(pCurlHandler, CURLOPT_PROXYPORT, m_proxyPort);
