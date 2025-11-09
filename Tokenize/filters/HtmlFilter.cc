@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2016 Fabrice Colin
+ *  Copyright 2007-2025 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -432,6 +432,8 @@ void HtmlFilter::ParserState::opening_tag(const string &tag)
 
 		// Get the href
 		get_parameter("href", m_currentLink.m_url);
+		// Any title parameter?
+		get_parameter("title", m_currentLink.m_name);
 
 		if (m_currentLink.m_url.empty() == false)
 		{
