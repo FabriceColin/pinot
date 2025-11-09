@@ -1,5 +1,5 @@
 
-SUBDIRS = po Utils Tokenize SQL Collect IndexSearch IndexSearch/Xapian Monitor Core UI/GTK3/src
+SUBDIRS = po Utils Tokenize SQL Collect IndexSearch IndexSearch/Xapian Monitor Core UI/GTK4/src
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; \
@@ -16,13 +16,13 @@ EXTRA_DIST = AUTHORS ChangeLog ChangeLog-dijon ChangeLog-svn FAQ NEWS README TOD
 	textcat*conf.txt pinot*.desktop pinot.spec \
 	IndexSearch/Plugins/*src IndexSearch/Plugins/*.xml \
 	Core/pinot-*.1 IndexSearch/pinot-*.1 \
-	UI/GTK3/src/pinot.1 Core/pinot-dbus-daemon.xml \
+	UI/GTK4/src/pinot.1 Core/pinot-dbus-daemon.xml \
 	Core/com.github.fabricecolin.Pinot.search-provider.ini \
 	Core/com.github.fabricecolin.Pinot.service \
 	UI/icons/64x64/pinot.png UI/icons/48x48/pinot.png \
 	UI/icons/32x32/pinot.png UI/icons/24x24/pinot.png \
 	UI/icons/22x22/pinot.png UI/icons/16x16/pinot.png \
-	UI/GTK3/metase-gtk3.gtkbuilder \
+	UI/GTK4/pinot-gtk4.ui \
 	scripts/bash/*.sh
 
 if HAVE_DBUS
@@ -30,12 +30,12 @@ man_MANS = Core/pinot-index.1 \
 	IndexSearch/pinot-label.1 \
 	Core/pinot-search.1 \
 	Core/pinot-dbus-daemon.1 \
-	UI/GTK3/src/pinot.1
+	UI/GTK4/src/pinot.1
 else
 man_MANS = Core/pinot-index.1 \
 	Core/pinot-search.1 \
 	Core/pinot-daemon.1 \
-	UI/GTK3/src/pinot.1
+	UI/GTK4/src/pinot.1
 endif
 
 dbus-code:
@@ -49,7 +49,7 @@ dbus-code:
 	@rm -f SearchProvider_proxy.*
 
 builder-translations:
-	@scripts/bash/extract-gtk-builder-translations.sh >UI/GTK3/src/BuilderTranslations.h
+	@scripts/bash/extract-gtk-builder-translations.sh >UI/GTK4/src/BuilderTranslations.h
 
 manuals:
 	@help2man --no-info --no-discard-stderr --name "Index documents from the command-line" Core/pinot-index >Core/pinot-index.1
@@ -62,7 +62,7 @@ if HAVE_DBUS
 else
 	@help2man --no-info --no-discard-stderr --name "Search and index daemon" Core/pinot-daemon                     >Core/pinot-daemon.1
 endif
-	@help2man --no-info --no-discard-stderr --name "A metasearch tool for the Free Desktop" UI/GTK3/src/pinot      >UI/GTK3/src/pinot.1
+	@help2man --no-info --no-discard-stderr --name "A metasearch tool for the Free Desktop" UI/GTK4/src/pinot      >UI/GTK4/src/pinot.1
 
 install-data-local:
 	@ln -fs $(bindir)/pinot $(DESTDIR)$(bindir)/pinot-prefs
@@ -76,7 +76,7 @@ if HAVE_DBUS
 	@mkdir -p $(DESTDIR)$(datadir)/dbus-1/services
 	$(INSTALL_DATA) $(builddir)/Core/com.github.fabricecolin.Pinot.service $(DESTDIR)$(datadir)/dbus-1/services/com.github.fabricecolin.Pinot.service
 endif
-	$(INSTALL_DATA) $(srcdir)/UI/GTK3/metase-gtk3.gtkbuilder $(DESTDIR)$(datadir)/pinot/metase-gtk3.gtkbuilder
+	$(INSTALL_DATA) $(srcdir)/UI/GTK4/pinot-gtk4.ui $(DESTDIR)$(datadir)/pinot/pinot-gtk4.ui
 	@mkdir -p $(DESTDIR)$(datadir)/pinot/engines
 if HAVE_BOOST_SPIRIT
 	$(INSTALL_DATA) $(srcdir)/IndexSearch/Plugins/*.src $(DESTDIR)$(datadir)/pinot/engines/

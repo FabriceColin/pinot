@@ -1,7 +1,7 @@
 # First generated 2005/12/14 20:48:47 SGT
 
 AC_PREREQ([2.71])
-AC_INIT([pinot],[1.23],[fabrice.colin@gmail.com])
+AC_INIT([pinot],[1.30],[fabrice.colin@gmail.com])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
@@ -40,12 +40,12 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",
 		[Define to the location of locale files.])
 fi
-dnl And set PREFIX in config.h.
+dnl And set PINOT_PREFIX in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PREFIX, "${ac_default_prefix}",
+  AC_DEFINE_UNQUOTED(PINOT_PREFIX, "${ac_default_prefix}",
 		[Define to the package prefix.])
 else
-  AC_DEFINE_UNQUOTED(PREFIX, "${prefix}",
+  AC_DEFINE_UNQUOTED(PINOT_PREFIX, "${prefix}",
 		[Define to the package prefix.])
 fi
 
@@ -340,7 +340,7 @@ AC_CHECK_LIB(dl, dlopen,
 )
 
 dnl Other libraries
-MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64 -std=c++11"
+MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64 -std=c++17"
 MISC_LIBS="$NOTIFY_LIBS $PTHREAD_LIBS $DL_LIBS $BOOST_LIBS"
 AC_SUBST(MISC_CFLAGS)
 AC_SUBST(MISC_LIBS)
@@ -372,36 +372,30 @@ PKG_CHECK_MODULES(GMIME, gmime-3.0 >= 3.0,
     [],[PKG_CHECK_MODULES(GMIME, gmime-2.6 >= 2.5 )] )
 AC_SUBST(GMIME_CFLAGS)
 AC_SUBST(GMIME_LIBS)
-PKG_CHECK_MODULES(XML, libxml++-3.0 >= 3.2 )
+PKG_CHECK_MODULES(XML, libxml++-5.0 >= 5.4 )
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 INDEX_CFLAGS="$XAPIAN_CFLAGS"
 INDEX_LIBS="$XAPIAN_LIBS $TEXTCAT_LIBS"
 AC_SUBST(INDEX_CFLAGS)
 AC_SUBST(INDEX_LIBS)
-PKG_CHECK_MODULES(SIGCPP, sigc++-2.0 >= 2.0 )
+PKG_CHECK_MODULES(SIGCPP, sigc++-3.0 >= 3.6 )
 AC_SUBST(SIGCPP_CFLAGS)
 AC_SUBST(SIGCPP_LIBS)
 PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.6 )
 AC_SUBST(GTHREAD_CFLAGS)
 AC_SUBST(GTHREAD_LIBS)
 dnl GLibmm and friends
-PKG_CHECK_MODULES(GLIBMM, glibmm-2.4 >= 2.6 )
+PKG_CHECK_MODULES(GLIBMM, glibmm-2.68 >= 2.78 )
 AC_SUBST(GLIBMM_CFLAGS)
 AC_SUBST(GLIBMM_LIBS)
-PKG_CHECK_MODULES(GIOMM, giomm-2.4 >= 2.6 )
+PKG_CHECK_MODULES(GIOMM, giomm-2.68 >= 2.78 )
 AC_SUBST(GIOMM_CFLAGS)
 AC_SUBST(GIOMM_LIBS)
 dnl GTKmm
-PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.24 )
+PKG_CHECK_MODULES(GTKMM, gtkmm-4.0 >= 4.13 )
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
-dnl GIO
-PKG_CHECK_MODULES(GIO, gio-2.0)
-GLIBMM_CFLAGS=" $GIO_CFLAGS $GLIBMM_CFLAGS"
-GLIBMM_LIBS="$GIO_LIBS $GLIBMM_LIBS"
-GTKMM_CFLAGS=" $GIO_CFLAGS $GTKMM_CFLAGS"
-GTKMM_LIBS="$GIO_LIBS $GTKMM_LIBS"
 
 dnl Check for specific functions
 AC_CHECK_FUNCS(fork)
@@ -432,6 +426,6 @@ AC_CHECK_FUNCS(vsnprintf)
 AC_CONFIG_FILES([pinot.spec Core/com.github.fabricecolin.Pinot.service Makefile \
 	Utils/Makefile Tokenize/Makefile SQL/Makefile po/Makefile.in Collect/Makefile \
 	IndexSearch/Xapian/Makefile IndexSearch/Makefile \
-	Monitor/Makefile Core/Makefile UI/GTK3/src/Makefile ])
+	Monitor/Makefile Core/Makefile UI/GTK4/src/Makefile ])
 AC_OUTPUT
 
