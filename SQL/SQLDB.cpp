@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008-2016 Fabrice Colin
+ *  Copyright 2008-2025 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,6 +76,21 @@ bool SQLResults::rewind(void)
 	m_nCurrentRow = 0;
 
 	return true;
+}
+
+off_t SQLResults::getOffsetCount(void)
+{
+	SQLRow *row = nextRow();
+	off_t totalCount = 0;
+
+	if (row != NULL)
+	{
+		totalCount = (off_t)atoll(row->getColumn(0).c_str());
+
+		delete row;
+	}
+
+	return totalCount;
 }
 
 SQLDB::SQLDB(const string &databaseName,
