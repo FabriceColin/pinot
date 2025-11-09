@@ -1,7 +1,7 @@
 # First generated 2005/12/14 20:48:47 SGT
 
 AC_PREREQ([2.71])
-AC_INIT([pinot],[1.22],[fabrice.colin@gmail.com])
+AC_INIT([pinot],[1.23],[fabrice.colin@gmail.com])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
