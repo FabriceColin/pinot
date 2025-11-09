@@ -211,18 +211,17 @@ Translations - https://translations.launchpad.net/pinot/trunk/+pots/pinot
   Results returned by search engines can be viewed "live" by selecting the View
   menuitem under Results. This opens whatever application defined for the
   result's MIME type and/or protocol scheme.
-  In addition, Pinot allows to view the page as cached by Google and the Wayback
-  Machine. Cache providers are actually configured in globalconfig.xml, located
-  in /etc/pinot/. For instance :
+  In addition, Pinot allows to view the page as cached by the Wayback Machine.
+  Cache providers are actually configured in globalconfig.xml, located in
+  /etc/pinot/. For instance :
   <cache>
-    <name>Google</name>
-    <location>http://www.google.com/search?q=cache:%url0</location>
+    <name>WayBack Machine</name>
+    <location>http://web.archive.org/web/*/%url</location>
     <protocols>http, https</protocols>
   </cache>
 
-  This is self-explanatory :-) Here it configures a cache provider called
-  "Google" that handles both http and https. The location field supports
-  two parameters that are substituted to obtain the URL to open : 
+  The above configures a cache provider called "WayBack Machine" that handles
+  both http and https. The location field supports two substitution parameters :
     * %url is the result's URL as displayed by the UI, eg
       https://github.com/FabriceColin/pinot
     * %url0 is the result's URL without the protocol, eg
@@ -509,10 +508,10 @@ http://www.webdav.org/neon/
 gdbus-codegen-glibmm (2)
 https://github.com/Pelagicore/gdbus-codegen-glibmm
 
-gtkmm							3.24
+gtkmm							4.13
 http://www.gtkmm.org/
 
-libxml++						3.2.0
+libxml++						5.4
 https://github.com/libxmlplusplus/libxmlplusplus/
 
 libexttextcat						3.2
