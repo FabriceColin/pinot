@@ -94,7 +94,7 @@ static unsigned int removeCharacters(string &str, const string &characters)
 		charPos = str.find_first_of(characters.c_str(), charPos);
 	}
 
-	return count;	
+	return count;
 }
 
 static unsigned int trimSpaces(string &str)

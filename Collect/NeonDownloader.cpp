@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2013 Fabrice Colin
+ *  Copyright 2005-2025 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ string NeonDownloader::handleRedirection(const char *pBody, unsigned int length)
 	}
 
 	Document doc;
-	Dijon::HtmlFilter htmlFilter("text/html");
+	Dijon::HtmlFilter htmlFilter;
 	set<Dijon::Link> linksSet;
 
 	doc.setData(pBody, length);
