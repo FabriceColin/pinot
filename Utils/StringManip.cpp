@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2026 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 
 using std::string;
 using std::for_each;
+using std::isdigit;
+using std::remove_if;
 
 static const unsigned int HASH_LEN = ((4 * 8 + 5) / 6);
 
@@ -192,6 +194,15 @@ unsigned int StringManip::trimSpaces(string &str)
 	}
 
 	return count;
+}
+
+/// Trims spaces at the start and end of a string.
+void StringManip::stripNonNumeric(string &str)
+{
+	str.erase(
+		remove_if(str.begin(), str.end(),
+		[](char c) { return !isdigit(c); }),
+		str.end());
 }
 
 /// Removes double and single quotes in links or any other attribute.

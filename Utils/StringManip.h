@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2012 Fabrice Colin
+ *  Copyright 2005-2026 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,9 @@ class PINOT_EXPORT StringManip
 
 		/// Trims spaces at the start and end of a string.
 		static unsigned int trimSpaces(std::string &str);
+
+		/// Strips non numeric characters from a string.
+		static void stripNonNumeric(std::string &str);
 
 		/// Hashes a string.
 		static std::string hashString(const std::string &str);
