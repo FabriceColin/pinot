@@ -421,12 +421,12 @@ const Glib::RefPtr<Gio::Cancellable> &cancellable = {},
         int timeout_msec = -1);
 
     Glib::ustring DaemonVersion_get(bool *ok = nullptr);
-    sigc::signal<void> &DaemonVersion_changed() {
+    sigc::signal<void()> &DaemonVersion_changed() {
         return m_DaemonVersion_changed;
     }
 
     guint32 IndexFlushEpoch_get(bool *ok = nullptr);
-    sigc::signal<void> &IndexFlushEpoch_changed() {
+    sigc::signal<void()> &IndexFlushEpoch_changed() {
         return m_IndexFlushEpoch_changed;
     }
 
@@ -447,8 +447,8 @@ private:
     void handle_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
                                    const std::vector<Glib::ustring> &invalidated_properties);
 
-    sigc::signal<void> m_DaemonVersion_changed;
-    sigc::signal<void> m_IndexFlushEpoch_changed;
+    sigc::signal<void()> m_DaemonVersion_changed;
+    sigc::signal<void()> m_IndexFlushEpoch_changed;
 };
 
 }// fabricecolin

@@ -20,8 +20,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <iostream>
-#include <glibmm/thread.h>
-#include <glibmm/convert.h>
 #include <libxml++/libxml++.h>
 #include <libxml++/nodes/cdatanode.h>
 
@@ -30,7 +28,6 @@
 #include "OpenSearchParser.h"
 
 using namespace std;
-using namespace Glib;
 using namespace xmlpp;
 
 static ustring getNodeContent(const Node *pNode)

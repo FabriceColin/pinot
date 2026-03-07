@@ -87,9 +87,9 @@ void org::freedesktop::DBus::IntrospectableProxy::handle_properties_changed(
 
 org::freedesktop::DBus::IntrospectableProxy::IntrospectableProxy(const Glib::RefPtr<Gio::DBus::Proxy> &proxy) : m_proxy(proxy)
 {
-    m_proxy->signal_signal().connect(sigc::mem_fun(this, &IntrospectableProxy::handle_signal));
+    m_proxy->signal_signal().connect(sigc::mem_fun(*this, &IntrospectableProxy::handle_signal));
     m_proxy->signal_properties_changed().
-        connect(sigc::mem_fun(this, &IntrospectableProxy::handle_properties_changed));
+        connect(sigc::mem_fun(*this, &IntrospectableProxy::handle_properties_changed));
 }
 
 void org::freedesktop::DBus::IntrospectableProxy::createForBus(
@@ -1355,9 +1355,9 @@ void com::github::fabricecolin::PinotProxy::handle_properties_changed(
 
 com::github::fabricecolin::PinotProxy::PinotProxy(const Glib::RefPtr<Gio::DBus::Proxy> &proxy) : m_proxy(proxy)
 {
-    m_proxy->signal_signal().connect(sigc::mem_fun(this, &PinotProxy::handle_signal));
+    m_proxy->signal_signal().connect(sigc::mem_fun(*this, &PinotProxy::handle_signal));
     m_proxy->signal_properties_changed().
-        connect(sigc::mem_fun(this, &PinotProxy::handle_properties_changed));
+        connect(sigc::mem_fun(*this, &PinotProxy::handle_properties_changed));
 }
 
 void com::github::fabricecolin::PinotProxy::createForBus(

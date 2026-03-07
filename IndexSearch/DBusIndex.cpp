@@ -1,5 +1,5 @@
 /*
- *  Copyright 2007-2021 Fabrice Colin
+ *  Copyright 2007-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ static const char *g_fieldNames[] = { "caption", "url", "type", "language", "mod
 DBusIndex::DBusIndex(IndexInterface *pROIndex) :
 	IndexInterface(),
 	m_refProxy(com::github::fabricecolin::PinotProxy::createForBus_sync(
-		DBus::BUS_TYPE_SESSION,
-		Gio::DBus::PROXY_FLAGS_NONE,
+		DBus::BusType::SESSION,
+		Gio::DBus::ProxyFlags::NONE,
 		PINOT_DBUS_SERVICE_NAME, PINOT_DBUS_OBJECT_PATH)),
 	m_pROIndex(pROIndex)
 {
