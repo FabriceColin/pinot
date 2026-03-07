@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <sys/select.h>
 #include <string>
 #include <queue>
+#include <map>
 #include <set>
 #include <tuple>
 #include <vector>
@@ -64,7 +65,7 @@ class DaemonState : public QueueManager
 
 		void on_message_filefound(DocumentInfo docInfo, bool isDirectory);
 
-		sigc::signal1<void, int>& getQuitSignal(void);
+		sigc::signal<void(int)>& getQuitSignal(void);
 
 		void set_flag(StatusFlag flag);
 
@@ -224,12 +225,12 @@ class DaemonState : public QueueManager
 		MonitorInterface *m_pDiskMonitor;
 		MonitorHandler *m_pDiskHandler;
 		sigc::connection m_timeoutConnection;
-		sigc::signal1<void, int> m_signalQuit;
+		sigc::signal<void(int)> m_signalQuit;
 		unsigned int m_crawlers;
 		std::queue<PinotSettings::IndexableLocation> m_crawlQueue;
 
 #ifdef HAVE_DBUS
-		void handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
+		void handle_power_properties_changed(const std::map<Glib::ustring, Glib::VariantBase> &changed_properties,
 			const std::vector<Glib::ustring> &invalidated_properties);
 #endif
 

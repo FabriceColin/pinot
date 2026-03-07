@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@
 #include <algorithm>
 #include <glibmm/miscutils.h>
 #include <glibmm/convert.h>
-#include <glibmm/exception.h>
 
 #include "config.h"
 #include "NLS.h"
@@ -475,8 +474,8 @@ void EngineQueryThread::processResults(const vector<DocumentInfo> &resultsList)
 	if (ModuleFactory::isSupported(m_engineName, true) == true)
 	{
 		// Internal index ?
-		if ((m_engineOption == settings.m_docsIndexLocation) ||
-			(m_engineOption == settings.m_daemonIndexLocation))
+		if ((ustring(m_engineOption) == settings.m_docsIndexLocation) ||
+			(ustring(m_engineOption) == settings.m_daemonIndexLocation))
 		{
 			indexId = settings.getIndexPropertiesByLocation(m_engineOption).m_id;
 			isIndexQuery = true;
@@ -1297,22 +1296,19 @@ string DirectoryScannerThread::getDirectory(void) const
 void DirectoryScannerThread::stop(void)
 {
 	// Disconnect the signal
-	sigc::signal2<void, DocumentInfo, bool>::slot_list_type slotsList = m_signalFileFound.slots();
-	sigc::signal2<void, DocumentInfo, bool>::slot_list_type::iterator slotIter = slotsList.begin();
-	if (slotIter != slotsList.end())
+	for (vector<sigc::connection>::iterator connIter = m_connections.begin();
+		connIter != m_connections.end(); ++connIter)
 	{
-		if (slotIter->empty() == false)
-		{
-			slotIter->block();
-			slotIter->disconnect();
-		}
+		connIter->block();
+		connIter->disconnect();
 	}
+
 	WorkerThread::stop();
 }
 
-sigc::signal2<void, DocumentInfo, bool>& DirectoryScannerThread::getFileFoundSignal(void)
+void DirectoryScannerThread::connectFileFoundSignal(const sigc::slot<void(DocumentInfo, bool)> &slot)
 {
-	return m_signalFileFound;
+	m_connections.push_back(m_signalFileFound.connect(slot));
 }
 
 void DirectoryScannerThread::recordCrawled(const string &location, time_t itemDate)

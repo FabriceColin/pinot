@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2026 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,11 +65,11 @@
 #include <glibmm/ustring.h>
 #include <glibmm/stringutils.h>
 #include <glibmm/convert.h>
-#include <glibmm/thread.h>
 #include <glibmm/random.h>
 
 #include "CommandLine.h"
 #include "Memory.h"
+#include "StringManip.h"
 #include "Url.h"
 #include "MonitorFactory.h"
 #include "CrawlHistory.h"
@@ -132,7 +132,7 @@ static double getFSFreeSpace(const string &path)
 static string loadXMLDescription(void)
 {
 	ifstream xmlFile;
-	string xmlFileName(PREFIX);
+	string xmlFileName(PINOT_PREFIX);
 	ustring xmlDescription;
 	bool readFile = false;
 
@@ -1213,7 +1213,14 @@ void DaemonState::DBusSearchProvider::GetResultMetas(const vector<ustring> &iden
 		idIter != identifiers.end(); ++idIter)
 	{
 		DocumentInfo docInfo;
-		unsigned int docId = atoi(idIter->c_str());
+		string saneIdStr(idIter->c_str());
+
+#ifdef DEBUG
+		clog << "DaemonState::DBusSearchProvider::GetResultMetas: id " << *idIter << endl;
+#endif
+		StringManip::stripNonNumeric(saneIdStr);
+
+		unsigned int docId = atoi(saneIdStr.c_str());
 
 		if (pIndex->getDocumentInfo(docId, docInfo) == true)
 		{
@@ -1232,8 +1239,8 @@ void DaemonState::DBusSearchProvider::GetResultMetas(const vector<ustring> &iden
 			name += location;
 
 #ifdef DEBUG
-			clog << "DaemonState::DBusSearchProvider::GetResultMetas: " << docId
-				<< " " << docInfo.getType() << endl;
+			clog << "DaemonState::DBusSearchProvider::GetResultMetas: document " << docId
+				<< " type " << docInfo.getType() << endl;
 #endif
 			docDictionary.insert(pair<ustring, VariantBase>("id",
 				Variant<ustring>::create(*idIter)));
@@ -1332,14 +1339,14 @@ void DaemonState::DBusSearchProvider::LaunchSearch(const vector<ustring> &terms,
 DaemonState::DaemonState() :
 	QueueManager(PinotSettings::getInstance().m_daemonIndexLocation),
 #ifdef HAVE_DBUS
-	m_refSessionBus(Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION)),
+	m_refSessionBus(Gio::DBus::Connection::get_sync(Gio::DBus::BusType::SESSION)),
 	m_introspectionHandler(),
 	m_messageHandler(this),
 	m_searchProvider(this),
-    m_powerProxy(Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
+    m_powerProxy(Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BusType::SYSTEM,
 		POWER_DBUS_SERVICE_NAME, POWER_DBUS_OBJECT_PATH,
 		POWER_DBUS_SERVICE_NAME, {}, {},
-		Gio::DBus::PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION)),
+		Gio::DBus::ProxyFlags::DO_NOT_AUTO_START_AT_CONSTRUCTION)),
 	m_connectionId(0),
 #endif
 	m_isReindex(false),
@@ -1359,7 +1366,7 @@ DaemonState::DaemonState() :
 #ifdef HAVE_DBUS
 	// Listen for battery property changes
 	m_powerProxy->signal_properties_changed().
-		connect(sigc::mem_fun(this, &DaemonState::handle_power_properties_changed));
+		connect(sigc::mem_fun(*this, &DaemonState::handle_power_properties_changed));
 #endif
 #endif
 	// Check right now before doing anything else
@@ -1387,7 +1394,7 @@ void DaemonState::disconnect(void)
 }
 
 #ifdef HAVE_DBUS
-void DaemonState::handle_power_properties_changed(const Gio::DBus::Proxy::MapChangedProperties &changed_properties,
+void DaemonState::handle_power_properties_changed(const map<ustring, VariantBase> &changed_properties,
 	const vector<ustring> &invalidated_properties)
 {
 	if (changed_properties.find("OnBattery") != changed_properties.cend())
@@ -1546,7 +1553,7 @@ bool DaemonState::crawl_location(const PinotSettings::IndexableLocation &locatio
 		pCrawlerThread = new CrawlerThread(location.m_name, location.m_isSource,
 			m_pDiskMonitor, m_pDiskHandler, inlineIndexing);
 	}
-	pCrawlerThread->getFileFoundSignal().connect(sigc::mem_fun(*this, &DaemonState::on_message_filefound));
+	pCrawlerThread->connectFileFoundSignal(sigc::mem_fun(*this, &DaemonState::on_message_filefound));
 
 	if (start_thread(pCrawlerThread, true) == true)
 	{
@@ -1563,7 +1570,7 @@ void DaemonState::register_session(void)
 {
 #ifdef HAVE_DBUS
 	m_connectionId = Gio::DBus::own_name(
-		Gio::DBus::BUS_TYPE_SESSION,
+		Gio::DBus::BusType::SESSION,
 		PINOT_DBUS_SERVICE_NAME,
 		[&](const RefPtr<Gio::DBus::Connection> &connection,
 			const ustring & /* name */) {
@@ -1606,7 +1613,7 @@ void DaemonState::start(bool isReindex)
 	if (m_pDiskHandler == NULL)
 	{
 		OnDiskHandler *pDiskHandler = new OnDiskHandler();
-		pDiskHandler->getFileFoundSignal().connect(sigc::mem_fun(*this, &DaemonState::on_message_filefound));
+		pDiskHandler->connectFileFoundSignal(sigc::mem_fun(*this, &DaemonState::on_message_filefound));
 		m_pDiskHandler = pDiskHandler;
 	}
 	HistoryMonitorThread *pDiskMonitorThread = new HistoryMonitorThread(m_pDiskMonitor, m_pDiskHandler);
@@ -1838,6 +1845,9 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 
 				// We only need the document ID
 				docIdStr << docId;
+#ifdef DEBUG
+				clog << "DaemonState::on_thread_end: document " << docId << " in index " << indexId << endl;
+#endif
 				idsList.push_back(docIdStr.str().c_str());
 			}
 		}
@@ -1859,6 +1869,9 @@ void DaemonState::on_thread_end(WorkerThread *pThread)
 		{
 			org::gnome::Shell::SearchProvider2Stub::MethodInvocation shellInvocation(refInvocation);
 
+#ifdef DEBUG
+			clog << "DaemonState::on_thread_end: shell return with " << idsList.size() << " documents" << endl;
+#endif
 			shellInvocation.ret(idsList);
 		}
 	}
@@ -1939,7 +1952,7 @@ void DaemonState::on_message_filefound(DocumentInfo docInfo, bool isDirectory)
 	}
 }
 
-sigc::signal1<void, int>& DaemonState::getQuitSignal(void)
+sigc::signal<void(int)>& DaemonState::getQuitSignal(void)
 {
 	return m_signalQuit;
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ class PinotSettings
 				bool operator==(const IndexProperties &other) const;
 
 				Glib::ustring m_name;
-				std::string m_location;
+				Glib::ustring m_location;
 				unsigned int m_id;
 				bool m_internal;
 
@@ -102,16 +102,16 @@ class PinotSettings
 		void clearIndexes(void);
 
 		/// Returns properties of the given index.
-		IndexProperties getIndexPropertiesByName(const std::string &name) const;
+		IndexProperties getIndexPropertiesByName(const Glib::ustring &name) const;
 
 		/// Returns properties of the given index.
-		IndexProperties getIndexPropertiesByLocation(const std::string &location) const;
+		IndexProperties getIndexPropertiesByLocation(const Glib::ustring &location) const;
 
 		/// Returns the name(s) for the given ID.
 		void getIndexNames(unsigned int id, std::set<std::string> &names);
 
 		/// Returns an IndexInterface for the given index location.
-		IndexInterface *getIndex(const std::string &location);
+		IndexInterface *getIndex(const Glib::ustring &location);
 
 		/// Returns the search engines set.
 		bool getSearchEngines(std::set<ModuleProperties> &engines, const std::string &channelName = "") const;

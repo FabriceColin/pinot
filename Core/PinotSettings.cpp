@@ -51,7 +51,6 @@
 #include "PinotSettings.h"
 
 using namespace std;
-using namespace Glib;
 using namespace xmlpp;
 
 static string getElementContent(const Element *pElem)
@@ -388,7 +387,7 @@ bool PinotSettings::load(LoadWhat what)
 	if (what == LOAD_ALL)
 	{
 		// Load search engines
-		loadSearchEngines(string(PREFIX) + "/share/pinot/engines");
+		loadSearchEngines(string(PINOT_PREFIX) + "/share/pinot/engines");
 		loadSearchEngines(getConfigurationDirectory() + "/engines");
 	}
 
@@ -891,7 +890,7 @@ bool PinotSettings::loadQueries(const Element *pElem)
 	}
 
 	QueryProperties queryProps;
-	Date minDate, maxDate;
+	Glib::Date minDate, maxDate;
 	string freeQuery;
 	bool enableMinDate = false, enableMaxDate = false;
 
@@ -1084,13 +1083,13 @@ bool PinotSettings::loadQueries(const Element *pElem)
 		if (enableMinDate == false)
 		{
 			minDate.set_day(1);
-			minDate.set_month(Date::JANUARY);
+			minDate.set_month(Glib::Date::Month::JANUARY);
 			minDate.set_year(1970);
 		}
 		if (enableMaxDate == false)
 		{
 			maxDate.set_day(31);
-			maxDate.set_month(Date::DECEMBER);
+			maxDate.set_month(Glib::Date::Month::DECEMBER);
 			maxDate.set_year(2099);
 		}
 
@@ -1646,7 +1645,7 @@ bool PinotSettings::save(SaveWhat what)
 			{
 				return false;
 			}
-			for (set<ustring>::iterator patternIter = m_filePatternsList.begin();
+			for (set<Glib::ustring>::iterator patternIter = m_filePatternsList.begin();
 				patternIter != m_filePatternsList.end() ; ++patternIter)
 			{
 				addChildElement(pElem, "pattern", *patternIter);
@@ -1694,7 +1693,7 @@ const set<PinotSettings::IndexProperties> &PinotSettings::getIndexes(void) const
 }
 
 /// Adds a new index.
-bool PinotSettings::addIndex(const ustring &name, const string &location, bool isInternal)
+bool PinotSettings::addIndex(const Glib::ustring &name, const string &location, bool isInternal)
 {
 	unsigned int indexId(1 << m_indexCount);
 	m_indexes.insert(IndexProperties(name, location, indexId, isInternal));
@@ -1732,7 +1731,7 @@ void PinotSettings::clearIndexes(void)
 }
 
 /// Returns properties of the given index.
-PinotSettings::IndexProperties PinotSettings::getIndexPropertiesByName(const string &name) const
+PinotSettings::IndexProperties PinotSettings::getIndexPropertiesByName(const Glib::ustring &name) const
 {
 	for (set<IndexProperties>::const_iterator propsIter = m_indexes.begin();
 		propsIter != m_indexes.end(); ++propsIter)
@@ -1747,7 +1746,7 @@ PinotSettings::IndexProperties PinotSettings::getIndexPropertiesByName(const str
 }
 
 /// Returns properties of the given index.
-PinotSettings::IndexProperties PinotSettings::getIndexPropertiesByLocation(const string &location) const
+PinotSettings::IndexProperties PinotSettings::getIndexPropertiesByLocation(const Glib::ustring &location) const
 {
 	for (set<IndexProperties>::const_iterator propsIter = m_indexes.begin();
 		propsIter != m_indexes.end(); ++propsIter)
@@ -1796,7 +1795,7 @@ void PinotSettings::getIndexNames(unsigned int id, set<string> &names)
 }
 
 /// Returns an IndexInterface for the given index location.
-IndexInterface *PinotSettings::getIndex(const string &location)
+IndexInterface *PinotSettings::getIndex(const Glib::ustring &location)
 {
 	if (location == m_docsIndexLocation)
 	{
@@ -1943,7 +1942,7 @@ void PinotSettings::clearQueries(void)
 }
 
 /// Gets default patterns.
-bool PinotSettings::getDefaultPatterns(set<ustring> &defaultPatterns)
+bool PinotSettings::getDefaultPatterns(set<Glib::ustring> &defaultPatterns)
 {
 	defaultPatterns.clear();
 
@@ -2009,7 +2008,7 @@ bool PinotSettings::isBlackListed(const string &fileName)
 
 #ifdef HAVE_FNMATCH_H
 	// Any pattern matches this file name ?
-	for (set<ustring>::iterator patternIter = m_filePatternsList.begin(); patternIter != m_filePatternsList.end() ; ++patternIter)
+	for (set<Glib::ustring>::iterator patternIter = m_filePatternsList.begin(); patternIter != m_filePatternsList.end() ; ++patternIter)
 	{
 		if (fnmatch(patternIter->c_str(), fileName.c_str(), FNM_NOESCAPE) == 0)
 		{
@@ -2128,7 +2127,7 @@ PinotSettings::IndexProperties::IndexProperties() :
 {
 }
 
-PinotSettings::IndexProperties::IndexProperties(const ustring &name,
+PinotSettings::IndexProperties::IndexProperties(const Glib::ustring &name,
 	const string &location, unsigned int id, bool isInternal) :
 	m_name(name),
 	m_location(location),

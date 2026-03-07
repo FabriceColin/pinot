@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #include <pthread.h>
 #include <sigc++/sigc++.h>
 #include <glibmm/dispatcher.h>
-#include <glibmm/thread.h>
 #include <glibmm/ustring.h>
 
 #include "Document.h"
@@ -286,7 +285,7 @@ class DirectoryScannerThread : public IndexingThread
 
 		virtual void stop(void);
 
-		sigc::signal2<void, DocumentInfo, bool>& getFileFoundSignal(void);
+		void connectFileFoundSignal(const sigc::slot<void(DocumentInfo, bool)> &slot);
 
 	protected:
 		std::string m_dirName;
@@ -294,7 +293,8 @@ class DirectoryScannerThread : public IndexingThread
 		unsigned int m_maxLevel;
 		bool m_inlineIndexing;
 		bool m_followSymLinks;
-		sigc::signal2<void, DocumentInfo, bool> m_signalFileFound;
+		sigc::signal<void(DocumentInfo, bool)> m_signalFileFound;
+		std::vector<sigc::connection> m_connections;
 		std::stack<std::string> m_currentLinks;
 		std::stack<std::string> m_currentLinkReferrees;
 

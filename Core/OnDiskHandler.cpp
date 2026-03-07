@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,15 +49,11 @@ OnDiskHandler::~OnDiskHandler()
 	pthread_mutex_destroy(&m_mutex);
 
 	// Disconnect the signal
-	sigc::signal2<void, DocumentInfo, bool>::slot_list_type slotsList = m_signalFileFound.slots();
-	sigc::signal2<void, DocumentInfo, bool>::slot_list_type::iterator slotIter = slotsList.begin();
-	if (slotIter != slotsList.end())
+	for (vector<sigc::connection>::iterator connIter = m_connections.begin();
+		connIter != m_connections.end(); ++connIter)
 	{
-		if (slotIter->empty() == false)
-		{
-			slotIter->block();
-			slotIter->disconnect();
-		}
+		connIter->block();
+		connIter->disconnect();
 	}
 
 	if (m_pIndex != NULL)
@@ -407,8 +403,8 @@ bool OnDiskHandler::directoryDeleted(const string &dirName)
 	return fileDeleted(dirName, IndexInterface::BY_DIRECTORY);
 }
 
-sigc::signal2<void, DocumentInfo, bool>& OnDiskHandler::getFileFoundSignal(void)
+void OnDiskHandler::connectFileFoundSignal(const sigc::slot<void(DocumentInfo, bool)> &slot)
 {
-	return m_signalFileFound;
+	m_connections.push_back(m_signalFileFound.connect(slot));
 }
 

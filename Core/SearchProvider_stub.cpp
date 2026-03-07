@@ -124,16 +124,16 @@ guint org::gnome::Shell::SearchProvider2Stub::register_object(
         try {
             introspection_data = Gio::DBus::NodeInfo::create_for_xml(interfaceXml0);
         } catch(const Glib::Error& ex) {
-            g_warning("Unable to create introspection data for %s: %s", object_path.c_str(), ex.what().c_str());
+            g_warning("Unable to create introspection data for %s: %s", object_path.c_str(), ex.what());
             return 0;
         }
     }
 
     Gio::DBus::InterfaceVTable *interface_vtable =
         new Gio::DBus::InterfaceVTable(
-            sigc::mem_fun(this, &SearchProvider2Stub::on_method_call),
-            sigc::mem_fun(this, &SearchProvider2Stub::on_interface_get_property),
-            sigc::mem_fun(this, &SearchProvider2Stub::on_interface_set_property));
+            sigc::mem_fun(*this, &SearchProvider2Stub::on_method_call),
+            sigc::mem_fun(*this, &SearchProvider2Stub::on_interface_get_property),
+            sigc::mem_fun(*this, &SearchProvider2Stub::on_interface_set_property));
 
     guint registration_id;
     try {
@@ -141,7 +141,7 @@ guint org::gnome::Shell::SearchProvider2Stub::register_object(
             introspection_data->lookup_interface("org.gnome.Shell.SearchProvider2"),
             *interface_vtable);
     } catch(const Glib::Error &ex) {
-        g_warning("Registration of object %s failed: %s", object_path.c_str(), ex.what().c_str());
+        g_warning("Registration of object %s failed: %s", object_path.c_str(), ex.what());
         return 0;
     }
 
@@ -163,13 +163,13 @@ void org::gnome::Shell::SearchProvider2Stub::unregister_object()
 }
 
 void org::gnome::Shell::SearchProvider2Stub::on_method_call(
-    const Glib::RefPtr<Gio::DBus::Connection> &/* connection */,
+    const std::shared_ptr<Gio::DBus::Connection> &/* connection */,
     const Glib::ustring &/* sender */,
     const Glib::ustring &/* object_path */,
     const Glib::ustring &/* interface_name */,
     const Glib::ustring &method_name,
     const Glib::VariantContainerBase &parameters,
-    const Glib::RefPtr<Gio::DBus::MethodInvocation> &invocation)
+    const std::shared_ptr<Gio::DBus::MethodInvocation> &invocation)
 {
     static_cast<void>(method_name); // maybe unused
     static_cast<void>(parameters); // maybe unused
@@ -254,7 +254,7 @@ void org::gnome::Shell::SearchProvider2Stub::on_method_call(
 
 void org::gnome::Shell::SearchProvider2Stub::on_interface_get_property(
     Glib::VariantBase &property,
-    const Glib::RefPtr<Gio::DBus::Connection> &/* connection */,
+    const std::shared_ptr<Gio::DBus::Connection> &/* connection */,
     const Glib::ustring &/* sender */,
     const Glib::ustring &/* object_path */,
     const Glib::ustring &/* interface_name */,
@@ -266,7 +266,7 @@ void org::gnome::Shell::SearchProvider2Stub::on_interface_get_property(
 }
 
 bool org::gnome::Shell::SearchProvider2Stub::on_interface_set_property(
-    const Glib::RefPtr<Gio::DBus::Connection> &/* connection */,
+    const std::shared_ptr<Gio::DBus::Connection> &/* connection */,
     const Glib::ustring &/* sender */,
     const Glib::ustring &/* object_path */,
     const Glib::ustring &/* interface_name */,

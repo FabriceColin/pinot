@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2009 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <pthread.h>
 #include <string>
 #include <map>
+#include <vector>
 #include <sigc++/sigc++.h>
 
 #include "CrawlHistory.h"
@@ -66,11 +67,12 @@ class OnDiskHandler : public MonitorHandler
 		/// Handles directory deleted events.
 		virtual bool directoryDeleted(const std::string &dirName);
 
-		sigc::signal2<void, DocumentInfo, bool>& getFileFoundSignal(void);
+		void connectFileFoundSignal(const sigc::slot<void(DocumentInfo, bool)> &slot);
 
 	protected:
 		pthread_mutex_t m_mutex;
-		sigc::signal2<void, DocumentInfo, bool> m_signalFileFound;
+		sigc::signal<void(DocumentInfo, bool)> m_signalFileFound;
+		std::vector<sigc::connection> m_connections;
 		std::map<unsigned int, std::string> m_fileSources;
 		CrawlHistory m_history;
 		MetaDataBackup m_metaData;

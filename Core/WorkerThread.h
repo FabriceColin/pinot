@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2014 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
 #include <string>
 #include <set>
 #include <map>
+#include <thread>
 #include <pthread.h>
 #include <sigc++/sigc++.h>
 #include <glibmm/dispatcher.h>
-#include <glibmm/thread.h>
 #include <glibmm/ustring.h>
 
 #include "Document.h"
@@ -62,7 +62,7 @@ class WorkerThread
 
 		bool operator<(const WorkerThread &other) const;
 
-		Glib::Thread *start(void);
+		std::thread *start(void);
 
 		virtual std::string getType(void) const = 0;
 
@@ -142,7 +142,7 @@ class ThreadsManager : virtual public sigc::trackable
 		unsigned int m_backgroundThreadsCount;
 		unsigned int m_foregroundThreadsMaxTime;
 		long m_numCPUs;
-		sigc::signal1<void, WorkerThread *> m_onThreadEndSignal;
+		sigc::signal<void(WorkerThread *)> m_onThreadEndSignal;
 		std::set<std::string> m_beingIndexed;
 
 		bool read_lock_threads(void);

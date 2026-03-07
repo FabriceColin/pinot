@@ -35,8 +35,8 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <thread>
 #include <glibmm/convert.h>
-#include <glibmm/exception.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/stringutils.h>
 
@@ -47,7 +47,6 @@
 #include "WorkerThread.h"
 
 using namespace std;
-using namespace Glib;
 
 // A function object to stop threads with for_each()
 struct StopThreadFunc
@@ -59,11 +58,11 @@ public:
 #ifdef DEBUG
 		clog << "StopThreadFunc: stopped thread " << p.second->getId() << endl;
 #endif
-		Thread::yield();
+		this_thread::yield();
 	}
 };
 
-Dispatcher WorkerThread::m_dispatcher;
+Glib::Dispatcher WorkerThread::m_dispatcher;
 pthread_mutex_t WorkerThread::m_dispatcherMutex = PTHREAD_MUTEX_INITIALIZER;
 bool WorkerThread::m_immediateFlush = true;
 
@@ -76,7 +75,7 @@ string WorkerThread::errorToString(int errorNum)
 
 	if (errorNum < INDEX_ERROR)
 	{
-		ustring errorText(Glib::strerror(errorNum));
+		Glib::ustring errorText(Glib::strerror(errorNum));
 
 		return errorText.c_str();
 	}
@@ -121,7 +120,7 @@ string WorkerThread::errorToString(int errorNum)
 	return _("Unknown error");
 }
 
-Dispatcher &WorkerThread::getDispatcher(void)
+Glib::Dispatcher &WorkerThread::getDispatcher(void)
 {
 	return m_dispatcher;
 }
@@ -175,13 +174,13 @@ bool WorkerThread::operator<(const WorkerThread &other) const
 	return m_id < other.m_id;
 }
 
-Glib::Thread *WorkerThread::start(void)
+thread *WorkerThread::start(void)
 {
 #ifdef DEBUG
 	clog << "WorkerThread::start: " << getType() << " " << m_id << endl;
 #endif
 	// Create non-joinable threads
-	return Thread::create(sigc::mem_fun(*this, &WorkerThread::threadHandler), false);
+	return new thread([this]() { threadHandler(); });
 }
 
 void WorkerThread::stop(void)
@@ -228,13 +227,13 @@ void WorkerThread::threadHandler(void)
 	{
 		doWork();
 	}
-	catch (Glib::Exception &ex)
+	catch (const Glib::Error &ex)
 	{
-		clog << "Glib exception in thread " << m_id << ", type " << getType()
+		clog << "Glib error in thread " << m_id << ", type " << getType()
 			<< ":" << ex.what() << endl;
 		m_errorNum = UNKNOWN_ERROR;
 	}
-	catch (std::exception &ex)
+	catch (exception &ex)
 	{
 		clog << "STL exception in thread " << m_id << ", type " << getType()
 			<< ":" << ex.what() << endl;
@@ -483,7 +482,7 @@ bool ThreadsManager::start_thread(WorkerThread *pWorkerThread, bool inBackground
 	// Start the thread
 	if (pWorkerThread != NULL)
 	{
-		Thread *pThread = pWorkerThread->start();
+		thread *pThread = pWorkerThread->start();
 		if (pThread != NULL)
 		{
 			createdThread = true;

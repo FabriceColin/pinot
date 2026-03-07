@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2024 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -192,11 +192,7 @@ int main(int argc, char **argv)
 
 	Glib::init();
 	Gio::init();
-	// Initialize threads support before doing anything else
-	if (Glib::thread_supported() == false)
-	{
-		Glib::thread_init();
-	}
+	// Threads are now always enabled
 	// Initialize GType
 #if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init();
@@ -498,7 +494,7 @@ int main(int argc, char **argv)
 		g_refMainLoop->run();
 
 	}
-	catch (const Glib::Exception &e)
+	catch (const Glib::Error &e)
 	{
 		clog << e.what() << endl;
 		return EXIT_FAILURE;
