@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2021 Fabrice Colin
+ *  Copyright 2005-2026 Fabrice Colin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ class FileStopper : public Xapian::SimpleStopper
 			if (languageCode.empty() == false)
 			{
 				ifstream inputFile;
-				string fileName(PREFIX);
+				string fileName(PINOT_PREFIX);
 
 				fileName += "/share/pinot/stopwords/stopwords.";
 				fileName += languageCode;
@@ -911,7 +911,7 @@ bool XapianEngine::queryDatabase(Xapian::Database *pIndex, Xapian::Query &query,
 
 				if (hasCJKV == true)
 				{
-					flags |= Xapian::MSet::SNIPPET_CJK_NGRAM;
+					flags |= Xapian::MSet::SNIPPET_NGRAMS;
 				}
 				if (stemLanguage.empty() == true)
 				{
