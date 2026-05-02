@@ -1,3 +1,9 @@
+2026/05/02 version_1_2_4
+General :
+ - switched to C++17
+Collect :
+ - Neon-based downloader was lagging behind
+
 2025/11/09 version_1_2_3
 Collect :
  - curl 8.16 type fix

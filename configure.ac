@@ -1,7 +1,7 @@
 # First generated 2005/12/14 20:48:47 SGT
 
 AC_PREREQ([2.71])
-AC_INIT([pinot],[1.23],[fabrice.colin@gmail.com])
+AC_INIT([pinot],[1.24],[fabrice.colin@gmail.com])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
@@ -340,7 +340,7 @@ AC_CHECK_LIB(dl, dlopen,
 )
 
 dnl Other libraries
-MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64 -std=c++11"
+MISC_CFLAGS="$NOTIFY_CFLAGS $PTHREAD_CFLAGS $VISIB_CFLAGS -D_FILE_OFFSET_BITS=64 -std=c++17"
 MISC_LIBS="$NOTIFY_LIBS $PTHREAD_LIBS $DL_LIBS $BOOST_LIBS"
 AC_SUBST(MISC_CFLAGS)
 AC_SUBST(MISC_LIBS)
